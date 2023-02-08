@@ -1,0 +1,24 @@
+---
+import { getPokemonImage, Pokemon } from '@utils/pokemon'
+
+export interface Props {
+  pokemon: Pokemon
+}
+
+const { pokemon } = Astro.props
+---
+
+<div class="text-center p-4 border border-slate-800 rounded-xl">
+  <a href={`/pokemon/${pokemon.name}`} title={pokemon.name}>
+    <span
+      class="block mb-4 font-bold text-xl capitalize text-ellipsis overflow-hidden whitespace-nowrap"
+    >
+      {pokemon.name.replaceAll('-', ' ')}
+    </span>
+    <img
+      class="aspect-square"
+      src={getPokemonImage(pokemon)}
+      alt={`${pokemon.name} official artwork`}
+    />
+  </a>
+</div>

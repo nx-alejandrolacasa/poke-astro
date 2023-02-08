@@ -1,0 +1,24 @@
+---
+import Pagination from '@components/Pagination.astro'
+import PokemonTileFetcher from '@components/PokemonTileFetcher.astro'
+import Layout from '@layouts/Layout.astro'
+import { fetchPokemonList } from '@utils/pokemon'
+
+const page = parseInt(Astro.url.searchParams.get('page')! ?? 1, 10)
+
+const { count, results } = await fetchPokemonList(page)
+---
+
+<Layout title="Pokemon Astro">
+  <ul class="grid gap-4 grid-cols-3">
+    {
+      results.map(({ name }) => (
+        <li class="list-none">
+          <PokemonTileFetcher name={name} />
+        </li>
+      ))
+    }
+  </ul>
+
+  <Pagination count={count} page={page} />
+</Layout>

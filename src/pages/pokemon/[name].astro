@@ -1,0 +1,44 @@
+---
+import Layout from '@layouts/Layout.astro'
+import { fetchPokemonByName, getPokemonImage } from '@utils/pokemon'
+
+const { name = '' } = Astro.params
+
+const pokemon = await fetchPokemonByName(name)
+---
+
+<Layout title="Pokemon Astro">
+  {
+    pokemon && (
+      <div class="flex w-full justify-between">
+        <ul class="text-2xl">
+          <li class="block mb-4 font-bold capitalize text-4xl text-ellipsis overflow-hidden whitespace-nowrap">
+            {pokemon.name.replaceAll('-', ' ')}
+          </li>
+          <li>
+            {pokemon.types.length > 1 ? 'Types' : 'Type'}:{' '}
+            <b class="capitalize">
+              {pokemon.types.map(({ type }) => type.name).join(', ')}
+            </b>
+          </li>
+          <li>
+            Order: <b>{pokemon.order}</b>
+          </li>
+          <li>
+            Height: <b>{pokemon.height}</b>
+          </li>
+          <li>
+            Weight: <b>{pokemon.weight}</b>
+          </li>
+        </ul>
+        <div>
+          <img
+            class="aspect-square"
+            src={getPokemonImage(pokemon)}
+            alt={`${pokemon.name} official artwork`}
+          />
+        </div>
+      </div>
+    )
+  }
+</Layout>

@@ -1,0 +1,23 @@
+---
+import ReactPaginate from 'react-paginate'
+
+export interface Props {
+  count: number
+  page: number
+}
+
+const { count, page } = Astro.props
+
+const pageCount = Math.ceil(count / 24)
+---
+
+<ReactPaginate
+  activeClassName="font-bold border border-slate-400 rounded-md"
+  disabledClassName="cursor-default text-gray-400"
+  pageClassName="block px-1"
+  className="flex gap-4 my-4 w-full justify-center"
+  initialPage={page - 1}
+  pageCount={pageCount}
+  hrefBuilder={(page, pageCount, selected) =>
+    page >= 1 && page <= pageCount ? `/pokemon?page=${page}` : '#'}
+/>

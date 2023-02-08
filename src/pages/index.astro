@@ -1,0 +1,29 @@
+---
+export const prerender = true
+
+import PokemonTile from '@components/PokemonTile.astro'
+import Layout from '@layouts/Layout.astro'
+import { fetchPokemonByName } from '@utils/pokemon'
+
+const data = await Promise.all([
+  fetchPokemonByName('pikachu'),
+  fetchPokemonByName('charmander'),
+  fetchPokemonByName('squirtle'),
+  fetchPokemonByName('bulbasaur'),
+])
+---
+
+<Layout title="Pokemon Astro">
+  <ul class="grid gap-4 grid-cols-2">
+    {
+      data.filter(Boolean).map(
+        (pokemon) =>
+          pokemon && (
+            <li class="list-none">
+              <PokemonTile pokemon={pokemon} />
+            </li>
+          )
+      )
+    }
+  </ul>
+</Layout>
