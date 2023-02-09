@@ -54,6 +54,7 @@ export async function fetchPokemonList(page: number = 1): Promise<PokemonList> {
 
 export function getPokemonImage(pokemon: Pokemon) {
   return (
-    pokemon.sprites.other['official-artwork'].front_default ?? '/not-found.svg'
+    pokemon?.sprites?.other?.['official-artwork']?.front_default ??
+    '/not-found.svg'
   )
 }
