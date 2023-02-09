@@ -13,5 +13,10 @@ export function PokemonTileFetcher({ name }: PokemonTileFetcherProps) {
     return null
   }
 
+  if (error) {
+    console.error(error)
+    return <pre>ERROR! 😔</pre>
+  }
+
   return <PokemonTile pokemon={isLoading ? ({ name } as Pokemon) : data} />
 }

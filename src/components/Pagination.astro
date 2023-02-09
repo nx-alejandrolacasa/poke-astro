@@ -19,5 +19,5 @@ const pageCount = Math.ceil(count / 24)
   initialPage={page - 1}
   pageCount={pageCount}
   hrefBuilder={(page, pageCount, selected) =>
-    page >= 1 && page <= pageCount ? `/pokemon?page=${page}` : '#'}
+    page >= 1 && page <= pageCount ? `/pokedex?page=${page}` : '#'}
 />
