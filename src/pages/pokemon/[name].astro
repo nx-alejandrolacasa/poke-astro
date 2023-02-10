@@ -7,7 +7,13 @@ const { name = '' } = Astro.params
 const pokemon = await fetchPokemonByName(name)
 ---
 
-<Layout title="Pokemon Astro">
+<Layout
+  title={`Pokémon Astro - ${pokemon.name
+    .replaceAll('-', ' ')
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')}`}
+>
   {
     pokemon && (
       <div class="flex w-full justify-between">
