@@ -46,3 +46,11 @@ export function getPokemonImage(pokemon: Pokemon) {
     '/not-found.svg'
   )
 }
+
+export function getPokemonName(name: string) {
+  return name
+    .replaceAll('-', ' ')
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+}

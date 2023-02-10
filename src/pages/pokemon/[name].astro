@@ -1,25 +1,23 @@
 ---
 import Layout from '@layouts/Layout.astro'
-import { fetchPokemonByName, getPokemonImage } from '@utils/pokemon'
+import {
+  fetchPokemonByName,
+  getPokemonImage,
+  getPokemonName,
+} from '@utils/pokemon'
 
 const { name = '' } = Astro.params
 
 const pokemon = await fetchPokemonByName(name)
 ---
 
-<Layout
-  title={`Pokémon Astro - ${pokemon.name
-    .replaceAll('-', ' ')
-    .split(' ')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ')}`}
->
+<Layout title={`Pokémon Astro - ${getPokemonName(name)}`}>
   {
     pokemon && (
       <div class="flex w-full justify-between">
         <ul class="text-2xl">
           <li class="block mb-4 font-bold capitalize text-4xl text-ellipsis overflow-hidden whitespace-nowrap">
-            {pokemon.name.replaceAll('-', ' ')}
+            {getPokemonName(name)}
           </li>
           <li>
             {pokemon.types.length > 1 ? 'Types' : 'Type'}:{' '}
