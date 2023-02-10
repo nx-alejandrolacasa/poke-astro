@@ -7,6 +7,8 @@ import { fetchPokemonList } from '@utils/pokemon'
 const page = parseInt(Astro.url.searchParams.get('page')! ?? 1, 10)
 
 const { count, results } = await fetchPokemonList(page)
+
+console.log('>>> count', count)
 ---
 
 <Layout title="Pokemon Astro">
