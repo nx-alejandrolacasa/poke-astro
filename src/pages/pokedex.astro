@@ -14,11 +14,11 @@ const { count, results } = await fetchPokemonList(page)
     {
       results.map((pokemon) => (
         <li class="list-none">
-          <PokemonTile client:only="react" pokemon={pokemon} />
+          <PokemonTile pokemon={pokemon} />
         </li>
       ))
     }
   </ul>
 
-  <Pagination count={count} page={page} />
+  <Pagination client:load count={count} page={page} />
 </Layout>
