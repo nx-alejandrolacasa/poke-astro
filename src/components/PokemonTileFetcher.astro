@@ -1,0 +1,20 @@
+---
+import { PokemonTile } from '@components/PokemonTile'
+import { fetchPokemonByName, Pokemon } from '@utils/pokemon'
+
+export interface Props {
+  name: string
+}
+
+const { name } = Astro.props
+
+const pokemon = await fetchPokemonByName(name)
+---
+
+{
+  pokemon ? (
+    <PokemonTile pokemon={pokemon} />
+  ) : (
+    <PokemonTile loading pokemon={{ name } as Pokemon} />
+  )
+}

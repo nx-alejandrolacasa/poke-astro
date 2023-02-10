@@ -1,22 +1,27 @@
 import { PokemonTile } from '@components/PokemonTile'
 import { fetchPokemonByName, Pokemon } from '@utils/pokemon'
-import useSWR from 'swr'
+import { useEffect, useState } from 'react'
 
 type PokemonTileFetcherProps = {
   name: string
 }
 
 export function PokemonTileFetcher({ name }: PokemonTileFetcherProps) {
-  const { data, error, isLoading } = useSWR(name, fetchPokemonByName)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [pokemon, setPokemon] = useState<Pokemon>({ name } as Pokemon)
 
-  if (!data) {
-    return null
-  }
+  useEffect(() => {
+    const getPokemonData = async () => {
+      const data = await fetchPokemonByName(name)
 
-  if (error) {
-    console.error(error)
-    return <pre>ERROR! 😔</pre>
-  }
+      if (data) {
+        setPokemon(data)
+        setLoading(false)
+      }
+    }
 
-  return <PokemonTile pokemon={isLoading ? ({ name } as Pokemon) : data} />
+    getPokemonData().catch((err) => console.error(err))
+  }, [])
+
+  return <PokemonTile loading={loading} pokemon={pokemon} />
 }

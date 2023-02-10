@@ -1,6 +1,7 @@
 ---
+// import { PokemonTileFetcher } from '@components/PokemonTileFetcher'
 import Pagination from '@components/Pagination.astro'
-import { PokemonTileFetcher } from '@components/PokemonTileFetcher'
+import PokemonTileFetcher from '@components/PokemonTileFetcher.astro'
 import Layout from '@layouts/Layout.astro'
 import { fetchPokemonList } from '@utils/pokemon'
 
@@ -14,7 +15,8 @@ const { count, results } = await fetchPokemonList(page)
     {
       results.map(({ name }) => (
         <li class="list-none">
-          <PokemonTileFetcher client:only name={name} />
+          <PokemonTileFetcher name={name} />
+           <PokemonTileFetcher client:load name={name} />
         </li>
       ))
     }

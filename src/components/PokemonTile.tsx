@@ -1,10 +1,11 @@
 import { getPokemonImage, Pokemon } from '@utils/pokemon'
 
 type PokemonTileProps = {
+  loading?: boolean
   pokemon: Pokemon
 }
 
-export function PokemonTile({ pokemon }: PokemonTileProps) {
+export function PokemonTile({ loading = false, pokemon }: PokemonTileProps) {
   return (
     <div className="text-center p-4 border border-slate-800 rounded-xl">
       <a href={`/pokemon/${pokemon.name}`} title={pokemon.name}>
@@ -13,7 +14,7 @@ export function PokemonTile({ pokemon }: PokemonTileProps) {
         </span>
         <img
           className="aspect-square"
-          src={getPokemonImage(pokemon)}
+          src={loading ? '/loading.svg' : getPokemonImage(pokemon)}
           alt={`${pokemon.name} official artwork`}
         />
       </a>
