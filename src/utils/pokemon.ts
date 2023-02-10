@@ -28,23 +28,15 @@ export async function fetchPokemonList(page: number = 1): Promise<PokemonList> {
 
   const res = await fetch(
     `https://pokeapi.co/api/v2/pokemon?limit=24&offset=${offset}`
+  ).then((res) => res.json() as unknown as PokemonList)
+
+  const results = await Promise.all(
+    res.results.map(({ name }) => fetchPokemonByName(name))
   )
 
-  if (res.ok) {
-    const list = (await res.json()) as PokemonList
-    const results = await Promise.all(
-      list.results.map(({ name }) => fetchPokemonByName(name))
-    )
-
-    return {
-      ...list,
-      results,
-    }
-  }
-
   return {
-    count: 0,
-    results: [],
+    ...res,
+    results,
   }
 }
 
