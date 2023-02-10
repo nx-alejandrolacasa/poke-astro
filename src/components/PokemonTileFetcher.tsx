@@ -1,6 +1,16 @@
 import { PokemonTile } from '@components/PokemonTile'
-import { fetchPokemonByName, Pokemon } from '@utils/pokemon'
+import type { Pokemon } from '@utils/pokemon'
 import { useEffect, useState } from 'react'
+
+async function fetchPokemonByName(name: string): Promise<Pokemon | null> {
+  const res = await fetch('https://pokeapi.co/api/v2/pokemon/' + name)
+
+  if (res.ok) {
+    return res.json()
+  }
+
+  return null
+}
 
 type PokemonTileFetcherProps = {
   name: string
