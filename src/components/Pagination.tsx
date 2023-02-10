@@ -16,14 +16,16 @@ export function Pagination({ count, page }: PaginationProps) {
           const href = current === 1 ? `/pokedex` : `/pokedex?page=${current}`
 
           if (type === 'jump-next' || type === 'jump-prev') {
-            return <span>...</span>
+            return <span className="cursor-default">...</span>
           }
           if (type === 'page') {
             return (
               <a
                 aria-label={`Go to page ${current}`}
                 aria-current={current === page}
-                className="border border-white hover:border-slate-500 rounded-md py-1 px-2"
+                className={`border ${
+                  current === page ? 'cursor-default ' : 'border-white hover:'
+                }border-slate-500 rounded-md py-1 px-2`}
                 href={href}
               >
                 {current}
