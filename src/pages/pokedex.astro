@@ -16,7 +16,6 @@ const { count, results } = await fetchPokemonList(page)
       results.map(({ name }) => (
         <li class="list-none">
           <PokemonTileFetcher name={name} />
-           <PokemonTileFetcher client:load name={name} />
         </li>
       ))
     }
