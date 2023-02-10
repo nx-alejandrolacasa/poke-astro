@@ -4,7 +4,8 @@ export default function middleware(request) {
 
   if (url.pathname === '/pokedex' && page === 1) {
     url.pathname = '/pokedex'
+    return Response.redirect(url)
   }
 
-  return Response.redirect(url)
+  return undefined
 }
