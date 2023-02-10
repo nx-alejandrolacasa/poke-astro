@@ -12,7 +12,7 @@ const pageCount = Math.ceil(count / 24)
 ---
 
 <ReactPaginate
-  client:visible
+  client:idle
   activeClassName="font-bold px-3 border border-slate-400 rounded-md"
   disabledClassName="cursor-default text-gray-400"
   pageClassName="block px-1"
@@ -20,5 +20,5 @@ const pageCount = Math.ceil(count / 24)
   initialPage={page - 1}
   pageCount={pageCount}
   hrefBuilder={(page, pageCount, selected) =>
-    page >= 1 && page <= pageCount ? `/pokedex?page=${page}` : '#'}
+    selected && page >= 1 && page <= pageCount ? `/pokedex?page=${page}` : '#'}
 />
