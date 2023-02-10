@@ -11,27 +11,28 @@ export function Pagination({ count, page }: PaginationProps) {
       <RCPagination
         className="flex gap-2"
         defaultCurrent={page}
+        defaultPageSize={24}
         itemRender={(current, type, element) => {
+          const href = current === 1 ? `/pokedex` : `/pokedex?page=${current}`
+
           if (type === 'jump-next' || type === 'jump-prev') {
-            return <a href={`/pokedex?page=${current}`}>...</a>
+            return <span>...</span>
           }
           if (type === 'page') {
-            return current === page ? (
-              <span className="border border-slate-500 rounded-md py-1 px-2">
-                {current}
-              </span>
-            ) : (
+            return (
               <a
+                aria-label={`Go to page ${current}`}
+                aria-current={current === page}
                 className="border border-white hover:border-slate-500 rounded-md py-1 px-2"
-                href={`/pokedex?page=${current}`}
+                href={href}
               >
                 {current}
               </a>
             )
           }
         }}
+        showTitle={false}
         total={count}
-        defaultPageSize={24}
       />
     </div>
   )
