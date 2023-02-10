@@ -20,5 +20,5 @@ const { count, results } = await fetchPokemonList(page)
     }
   </ul>
 
-  <Pagination client:visible count={count} page={page} />
+  <Pagination client:only="react" count={count} page={page} />
 </Layout>
