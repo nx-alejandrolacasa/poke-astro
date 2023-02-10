@@ -1,6 +1,6 @@
 ---
 import Pagination from '@components/Pagination.astro'
-import { PokemonTileFetcher } from '@components/PokemonTileFetcher'
+import { PokemonTile } from '@components/PokemonTile'
 import Layout from '@layouts/Layout.astro'
 import { fetchPokemonList } from '@utils/pokemon'
 
@@ -12,9 +12,9 @@ const { count, results } = await fetchPokemonList(page)
 <Layout title="Pokemon Astro">
   <ul class="grid gap-4 grid-cols-3">
     {
-      results.map(({ name }) => (
+      results.map((pokemon) => (
         <li class="list-none">
-          <PokemonTileFetcher client:load name={name} />
+          <PokemonTile pokemon={pokemon} />
         </li>
       ))
     }

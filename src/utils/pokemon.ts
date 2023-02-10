@@ -13,26 +13,14 @@ export type Pokemon = {
   weight: number
 }
 
-export type PokemonListItem = {
-  name: string
-  url: string
-}
-
 export type PokemonList = {
   count: number
-  results: PokemonListItem[]
+  results: Pokemon[]
 }
 
-export async function fetchPokemonByName(
-  name: string
-): Promise<Pokemon | null> {
+export async function fetchPokemonByName(name: string): Promise<Pokemon> {
   const res = await fetch('https://pokeapi.co/api/v2/pokemon/' + name)
-
-  if (res.ok) {
-    return res.json()
-  }
-
-  return null
+  return res.json()
 }
 
 export async function fetchPokemonList(page: number = 1): Promise<PokemonList> {
@@ -43,7 +31,15 @@ export async function fetchPokemonList(page: number = 1): Promise<PokemonList> {
   )
 
   if (res.ok) {
-    return res.json()
+    const list = (await res.json()) as PokemonList
+    const results = await Promise.all(
+      list.results.map(({ name }) => fetchPokemonByName(name))
+    )
+
+    return {
+      ...list,
+      results,
+    }
   }
 
   return {
