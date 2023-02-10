@@ -9,7 +9,7 @@ export function Pagination({ count, page }: PaginationProps) {
   return (
     <div className="flex justify-center my-4">
       <RCPagination
-        className="flex gap-4"
+        className="flex gap-2"
         current={page}
         itemRender={(current, type, element) => {
           if (type === 'jump-next' || type === 'jump-prev') {
