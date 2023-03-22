@@ -13,7 +13,7 @@ export function PokemonTile({ loading = false, pokemon }: PokemonTileProps) {
           {pokemon.name.replaceAll('-', ' ')}
         </span>
         <img
-          className="aspect-square"
+          className="aspect-square w-full"
           src={loading ? '/loading.svg' : getPokemonImage(pokemon)}
           alt={`${pokemon.name} official artwork`}
         />

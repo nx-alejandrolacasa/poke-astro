@@ -5,12 +5,11 @@ import { PokemonTile } from '@components/PokemonTile'
 import Layout from '@layouts/Layout.astro'
 import { fetchPokemonByName } from '@utils/pokemon'
 
-const data = await Promise.all([
-  fetchPokemonByName('pikachu'),
-  fetchPokemonByName('charmander'),
-  fetchPokemonByName('squirtle'),
-  fetchPokemonByName('bulbasaur'),
-])
+const pokemon = ['pikachu', 'charmander', 'squirtle', 'bulbasaur']
+
+const data = await Promise.all(
+  pokemon.map((name) => fetchPokemonByName(name))
+)
 ---
 
 <Layout title="Pokémon Astro - Home">

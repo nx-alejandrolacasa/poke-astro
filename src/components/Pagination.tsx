@@ -13,11 +13,12 @@ export function Pagination({ count, page }: PaginationProps) {
         defaultCurrent={page}
         defaultPageSize={24}
         itemRender={(current, type, element) => {
-          const href = current === 1 ? `/pokedex` : `/pokedex?page=${current}`
+          const href = `/pokedex/${current}`
 
           if (type === 'jump-next' || type === 'jump-prev') {
             return <span className="cursor-default">...</span>
           }
+
           if (type === 'page') {
             return (
               <a

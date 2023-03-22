@@ -1,13 +1,20 @@
 ---
+export const prerender = true
+
 import Layout from '@layouts/Layout.astro'
 import {
+  fetchAllPokemon,
   fetchPokemonByName,
   getPokemonImage,
   getPokemonName,
 } from '@utils/pokemon'
 
-const { name = '' } = Astro.params
+export async function getStaticPaths() {
+  const pokemonList = await fetchAllPokemon()
+  return pokemonList.results.map(({name}) => ({params: {name}}))
+}
 
+const { name = '' } = Astro.params
 const pokemon = await fetchPokemonByName(name)
 ---
 
@@ -37,7 +44,7 @@ const pokemon = await fetchPokemonByName(name)
         </ul>
         <div>
           <img
-            class="aspect-square"
+            class="aspect-square w-full"
             src={getPokemonImage(pokemon)}
             alt={`${pokemon.name} official artwork`}
           />

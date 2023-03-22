@@ -18,17 +18,20 @@ export type PokemonList = {
   results: Pokemon[]
 }
 
+export type PokemonNamesList = {
+  count: number
+  results: { name: string }[]
+}
+
 export async function fetchPokemonByName(name: string): Promise<Pokemon> {
   const res = await fetch('https://pokeapi.co/api/v2/pokemon/' + name)
   return res.json()
 }
 
-export async function fetchPokemonList(page: number = 1): Promise<PokemonList> {
-  const offset = page > 0 ? (page - 1) * 24 : 1
-
-  const res = await fetch(
-    `https://pokeapi.co/api/v2/pokemon?limit=24&offset=${offset}`
-  ).then((res) => res.json() as unknown as PokemonList)
+export async function fetchAllPokemon(): Promise<PokemonList> {
+  const res: PokemonNamesList = await fetch(
+    `https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0`
+  ).then((res) => res.json())
 
   const results = await Promise.all(
     res.results.map(({ name }) => fetchPokemonByName(name))
