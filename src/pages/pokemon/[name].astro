@@ -2,15 +2,12 @@
 export const prerender = true
 
 import Layout from '@layouts/Layout.astro'
+import { PokemonEnrichedData } from '@components/PokemonEnrichedData'
 import {
-  calculateTypeEffectiveness,
   fetchAllPokemonNames,
-  fetchEvolutionChain,
   fetchPokemonByName,
-  fetchPokemonSpecies,
   getPokemonImage,
   getPokemonName,
-  parseEvolutionChain,
 } from '@utils/pokemon'
 
 export async function getStaticPaths() {
@@ -20,22 +17,8 @@ export async function getStaticPaths() {
 }
 
 const { name = '' } = Astro.params
+// Only fetch basic Pokemon data at build time
 const pokemon = await fetchPokemonByName(name)
-
-// Fetch additional data with error handling
-const species = await fetchPokemonSpecies(name)
-const evolutionChainData = species
-  ? await fetchEvolutionChain(species.evolution_chain.url)
-  : null
-const evolutions = evolutionChainData
-  ? parseEvolutionChain(evolutionChainData.chain)
-  : []
-const typeEffectiveness = await calculateTypeEffectiveness(pokemon)
-
-// Get English flavor text
-const flavorText = species?.flavor_text_entries
-  .find((entry) => entry.language.name === 'en')
-  ?.flavor_text.replace(/\f/g, ' ')
 
 // Get stat names mapping
 const statNames: Record<string, string> = {
@@ -71,14 +54,6 @@ const statNames: Record<string, string> = {
 
           {/* Right Column - Basic Info */}
           <div class="space-y-6">
-            {/* Description */}
-            {flavorText && (
-              <div class="border border-gray-700 rounded-lg p-4 bg-gray-800/50">
-                <h2 class="mb-2 font-bold text-xl">Description</h2>
-                <p class="text-gray-300 leading-relaxed">{flavorText}</p>
-              </div>
-            )}
-
             {/* Types */}
             <div class="border border-gray-700 rounded-lg p-4 bg-gray-800/50">
               <h2 class="mb-3 font-bold text-xl">Type</h2>
@@ -167,118 +142,8 @@ const statNames: Record<string, string> = {
           </div>
         </div>
 
-        {/* Type Effectiveness */}
-        <div class="border border-gray-700 rounded-lg p-6 bg-gray-800/50">
-          <h2 class="mb-4 font-bold text-2xl">Type Effectiveness</h2>
-          <div class="grid gap-6 grid-cols-1 md:grid-cols-3">
-            {/* Weaknesses */}
-            <div>
-              <h3 class="mb-3 font-semibold text-lg text-red-400">
-                Weak To ({typeEffectiveness.weaknesses.length})
-              </h3>
-              {typeEffectiveness.weaknesses.length > 0 ? (
-                <div class="flex flex-wrap gap-2">
-                  {typeEffectiveness.weaknesses.map(({ type, multiplier }) => (
-                    <span class="border border-red-500 bg-red-900/30 px-3 py-1 rounded-full capitalize text-sm">
-                      {type} ({multiplier}x)
-                    </span>
-                  ))}
-                </div>
-              ) : (
-                <p class="text-gray-500 text-sm">None</p>
-              )}
-            </div>
-
-            {/* Resistances */}
-            <div>
-              <h3 class="mb-3 font-semibold text-lg text-green-400">
-                Resistant To ({typeEffectiveness.resistances.length})
-              </h3>
-              {typeEffectiveness.resistances.length > 0 ? (
-                <div class="flex flex-wrap gap-2">
-                  {typeEffectiveness.resistances.map(({ type, multiplier }) => (
-                    <span class="border border-green-500 bg-green-900/30 px-3 py-1 rounded-full capitalize text-sm">
-                      {type} ({multiplier}x)
-                    </span>
-                  ))}
-                </div>
-              ) : (
-                <p class="text-gray-500 text-sm">None</p>
-              )}
-            </div>
-
-            {/* Immunities */}
-            <div>
-              <h3 class="mb-3 font-semibold text-lg text-blue-400">
-                Immune To ({typeEffectiveness.immunities.length})
-              </h3>
-              {typeEffectiveness.immunities.length > 0 ? (
-                <div class="flex flex-wrap gap-2">
-                  {typeEffectiveness.immunities.map((type) => (
-                    <span class="border border-blue-500 bg-blue-900/30 px-3 py-1 rounded-full capitalize text-sm">
-                      {type} (0x)
-                    </span>
-                  ))}
-                </div>
-              ) : (
-                <p class="text-gray-500 text-sm">None</p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Evolution Chain */}
-        {evolutions.length > 1 && evolutionChainData && (
-          <div class="border border-gray-700 rounded-lg p-6 bg-gray-800/50">
-            <h2 class="mb-4 font-bold text-2xl">Evolution Chain</h2>
-            <div class="flex flex-wrap justify-center items-center gap-4">
-              {evolutions.map((evoName, index) => {
-                // Get Pokemon ID from evolution chain
-                const getEvolutionNode = (node: typeof evolutionChainData.chain, targetName: string): typeof evolutionChainData.chain | null => {
-                  if (node.species.name === targetName) return node
-                  for (const evo of node.evolves_to) {
-                    const found = getEvolutionNode(evo, targetName)
-                    if (found) return found
-                  }
-                  return null
-                }
-
-                const evoNode = getEvolutionNode(evolutionChainData.chain, evoName)
-                const evoId = evoNode?.species.url.split('/').slice(-2, -1)[0]
-
-                return (
-                  <>
-                    <a
-                      href={`/pokemon/${evoName}`}
-                      class={`border rounded-lg p-4 transition-all hover:border-white hover:scale-105 ${
-                        evoName === name
-                          ? 'border-white bg-gray-700'
-                          : 'border-gray-600'
-                      }`}
-                    >
-                      <div class="text-center">
-                        <p class="mb-2 font-semibold capitalize">
-                          {getPokemonName(evoName)}
-                        </p>
-                        {evoId && (
-                          <img
-                            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${evoId}.png`}
-                            alt={evoName}
-                            class="mx-auto w-24 h-24 object-contain"
-                            loading="lazy"
-                          />
-                        )}
-                      </div>
-                    </a>
-                    {index < evolutions.length - 1 && (
-                      <div class="font-bold text-2xl text-gray-500">→</div>
-                    )}
-                  </>
-                )
-              })}
-            </div>
-          </div>
-        )}
+        {/* Enriched data loaded client-side for fast builds */}
+        <PokemonEnrichedData client:load pokemonName={name} />
       </div>
     )
   }
