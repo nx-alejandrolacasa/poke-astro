@@ -3,15 +3,16 @@ export const prerender = true
 
 import Layout from '@layouts/Layout.astro'
 import {
-  fetchAllPokemon,
+  fetchAllPokemonNames,
   fetchPokemonByName,
   getPokemonImage,
   getPokemonName,
 } from '@utils/pokemon'
 
 export async function getStaticPaths() {
-  const pokemonList = await fetchAllPokemon()
-  return pokemonList.results.map(({name}) => ({params: {name}}))
+  // Only fetch names, not full Pokémon data (much faster!)
+  const pokemonNames = await fetchAllPokemonNames()
+  return pokemonNames.map((name) => ({ params: { name } }))
 }
 
 const { name = '' } = Astro.params

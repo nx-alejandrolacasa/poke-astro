@@ -193,20 +193,44 @@ Used in pages with `export const prerender = true`:
 ```astro
 ---
 export const prerender = true
-import { fetchAllPokemon } from '@utils/pokemon'
+import { fetchPokemonCount, fetchPokemonPage } from '@utils/pokemon'
 
-export async function getStaticPaths({ paginate }: any) {
-  const pokemonList = await fetchAllPokemon()
-  return paginate(pokemonList.results, { pageSize: 24 })
+const PAGE_SIZE = 24
+
+export async function getStaticPaths() {
+  // Optimized: Only fetch the count, not all Pokémon data
+  const totalPokemon = await fetchPokemonCount()
+  const totalPages = Math.ceil(totalPokemon / PAGE_SIZE)
+
+  // Generate paths for all pages
+  const paths = []
+  for (let i = 1; i <= totalPages; i++) {
+    paths.push({
+      params: { page: String(i) },
+      props: { pageNumber: i, totalPokemon },
+    })
+  }
+  return paths
 }
 
-const { page } = Astro.props
+const { pageNumber, totalPokemon } = Astro.props
+// Fetch only the 24 Pokémon for this specific page
+const pokemonPage = await fetchPokemonPage(pageNumber, PAGE_SIZE)
 ---
 ```
 
 ### Utility Functions (`src/utils/pokemon.ts`)
-- `fetchPokemonByName(name: string): Promise<Pokemon>` - Fetch single Pokémon
-- `fetchAllPokemon(): Promise<PokemonList>` - Fetch all Pokémon data
+
+**Performance-Optimized Functions (Recommended):**
+- `fetchPokemonCount(): Promise<number>` - Get total count without fetching all data (1 API call)
+- `fetchPokemonPage(page: number, pageSize?: number): Promise<PokemonList>` - Fetch specific page (24 Pokémon, ~25 API calls)
+- `fetchAllPokemonNames(): Promise<string[]>` - Get all names only, no full data (1 API call)
+- `fetchPokemonByName(name: string): Promise<Pokemon>` - Fetch single Pokémon by name
+
+**Deprecated Functions:**
+- `fetchAllPokemon(): Promise<PokemonList>` - ⚠️ **Deprecated**: Very slow, fetches thousands of API requests
+
+**Helper Functions:**
 - `getPokemonImage(pokemon: Pokemon): string` - Extract official artwork URL
 - `getPokemonName(name: string): string` - Convert kebab-case to Title Case
 
@@ -537,3 +561,10 @@ This project was upgraded from legacy versions to the latest stable releases:
 **Dependencies:**
 - All dependencies use fixed versions (no semver ranges) for security
 - ESLint and Prettier updated to latest stable versions
+
+**Performance Optimizations:**
+- Implemented paginated data fetching for Pokédex pages
+- Each page now fetches only 24 Pokémon instead of all thousands (~96% reduction in API calls per page)
+- Individual Pokémon pages now fetch only names list for static path generation
+- Build time significantly reduced from fetching all data to fetching only what's needed
+- New optimized functions: `fetchPokemonCount()`, `fetchPokemonPage()`, `fetchAllPokemonNames()`
