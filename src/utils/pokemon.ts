@@ -1,7 +1,9 @@
 export type Pokemon = {
+  abilities: { ability: { name: string }; is_hidden: boolean }[]
   height: number
   name: string
   order: number
+  species: { name: string; url: string }
   sprites: {
     other: {
       'official-artwork': {
@@ -9,8 +11,42 @@ export type Pokemon = {
       }
     }
   }
+  stats: { base_stat: number; stat: { name: string } }[]
   types: { type: { name: string } }[]
   weight: number
+}
+
+export type PokemonSpecies = {
+  evolution_chain: { url: string }
+  flavor_text_entries: { flavor_text: string; language: { name: string } }[]
+  genera: { genus: string; language: { name: string } }[]
+  name: string
+}
+
+export type EvolutionChain = {
+  chain: EvolutionNode
+  id: number
+}
+
+export type EvolutionNode = {
+  evolution_details: {
+    min_level?: number
+    trigger: { name: string }
+  }[]
+  evolves_to: EvolutionNode[]
+  species: { name: string; url: string }
+}
+
+export type TypeDetails = {
+  damage_relations: {
+    double_damage_from: { name: string }[]
+    double_damage_to: { name: string }[]
+    half_damage_from: { name: string }[]
+    half_damage_to: { name: string }[]
+    no_damage_from: { name: string }[]
+    no_damage_to: { name: string }[]
+  }
+  name: string
 }
 
 export type PokemonList = {
@@ -108,4 +144,104 @@ export function getPokemonName(name: string) {
     .split(' ')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ')
+}
+
+/**
+ * Fetch Pokemon species data (includes evolution chain reference)
+ */
+export async function fetchPokemonSpecies(
+  name: string
+): Promise<PokemonSpecies> {
+  const res = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${name}`)
+  return res.json()
+}
+
+/**
+ * Fetch evolution chain data
+ */
+export async function fetchEvolutionChain(url: string): Promise<EvolutionChain> {
+  const res = await fetch(url)
+  return res.json()
+}
+
+/**
+ * Fetch type details including damage relations
+ */
+export async function fetchTypeDetails(typeName: string): Promise<TypeDetails> {
+  const res = await fetch(`https://pokeapi.co/api/v2/type/${typeName}`)
+  return res.json()
+}
+
+/**
+ * Calculate type effectiveness for a Pokemon
+ * Returns weaknesses, resistances, and immunities
+ */
+export async function calculateTypeEffectiveness(pokemon: Pokemon) {
+  const typeDetails = await Promise.all(
+    pokemon.types.map(({ type }) => fetchTypeDetails(type.name))
+  )
+
+  const weaknesses = new Map<string, number>()
+  const resistances = new Map<string, number>()
+  const immunities = new Set<string>()
+
+  // Initialize all types with 1x multiplier
+  const multipliers = new Map<string, number>()
+
+  // Process each type's damage relations
+  for (const typeDetail of typeDetails) {
+    // Double damage from (weaknesses)
+    typeDetail.damage_relations.double_damage_from.forEach(({ name }) => {
+      multipliers.set(name, (multipliers.get(name) || 1) * 2)
+    })
+
+    // Half damage from (resistances)
+    typeDetail.damage_relations.half_damage_from.forEach(({ name }) => {
+      multipliers.set(name, (multipliers.get(name) || 1) * 0.5)
+    })
+
+    // No damage from (immunities)
+    typeDetail.damage_relations.no_damage_from.forEach(({ name }) => {
+      multipliers.set(name, 0)
+    })
+  }
+
+  // Categorize based on final multipliers
+  multipliers.forEach((multiplier, type) => {
+    if (multiplier === 0) {
+      immunities.add(type)
+    } else if (multiplier >= 2) {
+      weaknesses.set(type, multiplier)
+    } else if (multiplier <= 0.5) {
+      resistances.set(type, multiplier)
+    }
+  })
+
+  return {
+    weaknesses: Array.from(weaknesses.entries()).map(([type, multiplier]) => ({
+      type,
+      multiplier,
+    })),
+    resistances: Array.from(resistances.entries()).map(
+      ([type, multiplier]) => ({ type, multiplier })
+    ),
+    immunities: Array.from(immunities),
+  }
+}
+
+/**
+ * Parse evolution chain into a flat array of evolution stages
+ */
+export function parseEvolutionChain(chain: EvolutionNode): string[] {
+  const evolutions: string[] = [chain.species.name]
+
+  function traverse(node: EvolutionNode) {
+    node.evolves_to.forEach((evolution) => {
+      evolutions.push(evolution.species.name)
+      traverse(evolution)
+    })
+  }
+
+  traverse(chain)
+  return evolutions
 }
