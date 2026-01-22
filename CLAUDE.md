@@ -47,7 +47,6 @@ poke-astro/
 │   ├── styles/               # Global styles
 │   │   └── global.css                # Tailwind imports and theme config
 ├── .github/workflows/       # GitHub Actions CI/CD
-├── middleware.ts            # Astro middleware (URL cleanup)
 ├── astro.config.mjs         # Astro configuration
 ├── tailwind.config.js       # Tailwind CSS configuration
 ├── tsconfig.json            # TypeScript configuration
@@ -412,9 +411,7 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   output: 'server',                    // SSR mode
   integrations: [react()],             // React integration
-  adapter: vercel({
-    edgeMiddleware: false,             // Disable edge middleware for astro:middleware compatibility
-  }),
+  adapter: vercel(),                   // Vercel deployment
   vite: {
     plugins: [tailwindcss()],          // Tailwind v4 via Vite plugin
   },
@@ -492,20 +489,6 @@ export default {
 
 ## Project-Specific Notes
 
-### Middleware
-The `middleware.ts` file uses the Astro 5 middleware API with `defineMiddleware`:
-```typescript
-import { defineMiddleware } from 'astro:middleware'
-
-export const onRequest = defineMiddleware((context, next) => {
-  // Middleware logic
-  return next()
-})
-```
-- Redirects `/pokedex?page=1` to `/pokedex` for clean URLs
-- Keeps other query parameters intact
-- Uses the new `onRequest` export pattern (not default export)
-
 ### Infinite Scroll
 - Uses `react-intersection-observer` for detecting when to load more
 - Loads 24 Pokémon per page progressively as user scrolls
@@ -550,10 +533,10 @@ This project was upgraded from legacy versions to the latest stable releases:
 ### Key Breaking Changes Addressed
 
 **Astro 5:**
-- Migrated middleware from default export to `onRequest` named export with `defineMiddleware`
 - Updated Vercel adapter import from `@astrojs/vercel/serverless` to `@astrojs/vercel`
 - Removed deprecated `@astrojs/tailwind` integration
 - Type imports now use `import type` syntax for better tree-shaking
+- Removed middleware (no longer needed with infinite scroll)
 
 **Tailwind CSS 4:**
 - Migrated from `@astrojs/tailwind` integration to `@tailwindcss/vite` plugin
@@ -577,4 +560,5 @@ This project was upgraded from legacy versions to the latest stable releases:
 - Individual Pokémon pages now fetch only names list for static path generation
 - New optimized functions: `fetchPokemonCount()`, `fetchPokemonPage()`, `fetchAllPokemonNames()`
 - Intersection Observer API for efficient scroll detection
+- Removed middleware (no longer needed without pagination)
 - Build completes in seconds instead of minutes
