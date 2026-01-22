@@ -46,7 +46,6 @@ poke-astro/
 │   └── not-found.svg
 │   ├── styles/               # Global styles
 │   │   └── global.css                # Tailwind imports and theme config
-├── .github/workflows/       # GitHub Actions CI/CD
 ├── astro.config.mjs         # Astro configuration
 ├── tailwind.config.js       # Tailwind CSS configuration
 ├── tsconfig.json            # TypeScript configuration
@@ -280,7 +279,6 @@ npm run astro --help  # Astro CLI help
 
 ### Git Workflow
 - **Main branch:** Primary development branch
-- **CI/CD:** GitHub Actions (`.github/workflows/_studio.yml`)
 - **Commits:** Clear, descriptive commit messages
 - **Deployment:** Automatic deployment to Vercel on push
 
