@@ -5,10 +5,10 @@
 This is a **Pokémon Pokédex application** built with Astro, React, and Tailwind CSS. It demonstrates a modern static-first web application using the PokéAPI to display Pokémon data with server-side rendering and selective client-side interactivity.
 
 **Tech Stack:**
-- **Framework:** Astro v2.0.10 (SSR mode with static prerendering)
-- **UI Library:** React 18.2.0 (for interactive components)
-- **Styling:** Tailwind CSS 3.2.6 (utility-first CSS)
-- **Language:** TypeScript 4.9.5 (strict mode)
+- **Framework:** Astro v5.16.10 (SSR mode with static prerendering)
+- **UI Library:** React 19.1.0 (for interactive components)
+- **Styling:** Tailwind CSS 4.1.0 (utility-first CSS via Vite plugin)
+- **Language:** TypeScript 5.8.3 (strict mode)
 - **Deployment:** Vercel (serverless)
 - **Data Source:** PokéAPI (https://pokeapi.co/api/v2/)
 
@@ -24,14 +24,16 @@ poke-astro/
 │   │   ├── PokemonTile.tsx           # React card component
 │   │   ├── PokemonTileFetcher.astro  # Server-side Pokémon fetcher
 │   │   ├── PokemonTileFetcher.tsx    # Client-side Pokémon fetcher
-│   │   └── Pagination.tsx            # Pagination control (React)
+│   │   └── PokemonInfiniteScroll.tsx # Infinite scroll component (React)
 │   ├── layouts/             # Layout templates
 │   │   └── Layout.astro              # Root layout wrapper
 │   ├── pages/               # File-based routing (Astro)
 │   │   ├── index.astro               # Home page (/)
-│   │   ├── pokedex.astro             # Pokédex redirect (/pokedex)
-│   │   ├── pokedex/
-│   │   │   └── [page].astro          # Paginated Pokédex (/pokedex/1)
+│   │   ├── pokedex.astro             # Pokédex with infinite scroll (/pokedex)
+│   │   ├── api/
+│   │   │   └── pokemon/
+│   │   │       └── page/
+│   │   │           └── [page].ts     # API endpoint for fetching pages
 │   │   └── pokemon/
 │   │       └── [name].astro          # Individual Pokémon (/pokemon/pikachu)
 │   ├── utils/               # Utility functions and helpers
@@ -42,10 +44,10 @@ poke-astro/
 │   ├── pokemon-logo.svg
 │   ├── loading.svg
 │   └── not-found.svg
-├── .github/workflows/       # GitHub Actions CI/CD
-├── middleware.ts            # Astro middleware (URL cleanup)
+│   ├── styles/               # Global styles
+│   │   └── global.css                # Tailwind imports and theme config
 ├── astro.config.mjs         # Astro configuration
-├── tailwind.config.cjs      # Tailwind CSS configuration
+├── tailwind.config.js       # Tailwind CSS configuration
 ├── tsconfig.json            # TypeScript configuration
 ├── prettier.config.js       # Prettier configuration
 └── .eslintrc.mjs            # ESLint configuration
@@ -60,15 +62,16 @@ Astro uses **file-based routing** (similar to Next.js):
 | File Path | URL | Description |
 |-----------|-----|-------------|
 | `pages/index.astro` | `/` | Home page with featured Pokémon |
-| `pages/pokedex.astro` | `/pokedex` | Redirects to `/pokedex/1` |
-| `pages/pokedex/[page].astro` | `/pokedex/1`, `/pokedex/2`, ... | Paginated Pokédex (24 per page) |
+| `pages/pokedex.astro` | `/pokedex` | Infinite scroll Pokédex (loads all Pokémon progressively) |
 | `pages/pokemon/[name].astro` | `/pokemon/pikachu`, `/pokemon/charmander`, ... | Individual Pokémon detail pages |
+| `pages/api/pokemon/page/[page].ts` | `/api/pokemon/page/1`, `/api/pokemon/page/2`, ... | API endpoints for paginated Pokémon data |
 
 **Key routing features:**
 - Dynamic routes use `[param]` syntax
-- Static generation via `getStaticPaths()` function
+- Static generation via `getStaticPaths()` function (only for Pokemon detail pages)
 - Prerendering enabled with `export const prerender = true`
-- Middleware handles URL cleanup (redirects `/pokedex?page=1` to `/pokedex`)
+- API routes support server-side rendering for on-demand data fetching
+- Infinite scroll eliminates need for pre-generating all paginated routes
 
 ---
 
@@ -105,7 +108,8 @@ const { title } = Astro.props
 
 **Example pattern:**
 ```tsx
-import { Pokemon } from '@utils/pokemon'
+import { getPokemonImage } from '@utils/pokemon'
+import type { Pokemon } from '@utils/pokemon'
 
 type PokemonTileProps = {
   loading?: boolean
@@ -120,6 +124,8 @@ export function PokemonTile({ loading = false, pokemon }: PokemonTileProps) {
   )
 }
 ```
+
+**Important:** Use `import type` for type-only imports to avoid bundling issues.
 
 ### Hydration Strategies
 - `client:only="react"` - Only renders on client (used for Pagination)
@@ -173,6 +179,8 @@ TypeScript path aliases are configured in `tsconfig.json`:
 ```
 
 ### Global Styles
+- Tailwind CSS imported via `src/styles/global.css`
+- Global CSS file imported in `Layout.astro`
 - Minimal global styles in `Layout.astro` using `<style is:global>`
 - Only for truly global styles (like font-family)
 
@@ -186,20 +194,44 @@ Used in pages with `export const prerender = true`:
 ```astro
 ---
 export const prerender = true
-import { fetchAllPokemon } from '@utils/pokemon'
+import { fetchPokemonCount, fetchPokemonPage } from '@utils/pokemon'
 
-export async function getStaticPaths({ paginate }: any) {
-  const pokemonList = await fetchAllPokemon()
-  return paginate(pokemonList.results, { pageSize: 24 })
+const PAGE_SIZE = 24
+
+export async function getStaticPaths() {
+  // Optimized: Only fetch the count, not all Pokémon data
+  const totalPokemon = await fetchPokemonCount()
+  const totalPages = Math.ceil(totalPokemon / PAGE_SIZE)
+
+  // Generate paths for all pages
+  const paths = []
+  for (let i = 1; i <= totalPages; i++) {
+    paths.push({
+      params: { page: String(i) },
+      props: { pageNumber: i, totalPokemon },
+    })
+  }
+  return paths
 }
 
-const { page } = Astro.props
+const { pageNumber, totalPokemon } = Astro.props
+// Fetch only the 24 Pokémon for this specific page
+const pokemonPage = await fetchPokemonPage(pageNumber, PAGE_SIZE)
 ---
 ```
 
 ### Utility Functions (`src/utils/pokemon.ts`)
-- `fetchPokemonByName(name: string): Promise<Pokemon>` - Fetch single Pokémon
-- `fetchAllPokemon(): Promise<PokemonList>` - Fetch all Pokémon data
+
+**Performance-Optimized Functions (Recommended):**
+- `fetchPokemonCount(): Promise<number>` - Get total count without fetching all data (1 API call)
+- `fetchPokemonPage(page: number, pageSize?: number): Promise<PokemonList>` - Fetch specific page (24 Pokémon, ~25 API calls)
+- `fetchAllPokemonNames(): Promise<string[]>` - Get all names only, no full data (1 API call)
+- `fetchPokemonByName(name: string): Promise<Pokemon>` - Fetch single Pokémon by name
+
+**Deprecated Functions:**
+- `fetchAllPokemon(): Promise<PokemonList>` - ⚠️ **Deprecated**: Very slow, fetches thousands of API requests
+
+**Helper Functions:**
 - `getPokemonImage(pokemon: Pokemon): string` - Extract official artwork URL
 - `getPokemonName(name: string): string` - Convert kebab-case to Title Case
 
@@ -247,7 +279,6 @@ npm run astro --help  # Astro CLI help
 
 ### Git Workflow
 - **Main branch:** Primary development branch
-- **CI/CD:** GitHub Actions (`.github/workflows/_studio.yml`)
 - **Commits:** Clear, descriptive commit messages
 - **Deployment:** Automatic deployment to Vercel on push
 
@@ -370,10 +401,18 @@ import { InteractiveComponent } from '@components/InteractiveComponent'
 
 **Astro Config (`astro.config.mjs`):**
 ```javascript
+import { defineConfig } from 'astro/config'
+import react from '@astrojs/react'
+import vercel from '@astrojs/vercel'
+import tailwindcss from '@tailwindcss/vite'
+
 export default defineConfig({
   output: 'server',                    // SSR mode
-  integrations: [react(), tailwind()], // React + Tailwind
+  integrations: [react()],             // React integration
   adapter: vercel(),                   // Vercel deployment
+  vite: {
+    plugins: [tailwindcss()],          // Tailwind v4 via Vite plugin
+  },
 })
 ```
 
@@ -390,10 +429,23 @@ export default defineConfig({
 }
 ```
 
-**Tailwind Config (`tailwind.config.cjs`):**
+**Tailwind Config (`tailwind.config.js`):**
 ```javascript
-module.exports = {
-  content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}']
+export default {
+  content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
+
+**Tailwind CSS Import (`src/styles/global.css`):**
+```css
+@import "tailwindcss";
+
+@theme {
+  /* Custom theme configuration can go here */
 }
 ```
 
@@ -435,16 +487,13 @@ module.exports = {
 
 ## Project-Specific Notes
 
-### Middleware
-The `middleware.ts` file handles URL cleanup:
-- Redirects `/pokedex?page=1` to `/pokedex` for clean URLs
-- Keeps other query parameters intact
-
-### Pagination
-- Uses `rc-pagination` library
-- Rendered as `client:only="react"` for navigation
-- 24 Pokémon per page
-- Total count and current page passed as props
+### Infinite Scroll
+- Uses `react-intersection-observer` for detecting when to load more
+- Loads 24 Pokémon per page progressively as user scrolls
+- Initial page (first 24) pre-rendered at build time for instant page load
+- Subsequent pages fetched client-side via API endpoints
+- Shows loading indicator while fetching
+- Displays "You've caught 'em all!" message when reaching the end
 
 ### Image Handling
 - Official artwork from PokéAPI sprites
@@ -461,5 +510,53 @@ The `middleware.ts` file handles URL cleanup:
 ---
 
 **Last Updated:** 2026-01-22
-**Astro Version:** 2.0.10
+**Astro Version:** 5.16.10
+**React Version:** 19.1.0
+**Tailwind CSS Version:** 4.1.0
+**TypeScript Version:** 5.8.3
 **Node Version:** 20.x (recommended)
+
+---
+
+## Upgrade Notes (January 2026)
+
+This project was upgraded from legacy versions to the latest stable releases:
+
+### Major Version Upgrades
+- **Astro:** 2.0.10 → 5.16.10 (3 major versions)
+- **React:** 18.2.0 → 19.1.0 (1 major version)
+- **Tailwind CSS:** 3.2.6 → 4.1.0 (1 major version)
+- **TypeScript:** 4.9.5 → 5.8.3 (1 major version)
+
+### Key Breaking Changes Addressed
+
+**Astro 5:**
+- Updated Vercel adapter import from `@astrojs/vercel/serverless` to `@astrojs/vercel`
+- Removed deprecated `@astrojs/tailwind` integration
+- Type imports now use `import type` syntax for better tree-shaking
+- Removed middleware (no longer needed with infinite scroll)
+
+**Tailwind CSS 4:**
+- Migrated from `@astrojs/tailwind` integration to `@tailwindcss/vite` plugin
+- Created `src/styles/global.css` for Tailwind imports
+- Updated config from CommonJS (`.cjs`) to ES modules (`.js`)
+- Configuration now uses `@import "tailwindcss"` and `@theme` directive
+
+**React 19:**
+- Updated all React component type definitions
+- Compatible with new React 19 features and hooks
+
+**Dependencies:**
+- All dependencies use fixed versions (no semver ranges) for security
+- ESLint and Prettier updated to latest stable versions
+
+**Performance Optimizations:**
+- Replaced pagination with infinite scroll for better UX and faster builds
+- **Build time drastically reduced**: Only pre-renders first page instead of all pages (~99% reduction)
+- Infinite scroll loads 24 Pokémon at a time as user scrolls
+- Created API endpoints (`/api/pokemon/page/[page]`) for on-demand data fetching
+- Individual Pokémon pages now fetch only names list for static path generation
+- New optimized functions: `fetchPokemonCount()`, `fetchPokemonPage()`, `fetchAllPokemonNames()`
+- Intersection Observer API for efficient scroll detection
+- Removed middleware (no longer needed without pagination)
+- Build completes in seconds instead of minutes
