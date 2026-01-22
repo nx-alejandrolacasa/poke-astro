@@ -61,6 +61,9 @@ export type PokemonNamesList = {
 
 export async function fetchPokemonByName(name: string): Promise<Pokemon> {
   const res = await fetch('https://pokeapi.co/api/v2/pokemon/' + name)
+  if (!res.ok) {
+    throw new Error(`Failed to fetch Pokemon: ${name} (${res.status})`)
+  }
   return res.json()
 }
 
@@ -151,24 +154,40 @@ export function getPokemonName(name: string) {
  */
 export async function fetchPokemonSpecies(
   name: string
-): Promise<PokemonSpecies> {
+): Promise<PokemonSpecies | null> {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${name}`)
+  if (!res.ok) {
+    console.warn(`Failed to fetch species for ${name}: ${res.status}`)
+    return null
+  }
   return res.json()
 }
 
 /**
  * Fetch evolution chain data
  */
-export async function fetchEvolutionChain(url: string): Promise<EvolutionChain> {
+export async function fetchEvolutionChain(
+  url: string
+): Promise<EvolutionChain | null> {
   const res = await fetch(url)
+  if (!res.ok) {
+    console.warn(`Failed to fetch evolution chain: ${res.status}`)
+    return null
+  }
   return res.json()
 }
 
 /**
  * Fetch type details including damage relations
  */
-export async function fetchTypeDetails(typeName: string): Promise<TypeDetails> {
+export async function fetchTypeDetails(
+  typeName: string
+): Promise<TypeDetails | null> {
   const res = await fetch(`https://pokeapi.co/api/v2/type/${typeName}`)
+  if (!res.ok) {
+    console.warn(`Failed to fetch type details for ${typeName}: ${res.status}`)
+    return null
+  }
   return res.json()
 }
 
@@ -177,8 +196,13 @@ export async function fetchTypeDetails(typeName: string): Promise<TypeDetails> {
  * Returns weaknesses, resistances, and immunities
  */
 export async function calculateTypeEffectiveness(pokemon: Pokemon) {
-  const typeDetails = await Promise.all(
+  const typeDetailsResults = await Promise.all(
     pokemon.types.map(({ type }) => fetchTypeDetails(type.name))
+  )
+
+  // Filter out null results
+  const typeDetails = typeDetailsResults.filter(
+    (detail): detail is TypeDetails => detail !== null
   )
 
   const weaknesses = new Map<string, number>()

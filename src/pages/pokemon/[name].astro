@@ -22,14 +22,18 @@ export async function getStaticPaths() {
 const { name = '' } = Astro.params
 const pokemon = await fetchPokemonByName(name)
 
-// Fetch additional data
+// Fetch additional data with error handling
 const species = await fetchPokemonSpecies(name)
-const evolutionChainData = await fetchEvolutionChain(species.evolution_chain.url)
-const evolutions = parseEvolutionChain(evolutionChainData.chain)
+const evolutionChainData = species
+  ? await fetchEvolutionChain(species.evolution_chain.url)
+  : null
+const evolutions = evolutionChainData
+  ? parseEvolutionChain(evolutionChainData.chain)
+  : []
 const typeEffectiveness = await calculateTypeEffectiveness(pokemon)
 
 // Get English flavor text
-const flavorText = species.flavor_text_entries
+const flavorText = species?.flavor_text_entries
   .find((entry) => entry.language.name === 'en')
   ?.flavor_text.replace(/\f/g, ' ')
 
@@ -224,7 +228,7 @@ const statNames: Record<string, string> = {
         </div>
 
         {/* Evolution Chain */}
-        {evolutions.length > 1 && (
+        {evolutions.length > 1 && evolutionChainData && (
           <div class="border border-gray-700 rounded-lg p-6 bg-gray-800/50">
             <h2 class="mb-4 font-bold text-2xl">Evolution Chain</h2>
             <div class="flex flex-wrap justify-center items-center gap-4">
