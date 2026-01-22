@@ -7,7 +7,9 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   output: 'server',
   integrations: [react()],
-  adapter: vercel(),
+  adapter: vercel({
+    edgeMiddleware: false, // Disable edge middleware to fix astro:middleware compatibility
+  }),
   vite: {
     plugins: [tailwindcss()],
   },

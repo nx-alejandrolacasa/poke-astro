@@ -15,9 +15,9 @@
     "@astrojs/vercel": "9.0.3",
     "@tailwindcss/vite": "4.1.0",
     "astro": "5.16.10",
-    "rc-pagination": "5.1.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-intersection-observer": "10.0.2",
     "tailwindcss": "4.1.0"
   },
   "devDependencies": {

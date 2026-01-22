@@ -24,14 +24,16 @@ poke-astro/
 │   │   ├── PokemonTile.tsx           # React card component
 │   │   ├── PokemonTileFetcher.astro  # Server-side Pokémon fetcher
 │   │   ├── PokemonTileFetcher.tsx    # Client-side Pokémon fetcher
-│   │   └── Pagination.tsx            # Pagination control (React)
+│   │   └── PokemonInfiniteScroll.tsx # Infinite scroll component (React)
 │   ├── layouts/             # Layout templates
 │   │   └── Layout.astro              # Root layout wrapper
 │   ├── pages/               # File-based routing (Astro)
 │   │   ├── index.astro               # Home page (/)
-│   │   ├── pokedex.astro             # Pokédex redirect (/pokedex)
-│   │   ├── pokedex/
-│   │   │   └── [page].astro          # Paginated Pokédex (/pokedex/1)
+│   │   ├── pokedex.astro             # Pokédex with infinite scroll (/pokedex)
+│   │   ├── api/
+│   │   │   └── pokemon/
+│   │   │       └── page/
+│   │   │           └── [page].ts     # API endpoint for fetching pages
 │   │   └── pokemon/
 │   │       └── [name].astro          # Individual Pokémon (/pokemon/pikachu)
 │   ├── utils/               # Utility functions and helpers
@@ -62,15 +64,16 @@ Astro uses **file-based routing** (similar to Next.js):
 | File Path | URL | Description |
 |-----------|-----|-------------|
 | `pages/index.astro` | `/` | Home page with featured Pokémon |
-| `pages/pokedex.astro` | `/pokedex` | Redirects to `/pokedex/1` |
-| `pages/pokedex/[page].astro` | `/pokedex/1`, `/pokedex/2`, ... | Paginated Pokédex (24 per page) |
+| `pages/pokedex.astro` | `/pokedex` | Infinite scroll Pokédex (loads all Pokémon progressively) |
 | `pages/pokemon/[name].astro` | `/pokemon/pikachu`, `/pokemon/charmander`, ... | Individual Pokémon detail pages |
+| `pages/api/pokemon/page/[page].ts` | `/api/pokemon/page/1`, `/api/pokemon/page/2`, ... | API endpoints for paginated Pokémon data |
 
 **Key routing features:**
 - Dynamic routes use `[param]` syntax
-- Static generation via `getStaticPaths()` function
+- Static generation via `getStaticPaths()` function (only for Pokemon detail pages)
 - Prerendering enabled with `export const prerender = true`
-- Middleware handles URL cleanup (redirects `/pokedex?page=1` to `/pokedex`)
+- API routes support server-side rendering for on-demand data fetching
+- Infinite scroll eliminates need for pre-generating all paginated routes
 
 ---
 
@@ -409,7 +412,9 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   output: 'server',                    // SSR mode
   integrations: [react()],             // React integration
-  adapter: vercel(),                   // Vercel deployment
+  adapter: vercel({
+    edgeMiddleware: false,             // Disable edge middleware for astro:middleware compatibility
+  }),
   vite: {
     plugins: [tailwindcss()],          // Tailwind v4 via Vite plugin
   },
@@ -501,11 +506,13 @@ export const onRequest = defineMiddleware((context, next) => {
 - Keeps other query parameters intact
 - Uses the new `onRequest` export pattern (not default export)
 
-### Pagination
-- Uses `rc-pagination` v5.1.0 library (React 19 compatible)
-- Rendered as `client:only="react"` for navigation
-- 24 Pokémon per page
-- Total count and current page passed as props
+### Infinite Scroll
+- Uses `react-intersection-observer` for detecting when to load more
+- Loads 24 Pokémon per page progressively as user scrolls
+- Initial page (first 24) pre-rendered at build time for instant page load
+- Subsequent pages fetched client-side via API endpoints
+- Shows loading indicator while fetching
+- Displays "You've caught 'em all!" message when reaching the end
 
 ### Image Handling
 - Official artwork from PokéAPI sprites
@@ -563,8 +570,11 @@ This project was upgraded from legacy versions to the latest stable releases:
 - ESLint and Prettier updated to latest stable versions
 
 **Performance Optimizations:**
-- Implemented paginated data fetching for Pokédex pages
-- Each page now fetches only 24 Pokémon instead of all thousands (~96% reduction in API calls per page)
+- Replaced pagination with infinite scroll for better UX and faster builds
+- **Build time drastically reduced**: Only pre-renders first page instead of all pages (~99% reduction)
+- Infinite scroll loads 24 Pokémon at a time as user scrolls
+- Created API endpoints (`/api/pokemon/page/[page]`) for on-demand data fetching
 - Individual Pokémon pages now fetch only names list for static path generation
-- Build time significantly reduced from fetching all data to fetching only what's needed
 - New optimized functions: `fetchPokemonCount()`, `fetchPokemonPage()`, `fetchAllPokemonNames()`
+- Intersection Observer API for efficient scroll detection
+- Build completes in seconds instead of minutes

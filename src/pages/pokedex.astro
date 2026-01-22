@@ -1,3 +1,14 @@
 ---
-return Astro.redirect('/pokedex/1')
+export const prerender = true
+
+import Layout from '@layouts/Layout.astro'
+import { PokemonInfiniteScroll } from '@components/PokemonInfiniteScroll'
+import { fetchPokemonPage } from '@utils/pokemon'
+
+// Only fetch the first page at build time
+const initialData = await fetchPokemonPage(1, 24)
 ---
+
+<Layout title="Pokémon Astro - Pokédex">
+  <PokemonInfiniteScroll client:load initialData={initialData} />
+</Layout>
