@@ -4,7 +4,8 @@ export const prerender = true
 import { Pagination } from '@components/Pagination'
 import { PokemonTile } from '@components/PokemonTile'
 import Layout from '@layouts/Layout.astro'
-import { fetchAllPokemon,Pokemon } from '@utils/pokemon'
+import { fetchAllPokemon } from '@utils/pokemon'
+import type { Pokemon } from '@utils/pokemon'
 
 export async function getStaticPaths({ paginate }: any) {
   const pokemonList = await fetchAllPokemon();

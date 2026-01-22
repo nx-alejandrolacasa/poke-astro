@@ -1,4 +1,5 @@
-import { getPokemonImage, Pokemon } from '@utils/pokemon'
+import { getPokemonImage } from '@utils/pokemon'
+import type { Pokemon } from '@utils/pokemon'
 
 type PokemonTileProps = {
   loading?: boolean

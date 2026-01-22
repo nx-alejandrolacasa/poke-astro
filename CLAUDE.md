@@ -5,10 +5,10 @@
 This is a **Pokémon Pokédex application** built with Astro, React, and Tailwind CSS. It demonstrates a modern static-first web application using the PokéAPI to display Pokémon data with server-side rendering and selective client-side interactivity.
 
 **Tech Stack:**
-- **Framework:** Astro v2.0.10 (SSR mode with static prerendering)
-- **UI Library:** React 18.2.0 (for interactive components)
-- **Styling:** Tailwind CSS 3.2.6 (utility-first CSS)
-- **Language:** TypeScript 4.9.5 (strict mode)
+- **Framework:** Astro v5.16.10 (SSR mode with static prerendering)
+- **UI Library:** React 19.1.0 (for interactive components)
+- **Styling:** Tailwind CSS 4.1.0 (utility-first CSS via Vite plugin)
+- **Language:** TypeScript 5.8.3 (strict mode)
 - **Deployment:** Vercel (serverless)
 - **Data Source:** PokéAPI (https://pokeapi.co/api/v2/)
 
@@ -42,10 +42,12 @@ poke-astro/
 │   ├── pokemon-logo.svg
 │   ├── loading.svg
 │   └── not-found.svg
+│   ├── styles/               # Global styles
+│   │   └── global.css                # Tailwind imports and theme config
 ├── .github/workflows/       # GitHub Actions CI/CD
 ├── middleware.ts            # Astro middleware (URL cleanup)
 ├── astro.config.mjs         # Astro configuration
-├── tailwind.config.cjs      # Tailwind CSS configuration
+├── tailwind.config.js       # Tailwind CSS configuration
 ├── tsconfig.json            # TypeScript configuration
 ├── prettier.config.js       # Prettier configuration
 └── .eslintrc.mjs            # ESLint configuration
@@ -105,7 +107,8 @@ const { title } = Astro.props
 
 **Example pattern:**
 ```tsx
-import { Pokemon } from '@utils/pokemon'
+import { getPokemonImage } from '@utils/pokemon'
+import type { Pokemon } from '@utils/pokemon'
 
 type PokemonTileProps = {
   loading?: boolean
@@ -120,6 +123,8 @@ export function PokemonTile({ loading = false, pokemon }: PokemonTileProps) {
   )
 }
 ```
+
+**Important:** Use `import type` for type-only imports to avoid bundling issues.
 
 ### Hydration Strategies
 - `client:only="react"` - Only renders on client (used for Pagination)
@@ -173,6 +178,8 @@ TypeScript path aliases are configured in `tsconfig.json`:
 ```
 
 ### Global Styles
+- Tailwind CSS imported via `src/styles/global.css`
+- Global CSS file imported in `Layout.astro`
 - Minimal global styles in `Layout.astro` using `<style is:global>`
 - Only for truly global styles (like font-family)
 
@@ -370,10 +377,18 @@ import { InteractiveComponent } from '@components/InteractiveComponent'
 
 **Astro Config (`astro.config.mjs`):**
 ```javascript
+import { defineConfig } from 'astro/config'
+import react from '@astrojs/react'
+import vercel from '@astrojs/vercel'
+import tailwindcss from '@tailwindcss/vite'
+
 export default defineConfig({
   output: 'server',                    // SSR mode
-  integrations: [react(), tailwind()], // React + Tailwind
+  integrations: [react()],             // React integration
   adapter: vercel(),                   // Vercel deployment
+  vite: {
+    plugins: [tailwindcss()],          // Tailwind v4 via Vite plugin
+  },
 })
 ```
 
@@ -390,10 +405,23 @@ export default defineConfig({
 }
 ```
 
-**Tailwind Config (`tailwind.config.cjs`):**
+**Tailwind Config (`tailwind.config.js`):**
 ```javascript
-module.exports = {
-  content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}']
+export default {
+  content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
+
+**Tailwind CSS Import (`src/styles/global.css`):**
+```css
+@import "tailwindcss";
+
+@theme {
+  /* Custom theme configuration can go here */
 }
 ```
 
@@ -436,12 +464,21 @@ module.exports = {
 ## Project-Specific Notes
 
 ### Middleware
-The `middleware.ts` file handles URL cleanup:
+The `middleware.ts` file uses the Astro 5 middleware API with `defineMiddleware`:
+```typescript
+import { defineMiddleware } from 'astro:middleware'
+
+export const onRequest = defineMiddleware((context, next) => {
+  // Middleware logic
+  return next()
+})
+```
 - Redirects `/pokedex?page=1` to `/pokedex` for clean URLs
 - Keeps other query parameters intact
+- Uses the new `onRequest` export pattern (not default export)
 
 ### Pagination
-- Uses `rc-pagination` library
+- Uses `rc-pagination` v5.1.0 library (React 19 compatible)
 - Rendered as `client:only="react"` for navigation
 - 24 Pokémon per page
 - Total count and current page passed as props
@@ -461,5 +498,42 @@ The `middleware.ts` file handles URL cleanup:
 ---
 
 **Last Updated:** 2026-01-22
-**Astro Version:** 2.0.10
+**Astro Version:** 5.16.10
+**React Version:** 19.1.0
+**Tailwind CSS Version:** 4.1.0
+**TypeScript Version:** 5.8.3
 **Node Version:** 20.x (recommended)
+
+---
+
+## Upgrade Notes (January 2026)
+
+This project was upgraded from legacy versions to the latest stable releases:
+
+### Major Version Upgrades
+- **Astro:** 2.0.10 → 5.16.10 (3 major versions)
+- **React:** 18.2.0 → 19.1.0 (1 major version)
+- **Tailwind CSS:** 3.2.6 → 4.1.0 (1 major version)
+- **TypeScript:** 4.9.5 → 5.8.3 (1 major version)
+
+### Key Breaking Changes Addressed
+
+**Astro 5:**
+- Migrated middleware from default export to `onRequest` named export with `defineMiddleware`
+- Updated Vercel adapter import from `@astrojs/vercel/serverless` to `@astrojs/vercel`
+- Removed deprecated `@astrojs/tailwind` integration
+- Type imports now use `import type` syntax for better tree-shaking
+
+**Tailwind CSS 4:**
+- Migrated from `@astrojs/tailwind` integration to `@tailwindcss/vite` plugin
+- Created `src/styles/global.css` for Tailwind imports
+- Updated config from CommonJS (`.cjs`) to ES modules (`.js`)
+- Configuration now uses `@import "tailwindcss"` and `@theme` directive
+
+**React 19:**
+- Updated all React component type definitions
+- Compatible with new React 19 features and hooks
+
+**Dependencies:**
+- All dependencies use fixed versions (no semver ranges) for security
+- ESLint and Prettier updated to latest stable versions
