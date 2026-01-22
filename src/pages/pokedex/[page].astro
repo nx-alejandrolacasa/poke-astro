@@ -7,9 +7,9 @@ import Layout from '@layouts/Layout.astro'
 import { fetchPokemonCount, fetchPokemonPage } from '@utils/pokemon'
 import type { Pokemon } from '@utils/pokemon'
 
-const PAGE_SIZE = 24
-
 export async function getStaticPaths() {
+  const PAGE_SIZE = 24
+
   // Only fetch the count, not all Pokémon data
   const totalPokemon = await fetchPokemonCount()
   const totalPages = Math.ceil(totalPokemon / PAGE_SIZE)
@@ -23,6 +23,7 @@ export async function getStaticPaths() {
         pageNumber: i,
         totalPokemon,
         totalPages,
+        pageSize: PAGE_SIZE,
       },
     })
   }
@@ -34,12 +35,13 @@ type PageProps = {
   pageNumber: number
   totalPokemon: number
   totalPages: number
+  pageSize: number
 }
 
-const { pageNumber, totalPokemon } = Astro.props as PageProps
+const { pageNumber, totalPokemon, pageSize } = Astro.props as PageProps
 
 // Fetch only the Pokémon for this specific page
-const pokemonPage = await fetchPokemonPage(pageNumber, PAGE_SIZE)
+const pokemonPage = await fetchPokemonPage(pageNumber, pageSize)
 ---
 
 <Layout title="Pokémon Astro - Pokédex">
