@@ -45,7 +45,7 @@ const randomFact = funFacts[Math.floor(Math.random() * funFacts.length)]
       <h1 class="text-5xl md:text-7xl font-bold bg-gradient-to-r from-[#3466AF] via-purple-500 to-pink-500 bg-clip-text text-transparent">
         Explore the World of Pokémon
       </h1>
-      <p class="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">
+      <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
         Discover detailed information about all {totalPokemon.toLocaleString()} Pokémon species,
         their stats, types, abilities, and evolutions.
       </p>
@@ -61,45 +61,45 @@ const randomFact = funFacts[Math.floor(Math.random() * funFacts.length)]
 
     <!-- Bento Grid Statistics -->
     <section class="space-y-6">
-      <h2 class="text-3xl md:text-4xl font-bold text-center">By the Numbers</h2>
+      <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-white">By the Numbers</h2>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
         <!-- Total Pokemon -->
-        <div class="col-span-2 md:col-span-2 bg-gradient-to-br from-[#3466AF]/50 to-purple-600/50 backdrop-blur-sm border border-white/20 rounded-2xl p-8 md:p-12 hover:border-[#3466AF]/70 transition-all duration-300 hover:scale-[1.02]">
+        <div class="col-span-2 md:col-span-2 bg-gradient-to-br from-[#3466AF] to-purple-600 border-2 border-[#3466AF]/30 dark:border-[#3466AF]/50 rounded-2xl p-8 md:p-12 hover:border-[#3466AF]/60 dark:hover:border-[#3466AF]/80 transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-2xl">
           <div class="space-y-2">
-            <p class="text-gray-200 text-sm md:text-base uppercase tracking-wider">Total Pokémon</p>
+            <p class="text-white/90 text-sm md:text-base uppercase tracking-wider font-semibold">Total Pokémon</p>
             <p class="text-6xl md:text-8xl font-black text-white">
               {totalPokemon.toLocaleString()}
             </p>
-            <p class="text-gray-200 text-xs md:text-sm">Species discovered across all regions</p>
+            <p class="text-white/90 text-xs md:text-sm">Species discovered across all regions</p>
           </div>
         </div>
 
         <!-- Types -->
-        <div class="bg-gradient-to-br from-pink-500/50 to-red-500/50 backdrop-blur-sm border border-white/20 rounded-2xl p-6 md:p-8 hover:border-pink-500/70 transition-all duration-300 hover:scale-[1.02]">
+        <div class="bg-gradient-to-br from-pink-500 to-red-600 border-2 border-pink-400/30 dark:border-pink-400/50 rounded-2xl p-6 md:p-8 hover:border-pink-400/60 dark:hover:border-pink-400/80 transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-2xl">
           <div class="space-y-2">
-            <p class="text-gray-200 text-sm uppercase tracking-wider">Types</p>
+            <p class="text-white/90 text-sm uppercase tracking-wider font-semibold">Types</p>
             <p class="text-5xl md:text-6xl font-black text-white">
               {pokemonTypes.length}
             </p>
-            <p class="text-gray-200 text-xs">Unique type categories</p>
+            <p class="text-white/90 text-xs">Unique type categories</p>
           </div>
         </div>
 
         <!-- Generations -->
-        <div class="bg-gradient-to-br from-green-500/50 to-emerald-500/50 backdrop-blur-sm border border-white/20 rounded-2xl p-6 md:p-8 hover:border-green-500/70 transition-all duration-300 hover:scale-[1.02]">
+        <div class="bg-gradient-to-br from-green-500 to-emerald-600 border-2 border-green-400/30 dark:border-green-400/50 rounded-2xl p-6 md:p-8 hover:border-green-400/60 dark:hover:border-green-400/80 transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-2xl">
           <div class="space-y-2">
-            <p class="text-gray-200 text-sm uppercase tracking-wider">Generations</p>
+            <p class="text-white/90 text-sm uppercase tracking-wider font-semibold">Generations</p>
             <p class="text-5xl md:text-6xl font-black text-white">
               {generations.length}
             </p>
-            <p class="text-gray-200 text-xs">Pokémon generations</p>
+            <p class="text-white/90 text-xs">Pokémon generations</p>
           </div>
         </div>
 
         <!-- Fun Fact Card - Spans 2 columns -->
-        <div class="col-span-2 bg-gradient-to-br from-yellow-500/50 to-orange-500/50 backdrop-blur-sm border border-white/20 rounded-2xl p-6 md:p-8 hover:border-yellow-500/70 transition-all duration-300">
+        <div class="col-span-2 bg-gradient-to-br from-yellow-500 to-orange-600 border-2 border-yellow-400/30 dark:border-yellow-400/50 rounded-2xl p-6 md:p-8 hover:border-yellow-400/60 dark:hover:border-yellow-400/80 transition-all duration-300 shadow-lg hover:shadow-2xl">
           <div class="space-y-3">
-            <p class="text-gray-200 text-sm uppercase tracking-wider">💡 Did You Know?</p>
+            <p class="text-white/90 text-sm uppercase tracking-wider font-semibold">💡 Did You Know?</p>
             <p class="text-base md:text-lg text-white leading-relaxed">
               {randomFact}
             </p>
@@ -110,18 +110,18 @@ const randomFact = funFacts[Math.floor(Math.random() * funFacts.length)]
 
     <!-- Quick Access Categories -->
     <section class="space-y-6">
-      <h2 class="text-3xl md:text-4xl font-bold text-center">Browse by Category</h2>
+      <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-white">Browse by Category</h2>
 
       <!-- Types Grid -->
       <div>
-        <h3 class="text-xl md:text-2xl font-semibold mb-4">Pokémon Types</h3>
+        <h3 class="text-xl md:text-2xl font-semibold mb-4 text-gray-900 dark:text-white">Pokémon Types</h3>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
           {pokemonTypes.map((type) => (
             <a
               href={`/type/${type}`}
-              class="group relative overflow-hidden bg-gradient-to-br from-white/20 to-white/30 backdrop-blur-sm border border-white/30 rounded-xl p-4 text-center hover:border-white/50 hover:from-white/30 hover:to-white/40 transition-all duration-300 hover:scale-105 hover:shadow-xl"
+              class="group relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-xl p-4 text-center hover:border-[#3466AF] dark:hover:border-[#3466AF] hover:from-gray-200 hover:to-gray-300 dark:hover:from-gray-600 dark:hover:to-gray-700 transition-all duration-300 hover:scale-105 shadow-md hover:shadow-xl"
             >
-              <span class="text-sm md:text-base font-semibold capitalize text-white group-hover:text-[#3466AF] transition-colors">
+              <span class="text-sm md:text-base font-semibold capitalize text-gray-900 dark:text-white group-hover:text-[#3466AF] dark:group-hover:text-[#3466AF] transition-colors">
                 {type}
               </span>
             </a>
@@ -131,18 +131,18 @@ const randomFact = funFacts[Math.floor(Math.random() * funFacts.length)]
 
       <!-- Generations Grid -->
       <div>
-        <h3 class="text-xl md:text-2xl font-semibold mb-4">By Generation</h3>
+        <h3 class="text-xl md:text-2xl font-semibold mb-4 text-gray-900 dark:text-white">By Generation</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {generations.map((gen, index) => (
             <a
               href={`/generation/${index + 1}`}
-              class="group bg-gradient-to-br from-white/20 to-white/30 backdrop-blur-sm border border-white/30 rounded-xl p-6 hover:border-white/50 hover:from-white/30 hover:to-white/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
+              class="group bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-xl p-6 hover:border-[#3466AF] dark:hover:border-[#3466AF] hover:from-gray-200 hover:to-gray-300 dark:hover:from-gray-600 dark:hover:to-gray-700 transition-all duration-300 hover:scale-[1.02] shadow-md hover:shadow-xl"
             >
               <div class="space-y-1">
-                <p class="text-lg font-bold text-white group-hover:text-[#3466AF] transition-colors">
+                <p class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-[#3466AF] dark:group-hover:text-[#3466AF] transition-colors">
                   {gen.name}
                 </p>
-                <p class="text-sm text-gray-200">
+                <p class="text-sm text-gray-600 dark:text-gray-300">
                   {gen.region} Region
                 </p>
               </div>
