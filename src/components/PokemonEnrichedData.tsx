@@ -46,7 +46,7 @@ export function PokemonEnrichedData({ pokemonName }: PokemonEnrichedDataProps) {
     return (
       <div className="space-y-8">
         <div className="flex items-center justify-center p-12">
-          <div className="h-12 w-12 animate-spin rounded-full border-gray-600 border-t-4 dark:border-gray-400" />
+          <div className="h-12 w-12 animate-spin rounded-full border-t-4 border-primary" />
         </div>
       </div>
     )
@@ -130,7 +130,7 @@ export function PokemonEnrichedData({ pokemonName }: PokemonEnrichedDataProps) {
 
           {/* Immunities */}
           <div>
-            <h3 className="mb-3 font-semibold text-blue-600 text-lg dark:text-blue-400">
+            <h3 className="mb-3 font-semibold text-lg text-primary">
               Immune To ({data.typeEffectiveness.immunities.length})
             </h3>
             {data.typeEffectiveness.immunities.length > 0 ? (
@@ -138,7 +138,7 @@ export function PokemonEnrichedData({ pokemonName }: PokemonEnrichedDataProps) {
                 {data.typeEffectiveness.immunities.map((type) => (
                   <span
                     key={type}
-                    className="rounded-full border border-blue-400 bg-blue-100 px-3 py-1 text-gray-900 text-sm capitalize dark:border-blue-500 dark:bg-blue-900/30 dark:text-gray-100"
+                    className="rounded-full border border-primary bg-primary-50 px-3 py-1 text-gray-900 text-sm capitalize dark:bg-primary-900/30 dark:text-gray-100"
                   >
                     {type} (0x)
                   </span>
@@ -182,9 +182,9 @@ export function PokemonEnrichedData({ pokemonName }: PokemonEnrichedDataProps) {
                 <div key={evoName} className="flex items-center gap-4">
                   <a
                     href={`/pokemon/${evoName}`}
-                    className={`rounded-lg border p-4 transition-all hover:scale-105 hover:border-blue-400 dark:hover:border-blue-500 ${
+                    className={`rounded-lg border p-4 transition-all hover:border-primary hover:scale-105 ${
                       evoName === pokemonName
-                        ? 'border-blue-500 bg-gray-200 dark:border-blue-400 dark:bg-gray-700'
+                        ? 'border-primary bg-gray-200 dark:bg-gray-700'
                         : 'border-gray-400 bg-white dark:border-gray-600 dark:bg-gray-800'
                     }`}
                   >

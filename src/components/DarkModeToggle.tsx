@@ -35,13 +35,17 @@ export function DarkModeToggle() {
     <button
       type="button"
       onClick={toggleDarkMode}
-      className="rounded-lg bg-gray-200 p-2 transition-colors hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
+      className={`rounded-lg p-2 shadow-sm transition-all hover:shadow-md hover:scale-105 active:scale-95 ${
+        isDark
+          ? 'bg-gradient-to-r from-orange-400 to-yellow-500 hover:from-orange-500 hover:to-yellow-600'
+          : 'bg-gradient-to-r from-purple-400 to-indigo-500 hover:from-purple-500 hover:to-indigo-600'
+      }`}
       title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
     >
       {isDark ? (
         <svg
-          className="h-6 w-6 text-yellow-400"
+          className="h-6 w-6 text-white"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -58,7 +62,7 @@ export function DarkModeToggle() {
         </svg>
       ) : (
         <svg
-          className="h-6 w-6 text-gray-700"
+          className="h-6 w-6 text-white"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
