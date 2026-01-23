@@ -8,7 +8,7 @@ type PokemonTileProps = {
 
 export function PokemonTile({ loading = false, pokemon }: PokemonTileProps) {
   return (
-    <div className="rounded-xl border-2 border-gray-200 bg-white p-4 text-center shadow-lg transition-colors hover:border-blue-400 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-500">
+    <div className="rounded-xl border-2 border-gray-200 bg-white p-4 text-center shadow-lg transition-all hover:border-primary hover:shadow-xl hover:scale-[1.02] dark:border-gray-700 dark:bg-gray-800">
       <a href={`/pokemon/${pokemon.name}`} title={pokemon.name}>
         <span className="mb-4 block overflow-hidden text-ellipsis whitespace-nowrap font-bold text-gray-900 text-sm capitalize md:text-md xl:text-xl dark:text-gray-100">
           {pokemon.name.replaceAll('-', ' ')}

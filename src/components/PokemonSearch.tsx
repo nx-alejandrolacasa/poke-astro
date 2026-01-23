@@ -109,7 +109,7 @@ export function PokemonSearch() {
           onFocus={() => query && suggestions.length > 0 && setIsOpen(true)}
           placeholder={isLoading ? 'Loading...' : 'Search Pokémon...'}
           disabled={isLoading}
-          className="w-full rounded-lg border-2 border-gray-300 bg-white px-4 py-2 pr-10 text-gray-900 placeholder-gray-500 transition-all focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:border-blue-400 dark:focus:ring-blue-800"
+          className="w-full rounded-lg border-2 border-gray-300 bg-white px-4 py-2 pr-10 text-gray-900 placeholder-gray-500 transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:ring-primary-900"
           aria-label="Search Pokémon"
           aria-autocomplete="list"
           aria-controls="search-suggestions"
@@ -144,7 +144,7 @@ export function PokemonSearch() {
               onMouseEnter={() => setSelectedIndex(index)}
               className={`block w-full px-4 py-3 text-left transition-colors ${
                 index === selectedIndex
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-primary text-white'
                   : 'text-gray-900 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-600'
               }`}
               role="option"
