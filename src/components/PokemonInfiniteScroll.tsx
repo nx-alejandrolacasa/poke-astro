@@ -76,7 +76,7 @@ export function PokemonInfiniteScroll({
                 alt="Loading..."
                 className="w-16 h-16 mx-auto animate-spin"
               />
-              <p className="mt-2 text-gray-500">Loading more Pokémon...</p>
+              <p className="mt-2 text-gray-500 dark:text-gray-400">Loading more Pokémon...</p>
             </div>
           ) : (
             <div className="h-10" />
@@ -85,7 +85,7 @@ export function PokemonInfiniteScroll({
       )}
 
       {!hasMore && pokemon.length > 0 && (
-        <div className="text-center my-8 text-gray-500">
+        <div className="text-center my-8 text-gray-500 dark:text-gray-400">
           <p>You've caught 'em all! 🎉</p>
           <p className="text-sm mt-1">
             Showing all {pokemon.length} Pokémon

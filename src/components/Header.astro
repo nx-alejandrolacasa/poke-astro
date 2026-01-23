@@ -1,8 +1,15 @@
-<div class="flex h-24 justify-center items-center bg-slate-100 px-4">
+---
+import { DarkModeToggle } from '@components/DarkModeToggle'
+---
+
+<div class="flex h-24 justify-center items-center bg-slate-100 dark:bg-gray-800 px-4 transition-colors">
   <nav class="flex max-w-5xl w-full justify-between items-center gap-4">
     <a href="/" title="Go home">
       <img class="h-16" src="/pokemon-logo.svg" alt="Pokemon" />
     </a>
-    <a class="text-xl font-bold hover:underline" href="/pokedex">Pokédex</a>
+    <div class="flex items-center gap-4">
+      <a class="text-xl font-bold hover:underline text-gray-900 dark:text-gray-100" href="/pokedex">Pokédex</a>
+      <DarkModeToggle client:load />
+    </div>
   </nav>
 </div>
