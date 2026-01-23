@@ -6,7 +6,9 @@ export function DarkModeToggle() {
   useEffect(() => {
     // Check for saved preference or system preference
     const savedTheme = localStorage.getItem('theme')
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const prefersDark = window.matchMedia(
+      '(prefers-color-scheme: dark)'
+    ).matches
 
     const shouldBeDark = savedTheme === 'dark' || (!savedTheme && prefersDark)
     setIsDark(shouldBeDark)
@@ -31,18 +33,22 @@ export function DarkModeToggle() {
 
   return (
     <button
+      type="button"
       onClick={toggleDarkMode}
-      className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+      className="rounded-lg bg-gray-200 p-2 transition-colors hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
       title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
     >
       {isDark ? (
         <svg
-          className="w-6 h-6 text-yellow-400"
+          className="h-6 w-6 text-yellow-400"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
+          role="img"
+          aria-label="Sun icon"
         >
+          <title>Sun icon</title>
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -52,11 +58,14 @@ export function DarkModeToggle() {
         </svg>
       ) : (
         <svg
-          className="w-6 h-6 text-gray-700"
+          className="h-6 w-6 text-gray-700"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
+          role="img"
+          aria-label="Moon icon"
         >
+          <title>Moon icon</title>
           <path
             strokeLinecap="round"
             strokeLinejoin="round"

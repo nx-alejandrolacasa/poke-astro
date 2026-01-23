@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro'
 import { fetchPokemonPage } from '@/utils/pokemon'
 
 export const GET: APIRoute = async ({ params }) => {
-  const page = parseInt(params.page || '1')
+  const page = Number.parseInt(params.page || '1', 10)
   const pageSize = 24
 
   try {
@@ -15,15 +15,12 @@ export const GET: APIRoute = async ({ params }) => {
         'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
       },
     })
-  } catch (error) {
-    return new Response(
-      JSON.stringify({ error: 'Failed to fetch Pokemon' }),
-      {
-        status: 500,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
+  } catch (_error) {
+    return new Response(JSON.stringify({ error: 'Failed to fetch Pokemon' }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
   }
 }
