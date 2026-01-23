@@ -60,7 +60,7 @@ export type PokemonNamesList = {
 }
 
 export async function fetchPokemonByName(name: string): Promise<Pokemon> {
-  const res = await fetch('https://pokeapi.co/api/v2/pokemon/' + name)
+  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
   if (!res.ok) {
     throw new Error(`Failed to fetch Pokemon: ${name} (${res.status})`)
   }
@@ -82,7 +82,7 @@ export async function fetchPokemonCount(): Promise<number> {
  */
 export async function fetchAllPokemonNames(): Promise<string[]> {
   const res: PokemonNamesList = await fetch(
-    `https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0`
+    'https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0'
   ).then((res) => res.json())
 
   return res.results.map(({ name }) => name)
@@ -95,7 +95,7 @@ export async function fetchAllPokemonNames(): Promise<string[]> {
  */
 export async function fetchPokemonPage(
   page: number,
-  pageSize: number = 24
+  pageSize = 24
 ): Promise<PokemonList> {
   const offset = (page - 1) * pageSize
 
@@ -121,7 +121,7 @@ export async function fetchPokemonPage(
  */
 export async function fetchAllPokemon(): Promise<PokemonList> {
   const res: PokemonNamesList = await fetch(
-    `https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0`
+    'https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0'
   ).then((res) => res.json())
 
   const results = await Promise.all(

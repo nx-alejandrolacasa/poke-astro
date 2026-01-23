@@ -1,11 +1,12 @@
 ---
 export const prerender = true
 
-import Layout from '@layouts/Layout.astro'
-import { PokemonInfiniteScroll } from '@components/PokemonInfiniteScroll'
 import { fetchPokemonPage } from '@utils/pokemon'
+import { PokemonInfiniteScroll } from '@/components/PokemonInfiniteScroll'
+import Layout from '@/layouts/Layout.astro'
 
 // Only fetch the first page at build time
+// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
 const initialData = await fetchPokemonPage(1, 24)
 ---
 

@@ -1,14 +1,14 @@
 ---
 export const prerender = true
 
-import Layout from '@layouts/Layout.astro'
-import { PokemonEnrichedData } from '@components/PokemonEnrichedData'
 import {
   fetchAllPokemonNames,
   fetchPokemonByName,
   getPokemonImage,
   getPokemonName,
 } from '@utils/pokemon'
+import { PokemonEnrichedData } from '@/components/PokemonEnrichedData'
+import Layout from '@/layouts/Layout.astro'
 
 export async function getStaticPaths() {
   // Only fetch names, not full Pokémon data (much faster!)
@@ -18,9 +18,11 @@ export async function getStaticPaths() {
 
 const { name = '' } = Astro.params
 // Only fetch basic Pokemon data at build time
+// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
 const pokemon = await fetchPokemonByName(name)
 
 // Get stat names mapping
+// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
 const statNames: Record<string, string> = {
   hp: 'HP',
   attack: 'Attack',

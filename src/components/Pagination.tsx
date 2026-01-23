@@ -7,12 +7,12 @@ export interface PaginationProps {
 
 export function Pagination({ count, page }: PaginationProps) {
   return (
-    <div className="flex justify-center my-4">
+    <div className="my-4 flex justify-center">
       <RCPagination
         className="flex gap-2"
         defaultCurrent={page}
         defaultPageSize={24}
-        itemRender={(current, type, element) => {
+        itemRender={(current, type, _element) => {
           const href = `/pokedex/${current}`
 
           if (type === 'jump-next' || type === 'jump-prev') {
@@ -25,8 +25,8 @@ export function Pagination({ count, page }: PaginationProps) {
                 aria-label={`Go to page ${current}`}
                 aria-current={current === page}
                 className={`border ${
-                  current === page ? 'cursor-default ' : 'border-white hover:'
-                }border-slate-500 rounded-md py-1 px-2`}
+                  current === page ? 'cursor-default' : 'hover: border-white'
+                }border-slate-500 rounded-md px-2 py-1`}
                 href={href}
               >
                 {current}

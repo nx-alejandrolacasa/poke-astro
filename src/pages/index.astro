@@ -1,15 +1,14 @@
 ---
 export const prerender = true
 
-import { PokemonTile } from '@components/PokemonTile'
-import Layout from '@layouts/Layout.astro'
 import { fetchPokemonByName } from '@utils/pokemon'
+import { PokemonTile } from '@/components/PokemonTile'
+import Layout from '@/layouts/Layout.astro'
 
 const pokemon = ['pikachu', 'charmander', 'squirtle', 'bulbasaur']
 
-const data = await Promise.all(
-  pokemon.map((name) => fetchPokemonByName(name))
-)
+// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
+const data = await Promise.all(pokemon.map((name) => fetchPokemonByName(name)))
 ---
 
 <Layout title="Pokémon Astro - Home">

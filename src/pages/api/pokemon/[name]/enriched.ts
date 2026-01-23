@@ -1,4 +1,3 @@
-import type { APIRoute } from 'astro'
 import {
   calculateTypeEffectiveness,
   fetchEvolutionChain,
@@ -6,6 +5,7 @@ import {
   fetchPokemonSpecies,
   parseEvolutionChain,
 } from '@utils/pokemon'
+import type { APIRoute } from 'astro'
 
 export const GET: APIRoute = async ({ params }) => {
   const { name } = params
@@ -45,7 +45,8 @@ export const GET: APIRoute = async ({ params }) => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800', // Cache for 1 day, revalidate for 1 week
+          'Cache-Control':
+            'public, s-maxage=86400, stale-while-revalidate=604800', // Cache for 1 day, revalidate for 1 week
         },
       }
     )
