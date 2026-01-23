@@ -1,0 +1,101 @@
+---
+export const prerender = true
+
+import Layout from '@/layouts/Layout.astro'
+import { PokemonTile } from '@/components/PokemonTile'
+import { getPokemonName } from '@/utils/pokemon'
+import type { Pokemon } from '@/utils/pokemon'
+
+// All available Pokémon types
+const pokemonTypes = [
+  'normal', 'fire', 'water', 'electric', 'grass', 'ice',
+  'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug',
+  'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy'
+]
+
+export async function getStaticPaths() {
+  return pokemonTypes.map((type) => ({
+    params: { type },
+  }))
+}
+
+const { type } = Astro.params
+
+// Fetch Pokémon of this type from PokéAPI
+const typeRes = await fetch(`https://pokeapi.co/api/v2/type/${type}`)
+if (!typeRes.ok) {
+  return Astro.redirect('/404')
+}
+const typeData = await typeRes.json()
+
+// Fetch full details for each Pokémon (limit to first 151 for performance)
+const pokemonPromises = typeData.pokemon
+  .slice(0, 151)
+  .map(async (p: { pokemon: { name: string; url: string } }) => {
+    const res = await fetch(p.pokemon.url)
+    return res.json()
+  })
+
+const allPokemon: Pokemon[] = await Promise.all(pokemonPromises)
+
+// Sort by order number
+const sortedPokemon = allPokemon.sort((a, b) => a.order - b.order)
+
+// Type color mapping
+const typeColors: Record<string, string> = {
+  normal: 'from-gray-400 to-gray-500',
+  fire: 'from-orange-500 to-red-600',
+  water: 'from-blue-500 to-cyan-600',
+  electric: 'from-yellow-400 to-yellow-600',
+  grass: 'from-green-500 to-emerald-600',
+  ice: 'from-cyan-400 to-blue-400',
+  fighting: 'from-red-700 to-orange-700',
+  poison: 'from-purple-600 to-fuchsia-600',
+  ground: 'from-yellow-600 to-amber-700',
+  flying: 'from-indigo-400 to-sky-500',
+  psychic: 'from-pink-500 to-purple-600',
+  bug: 'from-lime-600 to-green-600',
+  rock: 'from-amber-700 to-stone-700',
+  ghost: 'from-purple-700 to-indigo-800',
+  dragon: 'from-indigo-600 to-purple-700',
+  dark: 'from-gray-700 to-slate-800',
+  steel: 'from-slate-500 to-gray-600',
+  fairy: 'from-pink-400 to-rose-500',
+}
+
+const gradientClass = typeColors[type] || 'from-gray-400 to-gray-500'
+---
+
+<Layout title={`${getPokemonName(type)} Type Pokémon`}>
+  <div class="space-y-8">
+    <!-- Header -->
+    <div class={`bg-gradient-to-r ${gradientClass} rounded-2xl p-8 md:p-12 text-center shadow-xl`}>
+      <h1 class="text-4xl md:text-6xl font-bold text-white capitalize mb-4">
+        {type} Type
+      </h1>
+      <p class="text-lg md:text-xl text-white/90">
+        {sortedPokemon.length} Pokémon species
+      </p>
+    </div>
+
+    <!-- Back Link -->
+    <div>
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 text-primary hover:text-primary-600 dark:text-primary-300 dark:hover:text-primary-400 transition-colors font-semibold"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Back to Home
+      </a>
+    </div>
+
+    <!-- Pokémon Grid -->
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      {sortedPokemon.map((pokemon) => (
+        <PokemonTile pokemon={pokemon} client:idle />
+      ))}
+    </div>
+  </div>
+</Layout>
