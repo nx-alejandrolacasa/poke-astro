@@ -1,7 +1,14 @@
 ---
 export const prerender = true
 
-import { fetchAllPokemonNames, fetchPokemonByName } from '@utils/pokemon'
+import {
+  fetchAllPokemonNames,
+  fetchPokemonByName,
+  getPokemonImage,
+  getPokemonName,
+} from '@utils/pokemon'
+import { PokemonEnrichedData } from '@/components/PokemonEnrichedData'
+import Layout from '@/layouts/Layout.astro'
 
 export async function getStaticPaths() {
   // Only fetch names, not full Pokémon data (much faster!)
