@@ -19,7 +19,7 @@ export function PokemonInfiniteScroll({
 
   const { ref, inView } = useInView({
     threshold: 0,
-    rootMargin: '100px',
+    rootMargin: '500px',
   })
 
   const loadMore = useCallback(async () => {
