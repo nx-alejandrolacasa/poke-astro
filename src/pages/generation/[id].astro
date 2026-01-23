@@ -2,8 +2,8 @@
 export const prerender = true
 
 import Layout from '@/layouts/Layout.astro'
-import { PokemonTile } from '@/components/PokemonTile'
-import type { Pokemon } from '@/utils/pokemon'
+import { GenerationInfiniteScroll } from '@/components/GenerationInfiniteScroll'
+import type { Pokemon, PokemonList } from '@/utils/pokemon'
 
 export async function getStaticPaths() {
   // Generation data
@@ -26,27 +26,6 @@ export async function getStaticPaths() {
 }
 
 const { generation } = Astro.props
-const [start, end] = generation.range
-
-// Fetch Pokémon for this generation using the generation endpoint
-const genRes = await fetch(`https://pokeapi.co/api/v2/generation/${generation.id}`)
-if (!genRes.ok) {
-  return Astro.redirect('/404')
-}
-const genData = await genRes.json()
-
-// Fetch full details for each Pokémon species
-const pokemonPromises = genData.pokemon_species.map(async (species: { name: string; url: string }) => {
-  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${species.name}`)
-  if (!res.ok) return null
-  return res.json()
-})
-
-const allPokemonResults = await Promise.all(pokemonPromises)
-const allPokemon: Pokemon[] = allPokemonResults.filter((p): p is Pokemon => p !== null)
-
-// Sort by order number
-const sortedPokemon = allPokemon.sort((a, b) => a.order - b.order)
 
 // Generation color mapping
 const genColors: Record<number, string> = {
@@ -62,41 +41,42 @@ const genColors: Record<number, string> = {
 }
 
 const gradientClass = genColors[generation.id] || 'from-gray-400 to-gray-500'
+
+// Fetch generation data from PokéAPI
+const genRes = await fetch(`https://pokeapi.co/api/v2/generation/${generation.id}`)
+if (!genRes.ok) {
+  return Astro.redirect('/404')
+}
+const genData = await genRes.json()
+
+// Get first page of pokemon (24 items)
+const pageSize = 24
+const speciesSlice = genData.pokemon_species.slice(0, pageSize)
+
+// Fetch full details for first page
+const pokemonPromises = speciesSlice.map(async (species: { name: string }) => {
+  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${species.name}`)
+  if (!res.ok) return null
+  return res.json()
+})
+
+const resultsWithNull = await Promise.all(pokemonPromises)
+const results: Pokemon[] = resultsWithNull.filter((p): p is Pokemon => p !== null)
+
+// Sort by order number
+results.sort((a, b) => a.order - b.order)
+
+const initialData: PokemonList = {
+  count: genData.pokemon_species.length,
+  results,
+}
 ---
 
 <Layout title={`${generation.name} - ${generation.region} Region Pokémon`}>
-  <div class="space-y-8">
-    <!-- Header -->
-    <div class={`bg-gradient-to-r ${gradientClass} rounded-2xl p-8 md:p-12 text-center shadow-xl`}>
-      <h1 class="text-4xl md:text-6xl font-bold text-white mb-2">
-        {generation.name}
-      </h1>
-      <p class="text-2xl md:text-3xl text-white/90 mb-4">
-        {generation.region} Region
-      </p>
-      <p class="text-lg md:text-xl text-white/80">
-        {sortedPokemon.length} Pokémon species
-      </p>
-    </div>
-
-    <!-- Back Link -->
-    <div>
-      <a
-        href="/"
-        class="inline-flex items-center gap-2 text-primary hover:text-primary-600 dark:text-primary-300 dark:hover:text-primary-400 transition-colors font-semibold"
-      >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-        Back to Home
-      </a>
-    </div>
-
-    <!-- Pokémon Grid -->
-    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-      {sortedPokemon.map((pokemon) => (
-        <PokemonTile pokemon={pokemon} client:idle />
-      ))}
-    </div>
-  </div>
+  <GenerationInfiniteScroll
+    client:load
+    initialData={initialData}
+    generation={generation}
+    generationColor={gradientClass}
+  />
 </Layout>

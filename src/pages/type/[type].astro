@@ -2,9 +2,9 @@
 export const prerender = true
 
 import Layout from '@/layouts/Layout.astro'
-import { PokemonTile } from '@/components/PokemonTile'
+import { TypeInfiniteScroll } from '@/components/TypeInfiniteScroll'
 import { getPokemonName } from '@/utils/pokemon'
-import type { Pokemon } from '@/utils/pokemon'
+import type { Pokemon, PokemonList } from '@/utils/pokemon'
 
 export async function getStaticPaths() {
   // All available Pokémon types
@@ -20,26 +20,6 @@ export async function getStaticPaths() {
 }
 
 const { type } = Astro.params
-
-// Fetch Pokémon of this type from PokéAPI
-const typeRes = await fetch(`https://pokeapi.co/api/v2/type/${type}`)
-if (!typeRes.ok) {
-  return Astro.redirect('/404')
-}
-const typeData = await typeRes.json()
-
-// Fetch full details for each Pokémon (limit to first 151 for performance)
-const pokemonPromises = typeData.pokemon
-  .slice(0, 151)
-  .map(async (p: { pokemon: { name: string; url: string } }) => {
-    const res = await fetch(p.pokemon.url)
-    return res.json()
-  })
-
-const allPokemon: Pokemon[] = await Promise.all(pokemonPromises)
-
-// Sort by order number
-const sortedPokemon = allPokemon.sort((a, b) => a.order - b.order)
 
 // Type color mapping
 const typeColors: Record<string, string> = {
@@ -64,38 +44,40 @@ const typeColors: Record<string, string> = {
 }
 
 const gradientClass = typeColors[type] || 'from-gray-400 to-gray-500'
+
+// Fetch type data from PokéAPI
+const typeRes = await fetch(`https://pokeapi.co/api/v2/type/${type}`)
+if (!typeRes.ok) {
+  return Astro.redirect('/404')
+}
+const typeData = await typeRes.json()
+
+// Get first page of pokemon (24 items)
+const pageSize = 24
+const pokemonSlice = typeData.pokemon.slice(0, pageSize)
+
+// Fetch full details for first page
+const pokemonPromises = pokemonSlice.map(async (p: { pokemon: { url: string } }) => {
+  const res = await fetch(p.pokemon.url)
+  return res.json()
+})
+
+const results: Pokemon[] = await Promise.all(pokemonPromises)
+
+// Sort by order number
+results.sort((a, b) => a.order - b.order)
+
+const initialData: PokemonList = {
+  count: typeData.pokemon.length,
+  results,
+}
 ---
 
 <Layout title={`${getPokemonName(type)} Type Pokémon`}>
-  <div class="space-y-8">
-    <!-- Header -->
-    <div class={`bg-gradient-to-r ${gradientClass} rounded-2xl p-8 md:p-12 text-center shadow-xl`}>
-      <h1 class="text-4xl md:text-6xl font-bold text-white capitalize mb-4">
-        {type} Type
-      </h1>
-      <p class="text-lg md:text-xl text-white/90">
-        {sortedPokemon.length} Pokémon species
-      </p>
-    </div>
-
-    <!-- Back Link -->
-    <div>
-      <a
-        href="/"
-        class="inline-flex items-center gap-2 text-primary hover:text-primary-600 dark:text-primary-300 dark:hover:text-primary-400 transition-colors font-semibold"
-      >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-        Back to Home
-      </a>
-    </div>
-
-    <!-- Pokémon Grid -->
-    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-      {sortedPokemon.map((pokemon) => (
-        <PokemonTile pokemon={pokemon} client:idle />
-      ))}
-    </div>
-  </div>
+  <TypeInfiniteScroll
+    client:load
+    initialData={initialData}
+    type={type}
+    typeColor={gradientClass}
+  />
 </Layout>
