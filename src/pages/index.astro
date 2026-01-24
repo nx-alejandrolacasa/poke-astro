@@ -9,5 +9,5 @@ const totalPokemon = await fetchPokemonCount()
 ---
 
 <Layout title="Pokémon Astro - Explore the Pokédex">
-  <HomeContent client:load totalPokemon={totalPokemon} />
+  <HomeContent client:only="react" totalPokemon={totalPokemon} />
 </Layout>
