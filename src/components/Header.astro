@@ -1,5 +1,5 @@
 ---
-import { PokemonSearch } from '@/components/PokemonSearch'
+import { PokemonSearchWrapper } from '@/components/PokemonSearchWrapper'
 import { HeaderActions } from '@/components/HeaderActions'
 ---
 
@@ -22,7 +22,7 @@ import { HeaderActions } from '@/components/HeaderActions'
       <!-- Search - Hidden on mobile, shown on tablet+ -->
       <div class="hidden flex-1 md:flex md:justify-center md:px-4">
         <div class="w-full max-w-lg">
-          <PokemonSearch client:load />
+          <PokemonSearchWrapper client:load />
         </div>
       </div>
 
@@ -32,7 +32,7 @@ import { HeaderActions } from '@/components/HeaderActions'
 
     <!-- Mobile search - Shown only on mobile -->
     <div class="pb-4 md:hidden">
-      <PokemonSearch client:load />
+      <PokemonSearchWrapper client:load />
     </div>
   </div>
 </header>

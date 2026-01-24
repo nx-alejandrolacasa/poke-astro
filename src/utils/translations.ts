@@ -59,6 +59,12 @@ export type Translations = {
   errors: {
     loadFailed: string
   }
+  // Search
+  search: {
+    placeholder: string
+    loading: string
+    noResults: string
+  }
   // Stats (these will be fetched from API when possible)
   stats: {
     hp: string
@@ -126,6 +132,11 @@ export const translations: Record<Language, Translations> = {
     },
     errors: {
       loadFailed: 'Failed to load additional Pokemon data. Please try again later.',
+    },
+    search: {
+      placeholder: 'Search Pokémon...',
+      loading: 'Loading...',
+      noResults: 'No Pokémon found',
     },
     stats: {
       hp: 'HP',
@@ -197,6 +208,11 @@ export const translations: Record<Language, Translations> = {
     errors: {
       loadFailed:
         'No se pudieron cargar los datos adicionales del Pokémon. Por favor, inténtalo de nuevo más tarde.',
+    },
+    search: {
+      placeholder: 'Buscar Pokémon...',
+      loading: 'Cargando...',
+      noResults: 'No se encontró ningún Pokémon',
     },
     stats: {
       hp: 'PS',
