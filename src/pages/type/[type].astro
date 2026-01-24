@@ -75,7 +75,7 @@ const initialData: PokemonList = {
 
 <Layout title={`${getPokemonName(type)} Type Pokémon`}>
   <TypeInfiniteScroll
-    client:only="react"
+    client:load
     initialData={initialData}
     type={type}
     typeColor={gradientClass}

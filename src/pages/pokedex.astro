@@ -11,5 +11,5 @@ const initialData = await fetchPokemonPage(1, 24)
 ---
 
 <Layout title="Pokémon Astro - Pokédex">
-  <PokemonInfiniteScroll client:only="react" initialData={initialData} />
+  <PokemonInfiniteScroll client:load initialData={initialData} />
 </Layout>

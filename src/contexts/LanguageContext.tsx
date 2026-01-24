@@ -9,7 +9,14 @@ type LanguageContextType = {
   t: Translations
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
+// Default context value for SSR
+const defaultContextValue: LanguageContextType = {
+  language: 'en',
+  setLanguage: () => {},
+  t: translations.en,
+}
+
+const LanguageContext = createContext<LanguageContextType>(defaultContextValue)
 
 const LANGUAGE_STORAGE_KEY = 'pokemon-language'
 
@@ -59,8 +66,5 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
 
 export function useLanguage() {
   const context = useContext(LanguageContext)
-  if (context === undefined) {
-    throw new Error('useLanguage must be used within a LanguageProvider')
-  }
   return context
 }

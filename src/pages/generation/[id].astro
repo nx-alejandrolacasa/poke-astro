@@ -74,7 +74,7 @@ const initialData: PokemonList = {
 
 <Layout title={`${generation.name} - ${generation.region} Region Pokémon`}>
   <GenerationInfiniteScroll
-    client:only="react"
+    client:load
     initialData={initialData}
     generation={generation}
     generationColor={gradientClass}

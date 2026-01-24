@@ -30,8 +30,8 @@ import { HeaderPokedexButton } from '@/components/HeaderPokedexButton'
 
       <!-- Navigation links -->
       <div class="flex items-center gap-2 sm:gap-3">
-        <LanguageSelector client:only="react" />
-        <HeaderPokedexButton client:only="react" />
+        <LanguageSelector client:load />
+        <HeaderPokedexButton client:load />
         <DarkModeToggle client:load />
       </div>
     </nav>
