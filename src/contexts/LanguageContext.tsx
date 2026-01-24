@@ -40,11 +40,36 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
         setLanguageState('es')
       }
     }
+
+    // Listen for language changes from other React islands
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === LANGUAGE_STORAGE_KEY && (e.newValue === 'en' || e.newValue === 'es')) {
+        setLanguageState(e.newValue)
+      }
+    }
+
+    // Listen for custom language change event (for same-window updates)
+    const handleLanguageChange = (e: Event) => {
+      const customEvent = e as CustomEvent<Language>
+      if (customEvent.detail === 'en' || customEvent.detail === 'es') {
+        setLanguageState(customEvent.detail)
+      }
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    window.addEventListener('language-change', handleLanguageChange)
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('language-change', handleLanguageChange)
+    }
   }, [])
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang)
     localStorage.setItem(LANGUAGE_STORAGE_KEY, lang)
+    // Dispatch custom event to sync across React islands
+    window.dispatchEvent(new CustomEvent('language-change', { detail: lang }))
   }
 
   useEffect(() => {

@@ -2,7 +2,7 @@
 export const prerender = true
 
 import Layout from '@/layouts/Layout.astro'
-import { GenerationInfiniteScroll } from '@/components/GenerationInfiniteScroll'
+import { GenerationInfiniteScrollWrapper } from '@/components/GenerationInfiniteScrollWrapper'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
 
 export async function getStaticPaths() {
@@ -73,7 +73,7 @@ const initialData: PokemonList = {
 ---
 
 <Layout title={`${generation.name} - ${generation.region} Region Pokémon`}>
-  <GenerationInfiniteScroll
+  <GenerationInfiniteScrollWrapper
     client:load
     initialData={initialData}
     generation={generation}

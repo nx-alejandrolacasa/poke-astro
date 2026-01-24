@@ -2,12 +2,12 @@
 export const prerender = true
 
 import { fetchPokemonCount } from '@utils/pokemon'
-import { HomeContent } from '@/components/HomeContent'
+import { HomeContentWrapper } from '@/components/HomeContentWrapper'
 import Layout from '@/layouts/Layout.astro'
 
 const totalPokemon = await fetchPokemonCount()
 ---
 
 <Layout title="Pokémon Astro - Explore the Pokédex">
-  <HomeContent client:load totalPokemon={totalPokemon} />
+  <HomeContentWrapper client:load totalPokemon={totalPokemon} />
 </Layout>
