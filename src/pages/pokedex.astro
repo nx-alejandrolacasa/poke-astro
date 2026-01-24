@@ -2,7 +2,7 @@
 export const prerender = true
 
 import { fetchPokemonPage } from '@utils/pokemon'
-import { PokemonInfiniteScroll } from '@/components/PokemonInfiniteScroll'
+import { PokemonInfiniteScrollWrapper } from '@/components/PokemonInfiniteScrollWrapper'
 import Layout from '@/layouts/Layout.astro'
 
 // Only fetch the first page at build time
@@ -11,5 +11,5 @@ const initialData = await fetchPokemonPage(1, 24)
 ---
 
 <Layout title="Pokémon Astro - Pokédex">
-  <PokemonInfiniteScroll client:load initialData={initialData} />
+  <PokemonInfiniteScrollWrapper client:load initialData={initialData} />
 </Layout>

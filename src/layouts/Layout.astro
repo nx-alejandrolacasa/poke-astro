@@ -26,6 +26,18 @@ const { title } = Astro.props
       if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
         document.documentElement.classList.add('dark')
       }
+
+      // Set language attribute immediately
+      const savedLang = localStorage.getItem('pokemon-language')
+      if (savedLang === 'en' || savedLang === 'es') {
+        document.documentElement.lang = savedLang
+      } else {
+        // Detect browser language
+        const browserLang = navigator.language.toLowerCase()
+        if (browserLang.startsWith('es')) {
+          document.documentElement.lang = 'es'
+        }
+      }
     </script>
   </head>
   <body class="bg-white dark:bg-gray-900 transition-colors">

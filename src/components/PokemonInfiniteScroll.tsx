@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
+import { useLanguage } from '@/contexts/LanguageContext'
+import { interpolate } from '@/utils/translations'
 import { PokemonTile } from './PokemonTile'
 
 type PokemonInfiniteScrollProps = {
@@ -12,6 +14,7 @@ export function PokemonInfiniteScroll({
   initialData,
   initialPage = 1,
 }: PokemonInfiniteScrollProps) {
+  const { t } = useLanguage()
   const [pokemon, setPokemon] = useState<Pokemon[]>(initialData.results)
   const [page, setPage] = useState(initialPage)
   const [loading, setLoading] = useState(false)
@@ -76,9 +79,7 @@ export function PokemonInfiniteScroll({
                 alt="Loading..."
                 className="mx-auto h-16 w-16 animate-spin"
               />
-              <p className="mt-2 text-gray-500 dark:text-gray-400">
-                Loading more Pokémon...
-              </p>
+              <p className="mt-2 text-gray-500 dark:text-gray-400">{t.scroll.loadingMore}</p>
             </div>
           ) : (
             <div className="h-10" />
@@ -88,8 +89,10 @@ export function PokemonInfiniteScroll({
 
       {!hasMore && pokemon.length > 0 && (
         <div className="my-8 text-center text-gray-500 dark:text-gray-400">
-          <p>You've caught 'em all! 🎉</p>
-          <p className="mt-1 text-sm">Showing all {pokemon.length} Pokémon</p>
+          <p>{t.scroll.caughtAll}</p>
+          <p className="mt-1 text-sm">
+            {interpolate(t.scroll.showingAll, { count: pokemon.length })}
+          </p>
         </div>
       )}
     </div>

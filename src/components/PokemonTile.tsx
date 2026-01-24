@@ -15,7 +15,7 @@ export function PokemonTile({ loading = false, pokemon }: PokemonTileProps) {
         </span>
         <div className="relative aspect-square w-full">
           {/* Order number - positioned behind the Pokemon image */}
-          <div className="absolute bottom-2 right-2 text-6xl md:text-7xl font-black text-gray-300/40 dark:text-gray-600/40 select-none pointer-events-none z-0">
+          <div className="absolute bottom-1 right-1 text-3xl md:text-6xl font-black text-gray-300/40 dark:text-gray-600/40 select-none pointer-events-none z-0">
             #{pokemon.order.toString().padStart(3, '0')}
           </div>
           {/* Pokemon image - positioned in front */}

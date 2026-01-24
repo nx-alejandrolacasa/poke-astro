@@ -1,6 +1,6 @@
 ---
-import { DarkModeToggle } from '@/components/DarkModeToggle'
-import { PokemonSearch } from '@/components/PokemonSearch'
+import { PokemonSearchWrapper } from '@/components/PokemonSearchWrapper'
+import { HeaderActions } from '@/components/HeaderActions'
 ---
 
 <header class="sticky top-0 z-40 border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-sm transition-colors dark:border-gray-700 dark:bg-gray-900/95">
@@ -22,25 +22,17 @@ import { PokemonSearch } from '@/components/PokemonSearch'
       <!-- Search - Hidden on mobile, shown on tablet+ -->
       <div class="hidden flex-1 md:flex md:justify-center md:px-4">
         <div class="w-full max-w-lg">
-          <PokemonSearch client:load />
+          <PokemonSearchWrapper client:load />
         </div>
       </div>
 
       <!-- Navigation links -->
-      <div class="flex items-center gap-3 sm:gap-4">
-        <a
-          class="rounded-xl bg-gradient-to-r from-[#3466AF] to-purple-600 px-4 py-2 font-semibold text-white shadow-lg transition-all duration-300 hover:from-[#2855a0] hover:to-purple-700 hover:shadow-2xl hover:scale-105 active:scale-95 sm:px-5 sm:py-2.5"
-          href="/pokedex"
-        >
-          Pokédex
-        </a>
-        <DarkModeToggle client:load />
-      </div>
+      <HeaderActions client:load />
     </nav>
 
     <!-- Mobile search - Shown only on mobile -->
     <div class="pb-4 md:hidden">
-      <PokemonSearch client:load />
+      <PokemonSearchWrapper client:load />
     </div>
   </div>
 </header>

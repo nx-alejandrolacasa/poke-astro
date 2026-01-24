@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { getPokemonName } from '@/utils/pokemon'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export function PokemonSearch() {
+  const { t } = useLanguage()
   const [query, setQuery] = useState('')
   const [suggestions, setSuggestions] = useState<string[]>([])
   const [allPokemonNames, setAllPokemonNames] = useState<string[]>([])
@@ -107,7 +109,7 @@ export function PokemonSearch() {
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={() => query && suggestions.length > 0 && setIsOpen(true)}
-          placeholder={isLoading ? 'Loading...' : 'Search Pokémon...'}
+          placeholder={isLoading ? t.search.loading : t.search.placeholder}
           disabled={isLoading}
           className="w-full rounded-lg border-2 border-gray-300 bg-white px-4 py-2 pr-10 text-gray-900 placeholder-gray-500 transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:ring-primary-900"
           aria-label="Search Pokémon"
@@ -162,7 +164,7 @@ export function PokemonSearch() {
           ref={dropdownRef}
           className="absolute z-50 mt-2 w-full rounded-lg border-2 border-gray-200 bg-white px-4 py-3 text-gray-500 shadow-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400"
         >
-          No Pokémon found
+          {t.search.noResults}
         </div>
       )}
     </div>

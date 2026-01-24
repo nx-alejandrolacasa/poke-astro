@@ -2,7 +2,7 @@
 export const prerender = true
 
 import Layout from '@/layouts/Layout.astro'
-import { TypeInfiniteScroll } from '@/components/TypeInfiniteScroll'
+import { TypeInfiniteScrollWrapper } from '@/components/TypeInfiniteScrollWrapper'
 import { getPokemonName } from '@/utils/pokemon'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
 
@@ -74,7 +74,7 @@ const initialData: PokemonList = {
 ---
 
 <Layout title={`${getPokemonName(type)} Type Pokémon`}>
-  <TypeInfiniteScroll
+  <TypeInfiniteScrollWrapper
     client:load
     initialData={initialData}
     type={type}

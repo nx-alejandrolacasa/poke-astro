@@ -4,10 +4,9 @@ export const prerender = true
 import {
   fetchAllPokemonNames,
   fetchPokemonByName,
-  getPokemonImage,
   getPokemonName,
 } from '@utils/pokemon'
-import { PokemonEnrichedData } from '@/components/PokemonEnrichedData'
+import { PokemonDetailContentWrapper } from '@/components/PokemonDetailContentWrapper'
 import Layout from '@/layouts/Layout.astro'
 
 export async function getStaticPaths() {
@@ -18,135 +17,9 @@ export async function getStaticPaths() {
 
 const { name = '' } = Astro.params
 // Only fetch basic Pokemon data at build time
-// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
 const pokemon = await fetchPokemonByName(name)
-
-// Get stat names mapping
-// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
-const statNames: Record<string, string> = {
-  hp: 'HP',
-  attack: 'Attack',
-  defense: 'Defense',
-  'special-attack': 'Sp. Atk',
-  'special-defense': 'Sp. Def',
-  speed: 'Speed',
-}
 ---
 
 <Layout title={`Pokémon Astro - ${getPokemonName(name)}`}>
-  {
-    pokemon && (
-      <div class="space-y-8">
-        {/* Header Section with Image and Basic Info */}
-        <div class="grid gap-8 grid-cols-1 md:grid-cols-2">
-          {/* Left Column - Image */}
-          <div class="flex flex-col items-center">
-            <img
-              class="aspect-square w-full max-w-md"
-              src={getPokemonImage(pokemon)}
-              alt={`${pokemon.name} official artwork`}
-            />
-            <h1 class="mt-4 font-bold capitalize text-4xl text-center text-gray-900 dark:text-gray-100">
-              {getPokemonName(name)}
-            </h1>
-            <p class="mt-2 text-lg text-gray-600 dark:text-gray-400 text-center">
-              #{pokemon.order.toString().padStart(3, '0')}
-            </p>
-          </div>
-
-          {/* Right Column - Basic Info */}
-          <div class="space-y-6">
-            {/* Types */}
-            <div class="border border-gray-300 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800/50 transition-colors">
-              <h2 class="mb-3 font-bold text-xl text-gray-900 dark:text-gray-100">Type</h2>
-              <div class="flex gap-2">
-                {pokemon.types.map(({ type }) => (
-                  <span class="border-2 border-gray-400 dark:border-gray-300 px-4 py-2 rounded-full capitalize font-semibold text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800">
-                    {type.name}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Physical Stats */}
-            <div class="border border-gray-300 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800/50 transition-colors">
-              <h2 class="mb-3 font-bold text-xl text-gray-900 dark:text-gray-100">Physical Stats</h2>
-              <div class="grid gap-2 grid-cols-2 text-gray-900 dark:text-gray-100">
-                <div>
-                  <span class="text-gray-600 dark:text-gray-400">Height:</span>{' '}
-                  <span class="font-semibold">
-                    {(pokemon.height / 10).toFixed(1)} m
-                  </span>
-                </div>
-                <div>
-                  <span class="text-gray-600 dark:text-gray-400">Weight:</span>{' '}
-                  <span class="font-semibold">
-                    {(pokemon.weight / 10).toFixed(1)} kg
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Abilities */}
-            <div class="border border-gray-300 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800/50 transition-colors">
-              <h2 class="mb-3 font-bold text-xl text-gray-900 dark:text-gray-100">Abilities</h2>
-              <div class="flex flex-wrap gap-2">
-                {pokemon.abilities.map(({ ability, is_hidden }) => (
-                  <span
-                    class={`border px-3 py-1 rounded-full capitalize text-sm ${is_hidden ? 'border-yellow-500 text-yellow-600 dark:text-yellow-400' : 'border-gray-400 dark:border-gray-500 text-gray-900 dark:text-gray-100'}`}
-                  >
-                    {ability.name.replaceAll('-', ' ')}
-                    {is_hidden && ' (Hidden)'}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Base Stats */}
-        <div class="border border-gray-300 dark:border-gray-700 rounded-lg p-6 bg-gray-50 dark:bg-gray-800/50 transition-colors">
-          <h2 class="mb-4 font-bold text-2xl text-gray-900 dark:text-gray-100">Base Stats</h2>
-          <div class="space-y-3">
-            {pokemon.stats.map(({ stat, base_stat }) => {
-              const maxStat = 255
-              const percentage = (base_stat / maxStat) * 100
-              return (
-                <div class="grid gap-4 grid-cols-[120px_60px_1fr] text-gray-900 dark:text-gray-100">
-                  <div class="text-gray-600 dark:text-gray-400 text-right">
-                    {statNames[stat.name] || stat.name}
-                  </div>
-                  <div class="font-semibold text-right">{base_stat}</div>
-                  <div class="flex items-center">
-                    <div class="relative w-full bg-gray-300 dark:bg-gray-700 rounded-full h-4">
-                      <div
-                        class={`absolute top-0 left-0 rounded-full h-4 ${
-                          base_stat >= 100
-                            ? 'bg-green-500'
-                            : base_stat >= 60
-                              ? 'bg-yellow-500'
-                              : 'bg-red-500'
-                        }`}
-                        style={`width: ${percentage}%`}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
-            <div class="border-gray-400 dark:border-gray-700 border-t mt-4 pt-3 grid gap-4 grid-cols-[120px_60px_1fr]">
-              <div class="font-bold text-right">Total</div>
-              <div class="font-bold text-right">
-                {pokemon.stats.reduce((sum, { base_stat }) => sum + base_stat, 0)}
-              </div>
-              <div />
-            </div>
-          </div>
-        </div>
-
-        {/* Enriched data loaded client-side for fast builds */}
-        <PokemonEnrichedData client:load pokemonName={name} />
-      </div>
-    )
-  }
+  {pokemon && <PokemonDetailContentWrapper client:load pokemon={pokemon} pokemonName={name} />}
 </Layout>
