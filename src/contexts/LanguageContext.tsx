@@ -25,34 +25,31 @@ type LanguageProviderProps = {
 }
 
 export function LanguageProvider({ children }: LanguageProviderProps) {
-  const [language, setLanguageState] = useState<Language>(() => {
-    // Try to get language from localStorage
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY)
-      if (stored === 'en' || stored === 'es') {
-        return stored
-      }
+  // Always start with 'en' for SSR consistency
+  const [language, setLanguageState] = useState<Language>('en')
+
+  // Load stored language preference on client after hydration
+  useEffect(() => {
+    const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY)
+    if (stored === 'en' || stored === 'es') {
+      setLanguageState(stored)
+    } else {
       // Try to detect browser language
       const browserLang = navigator.language.toLowerCase()
       if (browserLang.startsWith('es')) {
-        return 'es'
+        setLanguageState('es')
       }
     }
-    return 'en'
-  })
+  }, [])
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang)
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(LANGUAGE_STORAGE_KEY, lang)
-    }
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, lang)
   }
 
   useEffect(() => {
     // Update HTML lang attribute
-    if (typeof document !== 'undefined') {
-      document.documentElement.lang = language
-    }
+    document.documentElement.lang = language
   }, [language])
 
   const value: LanguageContextType = {
