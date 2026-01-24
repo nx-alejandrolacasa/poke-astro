@@ -1,6 +1,8 @@
 ---
 import { DarkModeToggle } from '@/components/DarkModeToggle'
 import { PokemonSearch } from '@/components/PokemonSearch'
+import { LanguageSelector } from '@/components/LanguageSelector'
+import { HeaderPokedexButton } from '@/components/HeaderPokedexButton'
 ---
 
 <header class="sticky top-0 z-40 border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-sm transition-colors dark:border-gray-700 dark:bg-gray-900/95">
@@ -27,13 +29,9 @@ import { PokemonSearch } from '@/components/PokemonSearch'
       </div>
 
       <!-- Navigation links -->
-      <div class="flex items-center gap-3 sm:gap-4">
-        <a
-          class="rounded-xl bg-gradient-to-r from-[#3466AF] to-purple-600 px-4 py-2 font-semibold text-white shadow-lg transition-all duration-300 hover:from-[#2855a0] hover:to-purple-700 hover:shadow-2xl hover:scale-105 active:scale-95 sm:px-5 sm:py-2.5"
-          href="/pokedex"
-        >
-          Pokédex
-        </a>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <LanguageSelector client:load />
+        <HeaderPokedexButton client:load />
         <DarkModeToggle client:load />
       </div>
     </nav>

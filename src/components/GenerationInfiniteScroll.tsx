@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
+import { useLanguage } from '@/contexts/LanguageContext'
+import { interpolate } from '@/utils/translations'
 import { PokemonTile } from './PokemonTile'
 
 type GenerationInfiniteScrollProps = {
@@ -18,6 +20,7 @@ export function GenerationInfiniteScroll({
   generation,
   generationColor,
 }: GenerationInfiniteScrollProps) {
+  const { t } = useLanguage()
   const [pokemon, setPokemon] = useState<Pokemon[]>(initialData.results)
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(false)
@@ -70,10 +73,10 @@ export function GenerationInfiniteScroll({
           {generation.name}
         </h1>
         <p className="text-2xl md:text-3xl text-white/90 mb-4">
-          {generation.region} Region
+          {generation.region} {t.pages.region}
         </p>
         <p className="text-lg md:text-xl text-white/80">
-          {initialData.count} Pokémon species
+          {interpolate(t.pages.speciesCount, { count: initialData.count })}
         </p>
       </div>
 
@@ -86,7 +89,7 @@ export function GenerationInfiniteScroll({
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
           </svg>
-          Back to Home
+          {t.pages.backToHome}
         </a>
       </div>
 
@@ -109,9 +112,7 @@ export function GenerationInfiniteScroll({
                 alt="Loading..."
                 className="mx-auto h-16 w-16 animate-spin"
               />
-              <p className="mt-2 text-gray-500 dark:text-gray-400">
-                Loading more Pokémon...
-              </p>
+              <p className="mt-2 text-gray-500 dark:text-gray-400">{t.scroll.loadingMore}</p>
             </div>
           ) : (
             <div className="h-10" />
@@ -121,8 +122,10 @@ export function GenerationInfiniteScroll({
 
       {!hasMore && pokemon.length > 0 && (
         <div className="my-8 text-center text-gray-500 dark:text-gray-400">
-          <p>You've caught all {generation.name} Pokémon! 🎉</p>
-          <p className="mt-1 text-sm">Showing all {pokemon.length} Pokémon</p>
+          <p>{t.scroll.caughtAll}</p>
+          <p className="mt-1 text-sm">
+            {interpolate(t.scroll.showingAll, { count: pokemon.length })}
+          </p>
         </div>
       )}
     </div>

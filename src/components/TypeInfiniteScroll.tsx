@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
+import { useLanguage } from '@/contexts/LanguageContext'
+import { interpolate } from '@/utils/translations'
 import { PokemonTile } from './PokemonTile'
 import { getPokemonName } from '@/utils/pokemon'
 
@@ -15,6 +17,7 @@ export function TypeInfiniteScroll({
   type,
   typeColor,
 }: TypeInfiniteScrollProps) {
+  const { t } = useLanguage()
   const [pokemon, setPokemon] = useState<Pokemon[]>(initialData.results)
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(false)
@@ -64,10 +67,10 @@ export function TypeInfiniteScroll({
       {/* Header */}
       <div className={`bg-gradient-to-r ${typeColor} rounded-2xl p-8 md:p-12 text-center shadow-xl`}>
         <h1 className="text-4xl md:text-6xl font-bold text-white capitalize mb-4">
-          {type} Type
+          {type} {t.pages.typeTitle}
         </h1>
         <p className="text-lg md:text-xl text-white/90">
-          {initialData.count} Pokémon species
+          {interpolate(t.pages.speciesCount, { count: initialData.count })}
         </p>
       </div>
 
@@ -80,7 +83,7 @@ export function TypeInfiniteScroll({
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
           </svg>
-          Back to Home
+          {t.pages.backToHome}
         </a>
       </div>
 
@@ -103,9 +106,7 @@ export function TypeInfiniteScroll({
                 alt="Loading..."
                 className="mx-auto h-16 w-16 animate-spin"
               />
-              <p className="mt-2 text-gray-500 dark:text-gray-400">
-                Loading more Pokémon...
-              </p>
+              <p className="mt-2 text-gray-500 dark:text-gray-400">{t.scroll.loadingMore}</p>
             </div>
           ) : (
             <div className="h-10" />
@@ -115,8 +116,10 @@ export function TypeInfiniteScroll({
 
       {!hasMore && pokemon.length > 0 && (
         <div className="my-8 text-center text-gray-500 dark:text-gray-400">
-          <p>You've caught all {getPokemonName(type)} type Pokémon! 🎉</p>
-          <p className="mt-1 text-sm">Showing all {pokemon.length} Pokémon</p>
+          <p>{t.scroll.caughtAll}</p>
+          <p className="mt-1 text-sm">
+            {interpolate(t.scroll.showingAll, { count: pokemon.length })}
+          </p>
         </div>
       )}
     </div>

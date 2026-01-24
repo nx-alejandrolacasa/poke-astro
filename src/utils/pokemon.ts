@@ -47,6 +47,21 @@ export type TypeDetails = {
     no_damage_to: { name: string }[]
   }
   name: string
+  names: { language: { name: string }; name: string }[]
+}
+
+export type TypeDetailsWithTranslations = TypeDetails & {
+  translatedName?: string
+}
+
+export type AbilityDetails = {
+  name: string
+  names: { language: { name: string }; name: string }[]
+}
+
+export type StatDetails = {
+  name: string
+  names: { language: { name: string }; name: string }[]
 }
 
 export type PokemonList = {
@@ -268,4 +283,53 @@ export function parseEvolutionChain(chain: EvolutionNode): string[] {
 
   traverse(chain)
   return evolutions
+}
+
+/**
+ * Get translated name from a names array
+ * @param names - Array of name objects with language information
+ * @param languageCode - Language code (e.g., 'en', 'es')
+ * @param fallback - Fallback value if translation not found
+ */
+export function getTranslatedName(
+  names: { language: { name: string }; name: string }[],
+  languageCode: string,
+  fallback: string
+): string {
+  const translation = names.find((n) => n.language.name === languageCode)
+  return translation?.name ?? fallback
+}
+
+/**
+ * Fetch ability details with translations
+ */
+export async function fetchAbilityDetails(abilityName: string): Promise<AbilityDetails | null> {
+  const res = await fetch(`https://pokeapi.co/api/v2/ability/${abilityName}`)
+  if (!res.ok) {
+    console.warn(`Failed to fetch ability details for ${abilityName}: ${res.status}`)
+    return null
+  }
+  return res.json()
+}
+
+/**
+ * Fetch stat details with translations
+ */
+export async function fetchStatDetails(statName: string): Promise<StatDetails | null> {
+  const res = await fetch(`https://pokeapi.co/api/v2/stat/${statName}`)
+  if (!res.ok) {
+    console.warn(`Failed to fetch stat details for ${statName}: ${res.status}`)
+    return null
+  }
+  return res.json()
+}
+
+/**
+ * Get flavor text in a specific language from species data
+ */
+export function getFlavorText(species: PokemonSpecies, languageCode: string): string | null {
+  const entry = species.flavor_text_entries.find((e) => e.language.name === languageCode)
+  if (!entry) return null
+  // Clean up flavor text (remove form feeds and extra whitespace)
+  return entry.flavor_text.replace(/\f/g, ' ').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim()
 }
