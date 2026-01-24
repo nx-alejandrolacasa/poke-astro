@@ -134,8 +134,8 @@ export function HomeContent({ totalPokemon }: HomeContentProps) {
                 href={`/type/${type}`}
                 className="group relative overflow-hidden rounded-xl border-2 border-gray-300 bg-gradient-to-br from-gray-100 to-gray-200 p-4 text-center shadow-md transition-all duration-300 hover:scale-105 hover:border-[#3466AF] hover:from-gray-200 hover:to-gray-300 hover:shadow-xl dark:border-gray-600 dark:from-gray-700 dark:to-gray-800 dark:hover:border-[#3466AF] dark:hover:from-gray-600 dark:hover:to-gray-700"
               >
-                <span className="font-semibold text-gray-900 text-sm capitalize transition-colors group-hover:text-[#3466AF] md:text-base dark:text-white dark:group-hover:text-[#3466AF]">
-                  {type}
+                <span className="font-semibold text-gray-900 text-sm transition-colors group-hover:text-[#3466AF] md:text-base dark:text-white dark:group-hover:text-[#3466AF]">
+                  {t.types[type as keyof typeof t.types]}
                 </span>
               </a>
             ))}

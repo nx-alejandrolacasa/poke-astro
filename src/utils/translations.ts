@@ -74,6 +74,27 @@ export type Translations = {
     specialDefense: string
     speed: string
   }
+  // Pokémon types
+  types: {
+    normal: string
+    fire: string
+    water: string
+    electric: string
+    grass: string
+    ice: string
+    fighting: string
+    poison: string
+    ground: string
+    flying: string
+    psychic: string
+    bug: string
+    rock: string
+    ghost: string
+    dragon: string
+    dark: string
+    steel: string
+    fairy: string
+  }
   // Fun facts
   funFacts: string[]
 }
@@ -145,6 +166,26 @@ export const translations: Record<Language, Translations> = {
       specialAttack: 'Sp. Atk',
       specialDefense: 'Sp. Def',
       speed: 'Speed',
+    },
+    types: {
+      normal: 'Normal',
+      fire: 'Fire',
+      water: 'Water',
+      electric: 'Electric',
+      grass: 'Grass',
+      ice: 'Ice',
+      fighting: 'Fighting',
+      poison: 'Poison',
+      ground: 'Ground',
+      flying: 'Flying',
+      psychic: 'Psychic',
+      bug: 'Bug',
+      rock: 'Rock',
+      ghost: 'Ghost',
+      dragon: 'Dragon',
+      dark: 'Dark',
+      steel: 'Steel',
+      fairy: 'Fairy',
     },
     funFacts: [
       "Pikachu was originally going to be called 'Pikachuu' before it was shortened",
@@ -221,6 +262,26 @@ export const translations: Record<Language, Translations> = {
       specialAttack: 'At. Esp.',
       specialDefense: 'Def. Esp.',
       speed: 'Velocidad',
+    },
+    types: {
+      normal: 'Normal',
+      fire: 'Fuego',
+      water: 'Agua',
+      electric: 'Eléctrico',
+      grass: 'Planta',
+      ice: 'Hielo',
+      fighting: 'Lucha',
+      poison: 'Veneno',
+      ground: 'Tierra',
+      flying: 'Volador',
+      psychic: 'Psíquico',
+      bug: 'Bicho',
+      rock: 'Roca',
+      ghost: 'Fantasma',
+      dragon: 'Dragón',
+      dark: 'Siniestro',
+      steel: 'Acero',
+      fairy: 'Hada',
     },
     funFacts: [
       "Pikachu originalmente se iba a llamar 'Pikachuu' antes de que se acortara",

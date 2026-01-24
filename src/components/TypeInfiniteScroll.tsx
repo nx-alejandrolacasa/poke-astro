@@ -66,8 +66,8 @@ export function TypeInfiniteScroll({
     <div className="space-y-8">
       {/* Header */}
       <div className={`bg-gradient-to-r ${typeColor} rounded-2xl p-8 md:p-12 text-center shadow-xl`}>
-        <h1 className="text-4xl md:text-6xl font-bold text-white capitalize mb-4">
-          {type} {t.pages.typeTitle}
+        <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+          {t.pages.typeTitle} {t.types[type as keyof typeof t.types]}
         </h1>
         <p className="text-lg md:text-xl text-white/90">
           {interpolate(t.pages.speciesCount, { count: initialData.count })}
