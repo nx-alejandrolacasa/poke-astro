@@ -241,68 +241,69 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
         </div>
       </div>
 
-      {/* Base Stats - More compact */}
-      <div className="rounded-lg border border-gray-300 bg-gray-50 p-3 transition-colors md:p-4 dark:border-gray-700 dark:bg-gray-800/50">
-        <h2 className="mb-3 font-bold text-lg text-gray-900 md:text-xl dark:text-gray-100">
-          {t.pokemon.baseStats}
-        </h2>
-        <div className="space-y-2">
-          {loading ? (
-            // Loading skeleton for stats
-            <>
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div
-                  key={i}
-                  className="grid grid-cols-[80px_40px_1fr] gap-2 md:grid-cols-[100px_50px_1fr] md:gap-3"
-                >
-                  <div className="h-4 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
-                  <div className="h-4 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
-                  <div className="h-3 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
-                </div>
-              ))}
-            </>
-          ) : (
-            <>
-              {stats.map(({ name, translatedName, baseStat }) => {
-                const percentage = (baseStat / maxStat) * 100
-                return (
-                  <div
-                    key={name}
-                    className="grid grid-cols-[80px_40px_1fr] gap-2 text-gray-900 text-sm md:grid-cols-[100px_50px_1fr] md:gap-3 dark:text-gray-100"
-                  >
-                    <div className="truncate text-right text-gray-600 text-xs md:text-sm dark:text-gray-400">
-                      {translatedName}
+      {/* Enriched data with stats - grid layout on tablets */}
+      <PokemonEnrichedData
+        pokemonName={pokemonName}
+        statsSection={
+          <div className="rounded-lg border border-gray-300 bg-gray-50 p-3 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
+            <h2 className="mb-2 font-bold text-base text-gray-900 md:text-lg dark:text-gray-100">
+              {t.pokemon.baseStats}
+            </h2>
+            <div className="space-y-1.5">
+              {loading ? (
+                <>
+                  {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <div
+                      key={i}
+                      className="grid grid-cols-[70px_35px_1fr] gap-1.5"
+                    >
+                      <div className="h-3 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
+                      <div className="h-3 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
+                      <div className="h-2.5 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
                     </div>
-                    <div className="text-right font-semibold text-xs md:text-sm">{baseStat}</div>
-                    <div className="flex items-center">
-                      <div className="relative h-3 w-full rounded-full bg-gray-300 md:h-4 dark:bg-gray-700">
-                        <div
-                          className={`absolute top-0 left-0 h-3 rounded-full md:h-4 ${
-                            baseStat >= 100
-                              ? 'bg-green-500'
-                              : baseStat >= 60
-                                ? 'bg-yellow-500'
-                                : 'bg-red-500'
-                          }`}
-                          style={{ width: `${percentage}%` }}
-                        />
+                  ))}
+                </>
+              ) : (
+                <>
+                  {stats.map(({ name, translatedName, baseStat }) => {
+                    const percentage = (baseStat / maxStat) * 100
+                    return (
+                      <div
+                        key={name}
+                        className="grid grid-cols-[70px_35px_1fr] gap-1.5 text-gray-900 dark:text-gray-100"
+                      >
+                        <div className="truncate text-right text-gray-600 text-[10px] md:text-xs dark:text-gray-400">
+                          {translatedName}
+                        </div>
+                        <div className="text-right font-semibold text-[10px] md:text-xs">{baseStat}</div>
+                        <div className="flex items-center">
+                          <div className="relative h-2.5 w-full rounded-full bg-gray-300 dark:bg-gray-700">
+                            <div
+                              className={`absolute top-0 left-0 h-2.5 rounded-full ${
+                                baseStat >= 100
+                                  ? 'bg-green-500'
+                                  : baseStat >= 60
+                                    ? 'bg-yellow-500'
+                                    : 'bg-red-500'
+                              }`}
+                              style={{ width: `${percentage}%` }}
+                            />
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    )
+                  })}
+                  <div className="mt-1.5 grid grid-cols-[70px_35px_1fr] gap-1.5 border-t border-gray-400 pt-1.5 dark:border-gray-700">
+                    <div className="text-right font-bold text-[10px] md:text-xs">{t.pokemon.total}</div>
+                    <div className="text-right font-bold text-[10px] md:text-xs">{totalStats}</div>
+                    <div />
                   </div>
-                )
-              })}
-              <div className="mt-2 grid grid-cols-[80px_40px_1fr] gap-2 border-t border-gray-400 pt-2 md:mt-3 md:grid-cols-[100px_50px_1fr] md:gap-3 md:pt-3 dark:border-gray-700">
-                <div className="text-right font-bold text-xs md:text-sm">{t.pokemon.total}</div>
-                <div className="text-right font-bold text-xs md:text-sm">{totalStats}</div>
-                <div />
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Enriched data loaded client-side for fast builds */}
-      <PokemonEnrichedData pokemonName={pokemonName} />
+                </>
+              )}
+            </div>
+          </div>
+        }
+      />
     </div>
   )
 }

@@ -233,7 +233,7 @@ export const translations: Record<Language, Translations> = {
       resistantTo: 'Resistente A',
       immuneTo: 'Inmune A',
       none: 'Ninguno',
-      evolutionChain: 'Cadena Evolutiva',
+      evolutionChain: 'Evoluciones',
     },
     scroll: {
       loadingMore: 'Cargando más Pokémon...',
