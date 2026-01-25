@@ -66,18 +66,6 @@ export function PokemonEnrichedData({ pokemonName }: PokemonEnrichedDataProps) {
 
   return (
     <div className="space-y-4 md:space-y-6">
-      {/* Description */}
-      {data.flavorText && (
-        <div className="rounded-lg border border-gray-300 bg-gray-50 p-3 transition-colors md:p-4 dark:border-gray-700 dark:bg-gray-800/50">
-          <h2 className="mb-2 font-bold text-gray-900 text-base md:text-lg dark:text-gray-100">
-            {t.pokemon.description}
-          </h2>
-          <p className="text-gray-700 text-sm leading-relaxed md:text-base dark:text-gray-300">
-            {data.flavorText}
-          </p>
-        </div>
-      )}
-
       {/* Type Effectiveness */}
       <div className="rounded-lg border border-gray-300 bg-gray-50 p-3 transition-colors md:p-4 dark:border-gray-700 dark:bg-gray-800/50">
         <h2 className="mb-3 font-bold text-lg text-gray-900 md:text-xl dark:text-gray-100">

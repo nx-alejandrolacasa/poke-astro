@@ -31,6 +31,7 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
   const [abilities, setAbilities] = useState<TranslatedAbility[]>([])
   const [types, setTypes] = useState<TranslatedType[]>([])
   const [stats, setStats] = useState<TranslatedStat[]>([])
+  const [description, setDescription] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -72,15 +73,30 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
           }
         })
 
-        const [translatedTypes, translatedAbilities, translatedStats] = await Promise.all([
+        // Fetch description/flavor text from species endpoint
+        const speciesPromise = fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonName}`)
+          .then(res => res.json())
+          .then(data => {
+            const flavorEntry = data.flavor_text_entries?.find(
+              (entry: any) => entry.language.name === language
+            ) || data.flavor_text_entries?.find(
+              (entry: any) => entry.language.name === 'en'
+            )
+            return flavorEntry?.flavor_text?.replace(/\f/g, ' ').replace(/\n/g, ' ') || null
+          })
+          .catch(() => null)
+
+        const [translatedTypes, translatedAbilities, translatedStats, flavorText] = await Promise.all([
           Promise.all(typesPromises),
           Promise.all(abilitiesPromises),
           Promise.all(statsPromises),
+          speciesPromise,
         ])
 
         setTypes(translatedTypes)
         setAbilities(translatedAbilities)
         setStats(translatedStats)
+        setDescription(flavorText)
       } catch (error) {
         console.error('Failed to fetch translations:', error)
         // Fallback to untranslated data
@@ -99,13 +115,14 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
             baseStat: base_stat,
           }))
         )
+        setDescription(null)
       } finally {
         setLoading(false)
       }
     }
 
     fetchTranslations()
-  }, [pokemon, language, t.stats])
+  }, [pokemon, pokemonName, language, t.stats])
 
   const totalStats = stats.reduce((sum, stat) => sum + stat.baseStat, 0)
   const maxStat = 255
@@ -113,47 +130,60 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
   return (
     <div className="space-y-4 md:space-y-6">
       {/* Header Section with Image and Basic Info - Side by side on tablets */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-[280px_1fr] md:gap-6 lg:grid-cols-[320px_1fr]">
-        {/* Left Column - Image (smaller on tablets for more info space) */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-[200px_1fr] md:gap-4 lg:grid-cols-[240px_1fr] lg:gap-6">
+        {/* Left Column - Image (compact on tablets) */}
         <div className="flex flex-col items-center justify-start">
-          <div className="relative w-full max-w-[200px] md:max-w-full">
+          <div className="relative w-full max-w-[180px] md:max-w-full">
             <img
               className="aspect-square w-full drop-shadow-2xl"
               src={getPokemonImage(pokemon)}
               alt={`${pokemon.name} official artwork`}
             />
-            <span className="absolute top-1 right-1 rounded-full bg-gray-900/80 px-2 py-0.5 font-mono font-bold text-white text-sm backdrop-blur-sm md:top-2 md:right-2 md:px-3 md:py-1 md:text-lg dark:bg-white/80 dark:text-gray-900">
+            <span className="absolute top-1 right-1 rounded-full bg-gray-900/80 px-2 py-0.5 font-mono font-bold text-white text-xs backdrop-blur-sm md:text-sm dark:bg-white/80 dark:text-gray-900">
               #{pokemon.order.toString().padStart(3, '0')}
             </span>
           </div>
           {/* Pokemon Name below image on mobile */}
-          <h1 className="mt-3 text-center font-extrabold text-2xl text-gray-900 capitalize tracking-tight md:hidden dark:text-gray-100">
+          <h1 className="mt-2 text-center font-extrabold text-xl text-gray-900 capitalize tracking-tight md:hidden dark:text-gray-100">
             {getPokemonName(pokemonName)}
           </h1>
         </div>
 
-        {/* Right Column - Name and Basic Info */}
-        <div className="space-y-3 md:space-y-4">
+        {/* Right Column - Name, Description and Basic Info */}
+        <div className="space-y-2 md:space-y-3">
           {/* Pokemon Name - Hidden on mobile, shown on tablets+ */}
-          <h1 className="hidden font-extrabold text-3xl text-gray-900 capitalize tracking-tight md:block lg:text-4xl dark:text-gray-100">
+          <h1 className="hidden font-extrabold text-2xl text-gray-900 capitalize tracking-tight md:block lg:text-3xl dark:text-gray-100">
             {getPokemonName(pokemonName)}
           </h1>
 
-          {/* Compact info grid for tablets - Types and Physical stats side by side */}
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4">
+          {/* Description - Shown prominently */}
+          {(loading || description) && (
+            <div className="rounded-lg border border-gray-300 bg-gray-50 p-2 transition-colors md:p-3 dark:border-gray-700 dark:bg-gray-800/50">
+              {loading ? (
+                <div className="h-12 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
+              ) : description ? (
+                <p className="text-gray-700 text-xs leading-relaxed md:text-sm dark:text-gray-300">
+                  {description}
+                </p>
+              ) : null}
+            </div>
+          )}
+
+          {/* Compact info grid - 2x2 on mobile, 4 cols on tablet */}
+          <div className="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
             {/* Types */}
-            <div className="rounded-lg border border-gray-300 bg-gray-50 p-3 transition-colors md:p-4 dark:border-gray-700 dark:bg-gray-800/50">
-              <h2 className="mb-2 font-bold text-gray-900 text-base md:text-lg dark:text-gray-100">
+            <div className="rounded-lg border border-gray-300 bg-gray-50 p-2 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
+              <h2 className="mb-1 font-bold text-gray-900 text-xs md:text-sm dark:text-gray-100">
                 {t.pokemon.type}
               </h2>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1">
                 {loading ? (
-                  <div className="h-8 w-16 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
+                  <div className="h-5 w-12 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
                 ) : (
                   types.map(({ name, translatedName }) => (
                     <span
                       key={name}
-                      className="rounded-full border-2 border-gray-400 bg-white px-3 py-1 font-semibold text-gray-900 text-sm capitalize dark:border-gray-300 dark:bg-gray-800 dark:text-gray-100"
+                      className="rounded-full border border-gray-400 bg-white px-2 py-0.5 font-medium text-gray-900 text-xs capitalize dark:border-gray-300 dark:bg-gray-800 dark:text-gray-100"
                     >
                       {translatedName}
                     </span>
@@ -162,50 +192,50 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
               </div>
             </div>
 
-            {/* Physical Stats */}
-            <div className="rounded-lg border border-gray-300 bg-gray-50 p-3 transition-colors md:p-4 dark:border-gray-700 dark:bg-gray-800/50">
-              <h2 className="mb-2 font-bold text-gray-900 text-base md:text-lg dark:text-gray-100">
-                {t.pokemon.physicalStats}
+            {/* Height */}
+            <div className="rounded-lg border border-gray-300 bg-gray-50 p-2 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
+              <h2 className="mb-1 font-bold text-gray-900 text-xs md:text-sm dark:text-gray-100">
+                {t.pokemon.height}
               </h2>
-              <div className="grid grid-cols-2 gap-1 text-gray-900 text-sm dark:text-gray-100">
-                <div>
-                  <span className="text-gray-600 dark:text-gray-400">{t.pokemon.height}:</span>{' '}
-                  <span className="font-semibold">{(pokemon.height / 10).toFixed(1)} m</span>
-                </div>
-                <div>
-                  <span className="text-gray-600 dark:text-gray-400">{t.pokemon.weight}:</span>{' '}
-                  <span className="font-semibold">{(pokemon.weight / 10).toFixed(1)} kg</span>
-                </div>
-              </div>
+              <p className="font-semibold text-gray-900 text-sm md:text-base dark:text-gray-100">
+                {(pokemon.height / 10).toFixed(1)} m
+              </p>
             </div>
-          </div>
 
-          {/* Abilities */}
-          <div className="rounded-lg border border-gray-300 bg-gray-50 p-3 transition-colors md:p-4 dark:border-gray-700 dark:bg-gray-800/50">
-            <h2 className="mb-2 font-bold text-gray-900 text-base md:text-lg dark:text-gray-100">
-              {t.pokemon.abilities}
-            </h2>
-            <div className="flex flex-wrap gap-2">
-              {loading ? (
-                <>
-                  <div className="h-7 w-20 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
-                  <div className="h-7 w-16 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
-                </>
-              ) : (
-                abilities.map(({ name, translatedName, isHidden }) => (
-                  <span
-                    key={name}
-                    className={`rounded-full border px-2 py-0.5 text-xs md:px-3 md:py-1 md:text-sm ${
-                      isHidden
-                        ? 'border-yellow-500 text-yellow-600 dark:text-yellow-400'
-                        : 'border-gray-400 text-gray-900 dark:border-gray-500 dark:text-gray-100'
-                    }`}
-                  >
-                    {translatedName}
-                    {isHidden && ` (${t.pokemon.hidden})`}
-                  </span>
-                ))
-              )}
+            {/* Weight */}
+            <div className="rounded-lg border border-gray-300 bg-gray-50 p-2 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
+              <h2 className="mb-1 font-bold text-gray-900 text-xs md:text-sm dark:text-gray-100">
+                {t.pokemon.weight}
+              </h2>
+              <p className="font-semibold text-gray-900 text-sm md:text-base dark:text-gray-100">
+                {(pokemon.weight / 10).toFixed(1)} kg
+              </p>
+            </div>
+
+            {/* Abilities */}
+            <div className="rounded-lg border border-gray-300 bg-gray-50 p-2 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
+              <h2 className="mb-1 font-bold text-gray-900 text-xs md:text-sm dark:text-gray-100">
+                {t.pokemon.abilities}
+              </h2>
+              <div className="flex flex-wrap gap-1">
+                {loading ? (
+                  <div className="h-5 w-14 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
+                ) : (
+                  abilities.map(({ name, translatedName, isHidden }) => (
+                    <span
+                      key={name}
+                      className={`rounded-full border px-1.5 py-0.5 text-xs ${
+                        isHidden
+                          ? 'border-yellow-500 text-yellow-600 dark:text-yellow-400'
+                          : 'border-gray-400 text-gray-900 dark:border-gray-500 dark:text-gray-100'
+                      }`}
+                      title={isHidden ? t.pokemon.hidden : undefined}
+                    >
+                      {translatedName}
+                    </span>
+                  ))
+                )}
+              </div>
             </div>
           </div>
         </div>

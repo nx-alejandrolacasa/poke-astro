@@ -63,54 +63,54 @@ export function HomeContent({ totalPokemon }: HomeContentProps) {
         </div>
       </section>
 
-      {/* Bento Grid Statistics - Compact */}
-      <section className="space-y-4">
-        <h2 className="text-center font-bold text-2xl text-gray-900 md:text-3xl dark:text-white">
+      {/* Bento Grid Statistics - All in one row on landscape tablets */}
+      <section className="space-y-3">
+        <h2 className="text-center font-bold text-xl text-gray-900 md:text-2xl dark:text-white">
           {t.home.byTheNumbers}
         </h2>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 md:gap-4">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 md:gap-3">
           {/* Total Pokemon */}
-          <div className="col-span-2 rounded-xl border-2 border-[#3466AF]/30 bg-gradient-to-br from-[#3466AF] to-purple-600 p-4 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-[#3466AF]/60 hover:shadow-2xl md:p-6 dark:border-[#3466AF]/50 dark:hover:border-[#3466AF]/80">
-            <div className="space-y-1">
-              <p className="font-semibold text-white/90 text-xs uppercase tracking-wider">
+          <div className="rounded-lg border-2 border-[#3466AF]/30 bg-gradient-to-br from-[#3466AF] to-purple-600 p-3 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-[#3466AF]/60 hover:shadow-2xl md:p-4 dark:border-[#3466AF]/50 dark:hover:border-[#3466AF]/80">
+            <div className="space-y-0.5">
+              <p className="font-semibold text-white/90 text-[10px] uppercase tracking-wider md:text-xs">
                 {t.home.totalPokemon}
               </p>
-              <p className="font-black text-4xl text-white md:text-5xl">
+              <p className="font-black text-2xl text-white md:text-3xl">
                 {totalPokemon.toLocaleString()}
               </p>
-              <p className="text-white/90 text-xs">{t.home.speciesDiscovered}</p>
+              <p className="text-white/90 text-[10px] md:text-xs">{t.home.speciesDiscovered}</p>
             </div>
           </div>
 
           {/* Types */}
-          <div className="rounded-xl border-2 border-pink-400/30 bg-gradient-to-br from-pink-500 to-red-600 p-4 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-pink-400/60 hover:shadow-2xl md:p-6 dark:border-pink-400/50 dark:hover:border-pink-400/80">
-            <div className="space-y-1">
-              <p className="font-semibold text-white/90 text-xs uppercase tracking-wider">
+          <div className="rounded-lg border-2 border-pink-400/30 bg-gradient-to-br from-pink-500 to-red-600 p-3 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-pink-400/60 hover:shadow-2xl md:p-4 dark:border-pink-400/50 dark:hover:border-pink-400/80">
+            <div className="space-y-0.5">
+              <p className="font-semibold text-white/90 text-[10px] uppercase tracking-wider md:text-xs">
                 {t.home.types}
               </p>
-              <p className="font-black text-3xl text-white md:text-4xl">{pokemonTypes.length}</p>
-              <p className="text-white/90 text-xs">{t.home.uniqueTypes}</p>
+              <p className="font-black text-2xl text-white md:text-3xl">{pokemonTypes.length}</p>
+              <p className="text-white/90 text-[10px] md:text-xs">{t.home.uniqueTypes}</p>
             </div>
           </div>
 
           {/* Generations */}
-          <div className="rounded-xl border-2 border-green-400/30 bg-gradient-to-br from-green-500 to-emerald-600 p-4 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-green-400/60 hover:shadow-2xl md:p-6 dark:border-green-400/50 dark:hover:border-green-400/80">
-            <div className="space-y-1">
-              <p className="font-semibold text-white/90 text-xs uppercase tracking-wider">
+          <div className="rounded-lg border-2 border-green-400/30 bg-gradient-to-br from-green-500 to-emerald-600 p-3 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-green-400/60 hover:shadow-2xl md:p-4 dark:border-green-400/50 dark:hover:border-green-400/80">
+            <div className="space-y-0.5">
+              <p className="font-semibold text-white/90 text-[10px] uppercase tracking-wider md:text-xs">
                 {t.home.generations}
               </p>
-              <p className="font-black text-3xl text-white md:text-4xl">{generations.length}</p>
-              <p className="text-white/90 text-xs">{t.home.pokemonGenerations}</p>
+              <p className="font-black text-2xl text-white md:text-3xl">{generations.length}</p>
+              <p className="text-white/90 text-[10px] md:text-xs">{t.home.pokemonGenerations}</p>
             </div>
           </div>
 
-          {/* Fun Fact Card - Spans 2 columns on mobile, full row on larger */}
-          <div className="col-span-2 rounded-xl border-2 border-yellow-400/30 bg-gradient-to-br from-yellow-500 to-orange-600 p-4 shadow-lg transition-all duration-300 hover:border-yellow-400/60 hover:shadow-2xl sm:col-span-4 md:p-6 dark:border-yellow-400/50 dark:hover:border-yellow-400/80">
-            <div className="space-y-2">
-              <p className="font-semibold text-white/90 text-xs uppercase tracking-wider">
+          {/* Fun Fact Card */}
+          <div className="rounded-lg border-2 border-yellow-400/30 bg-gradient-to-br from-yellow-500 to-orange-600 p-3 shadow-lg transition-all duration-300 hover:border-yellow-400/60 hover:shadow-2xl md:p-4 dark:border-yellow-400/50 dark:hover:border-yellow-400/80">
+            <div className="space-y-0.5">
+              <p className="font-semibold text-white/90 text-[10px] uppercase tracking-wider md:text-xs">
                 {t.home.didYouKnow}
               </p>
-              <p className="text-sm text-white leading-relaxed md:text-base">{randomFact}</p>
+              <p className="text-[10px] text-white leading-tight md:text-xs">{randomFact}</p>
             </div>
           </div>
         </div>
