@@ -124,17 +124,19 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
         {/* Left Column - Image */}
         <div className="flex flex-col items-center">
-          <img
-            className="aspect-square w-full max-w-md"
-            src={getPokemonImage(pokemon)}
-            alt={`${pokemon.name} official artwork`}
-          />
-          <h1 className="mt-4 text-center font-bold text-4xl text-gray-900 capitalize dark:text-gray-100">
+          <div className="relative">
+            <img
+              className="aspect-square w-full max-w-md drop-shadow-2xl"
+              src={getPokemonImage(pokemon)}
+              alt={`${pokemon.name} official artwork`}
+            />
+            <span className="absolute top-2 right-2 rounded-full bg-gray-900/80 px-3 py-1 font-mono font-bold text-white text-xl backdrop-blur-sm md:top-4 md:right-4 md:px-4 md:py-2 md:text-2xl dark:bg-white/80 dark:text-gray-900">
+              #{pokemon.order.toString().padStart(3, '0')}
+            </span>
+          </div>
+          <h1 className="mt-6 text-center font-extrabold text-4xl text-gray-900 capitalize tracking-tight md:text-5xl dark:text-gray-100">
             {getPokemonName(pokemonName)}
           </h1>
-          <p className="mt-2 text-center text-gray-600 text-lg dark:text-gray-400">
-            #{pokemon.order.toString().padStart(3, '0')}
-          </p>
         </div>
 
         {/* Right Column - Basic Info */}
