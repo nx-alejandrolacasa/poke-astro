@@ -107,14 +107,6 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
     fetchTranslations()
   }, [pokemon, language, t.stats])
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center p-12">
-        <div className="h-12 w-12 animate-spin rounded-full border-t-4 border-primary" />
-      </div>
-    )
-  }
-
   const totalStats = stats.reduce((sum, stat) => sum + stat.baseStat, 0)
   const maxStat = 255
 
@@ -123,36 +115,44 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
       {/* Header Section with Image and Basic Info */}
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
         {/* Left Column - Image */}
-        <div className="flex flex-col items-center">
-          <img
-            className="aspect-square w-full max-w-md"
-            src={getPokemonImage(pokemon)}
-            alt={`${pokemon.name} official artwork`}
-          />
-          <h1 className="mt-4 text-center font-bold text-4xl text-gray-900 capitalize dark:text-gray-100">
-            {getPokemonName(pokemonName)}
-          </h1>
-          <p className="mt-2 text-center text-gray-600 text-lg dark:text-gray-400">
-            #{pokemon.order.toString().padStart(3, '0')}
-          </p>
+        <div className="flex flex-col items-center justify-center">
+          <div className="relative">
+            <img
+              className="aspect-square w-full max-w-md drop-shadow-2xl"
+              src={getPokemonImage(pokemon)}
+              alt={`${pokemon.name} official artwork`}
+            />
+            <span className="absolute top-2 right-2 rounded-full bg-gray-900/80 px-3 py-1 font-mono font-bold text-white text-xl backdrop-blur-sm md:top-4 md:right-4 md:px-4 md:py-2 md:text-2xl dark:bg-white/80 dark:text-gray-900">
+              #{pokemon.order.toString().padStart(3, '0')}
+            </span>
+          </div>
         </div>
 
-        {/* Right Column - Basic Info */}
+        {/* Right Column - Name and Basic Info */}
         <div className="space-y-6">
+          {/* Pokemon Name - Prominent Header */}
+          <h1 className="text-center font-extrabold text-4xl text-gray-900 capitalize tracking-tight md:text-left md:text-5xl dark:text-gray-100">
+            {getPokemonName(pokemonName)}
+          </h1>
+
           {/* Types */}
           <div className="rounded-lg border border-gray-300 bg-gray-50 p-4 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
             <h2 className="mb-3 font-bold text-gray-900 text-xl dark:text-gray-100">
               {t.pokemon.type}
             </h2>
             <div className="flex gap-2">
-              {types.map(({ name, translatedName }) => (
-                <span
-                  key={name}
-                  className="rounded-full border-2 border-gray-400 bg-white px-4 py-2 font-semibold text-gray-900 capitalize dark:border-gray-300 dark:bg-gray-800 dark:text-gray-100"
-                >
-                  {translatedName}
-                </span>
-              ))}
+              {loading ? (
+                <div className="h-10 w-20 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
+              ) : (
+                types.map(({ name, translatedName }) => (
+                  <span
+                    key={name}
+                    className="rounded-full border-2 border-gray-400 bg-white px-4 py-2 font-semibold text-gray-900 capitalize dark:border-gray-300 dark:bg-gray-800 dark:text-gray-100"
+                  >
+                    {translatedName}
+                  </span>
+                ))
+              )}
             </div>
           </div>
 
@@ -179,19 +179,26 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
               {t.pokemon.abilities}
             </h2>
             <div className="flex flex-wrap gap-2">
-              {abilities.map(({ name, translatedName, isHidden }) => (
-                <span
-                  key={name}
-                  className={`rounded-full border px-3 py-1 text-sm ${
-                    isHidden
-                      ? 'border-yellow-500 text-yellow-600 dark:text-yellow-400'
-                      : 'border-gray-400 text-gray-900 dark:border-gray-500 dark:text-gray-100'
-                  }`}
-                >
-                  {translatedName}
-                  {isHidden && ` (${t.pokemon.hidden})`}
-                </span>
-              ))}
+              {loading ? (
+                <>
+                  <div className="h-8 w-24 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
+                  <div className="h-8 w-20 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
+                </>
+              ) : (
+                abilities.map(({ name, translatedName, isHidden }) => (
+                  <span
+                    key={name}
+                    className={`rounded-full border px-3 py-1 text-sm ${
+                      isHidden
+                        ? 'border-yellow-500 text-yellow-600 dark:text-yellow-400'
+                        : 'border-gray-400 text-gray-900 dark:border-gray-500 dark:text-gray-100'
+                    }`}
+                  >
+                    {translatedName}
+                    {isHidden && ` (${t.pokemon.hidden})`}
+                  </span>
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -203,39 +210,57 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
           {t.pokemon.baseStats}
         </h2>
         <div className="space-y-3">
-          {stats.map(({ name, translatedName, baseStat }) => {
-            const percentage = (baseStat / maxStat) * 100
-            return (
-              <div
-                key={name}
-                className="grid grid-cols-[120px_60px_1fr] gap-4 text-gray-900 dark:text-gray-100"
-              >
-                <div className="text-right text-gray-600 dark:text-gray-400">
-                  {translatedName}
+          {loading ? (
+            // Loading skeleton for stats
+            <>
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div
+                  key={i}
+                  className="grid grid-cols-[120px_60px_1fr] gap-4"
+                >
+                  <div className="h-5 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
+                  <div className="h-5 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
+                  <div className="h-4 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
                 </div>
-                <div className="text-right font-semibold">{baseStat}</div>
-                <div className="flex items-center">
-                  <div className="relative h-4 w-full rounded-full bg-gray-300 dark:bg-gray-700">
-                    <div
-                      className={`absolute top-0 left-0 h-4 rounded-full ${
-                        baseStat >= 100
-                          ? 'bg-green-500'
-                          : baseStat >= 60
-                            ? 'bg-yellow-500'
-                            : 'bg-red-500'
-                      }`}
-                      style={{ width: `${percentage}%` }}
-                    />
+              ))}
+            </>
+          ) : (
+            <>
+              {stats.map(({ name, translatedName, baseStat }) => {
+                const percentage = (baseStat / maxStat) * 100
+                return (
+                  <div
+                    key={name}
+                    className="grid grid-cols-[120px_60px_1fr] gap-4 text-gray-900 dark:text-gray-100"
+                  >
+                    <div className="text-right text-gray-600 dark:text-gray-400">
+                      {translatedName}
+                    </div>
+                    <div className="text-right font-semibold">{baseStat}</div>
+                    <div className="flex items-center">
+                      <div className="relative h-4 w-full rounded-full bg-gray-300 dark:bg-gray-700">
+                        <div
+                          className={`absolute top-0 left-0 h-4 rounded-full ${
+                            baseStat >= 100
+                              ? 'bg-green-500'
+                              : baseStat >= 60
+                                ? 'bg-yellow-500'
+                                : 'bg-red-500'
+                          }`}
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
+                    </div>
                   </div>
-                </div>
+                )
+              })}
+              <div className="mt-4 grid grid-cols-[120px_60px_1fr] gap-4 border-t border-gray-400 pt-3 dark:border-gray-700">
+                <div className="text-right font-bold">{t.pokemon.total}</div>
+                <div className="text-right font-bold">{totalStats}</div>
+                <div />
               </div>
-            )
-          })}
-          <div className="mt-4 grid grid-cols-[120px_60px_1fr] gap-4 border-t border-gray-400 pt-3 dark:border-gray-700">
-            <div className="text-right font-bold">{t.pokemon.total}</div>
-            <div className="text-right font-bold">{totalStats}</div>
-            <div />
-          </div>
+            </>
+          )}
         </div>
       </div>
 

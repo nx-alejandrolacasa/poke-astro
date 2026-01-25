@@ -1,10 +1,10 @@
-import type { EvolutionChain } from '@utils/pokemon'
+import type { EvolutionTreeNode } from '@utils/pokemon'
 import { getPokemonName } from '@utils/pokemon'
 import { useEffect, useState } from 'react'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 type EnrichedData = {
-  evolutionChainData: EvolutionChain | null
+  evolutionTree: EvolutionTreeNode | null
   evolutions: string[]
   flavorText: string | null
   typeEffectiveness: {
@@ -154,67 +154,122 @@ export function PokemonEnrichedData({ pokemonName }: PokemonEnrichedDataProps) {
       </div>
 
       {/* Evolution Chain */}
-      {data.evolutions.length > 1 && data.evolutionChainData && (
+      {data.evolutions.length > 1 && data.evolutionTree && (
         <div className="rounded-lg border border-gray-300 bg-gray-50 p-6 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
           <h2 className="mb-4 font-bold text-2xl text-gray-900 dark:text-gray-100">
             {t.pokemon.evolutionChain}
           </h2>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            {data.evolutions.map((evoName, index) => {
-              // Get Pokemon ID from evolution chain
-              const getEvolutionNode = (
-                node: typeof data.evolutionChainData.chain,
-                targetName: string
-              ): typeof data.evolutionChainData.chain | null => {
-                if (node.species.name === targetName) return node
-                for (const evo of node.evolves_to) {
-                  const found = getEvolutionNode(evo, targetName)
-                  if (found) return found
-                }
-                return null
-              }
-
-              const evoNode = getEvolutionNode(
-                data.evolutionChainData.chain,
-                evoName
-              )
-              const evoId = evoNode?.species.url.split('/').slice(-2, -1)[0]
-
-              return (
-                <div key={evoName} className="flex items-center gap-4">
-                  <a
-                    href={`/pokemon/${evoName}`}
-                    className={`rounded-lg border p-4 transition-all hover:border-primary hover:scale-105 ${
-                      evoName === pokemonName
-                        ? 'border-primary bg-gray-200 dark:bg-gray-700'
-                        : 'border-gray-400 bg-white dark:border-gray-600 dark:bg-gray-800'
-                    }`}
-                  >
-                    <div className="text-center">
-                      <p className="mb-2 font-semibold text-gray-900 capitalize dark:text-gray-100">
-                        {getPokemonName(evoName)}
-                      </p>
-                      {evoId && (
-                        <img
-                          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${evoId}.png`}
-                          alt={evoName}
-                          className="mx-auto h-24 w-24 object-contain"
-                          loading="lazy"
-                        />
-                      )}
-                    </div>
-                  </a>
-                  {index < data.evolutions.length - 1 && (
-                    <div className="font-bold text-2xl text-gray-600 dark:text-gray-500">
-                      →
-                    </div>
-                  )}
-                </div>
-              )
-            })}
-          </div>
+          <EvolutionTree tree={data.evolutionTree} currentPokemon={pokemonName} />
         </div>
       )}
     </div>
   )
+}
+
+type EvolutionTreeProps = {
+  tree: EvolutionTreeNode
+  currentPokemon: string
+}
+
+function EvolutionTree({ tree, currentPokemon }: EvolutionTreeProps) {
+  const stages = collectEvolutionStages(tree)
+  const hasBranching = stages.some((stage) => stage.length > 1)
+
+  return (
+    <div className="flex flex-col items-center gap-4 md:flex-row md:justify-center md:gap-2">
+      {stages.map((stage, stageIndex) => (
+        <div key={stageIndex} className="flex items-center gap-2 md:gap-4">
+          {stageIndex > 0 && (
+            <div className="hidden font-bold text-2xl text-gray-600 md:block dark:text-gray-500">
+              →
+            </div>
+          )}
+          {stageIndex > 0 && (
+            <div className="font-bold text-2xl text-gray-600 md:hidden dark:text-gray-500">
+              ↓
+            </div>
+          )}
+          <div
+            className={`flex flex-col items-center gap-2 ${hasBranching && stage.length > 1 ? 'rounded-lg border border-dashed border-gray-400 p-2 dark:border-gray-600' : ''}`}
+          >
+            {stage.map((pokemon, pokemonIndex) => (
+              <div key={pokemon.name} className="flex flex-col items-center">
+                {pokemonIndex > 0 && stage.length > 1 && (
+                  <span className="mb-2 text-gray-500 text-xs italic">o</span>
+                )}
+                <EvolutionCard
+                  name={pokemon.name}
+                  speciesUrl={pokemon.speciesUrl}
+                  isCurrentPokemon={pokemon.name === currentPokemon}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+type EvolutionCardProps = {
+  name: string
+  speciesUrl: string
+  isCurrentPokemon: boolean
+}
+
+function EvolutionCard({ name, speciesUrl, isCurrentPokemon }: EvolutionCardProps) {
+  const evoId = speciesUrl.split('/').slice(-2, -1)[0]
+
+  return (
+    <a
+      href={`/pokemon/${name}`}
+      className={`rounded-lg border p-3 transition-all hover:border-primary hover:scale-105 md:p-4 ${
+        isCurrentPokemon
+          ? 'border-primary bg-gray-200 dark:bg-gray-700'
+          : 'border-gray-400 bg-white dark:border-gray-600 dark:bg-gray-800'
+      }`}
+    >
+      <div className="text-center">
+        <p className="mb-1 font-semibold text-gray-900 text-sm capitalize md:mb-2 md:text-base dark:text-gray-100">
+          {getPokemonName(name)}
+        </p>
+        {evoId && (
+          <img
+            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${evoId}.png`}
+            alt={name}
+            className="mx-auto h-16 w-16 object-contain md:h-24 md:w-24"
+            loading="lazy"
+          />
+        )}
+      </div>
+    </a>
+  )
+}
+
+/**
+ * Collects evolution stages from the tree, grouping branching evolutions together
+ * Returns an array of stages, where each stage is an array of Pokemon at that level
+ */
+function collectEvolutionStages(
+  tree: EvolutionTreeNode
+): { name: string; speciesUrl: string }[][] {
+  const stages: { name: string; speciesUrl: string }[][] = []
+
+  function traverse(node: EvolutionTreeNode, depth: number) {
+    if (!stages[depth]) {
+      stages[depth] = []
+    }
+
+    // Only add if not already in this stage (avoid duplicates)
+    if (!stages[depth].some((p) => p.name === node.name)) {
+      stages[depth].push({ name: node.name, speciesUrl: node.speciesUrl })
+    }
+
+    for (const child of node.evolvesTo) {
+      traverse(child, depth + 1)
+    }
+  }
+
+  traverse(tree, 0)
+  return stages
 }

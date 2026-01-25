@@ -11,9 +11,9 @@ type LanguageContextType = {
 
 // Default context value for SSR
 const defaultContextValue: LanguageContextType = {
-  language: 'en',
+  language: 'es',
   setLanguage: () => {},
-  t: translations.en,
+  t: translations.es,
 }
 
 const LanguageContext = createContext<LanguageContextType>(defaultContextValue)
@@ -25,21 +25,16 @@ type LanguageProviderProps = {
 }
 
 export function LanguageProvider({ children }: LanguageProviderProps) {
-  // Always start with 'en' for SSR consistency
-  const [language, setLanguageState] = useState<Language>('en')
+  // Always start with 'es' for SSR consistency
+  const [language, setLanguageState] = useState<Language>('es')
 
   // Load stored language preference on client after hydration
   useEffect(() => {
     const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY)
     if (stored === 'en' || stored === 'es') {
       setLanguageState(stored)
-    } else {
-      // Try to detect browser language
-      const browserLang = navigator.language.toLowerCase()
-      if (browserLang.startsWith('es')) {
-        setLanguageState('es')
-      }
     }
+    // Default is already Spanish, no need to detect browser language
 
     // Listen for language changes from other React islands
     const handleStorageChange = (e: StorageEvent) => {

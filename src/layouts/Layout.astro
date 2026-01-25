@@ -12,13 +12,24 @@ const { title } = Astro.props
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#ef4444" />
+    <meta name="description" content="Una Pokédex moderna con información de todos los Pokémon" />
+
+    <!-- iOS PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Pokédex" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
     <script is:inline>
       // Prevent flash of wrong theme
       const savedTheme = localStorage.getItem('theme')
@@ -27,16 +38,10 @@ const { title } = Astro.props
         document.documentElement.classList.add('dark')
       }
 
-      // Set language attribute immediately
+      // Set language attribute immediately (default is Spanish)
       const savedLang = localStorage.getItem('pokemon-language')
       if (savedLang === 'en' || savedLang === 'es') {
         document.documentElement.lang = savedLang
-      } else {
-        // Detect browser language
-        const browserLang = navigator.language.toLowerCase()
-        if (browserLang.startsWith('es')) {
-          document.documentElement.lang = 'es'
-        }
       }
     </script>
   </head>
@@ -46,6 +51,12 @@ const { title } = Astro.props
       <slot />
     </main>
     <Footer />
+    <script is:inline>
+      // Register service worker for PWA
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {})
+      }
+    </script>
   </body>
 </html>
 <style is:global>
