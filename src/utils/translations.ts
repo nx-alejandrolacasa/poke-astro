@@ -4,6 +4,8 @@ export type Translations = {
   // Header
   header: {
     pokedex: string
+    menu: string
+    close: string
   }
   // Home page
   home: {
@@ -111,6 +113,8 @@ export const translations: Record<Language, Translations> = {
   en: {
     header: {
       pokedex: 'Pokédex',
+      menu: 'Menu',
+      close: 'Close',
     },
     home: {
       title: 'Explore the World of Pokémon',
@@ -216,6 +220,8 @@ export const translations: Record<Language, Translations> = {
   es: {
     header: {
       pokedex: 'Pokédex',
+      menu: 'Menú',
+      close: 'Cerrar',
     },
     home: {
       title: 'Explora el Mundo de Pokémon',
