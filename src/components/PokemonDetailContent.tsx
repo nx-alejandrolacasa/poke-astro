@@ -111,84 +111,91 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
   const maxStat = 255
 
   return (
-    <div className="space-y-8">
-      {/* Header Section with Image and Basic Info */}
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-        {/* Left Column - Image */}
-        <div className="flex flex-col items-center justify-center">
-          <div className="relative">
+    <div className="space-y-4 md:space-y-6">
+      {/* Header Section with Image and Basic Info - Side by side on tablets */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-[280px_1fr] md:gap-6 lg:grid-cols-[320px_1fr]">
+        {/* Left Column - Image (smaller on tablets for more info space) */}
+        <div className="flex flex-col items-center justify-start">
+          <div className="relative w-full max-w-[200px] md:max-w-full">
             <img
-              className="aspect-square w-full max-w-md drop-shadow-2xl"
+              className="aspect-square w-full drop-shadow-2xl"
               src={getPokemonImage(pokemon)}
               alt={`${pokemon.name} official artwork`}
             />
-            <span className="absolute top-2 right-2 rounded-full bg-gray-900/80 px-3 py-1 font-mono font-bold text-white text-xl backdrop-blur-sm md:top-4 md:right-4 md:px-4 md:py-2 md:text-2xl dark:bg-white/80 dark:text-gray-900">
+            <span className="absolute top-1 right-1 rounded-full bg-gray-900/80 px-2 py-0.5 font-mono font-bold text-white text-sm backdrop-blur-sm md:top-2 md:right-2 md:px-3 md:py-1 md:text-lg dark:bg-white/80 dark:text-gray-900">
               #{pokemon.order.toString().padStart(3, '0')}
             </span>
           </div>
+          {/* Pokemon Name below image on mobile */}
+          <h1 className="mt-3 text-center font-extrabold text-2xl text-gray-900 capitalize tracking-tight md:hidden dark:text-gray-100">
+            {getPokemonName(pokemonName)}
+          </h1>
         </div>
 
         {/* Right Column - Name and Basic Info */}
-        <div className="space-y-6">
-          {/* Pokemon Name - Prominent Header */}
-          <h1 className="text-center font-extrabold text-4xl text-gray-900 capitalize tracking-tight md:text-left md:text-5xl dark:text-gray-100">
+        <div className="space-y-3 md:space-y-4">
+          {/* Pokemon Name - Hidden on mobile, shown on tablets+ */}
+          <h1 className="hidden font-extrabold text-3xl text-gray-900 capitalize tracking-tight md:block lg:text-4xl dark:text-gray-100">
             {getPokemonName(pokemonName)}
           </h1>
 
-          {/* Types */}
-          <div className="rounded-lg border border-gray-300 bg-gray-50 p-4 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
-            <h2 className="mb-3 font-bold text-gray-900 text-xl dark:text-gray-100">
-              {t.pokemon.type}
-            </h2>
-            <div className="flex gap-2">
-              {loading ? (
-                <div className="h-10 w-20 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
-              ) : (
-                types.map(({ name, translatedName }) => (
-                  <span
-                    key={name}
-                    className="rounded-full border-2 border-gray-400 bg-white px-4 py-2 font-semibold text-gray-900 capitalize dark:border-gray-300 dark:bg-gray-800 dark:text-gray-100"
-                  >
-                    {translatedName}
-                  </span>
-                ))
-              )}
-            </div>
-          </div>
-
-          {/* Physical Stats */}
-          <div className="rounded-lg border border-gray-300 bg-gray-50 p-4 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
-            <h2 className="mb-3 font-bold text-gray-900 text-xl dark:text-gray-100">
-              {t.pokemon.physicalStats}
-            </h2>
-            <div className="grid grid-cols-2 gap-2 text-gray-900 dark:text-gray-100">
-              <div>
-                <span className="text-gray-600 dark:text-gray-400">{t.pokemon.height}:</span>{' '}
-                <span className="font-semibold">{(pokemon.height / 10).toFixed(1)} m</span>
+          {/* Compact info grid for tablets - Types and Physical stats side by side */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4">
+            {/* Types */}
+            <div className="rounded-lg border border-gray-300 bg-gray-50 p-3 transition-colors md:p-4 dark:border-gray-700 dark:bg-gray-800/50">
+              <h2 className="mb-2 font-bold text-gray-900 text-base md:text-lg dark:text-gray-100">
+                {t.pokemon.type}
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                {loading ? (
+                  <div className="h-8 w-16 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
+                ) : (
+                  types.map(({ name, translatedName }) => (
+                    <span
+                      key={name}
+                      className="rounded-full border-2 border-gray-400 bg-white px-3 py-1 font-semibold text-gray-900 text-sm capitalize dark:border-gray-300 dark:bg-gray-800 dark:text-gray-100"
+                    >
+                      {translatedName}
+                    </span>
+                  ))
+                )}
               </div>
-              <div>
-                <span className="text-gray-600 dark:text-gray-400">{t.pokemon.weight}:</span>{' '}
-                <span className="font-semibold">{(pokemon.weight / 10).toFixed(1)} kg</span>
+            </div>
+
+            {/* Physical Stats */}
+            <div className="rounded-lg border border-gray-300 bg-gray-50 p-3 transition-colors md:p-4 dark:border-gray-700 dark:bg-gray-800/50">
+              <h2 className="mb-2 font-bold text-gray-900 text-base md:text-lg dark:text-gray-100">
+                {t.pokemon.physicalStats}
+              </h2>
+              <div className="grid grid-cols-2 gap-1 text-gray-900 text-sm dark:text-gray-100">
+                <div>
+                  <span className="text-gray-600 dark:text-gray-400">{t.pokemon.height}:</span>{' '}
+                  <span className="font-semibold">{(pokemon.height / 10).toFixed(1)} m</span>
+                </div>
+                <div>
+                  <span className="text-gray-600 dark:text-gray-400">{t.pokemon.weight}:</span>{' '}
+                  <span className="font-semibold">{(pokemon.weight / 10).toFixed(1)} kg</span>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Abilities */}
-          <div className="rounded-lg border border-gray-300 bg-gray-50 p-4 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
-            <h2 className="mb-3 font-bold text-gray-900 text-xl dark:text-gray-100">
+          <div className="rounded-lg border border-gray-300 bg-gray-50 p-3 transition-colors md:p-4 dark:border-gray-700 dark:bg-gray-800/50">
+            <h2 className="mb-2 font-bold text-gray-900 text-base md:text-lg dark:text-gray-100">
               {t.pokemon.abilities}
             </h2>
             <div className="flex flex-wrap gap-2">
               {loading ? (
                 <>
-                  <div className="h-8 w-24 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
-                  <div className="h-8 w-20 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
+                  <div className="h-7 w-20 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
+                  <div className="h-7 w-16 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
                 </>
               ) : (
                 abilities.map(({ name, translatedName, isHidden }) => (
                   <span
                     key={name}
-                    className={`rounded-full border px-3 py-1 text-sm ${
+                    className={`rounded-full border px-2 py-0.5 text-xs md:px-3 md:py-1 md:text-sm ${
                       isHidden
                         ? 'border-yellow-500 text-yellow-600 dark:text-yellow-400'
                         : 'border-gray-400 text-gray-900 dark:border-gray-500 dark:text-gray-100'
@@ -204,23 +211,23 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
         </div>
       </div>
 
-      {/* Base Stats */}
-      <div className="rounded-lg border border-gray-300 bg-gray-50 p-6 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
-        <h2 className="mb-4 font-bold text-2xl text-gray-900 dark:text-gray-100">
+      {/* Base Stats - More compact */}
+      <div className="rounded-lg border border-gray-300 bg-gray-50 p-3 transition-colors md:p-4 dark:border-gray-700 dark:bg-gray-800/50">
+        <h2 className="mb-3 font-bold text-lg text-gray-900 md:text-xl dark:text-gray-100">
           {t.pokemon.baseStats}
         </h2>
-        <div className="space-y-3">
+        <div className="space-y-2">
           {loading ? (
             // Loading skeleton for stats
             <>
               {[1, 2, 3, 4, 5, 6].map((i) => (
                 <div
                   key={i}
-                  className="grid grid-cols-[120px_60px_1fr] gap-4"
+                  className="grid grid-cols-[80px_40px_1fr] gap-2 md:grid-cols-[100px_50px_1fr] md:gap-3"
                 >
-                  <div className="h-5 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
-                  <div className="h-5 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
-                  <div className="h-4 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
+                  <div className="h-4 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
+                  <div className="h-4 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
+                  <div className="h-3 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
                 </div>
               ))}
             </>
@@ -231,16 +238,16 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
                 return (
                   <div
                     key={name}
-                    className="grid grid-cols-[120px_60px_1fr] gap-4 text-gray-900 dark:text-gray-100"
+                    className="grid grid-cols-[80px_40px_1fr] gap-2 text-gray-900 text-sm md:grid-cols-[100px_50px_1fr] md:gap-3 dark:text-gray-100"
                   >
-                    <div className="text-right text-gray-600 dark:text-gray-400">
+                    <div className="truncate text-right text-gray-600 text-xs md:text-sm dark:text-gray-400">
                       {translatedName}
                     </div>
-                    <div className="text-right font-semibold">{baseStat}</div>
+                    <div className="text-right font-semibold text-xs md:text-sm">{baseStat}</div>
                     <div className="flex items-center">
-                      <div className="relative h-4 w-full rounded-full bg-gray-300 dark:bg-gray-700">
+                      <div className="relative h-3 w-full rounded-full bg-gray-300 md:h-4 dark:bg-gray-700">
                         <div
-                          className={`absolute top-0 left-0 h-4 rounded-full ${
+                          className={`absolute top-0 left-0 h-3 rounded-full md:h-4 ${
                             baseStat >= 100
                               ? 'bg-green-500'
                               : baseStat >= 60
@@ -254,9 +261,9 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
                   </div>
                 )
               })}
-              <div className="mt-4 grid grid-cols-[120px_60px_1fr] gap-4 border-t border-gray-400 pt-3 dark:border-gray-700">
-                <div className="text-right font-bold">{t.pokemon.total}</div>
-                <div className="text-right font-bold">{totalStats}</div>
+              <div className="mt-2 grid grid-cols-[80px_40px_1fr] gap-2 border-t border-gray-400 pt-2 md:mt-3 md:grid-cols-[100px_50px_1fr] md:gap-3 md:pt-3 dark:border-gray-700">
+                <div className="text-right font-bold text-xs md:text-sm">{t.pokemon.total}</div>
+                <div className="text-right font-bold text-xs md:text-sm">{totalStats}</div>
                 <div />
               </div>
             </>

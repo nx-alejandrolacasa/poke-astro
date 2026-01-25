@@ -61,7 +61,7 @@ export function PokemonInfiniteScroll({
 
   return (
     <div>
-      <ul className="grid grid-cols-2 gap-4 md:grid-cols-3">
+      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {pokemon.map((poke) => (
           <li key={poke.name} className="list-none">
             <PokemonTile pokemon={poke} />

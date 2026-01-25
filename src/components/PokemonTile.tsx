@@ -8,14 +8,11 @@ type PokemonTileProps = {
 
 export function PokemonTile({ loading = false, pokemon }: PokemonTileProps) {
   return (
-    <div className="rounded-xl border-2 border-gray-200 bg-white p-4 text-center shadow-lg transition-all hover:border-primary hover:shadow-xl hover:scale-[1.02] dark:border-gray-700 dark:bg-gray-800">
+    <div className="rounded-lg border-2 border-gray-200 bg-white p-2 text-center shadow-md transition-all hover:border-primary hover:shadow-lg hover:scale-[1.02] md:rounded-xl md:p-3 dark:border-gray-700 dark:bg-gray-800">
       <a href={`/pokemon/${pokemon.name}`} title={pokemon.name}>
-        <span className="mb-4 block overflow-hidden text-ellipsis whitespace-nowrap font-bold text-gray-900 text-sm capitalize md:text-md xl:text-xl dark:text-gray-100">
-          {pokemon.name.replaceAll('-', ' ')}
-        </span>
         <div className="relative aspect-square w-full">
           {/* Order number - positioned behind the Pokemon image */}
-          <div className="absolute bottom-1 right-1 text-3xl md:text-6xl font-black text-gray-300/40 dark:text-gray-600/40 select-none pointer-events-none z-0">
+          <div className="pointer-events-none absolute right-0.5 bottom-0.5 z-0 select-none font-black text-2xl text-gray-300/40 md:text-4xl dark:text-gray-600/40">
             #{pokemon.order.toString().padStart(3, '0')}
           </div>
           {/* Pokemon image - positioned in front */}
@@ -25,6 +22,9 @@ export function PokemonTile({ loading = false, pokemon }: PokemonTileProps) {
             alt={`${pokemon.name} official artwork`}
           />
         </div>
+        <span className="mt-1 block overflow-hidden text-ellipsis whitespace-nowrap font-bold text-gray-900 text-xs capitalize md:mt-2 md:text-sm dark:text-gray-100">
+          {pokemon.name.replaceAll('-', ' ')}
+        </span>
       </a>
     </div>
   )
