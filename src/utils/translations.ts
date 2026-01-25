@@ -97,6 +97,14 @@ export type Translations = {
   }
   // Fun facts
   funFacts: string[]
+  // Footer
+  footer: {
+    disclaimer: string
+    trademarks: string
+    fairUse: string
+    dataBy: string
+    builtWith: string
+  }
 }
 
 export const translations: Record<Language, Translations> = {
@@ -194,6 +202,16 @@ export const translations: Record<Language, Translations> = {
       'The Pokémon anime has been running for over 25 years with more than 1,000 episodes',
       'There are more Pokémon species than there are countries in the world',
     ],
+    footer: {
+      disclaimer:
+        'Pokémon Pokédex is a fan-made website with no affiliation, sponsorship, or official relationship with Nintendo, Game Freak, Creatures Inc., or The Pokémon Company.',
+      trademarks:
+        'All names, images, and trademarks related to Pokémon are the property of their respective owners.',
+      fairUse:
+        'This site uses such elements under fair use principles for educational and informational purposes.',
+      dataBy: 'Data provided by',
+      builtWith: 'Built with',
+    },
   },
   es: {
     header: {
@@ -233,7 +251,7 @@ export const translations: Record<Language, Translations> = {
       resistantTo: 'Resistente A',
       immuneTo: 'Inmune A',
       none: 'Ninguno',
-      evolutionChain: 'Cadena Evolutiva',
+      evolutionChain: 'Evoluciones',
     },
     scroll: {
       loadingMore: 'Cargando más Pokémon...',
@@ -290,6 +308,16 @@ export const translations: Record<Language, Translations> = {
       'El anime de Pokémon ha estado en emisión por más de 25 años con más de 1,000 episodios',
       'Hay más especies de Pokémon que países en el mundo',
     ],
+    footer: {
+      disclaimer:
+        'Pokémon Pokédex es un sitio web creado por fans, sin ningún tipo de afiliación, patrocinio ni relación oficial con Nintendo, Game Freak, Creatures Inc. o The Pokémon Company.',
+      trademarks:
+        'Todos los nombres, imágenes y marcas relacionadas con Pokémon son propiedad de sus respectivos dueños.',
+      fairUse:
+        'Este sitio hace uso de dichos elementos bajo los principios de fair use (uso legítimo), con fines educativos e informativos.',
+      dataBy: 'Datos proporcionados por',
+      builtWith: 'Construido con',
+    },
   },
 }
 

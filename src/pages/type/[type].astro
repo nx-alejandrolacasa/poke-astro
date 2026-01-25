@@ -52,8 +52,8 @@ if (!typeRes.ok) {
 }
 const typeData = await typeRes.json()
 
-// Get first page of pokemon (24 items)
-const pageSize = 24
+// Get first page of pokemon (30 items)
+const pageSize = 30
 const pokemonSlice = typeData.pokemon.slice(0, pageSize)
 
 // Fetch full details for first page

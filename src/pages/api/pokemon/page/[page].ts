@@ -3,7 +3,7 @@ import { fetchPokemonPage } from '@/utils/pokemon'
 
 export const GET: APIRoute = async ({ params }) => {
   const page = Number.parseInt(params.page || '1', 10)
-  const pageSize = 24
+  const pageSize = 30
 
   try {
     const pokemonPage = await fetchPokemonPage(page, pageSize)

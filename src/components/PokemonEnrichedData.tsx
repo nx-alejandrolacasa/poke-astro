@@ -1,5 +1,6 @@
 import type { EvolutionTreeNode } from '@utils/pokemon'
 import { getPokemonName } from '@utils/pokemon'
+import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 import { useLanguage } from '@/contexts/LanguageContext'
 
@@ -16,9 +17,10 @@ type EnrichedData = {
 
 type PokemonEnrichedDataProps = {
   pokemonName: string
+  statsSection?: ReactNode
 }
 
-export function PokemonEnrichedData({ pokemonName }: PokemonEnrichedDataProps) {
+export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrichedDataProps) {
   const { t, language } = useLanguage()
   const [data, setData] = useState<EnrichedData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -48,9 +50,10 @@ export function PokemonEnrichedData({ pokemonName }: PokemonEnrichedDataProps) {
 
   if (loading) {
     return (
-      <div className="space-y-8">
-        <div className="flex items-center justify-center p-12">
-          <div className="h-12 w-12 animate-spin rounded-full border-t-4 border-primary" />
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
+        {statsSection}
+        <div className="flex items-center justify-center rounded-lg border border-gray-300 bg-gray-50 p-8 dark:border-gray-700 dark:bg-gray-800/50">
+          <div className="h-10 w-10 animate-spin rounded-full border-t-4 border-primary" />
         </div>
       </div>
     )
@@ -58,44 +61,40 @@ export function PokemonEnrichedData({ pokemonName }: PokemonEnrichedDataProps) {
 
   if (error || !data) {
     return (
-      <div className="rounded-lg border border-red-300 bg-red-100 p-4 text-center dark:border-red-700 dark:bg-red-900/20">
-        <p className="text-red-700 dark:text-red-400">{t.errors.loadFailed}</p>
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
+        {statsSection}
+        <div className="rounded-lg border border-red-300 bg-red-100 p-4 text-center dark:border-red-700 dark:bg-red-900/20">
+          <p className="text-red-700 dark:text-red-400">{t.errors.loadFailed}</p>
+        </div>
       </div>
     )
   }
 
-  return (
-    <div className="space-y-8">
-      {/* Description */}
-      {data.flavorText && (
-        <div className="rounded-lg border border-gray-300 bg-gray-50 p-4 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
-          <h2 className="mb-2 font-bold text-gray-900 text-xl dark:text-gray-100">
-            {t.pokemon.description}
-          </h2>
-          <p className="text-gray-700 leading-relaxed dark:text-gray-300">
-            {data.flavorText}
-          </p>
-        </div>
-      )}
+  const hasEvolutions = data.evolutions.length > 1 && data.evolutionTree
 
-      {/* Type Effectiveness */}
-      <div className="rounded-lg border border-gray-300 bg-gray-50 p-6 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
-        <h2 className="mb-4 font-bold text-2xl text-gray-900 dark:text-gray-100">
+  return (
+    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
+      {/* Stats Section - Left column on tablets */}
+      {statsSection}
+
+      {/* Type Effectiveness - Right column on tablets */}
+      <div className="rounded-lg border border-gray-300 bg-gray-50 p-3 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
+        <h2 className="mb-2 font-bold text-base text-gray-900 md:text-lg dark:text-gray-100">
           {t.pokemon.typeEffectiveness}
         </h2>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="grid grid-cols-3 gap-2">
           {/* Weaknesses */}
           <div>
-            <h3 className="mb-3 font-semibold text-lg text-red-600 dark:text-red-400">
+            <h3 className="mb-1 font-semibold text-red-600 text-sm dark:text-red-400">
               {t.pokemon.weakTo} ({data.typeEffectiveness.weaknesses.length})
             </h3>
             {data.typeEffectiveness.weaknesses.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1">
                 {data.typeEffectiveness.weaknesses.map(
                   ({ type, multiplier }) => (
                     <span
                       key={type}
-                      className="rounded-full border border-red-400 bg-red-100 px-3 py-1 text-gray-900 text-sm capitalize dark:border-red-500 dark:bg-red-900/30 dark:text-gray-100"
+                      className="rounded-full border border-red-400 bg-red-100 px-2 py-0.5 text-gray-900 text-sm capitalize dark:border-red-500 dark:bg-red-900/30 dark:text-gray-100"
                     >
                       {type} ({multiplier}x)
                     </span>
@@ -109,16 +108,16 @@ export function PokemonEnrichedData({ pokemonName }: PokemonEnrichedDataProps) {
 
           {/* Resistances */}
           <div>
-            <h3 className="mb-3 font-semibold text-green-600 text-lg dark:text-green-400">
+            <h3 className="mb-1 font-semibold text-green-600 text-sm dark:text-green-400">
               {t.pokemon.resistantTo} ({data.typeEffectiveness.resistances.length})
             </h3>
             {data.typeEffectiveness.resistances.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1">
                 {data.typeEffectiveness.resistances.map(
                   ({ type, multiplier }) => (
                     <span
                       key={type}
-                      className="rounded-full border border-green-400 bg-green-100 px-3 py-1 text-gray-900 text-sm capitalize dark:border-green-500 dark:bg-green-900/30 dark:text-gray-100"
+                      className="rounded-full border border-green-400 bg-green-100 px-2 py-0.5 text-gray-900 text-sm capitalize dark:border-green-500 dark:bg-green-900/30 dark:text-gray-100"
                     >
                       {type} ({multiplier}x)
                     </span>
@@ -132,15 +131,15 @@ export function PokemonEnrichedData({ pokemonName }: PokemonEnrichedDataProps) {
 
           {/* Immunities */}
           <div>
-            <h3 className="mb-3 font-semibold text-lg text-primary">
+            <h3 className="mb-1 font-semibold text-primary text-sm">
               {t.pokemon.immuneTo} ({data.typeEffectiveness.immunities.length})
             </h3>
             {data.typeEffectiveness.immunities.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1">
                 {data.typeEffectiveness.immunities.map((type) => (
                   <span
                     key={type}
-                    className="rounded-full border border-primary bg-primary-50 px-3 py-1 text-gray-900 text-sm capitalize dark:bg-primary-900/30 dark:text-gray-100"
+                    className="rounded-full border border-primary bg-primary-50 px-2 py-0.5 text-gray-900 text-sm capitalize dark:bg-primary-900/30 dark:text-gray-100"
                   >
                     {type} (0x)
                   </span>
@@ -153,13 +152,13 @@ export function PokemonEnrichedData({ pokemonName }: PokemonEnrichedDataProps) {
         </div>
       </div>
 
-      {/* Evolution Chain */}
-      {data.evolutions.length > 1 && data.evolutionTree && (
-        <div className="rounded-lg border border-gray-300 bg-gray-50 p-6 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
-          <h2 className="mb-4 font-bold text-2xl text-gray-900 dark:text-gray-100">
+      {/* Evolution Chain - Spans full width */}
+      {hasEvolutions && (
+        <div className="rounded-lg border border-gray-300 bg-gray-50 p-3 transition-colors md:col-span-2 dark:border-gray-700 dark:bg-gray-800/50">
+          <h2 className="mb-2 font-bold text-base text-gray-900 md:text-lg dark:text-gray-100">
             {t.pokemon.evolutionChain}
           </h2>
-          <EvolutionTree tree={data.evolutionTree} currentPokemon={pokemonName} />
+          <EvolutionTree tree={data.evolutionTree!} currentPokemon={pokemonName} />
         </div>
       )}
     </div>
@@ -176,26 +175,21 @@ function EvolutionTree({ tree, currentPokemon }: EvolutionTreeProps) {
   const hasBranching = stages.some((stage) => stage.length > 1)
 
   return (
-    <div className="flex flex-col items-center gap-4 md:flex-row md:justify-center md:gap-2">
+    <div className="flex flex-row flex-wrap items-center justify-center gap-4">
       {stages.map((stage, stageIndex) => (
-        <div key={stageIndex} className="flex items-center gap-2 md:gap-4">
+        <div key={stageIndex} className="flex items-center gap-4">
           {stageIndex > 0 && (
-            <div className="hidden font-bold text-2xl text-gray-600 md:block dark:text-gray-500">
+            <div className="font-bold text-gray-600 text-2xl dark:text-gray-500">
               →
             </div>
           )}
-          {stageIndex > 0 && (
-            <div className="font-bold text-2xl text-gray-600 md:hidden dark:text-gray-500">
-              ↓
-            </div>
-          )}
           <div
-            className={`flex flex-col items-center gap-2 ${hasBranching && stage.length > 1 ? 'rounded-lg border border-dashed border-gray-400 p-2 dark:border-gray-600' : ''}`}
+            className={`flex flex-row items-center gap-2 ${hasBranching && stage.length > 1 ? 'rounded-xl border-2 border-dashed border-gray-400 p-2 dark:border-gray-600' : ''}`}
           >
             {stage.map((pokemon, pokemonIndex) => (
-              <div key={pokemon.name} className="flex flex-col items-center">
+              <div key={pokemon.name} className="flex items-center">
                 {pokemonIndex > 0 && stage.length > 1 && (
-                  <span className="mb-2 text-gray-500 text-xs italic">o</span>
+                  <span className="mx-2 font-bold text-gray-400 text-lg">/</span>
                 )}
                 <EvolutionCard
                   name={pokemon.name}
@@ -223,24 +217,24 @@ function EvolutionCard({ name, speciesUrl, isCurrentPokemon }: EvolutionCardProp
   return (
     <a
       href={`/pokemon/${name}`}
-      className={`rounded-lg border p-3 transition-all hover:border-primary hover:scale-105 md:p-4 ${
+      className={`rounded-xl border-2 p-3 transition-all hover:border-primary hover:scale-105 ${
         isCurrentPokemon
           ? 'border-primary bg-gray-200 dark:bg-gray-700'
           : 'border-gray-400 bg-white dark:border-gray-600 dark:bg-gray-800'
       }`}
     >
       <div className="text-center">
-        <p className="mb-1 font-semibold text-gray-900 text-sm capitalize md:mb-2 md:text-base dark:text-gray-100">
-          {getPokemonName(name)}
-        </p>
         {evoId && (
           <img
             src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${evoId}.png`}
             alt={name}
-            className="mx-auto h-16 w-16 object-contain md:h-24 md:w-24"
+            className="mx-auto h-24 w-24 object-contain md:h-28 md:w-28"
             loading="lazy"
           />
         )}
+        <p className="font-semibold text-gray-900 text-base capitalize dark:text-gray-100">
+          {getPokemonName(name)}
+        </p>
       </div>
     </a>
   )
