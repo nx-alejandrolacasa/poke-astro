@@ -162,7 +162,7 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
               {loading ? (
                 <div className="h-12 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
               ) : description ? (
-                <p className="text-gray-700 text-xs leading-relaxed md:text-sm dark:text-gray-300">
+                <p className="text-gray-700 text-sm leading-relaxed md:text-base dark:text-gray-300">
                   {description}
                 </p>
               ) : null}
@@ -173,17 +173,17 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
           <div className="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
             {/* Types */}
             <div className="rounded-lg border border-gray-300 bg-gray-50 p-2 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
-              <h2 className="mb-1 font-bold text-gray-900 text-xs md:text-sm dark:text-gray-100">
+              <h2 className="mb-1 font-bold text-gray-900 text-sm md:text-base dark:text-gray-100">
                 {t.pokemon.type}
               </h2>
               <div className="flex flex-wrap gap-1">
                 {loading ? (
-                  <div className="h-5 w-12 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
+                  <div className="h-6 w-14 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
                 ) : (
                   types.map(({ name, translatedName }) => (
                     <span
                       key={name}
-                      className="rounded-full border border-gray-400 bg-white px-2 py-0.5 font-medium text-gray-900 text-xs capitalize dark:border-gray-300 dark:bg-gray-800 dark:text-gray-100"
+                      className="rounded-full border border-gray-400 bg-white px-2 py-0.5 font-medium text-gray-900 text-sm capitalize dark:border-gray-300 dark:bg-gray-800 dark:text-gray-100"
                     >
                       {translatedName}
                     </span>
@@ -194,37 +194,37 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
 
             {/* Height */}
             <div className="rounded-lg border border-gray-300 bg-gray-50 p-2 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
-              <h2 className="mb-1 font-bold text-gray-900 text-xs md:text-sm dark:text-gray-100">
+              <h2 className="mb-1 font-bold text-gray-900 text-sm md:text-base dark:text-gray-100">
                 {t.pokemon.height}
               </h2>
-              <p className="font-semibold text-gray-900 text-sm md:text-base dark:text-gray-100">
+              <p className="font-semibold text-gray-900 text-base md:text-lg dark:text-gray-100">
                 {(pokemon.height / 10).toFixed(1)} m
               </p>
             </div>
 
             {/* Weight */}
             <div className="rounded-lg border border-gray-300 bg-gray-50 p-2 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
-              <h2 className="mb-1 font-bold text-gray-900 text-xs md:text-sm dark:text-gray-100">
+              <h2 className="mb-1 font-bold text-gray-900 text-sm md:text-base dark:text-gray-100">
                 {t.pokemon.weight}
               </h2>
-              <p className="font-semibold text-gray-900 text-sm md:text-base dark:text-gray-100">
+              <p className="font-semibold text-gray-900 text-base md:text-lg dark:text-gray-100">
                 {(pokemon.weight / 10).toFixed(1)} kg
               </p>
             </div>
 
             {/* Abilities */}
             <div className="rounded-lg border border-gray-300 bg-gray-50 p-2 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
-              <h2 className="mb-1 font-bold text-gray-900 text-xs md:text-sm dark:text-gray-100">
+              <h2 className="mb-1 font-bold text-gray-900 text-sm md:text-base dark:text-gray-100">
                 {t.pokemon.abilities}
               </h2>
               <div className="flex flex-wrap gap-1">
                 {loading ? (
-                  <div className="h-5 w-14 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
+                  <div className="h-6 w-16 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
                 ) : (
                   abilities.map(({ name, translatedName, isHidden }) => (
                     <span
                       key={name}
-                      className={`rounded-full border px-1.5 py-0.5 text-xs ${
+                      className={`rounded-full border px-2 py-0.5 text-sm ${
                         isHidden
                           ? 'border-yellow-500 text-yellow-600 dark:text-yellow-400'
                           : 'border-gray-400 text-gray-900 dark:border-gray-500 dark:text-gray-100'
@@ -255,11 +255,11 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
                   {[1, 2, 3, 4, 5, 6].map((i) => (
                     <div
                       key={i}
-                      className="grid grid-cols-[70px_35px_1fr] gap-1.5"
+                      className="grid grid-cols-[90px_40px_1fr] gap-2"
                     >
-                      <div className="h-3 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
-                      <div className="h-3 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
-                      <div className="h-2.5 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
+                      <div className="h-4 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
+                      <div className="h-4 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
+                      <div className="h-3 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
                     </div>
                   ))}
                 </>
@@ -270,16 +270,16 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
                     return (
                       <div
                         key={name}
-                        className="grid grid-cols-[70px_35px_1fr] gap-1.5 text-gray-900 dark:text-gray-100"
+                        className="grid grid-cols-[90px_40px_1fr] gap-2 text-gray-900 dark:text-gray-100"
                       >
-                        <div className="truncate text-right text-gray-600 text-[10px] md:text-xs dark:text-gray-400">
+                        <div className="truncate text-right text-gray-600 text-sm dark:text-gray-400">
                           {translatedName}
                         </div>
-                        <div className="text-right font-semibold text-[10px] md:text-xs">{baseStat}</div>
+                        <div className="text-right font-semibold text-sm">{baseStat}</div>
                         <div className="flex items-center">
-                          <div className="relative h-2.5 w-full rounded-full bg-gray-300 dark:bg-gray-700">
+                          <div className="relative h-3 w-full rounded-full bg-gray-300 dark:bg-gray-700">
                             <div
-                              className={`absolute top-0 left-0 h-2.5 rounded-full ${
+                              className={`absolute top-0 left-0 h-3 rounded-full ${
                                 baseStat >= 100
                                   ? 'bg-green-500'
                                   : baseStat >= 60
@@ -293,9 +293,9 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
                       </div>
                     )
                   })}
-                  <div className="mt-1.5 grid grid-cols-[70px_35px_1fr] gap-1.5 border-t border-gray-400 pt-1.5 dark:border-gray-700">
-                    <div className="text-right font-bold text-[10px] md:text-xs">{t.pokemon.total}</div>
-                    <div className="text-right font-bold text-[10px] md:text-xs">{totalStats}</div>
+                  <div className="mt-2 grid grid-cols-[90px_40px_1fr] gap-2 border-t border-gray-400 pt-2 dark:border-gray-700">
+                    <div className="text-right font-bold text-sm">{t.pokemon.total}</div>
+                    <div className="text-right font-bold text-sm">{totalStats}</div>
                     <div />
                   </div>
                 </>

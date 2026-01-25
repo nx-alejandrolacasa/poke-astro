@@ -72,45 +72,45 @@ export function HomeContent({ totalPokemon }: HomeContentProps) {
           {/* Total Pokemon */}
           <div className="rounded-lg border-2 border-[#3466AF]/30 bg-gradient-to-br from-[#3466AF] to-purple-600 p-3 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-[#3466AF]/60 hover:shadow-2xl md:p-4 dark:border-[#3466AF]/50 dark:hover:border-[#3466AF]/80">
             <div className="space-y-0.5">
-              <p className="font-semibold text-white/90 text-[10px] uppercase tracking-wider md:text-xs">
+              <p className="font-semibold text-white/90 text-xs uppercase tracking-wider md:text-sm">
                 {t.home.totalPokemon}
               </p>
               <p className="font-black text-2xl text-white md:text-3xl">
                 {totalPokemon.toLocaleString()}
               </p>
-              <p className="text-white/90 text-[10px] md:text-xs">{t.home.speciesDiscovered}</p>
+              <p className="text-white/90 text-sm md:text-base">{t.home.speciesDiscovered}</p>
             </div>
           </div>
 
           {/* Types */}
           <div className="rounded-lg border-2 border-pink-400/30 bg-gradient-to-br from-pink-500 to-red-600 p-3 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-pink-400/60 hover:shadow-2xl md:p-4 dark:border-pink-400/50 dark:hover:border-pink-400/80">
             <div className="space-y-0.5">
-              <p className="font-semibold text-white/90 text-[10px] uppercase tracking-wider md:text-xs">
+              <p className="font-semibold text-white/90 text-xs uppercase tracking-wider md:text-sm">
                 {t.home.types}
               </p>
               <p className="font-black text-2xl text-white md:text-3xl">{pokemonTypes.length}</p>
-              <p className="text-white/90 text-[10px] md:text-xs">{t.home.uniqueTypes}</p>
+              <p className="text-white/90 text-sm md:text-base">{t.home.uniqueTypes}</p>
             </div>
           </div>
 
           {/* Generations */}
           <div className="rounded-lg border-2 border-green-400/30 bg-gradient-to-br from-green-500 to-emerald-600 p-3 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-green-400/60 hover:shadow-2xl md:p-4 dark:border-green-400/50 dark:hover:border-green-400/80">
             <div className="space-y-0.5">
-              <p className="font-semibold text-white/90 text-[10px] uppercase tracking-wider md:text-xs">
+              <p className="font-semibold text-white/90 text-xs uppercase tracking-wider md:text-sm">
                 {t.home.generations}
               </p>
               <p className="font-black text-2xl text-white md:text-3xl">{generations.length}</p>
-              <p className="text-white/90 text-[10px] md:text-xs">{t.home.pokemonGenerations}</p>
+              <p className="text-white/90 text-sm md:text-base">{t.home.pokemonGenerations}</p>
             </div>
           </div>
 
           {/* Fun Fact Card */}
           <div className="rounded-lg border-2 border-yellow-400/30 bg-gradient-to-br from-yellow-500 to-orange-600 p-3 shadow-lg transition-all duration-300 hover:border-yellow-400/60 hover:shadow-2xl md:p-4 dark:border-yellow-400/50 dark:hover:border-yellow-400/80">
             <div className="space-y-0.5">
-              <p className="font-semibold text-white/90 text-[10px] uppercase tracking-wider md:text-xs">
+              <p className="font-semibold text-white/90 text-xs uppercase tracking-wider md:text-sm">
                 {t.home.didYouKnow}
               </p>
-              <p className="text-[10px] text-white leading-tight md:text-xs">{randomFact}</p>
+              <p className="text-sm text-white leading-tight md:text-base">{randomFact}</p>
             </div>
           </div>
         </div>

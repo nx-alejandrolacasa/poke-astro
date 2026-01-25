@@ -4,7 +4,7 @@ import type { Pokemon, PokemonList } from '@/utils/pokemon'
 export const GET: APIRoute = async ({ params }) => {
   const { type, page: pageParam } = params
   const page = Number.parseInt(pageParam || '1', 10)
-  const pageSize = 24
+  const pageSize = 30
 
   try {
     // Fetch type data from PokéAPI

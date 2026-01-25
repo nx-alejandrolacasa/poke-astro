@@ -85,7 +85,7 @@ export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrich
         <div className="grid grid-cols-3 gap-2">
           {/* Weaknesses */}
           <div>
-            <h3 className="mb-1 font-semibold text-red-600 text-xs dark:text-red-400">
+            <h3 className="mb-1 font-semibold text-red-600 text-sm dark:text-red-400">
               {t.pokemon.weakTo} ({data.typeEffectiveness.weaknesses.length})
             </h3>
             {data.typeEffectiveness.weaknesses.length > 0 ? (
@@ -94,7 +94,7 @@ export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrich
                   ({ type, multiplier }) => (
                     <span
                       key={type}
-                      className="rounded-full border border-red-400 bg-red-100 px-1.5 py-0.5 text-gray-900 text-[10px] capitalize dark:border-red-500 dark:bg-red-900/30 dark:text-gray-100"
+                      className="rounded-full border border-red-400 bg-red-100 px-2 py-0.5 text-gray-900 text-sm capitalize dark:border-red-500 dark:bg-red-900/30 dark:text-gray-100"
                     >
                       {type} ({multiplier}x)
                     </span>
@@ -102,13 +102,13 @@ export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrich
                 )}
               </div>
             ) : (
-              <p className="text-gray-600 text-[10px] dark:text-gray-500">{t.pokemon.none}</p>
+              <p className="text-gray-600 text-sm dark:text-gray-500">{t.pokemon.none}</p>
             )}
           </div>
 
           {/* Resistances */}
           <div>
-            <h3 className="mb-1 font-semibold text-green-600 text-xs dark:text-green-400">
+            <h3 className="mb-1 font-semibold text-green-600 text-sm dark:text-green-400">
               {t.pokemon.resistantTo} ({data.typeEffectiveness.resistances.length})
             </h3>
             {data.typeEffectiveness.resistances.length > 0 ? (
@@ -117,7 +117,7 @@ export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrich
                   ({ type, multiplier }) => (
                     <span
                       key={type}
-                      className="rounded-full border border-green-400 bg-green-100 px-1.5 py-0.5 text-gray-900 text-[10px] capitalize dark:border-green-500 dark:bg-green-900/30 dark:text-gray-100"
+                      className="rounded-full border border-green-400 bg-green-100 px-2 py-0.5 text-gray-900 text-sm capitalize dark:border-green-500 dark:bg-green-900/30 dark:text-gray-100"
                     >
                       {type} ({multiplier}x)
                     </span>
@@ -125,13 +125,13 @@ export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrich
                 )}
               </div>
             ) : (
-              <p className="text-gray-600 text-[10px] dark:text-gray-500">{t.pokemon.none}</p>
+              <p className="text-gray-600 text-sm dark:text-gray-500">{t.pokemon.none}</p>
             )}
           </div>
 
           {/* Immunities */}
           <div>
-            <h3 className="mb-1 font-semibold text-primary text-xs">
+            <h3 className="mb-1 font-semibold text-primary text-sm">
               {t.pokemon.immuneTo} ({data.typeEffectiveness.immunities.length})
             </h3>
             {data.typeEffectiveness.immunities.length > 0 ? (
@@ -139,14 +139,14 @@ export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrich
                 {data.typeEffectiveness.immunities.map((type) => (
                   <span
                     key={type}
-                    className="rounded-full border border-primary bg-primary-50 px-1.5 py-0.5 text-gray-900 text-[10px] capitalize dark:bg-primary-900/30 dark:text-gray-100"
+                    className="rounded-full border border-primary bg-primary-50 px-2 py-0.5 text-gray-900 text-sm capitalize dark:bg-primary-900/30 dark:text-gray-100"
                   >
                     {type} (0x)
                   </span>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-600 text-[10px] dark:text-gray-500">{t.pokemon.none}</p>
+              <p className="text-gray-600 text-sm dark:text-gray-500">{t.pokemon.none}</p>
             )}
           </div>
         </div>
@@ -217,7 +217,7 @@ function EvolutionCard({ name, speciesUrl, isCurrentPokemon }: EvolutionCardProp
   return (
     <a
       href={`/pokemon/${name}`}
-      className={`rounded-lg border p-1.5 transition-all hover:border-primary hover:scale-105 ${
+      className={`rounded-lg border p-2 transition-all hover:border-primary hover:scale-105 ${
         isCurrentPokemon
           ? 'border-primary bg-gray-200 dark:bg-gray-700'
           : 'border-gray-400 bg-white dark:border-gray-600 dark:bg-gray-800'
@@ -228,11 +228,11 @@ function EvolutionCard({ name, speciesUrl, isCurrentPokemon }: EvolutionCardProp
           <img
             src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${evoId}.png`}
             alt={name}
-            className="mx-auto h-12 w-12 object-contain md:h-16 md:w-16"
+            className="mx-auto h-14 w-14 object-contain md:h-16 md:w-16"
             loading="lazy"
           />
         )}
-        <p className="font-semibold text-gray-900 text-[10px] capitalize md:text-xs dark:text-gray-100">
+        <p className="font-semibold text-gray-900 text-sm capitalize dark:text-gray-100">
           {getPokemonName(name)}
         </p>
       </div>

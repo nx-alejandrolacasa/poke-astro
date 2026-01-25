@@ -116,7 +116,7 @@ export async function fetchAllPokemonNames(): Promise<string[]> {
  */
 export async function fetchPokemonPage(
   page: number,
-  pageSize = 24
+  pageSize = 30
 ): Promise<PokemonList> {
   const offset = (page - 1) * pageSize
 
