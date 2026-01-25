@@ -4,6 +4,8 @@ export type Translations = {
   // Header
   header: {
     pokedex: string
+    menu: string
+    close: string
   }
   // Home page
   home: {
@@ -111,6 +113,8 @@ export const translations: Record<Language, Translations> = {
   en: {
     header: {
       pokedex: 'Pokédex',
+      menu: 'Menu',
+      close: 'Close',
     },
     home: {
       title: 'Explore the World of Pokémon',
@@ -204,7 +208,7 @@ export const translations: Record<Language, Translations> = {
     ],
     footer: {
       disclaimer:
-        'Pokémon Pokédex is a fan-made website with no affiliation, sponsorship, or official relationship with Nintendo, Game Freak, Creatures Inc., or The Pokémon Company.',
+        'This website is fan-made with no affiliation, sponsorship, or official relationship with Nintendo, Game Freak, Creatures Inc., or The Pokémon Company.',
       trademarks:
         'All names, images, and trademarks related to Pokémon are the property of their respective owners.',
       fairUse:
@@ -216,6 +220,8 @@ export const translations: Record<Language, Translations> = {
   es: {
     header: {
       pokedex: 'Pokédex',
+      menu: 'Menú',
+      close: 'Cerrar',
     },
     home: {
       title: 'Explora el Mundo de Pokémon',
@@ -310,7 +316,7 @@ export const translations: Record<Language, Translations> = {
     ],
     footer: {
       disclaimer:
-        'Pokémon Pokédex es un sitio web creado por fans, sin ningún tipo de afiliación, patrocinio ni relación oficial con Nintendo, Game Freak, Creatures Inc. o The Pokémon Company.',
+        'Este sitio web está creado por fans, sin ningún tipo de afiliación, patrocinio ni relación oficial con Nintendo, Game Freak, Creatures Inc. o The Pokémon Company.',
       trademarks:
         'Todos los nombres, imágenes y marcas relacionadas con Pokémon son propiedad de sus respectivos dueños.',
       fairUse:

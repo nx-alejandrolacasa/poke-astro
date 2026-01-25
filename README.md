@@ -65,7 +65,7 @@ Contributions are welcome! Feel free to open issues or submit pull requests.
 
 ## Disclaimer
 
-Pokémon Pokédex is a fan-made website with no affiliation, sponsorship, or official relationship with Nintendo, Game Freak, Creatures Inc., or The Pokémon Company.
+This website is fan-made with no affiliation, sponsorship, or official relationship with Nintendo, Game Freak, Creatures Inc., or The Pokémon Company.
 
 All names, images, and trademarks related to Pokémon are the property of their respective owners. This project uses such elements under fair use principles for educational and informational purposes.
 

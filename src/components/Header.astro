@@ -5,7 +5,7 @@ import { HeaderActions } from '@/components/HeaderActions'
 
 <header class="sticky top-0 z-40 border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-sm transition-colors dark:border-gray-700 dark:bg-gray-900/95">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <nav class="flex h-20 items-center justify-between gap-4 md:gap-8">
+    <nav class="flex h-16 items-center justify-between gap-4 sm:h-20 md:gap-8">
       <!-- Logo -->
       <a
         href="/"
@@ -13,14 +13,14 @@ import { HeaderActions } from '@/components/HeaderActions'
         class="flex-shrink-0 transition-transform hover:scale-105"
       >
         <img
-          class="h-12 sm:h-14"
+          class="h-10 sm:h-14"
           src="/pokemon-logo.svg"
           alt="Pokemon"
         />
       </a>
 
       <!-- Search - Hidden on mobile, shown on tablet+ -->
-      <div class="hidden flex-1 md:flex md:justify-center md:px-4">
+      <div class="hidden flex-1 sm:flex sm:justify-center sm:px-4">
         <div class="w-full max-w-lg">
           <PokemonSearchWrapper client:load />
         </div>
@@ -29,10 +29,5 @@ import { HeaderActions } from '@/components/HeaderActions'
       <!-- Navigation links -->
       <HeaderActions client:load />
     </nav>
-
-    <!-- Mobile search - Shown only on mobile -->
-    <div class="pb-4 md:hidden">
-      <PokemonSearchWrapper client:load />
-    </div>
   </div>
 </header>
