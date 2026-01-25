@@ -6,6 +6,7 @@ import {
   fetchTypeDetails,
   getFlavorText,
   parseEvolutionChain,
+  parseEvolutionTree,
 } from '@utils/pokemon'
 import type { APIRoute } from 'astro'
 
@@ -30,6 +31,9 @@ export const GET: APIRoute = async ({ params, url }) => {
     const evolutions = evolutionChainData
       ? parseEvolutionChain(evolutionChainData.chain)
       : []
+    const evolutionTree = evolutionChainData
+      ? parseEvolutionTree(evolutionChainData.chain)
+      : null
     const typeEffectiveness = await calculateTypeEffectiveness(pokemon)
 
     // Get translated flavor text
@@ -80,6 +84,7 @@ export const GET: APIRoute = async ({ params, url }) => {
         flavorText,
         evolutions,
         evolutionChainData,
+        evolutionTree,
         typeEffectiveness: translatedTypeEffectiveness,
       }),
       {

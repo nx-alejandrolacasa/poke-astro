@@ -37,6 +37,12 @@ export type EvolutionNode = {
   species: { name: string; url: string }
 }
 
+export type EvolutionTreeNode = {
+  name: string
+  speciesUrl: string
+  evolvesTo: EvolutionTreeNode[]
+}
+
 export type TypeDetails = {
   damage_relations: {
     double_damage_from: { name: string }[]
@@ -270,6 +276,7 @@ export async function calculateTypeEffectiveness(pokemon: Pokemon) {
 
 /**
  * Parse evolution chain into a flat array of evolution stages
+ * @deprecated Use parseEvolutionTree for proper branching evolution support
  */
 export function parseEvolutionChain(chain: EvolutionNode): string[] {
   const evolutions: string[] = [chain.species.name]
@@ -283,6 +290,18 @@ export function parseEvolutionChain(chain: EvolutionNode): string[] {
 
   traverse(chain)
   return evolutions
+}
+
+/**
+ * Parse evolution chain into a tree structure that properly handles branching evolutions
+ * (e.g., Scyther can evolve into either Scizor or Kleavor)
+ */
+export function parseEvolutionTree(chain: EvolutionNode): EvolutionTreeNode {
+  return {
+    name: chain.species.name,
+    speciesUrl: chain.species.url,
+    evolvesTo: chain.evolves_to.map((evo) => parseEvolutionTree(evo)),
+  }
 }
 
 /**
