@@ -48,10 +48,10 @@ export function MobileMenuDrawer() {
         </svg>
       </button>
 
-      {/* Backdrop */}
+      {/* Backdrop - z-50 to be above header (z-40) */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/50 transition-opacity sm:hidden"
+          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity sm:hidden"
           onClick={() => setIsOpen(false)}
           aria-hidden="true"
         />
