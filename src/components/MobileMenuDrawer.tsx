@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { PokemonSearch } from '@/components/PokemonSearch'
 import { LanguageSelector } from '@/components/LanguageSelector'
@@ -7,8 +8,14 @@ import { DarkModeToggle } from '@/components/DarkModeToggle'
 export function MobileMenuDrawer() {
   const { t } = useLanguage()
   const [isOpen, setIsOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
-  // Close drawer on escape key
+  // Only render portal after component mounts (client-side)
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Close drawer on escape key and prevent body scroll
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setIsOpen(false)
@@ -23,35 +30,12 @@ export function MobileMenuDrawer() {
     }
   }, [isOpen])
 
-  return (
+  const drawerContent = (
     <>
-      {/* Hamburger button - visible on mobile only */}
-      <button
-        type="button"
-        onClick={() => setIsOpen(true)}
-        className="rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100 sm:hidden dark:text-gray-300 dark:hover:bg-gray-800"
-        aria-label={t.header.menu}
-        aria-expanded={isOpen}
-      >
-        <svg
-          className="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4 6h16M4 12h16M4 18h16"
-          />
-        </svg>
-      </button>
-
-      {/* Backdrop - z-50 to be above header (z-40) */}
+      {/* Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity sm:hidden"
+          className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm transition-opacity sm:hidden"
           onClick={() => setIsOpen(false)}
           aria-hidden="true"
         />
@@ -59,7 +43,7 @@ export function MobileMenuDrawer() {
 
       {/* Drawer */}
       <div
-        className={`fixed inset-y-0 right-0 z-50 flex w-80 max-w-[85vw] transform flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out sm:hidden dark:bg-gray-900 ${
+        className={`fixed inset-y-0 right-0 z-[100] flex w-80 max-w-[85vw] transform flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out sm:hidden dark:bg-gray-900 ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         role="dialog"
@@ -126,6 +110,36 @@ export function MobileMenuDrawer() {
           </div>
         </div>
       </div>
+    </>
+  )
+
+  return (
+    <>
+      {/* Hamburger button - visible on mobile only */}
+      <button
+        type="button"
+        onClick={() => setIsOpen(true)}
+        className="rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100 sm:hidden dark:text-gray-300 dark:hover:bg-gray-800"
+        aria-label={t.header.menu}
+        aria-expanded={isOpen}
+      >
+        <svg
+          className="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </button>
+
+      {/* Portal the backdrop and drawer to document.body */}
+      {mounted && createPortal(drawerContent, document.body)}
     </>
   )
 }
