@@ -175,21 +175,26 @@ function EvolutionTree({ tree, currentPokemon }: EvolutionTreeProps) {
   const hasBranching = stages.some((stage) => stage.length > 1)
 
   return (
-    <div className="flex flex-row flex-wrap items-center justify-center gap-4">
+    <div className="flex flex-col items-center justify-center gap-4 md:flex-row md:flex-wrap">
       {stages.map((stage, stageIndex) => (
-        <div key={stageIndex} className="flex items-center gap-4">
+        <div key={stageIndex} className="flex flex-col items-center gap-4 md:flex-row">
           {stageIndex > 0 && (
-            <div className="font-bold text-gray-600 text-2xl dark:text-gray-500">
-              →
-            </div>
+            <>
+              <div className="font-bold text-gray-600 text-2xl md:hidden dark:text-gray-500">
+                ↓
+              </div>
+              <div className="hidden font-bold text-gray-600 text-2xl md:block dark:text-gray-500">
+                →
+              </div>
+            </>
           )}
           <div
-            className={`flex flex-row items-center gap-2 ${hasBranching && stage.length > 1 ? 'rounded-xl border-2 border-dashed border-gray-400 p-2 dark:border-gray-600' : ''}`}
+            className={`flex flex-col items-center gap-2 md:flex-row ${hasBranching && stage.length > 1 ? 'rounded-xl border-2 border-dashed border-gray-400 p-2 dark:border-gray-600' : ''}`}
           >
             {stage.map((pokemon, pokemonIndex) => (
               <div key={pokemon.name} className="flex items-center">
                 {pokemonIndex > 0 && stage.length > 1 && (
-                  <span className="mx-2 font-bold text-gray-400 text-lg">/</span>
+                  <span className="mx-2 hidden font-bold text-gray-400 text-lg md:inline">/</span>
                 )}
                 <EvolutionCard
                   name={pokemon.name}
