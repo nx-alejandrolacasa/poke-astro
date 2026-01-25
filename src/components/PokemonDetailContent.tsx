@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import type { Pokemon } from '@/utils/pokemon'
 import { getPokemonImage, getPokemonName } from '@/utils/pokemon'
 import { useLanguage } from '@/contexts/LanguageContext'
-import { PokemonEnrichedData } from './PokemonEnrichedData'
+import { PokemonEnrichedData } from '@/components/PokemonEnrichedData'
+import { ImageZoomModal } from '@/components/ImageZoomModal'
 
 type PokemonDetailContentProps = {
   pokemon: Pokemon
@@ -33,6 +34,7 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
   const [stats, setStats] = useState<TranslatedStat[]>([])
   const [description, setDescription] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isImageZoomed, setIsImageZoomed] = useState(false)
 
   useEffect(() => {
     const fetchTranslations = async () => {
@@ -133,7 +135,12 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
       <div className="grid grid-cols-1 gap-4 md:grid-cols-[200px_1fr] md:gap-4 lg:grid-cols-[240px_1fr] lg:gap-6">
         {/* Left Column - Image (compact on tablets) */}
         <div className="flex flex-col items-center justify-start">
-          <div className="relative w-full max-w-[180px] md:max-w-full">
+          <button
+            type="button"
+            onClick={() => setIsImageZoomed(true)}
+            className="relative w-full max-w-[180px] cursor-zoom-in transition-transform hover:scale-105 md:max-w-full"
+            aria-label={`Enlarge ${pokemon.name} image`}
+          >
             <img
               className="aspect-square w-full drop-shadow-2xl"
               src={getPokemonImage(pokemon)}
@@ -142,7 +149,12 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
             <span className="absolute top-1 right-1 rounded-full bg-gray-900/80 px-2 py-0.5 font-mono font-bold text-white text-xs backdrop-blur-sm md:text-sm dark:bg-white/80 dark:text-gray-900">
               #{pokemon.order.toString().padStart(3, '0')}
             </span>
-          </div>
+            <span className="absolute bottom-1 left-1 rounded-full bg-gray-900/60 p-1.5 text-white backdrop-blur-sm">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+              </svg>
+            </span>
+          </button>
           {/* Pokemon Name below image on mobile */}
           <h1 className="mt-2 text-center font-extrabold text-xl text-gray-900 capitalize tracking-tight md:hidden dark:text-gray-100">
             {getPokemonName(pokemonName)}
@@ -303,6 +315,14 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
             </div>
           </div>
         }
+      />
+
+      {/* Image zoom modal */}
+      <ImageZoomModal
+        src={getPokemonImage(pokemon)}
+        alt={`${pokemon.name} official artwork`}
+        isOpen={isImageZoomed}
+        onClose={() => setIsImageZoomed(false)}
       />
     </div>
   )
