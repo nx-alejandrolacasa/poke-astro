@@ -59,7 +59,7 @@ export function MobileMenuDrawer() {
 
       {/* Drawer */}
       <div
-        className={`fixed right-0 top-0 z-50 h-full w-80 max-w-[85vw] transform bg-white shadow-2xl transition-transform duration-300 ease-in-out sm:hidden dark:bg-gray-900 ${
+        className={`fixed right-0 top-0 z-50 flex h-full w-80 max-w-[85vw] transform flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out sm:hidden dark:bg-gray-900 ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         role="dialog"
@@ -67,7 +67,7 @@ export function MobileMenuDrawer() {
         aria-label={t.header.menu}
       >
         {/* Drawer header */}
-        <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-gray-700">
+        <div className="flex shrink-0 items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900">
           <span className="font-semibold text-gray-900 text-lg dark:text-gray-100">
             {t.header.menu}
           </span>
@@ -94,7 +94,7 @@ export function MobileMenuDrawer() {
         </div>
 
         {/* Drawer content */}
-        <div className="flex flex-col gap-6 p-4">
+        <div className="flex flex-1 flex-col gap-6 bg-white p-4 dark:bg-gray-900">
           {/* Search */}
           <div>
             <label className="mb-2 block font-medium text-gray-700 text-sm dark:text-gray-300">
