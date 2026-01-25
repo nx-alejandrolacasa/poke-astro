@@ -175,21 +175,21 @@ function EvolutionTree({ tree, currentPokemon }: EvolutionTreeProps) {
   const hasBranching = stages.some((stage) => stage.length > 1)
 
   return (
-    <div className="flex flex-row flex-wrap items-center justify-center gap-2">
+    <div className="flex flex-row flex-wrap items-center justify-center gap-4">
       {stages.map((stage, stageIndex) => (
-        <div key={stageIndex} className="flex items-center gap-2">
+        <div key={stageIndex} className="flex items-center gap-4">
           {stageIndex > 0 && (
-            <div className="font-bold text-gray-600 text-lg dark:text-gray-500">
+            <div className="font-bold text-gray-600 text-2xl dark:text-gray-500">
               →
             </div>
           )}
           <div
-            className={`flex flex-row items-center gap-1 ${hasBranching && stage.length > 1 ? 'rounded-lg border border-dashed border-gray-400 p-1.5 dark:border-gray-600' : ''}`}
+            className={`flex flex-row items-center gap-2 ${hasBranching && stage.length > 1 ? 'rounded-xl border-2 border-dashed border-gray-400 p-2 dark:border-gray-600' : ''}`}
           >
             {stage.map((pokemon, pokemonIndex) => (
               <div key={pokemon.name} className="flex items-center">
                 {pokemonIndex > 0 && stage.length > 1 && (
-                  <span className="mx-1 text-gray-400 text-xs">/</span>
+                  <span className="mx-2 font-bold text-gray-400 text-lg">/</span>
                 )}
                 <EvolutionCard
                   name={pokemon.name}
@@ -217,7 +217,7 @@ function EvolutionCard({ name, speciesUrl, isCurrentPokemon }: EvolutionCardProp
   return (
     <a
       href={`/pokemon/${name}`}
-      className={`rounded-lg border p-2 transition-all hover:border-primary hover:scale-105 ${
+      className={`rounded-xl border-2 p-3 transition-all hover:border-primary hover:scale-105 ${
         isCurrentPokemon
           ? 'border-primary bg-gray-200 dark:bg-gray-700'
           : 'border-gray-400 bg-white dark:border-gray-600 dark:bg-gray-800'
@@ -228,11 +228,11 @@ function EvolutionCard({ name, speciesUrl, isCurrentPokemon }: EvolutionCardProp
           <img
             src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${evoId}.png`}
             alt={name}
-            className="mx-auto h-14 w-14 object-contain md:h-16 md:w-16"
+            className="mx-auto h-24 w-24 object-contain md:h-28 md:w-28"
             loading="lazy"
           />
         )}
-        <p className="font-semibold text-gray-900 text-sm capitalize dark:text-gray-100">
+        <p className="font-semibold text-gray-900 text-base capitalize dark:text-gray-100">
           {getPokemonName(name)}
         </p>
       </div>
