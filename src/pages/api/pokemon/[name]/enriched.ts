@@ -12,7 +12,7 @@ import type { APIRoute } from 'astro'
 
 export const GET: APIRoute = async ({ params, url }) => {
   const { name } = params
-  const language = url.searchParams.get('lang') || 'en'
+  const language = url.searchParams.get('lang') || 'es'
 
   if (!name) {
     return new Response(JSON.stringify({ error: 'Pokemon name is required' }), {

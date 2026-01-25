@@ -193,9 +193,9 @@ function EvolutionTree({ tree, currentPokemon }: EvolutionTreeProps) {
             className={`flex flex-col items-center gap-2 ${hasBranching && stage.length > 1 ? 'rounded-lg border border-dashed border-gray-400 p-2 dark:border-gray-600' : ''}`}
           >
             {stage.map((pokemon, pokemonIndex) => (
-              <div key={pokemon.name} className="flex items-center gap-2">
+              <div key={pokemon.name} className="flex flex-col items-center">
                 {pokemonIndex > 0 && stage.length > 1 && (
-                  <span className="text-gray-500 text-sm">/</span>
+                  <span className="mb-2 text-gray-500 text-xs italic">o</span>
                 )}
                 <EvolutionCard
                   name={pokemon.name}
