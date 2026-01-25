@@ -51,7 +51,7 @@ export function MobileMenuDrawer() {
       {/* Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity sm:hidden"
+          className="fixed inset-0 z-50 bg-black/50 transition-opacity sm:hidden"
           onClick={() => setIsOpen(false)}
           aria-hidden="true"
         />
@@ -59,7 +59,7 @@ export function MobileMenuDrawer() {
 
       {/* Drawer */}
       <div
-        className={`fixed right-0 top-0 z-50 flex h-full w-80 max-w-[85vw] transform flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out sm:hidden dark:bg-gray-900 ${
+        className={`fixed inset-y-0 right-0 z-50 flex w-80 max-w-[85vw] transform flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out sm:hidden dark:bg-gray-900 ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         role="dialog"
