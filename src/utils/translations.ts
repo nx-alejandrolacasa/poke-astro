@@ -44,6 +44,11 @@ export type Translations = {
     none: string
     evolutionChain: string
   }
+  // Modal
+  modal: {
+    close: string
+    closeHint: string
+  }
   // Infinite scroll
   scroll: {
     loadingMore: string
@@ -152,6 +157,10 @@ export const translations: Record<Language, Translations> = {
       none: 'None',
       evolutionChain: 'Evolution Chain',
     },
+    modal: {
+      close: 'Close',
+      closeHint: 'Click anywhere or press Escape to close',
+    },
     scroll: {
       loadingMore: 'Loading more Pokémon...',
       caughtAll: "You've caught 'em all! 🎉",
@@ -205,6 +214,21 @@ export const translations: Record<Language, Translations> = {
       'Ditto and Mew share the same color palette and weight—a sign of their possible connection',
       'The Pokémon anime has been running for over 25 years with more than 1,000 episodes',
       'There are more Pokémon species than there are countries in the world',
+      'Azurill is the only Pokémon that can change gender when it evolves',
+      'Slowpoke tails are considered a delicacy in the Pokémon world',
+      'Wobbuffet was originally designed as a punching bag—its body is actually a decoy',
+      "Pikachu's name comes from 'pika' (sparkle) and 'chu' (squeak sound)",
+      'Magikarp can jump over mountains, but only in the Pokédex entries',
+      "Cubone wears its deceased mother's skull—nobody knows what it looks like underneath",
+      'Yamask carries a mask that was once its human face from a past life',
+      "Gengar is said to be Clefable's shadow—they have nearly identical silhouettes",
+      'Spinda has over 4 billion possible spot patterns, making each one unique',
+      'Arcanine was originally planned to be a legendary Pokémon',
+      'Poliwag\'s swirl pattern is based on visible tadpole intestines',
+      'Hitmonchan and Hitmonlee are named after Jackie Chan and Bruce Lee',
+      "Vaporeon's cellular structure is similar to water, allowing it to melt into water",
+      'The cry of Charizard in Generation I is the same as Rhyhorn\'s cry',
+      'Psychic was the most overpowered type in Gen I with no real counters',
     ],
     footer: {
       disclaimer:
@@ -258,6 +282,10 @@ export const translations: Record<Language, Translations> = {
       immuneTo: 'Inmune A',
       none: 'Ninguno',
       evolutionChain: 'Evoluciones',
+    },
+    modal: {
+      close: 'Cerrar',
+      closeHint: 'Haz clic en cualquier lugar o presiona Escape para cerrar',
     },
     scroll: {
       loadingMore: 'Cargando más Pokémon...',
@@ -313,6 +341,21 @@ export const translations: Record<Language, Translations> = {
       'Ditto y Mew comparten la misma paleta de colores y peso—una señal de su posible conexión',
       'El anime de Pokémon ha estado en emisión por más de 25 años con más de 1,000 episodios',
       'Hay más especies de Pokémon que países en el mundo',
+      'Azurill es el único Pokémon que puede cambiar de género cuando evoluciona',
+      'Las colas de Slowpoke se consideran un manjar en el mundo Pokémon',
+      'Wobbuffet fue diseñado originalmente como un saco de boxeo—su cuerpo es en realidad un señuelo',
+      "El nombre de Pikachu viene de 'pika' (destello) y 'chu' (sonido de chillido)",
+      'Magikarp puede saltar montañas, pero solo según las entradas de la Pokédex',
+      'Cubone lleva el cráneo de su madre fallecida—nadie sabe cómo se ve debajo',
+      'Yamask lleva una máscara que fue su rostro humano en una vida pasada',
+      'Se dice que Gengar es la sombra de Clefable—tienen siluetas casi idénticas',
+      'Spinda tiene más de 4 mil millones de patrones de manchas posibles, haciendo a cada uno único',
+      'Arcanine fue planeado originalmente para ser un Pokémon legendario',
+      'El patrón en espiral de Poliwag está basado en los intestinos visibles de los renacuajos',
+      'Hitmonchan y Hitmonlee llevan nombres en honor a Jackie Chan y Bruce Lee',
+      'La estructura celular de Vaporeon es similar al agua, permitiéndole fundirse con el agua',
+      'El grito de Charizard en la primera generación es igual al de Rhyhorn',
+      'Psíquico fue el tipo más dominante en Gen I sin verdaderos contadores',
     ],
     footer: {
       disclaimer:

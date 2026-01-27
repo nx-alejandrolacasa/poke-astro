@@ -4,22 +4,22 @@ export function FooterContent() {
   const { t } = useLanguage()
 
   return (
-    <div className="space-y-1 text-center">
-      <p className="text-[13px] text-gray-600 leading-snug dark:text-gray-400">
+    <div className="space-y-1.5 text-center">
+      <p className="text-[11px] text-gray-500 leading-relaxed dark:text-gray-500">
         {t.footer.disclaimer}
       </p>
-      <p className="text-[13px] text-gray-600 leading-snug dark:text-gray-400">
+      <p className="text-[11px] text-gray-500 leading-relaxed dark:text-gray-500">
         {t.footer.trademarks}
       </p>
-      <p className="text-[13px] text-gray-600 leading-snug dark:text-gray-400">
+      <p className="text-[11px] text-gray-500 leading-relaxed dark:text-gray-500">
         {t.footer.fairUse}
       </p>
-      <div className="border-t border-gray-200 pt-2 mt-2 dark:border-gray-700">
-        <p className="text-[13px] text-gray-500 dark:text-gray-500">
+      <div className="border-t border-gray-200 pt-3 mt-3 dark:border-gray-700">
+        <p className="text-[11px] text-gray-400 dark:text-gray-500">
           {t.footer.dataBy}{' '}
           <a
             href="https://pokeapi.co"
-            className="text-primary transition-colors hover:text-primary-600"
+            className="text-primary-500 transition-colors hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -28,7 +28,7 @@ export function FooterContent() {
           . {t.footer.builtWith}{' '}
           <a
             href="https://astro.build"
-            className="text-primary transition-colors hover:text-primary-600"
+            className="text-primary-500 transition-colors hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -37,7 +37,7 @@ export function FooterContent() {
           ,{' '}
           <a
             href="https://react.dev"
-            className="text-primary transition-colors hover:text-primary-600"
+            className="text-primary-500 transition-colors hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -46,7 +46,7 @@ export function FooterContent() {
           {' & '}
           <a
             href="https://tailwindcss.com"
-            className="text-primary transition-colors hover:text-primary-600"
+            className="text-primary-500 transition-colors hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300"
             target="_blank"
             rel="noopener noreferrer"
           >

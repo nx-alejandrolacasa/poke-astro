@@ -63,8 +63,8 @@ export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrich
     return (
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
         {statsSection}
-        <div className="rounded-lg border border-red-300 bg-red-100 p-4 text-center dark:border-red-700 dark:bg-red-900/20">
-          <p className="text-red-700 dark:text-red-400">{t.errors.loadFailed}</p>
+        <div className="rounded-lg border border-orange-300 bg-orange-100 p-4 text-center dark:border-orange-700 dark:bg-orange-900/20">
+          <p className="text-orange-700 dark:text-orange-400">{t.errors.loadFailed}</p>
         </div>
       </div>
     )
@@ -82,10 +82,10 @@ export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrich
         <h2 className="mb-2 font-bold text-base text-gray-900 md:text-lg dark:text-gray-100">
           {t.pokemon.typeEffectiveness}
         </h2>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-2">
           {/* Weaknesses */}
           <div>
-            <h3 className="mb-1 font-semibold text-red-600 text-sm dark:text-red-400">
+            <h3 className="mb-1 font-semibold text-orange-600 text-sm dark:text-orange-400">
               {t.pokemon.weakTo} ({data.typeEffectiveness.weaknesses.length})
             </h3>
             {data.typeEffectiveness.weaknesses.length > 0 ? (
@@ -94,7 +94,7 @@ export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrich
                   ({ type, multiplier }) => (
                     <span
                       key={type}
-                      className="rounded-full border border-red-400 bg-red-100 px-2 py-0.5 text-gray-900 text-sm capitalize dark:border-red-500 dark:bg-red-900/30 dark:text-gray-100"
+                      className="rounded-full border border-orange-300 bg-orange-100 px-2 py-0.5 text-orange-800 text-sm capitalize dark:border-orange-500 dark:bg-orange-900/30 dark:text-orange-200"
                     >
                       {type} ({multiplier}x)
                     </span>
@@ -102,13 +102,13 @@ export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrich
                 )}
               </div>
             ) : (
-              <p className="text-gray-600 text-sm dark:text-gray-500">{t.pokemon.none}</p>
+              <p className="text-gray-500 text-sm dark:text-gray-500">{t.pokemon.none}</p>
             )}
           </div>
 
           {/* Resistances */}
           <div>
-            <h3 className="mb-1 font-semibold text-green-600 text-sm dark:text-green-400">
+            <h3 className="mb-1 font-semibold text-teal-600 text-sm dark:text-teal-400">
               {t.pokemon.resistantTo} ({data.typeEffectiveness.resistances.length})
             </h3>
             {data.typeEffectiveness.resistances.length > 0 ? (
@@ -117,7 +117,7 @@ export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrich
                   ({ type, multiplier }) => (
                     <span
                       key={type}
-                      className="rounded-full border border-green-400 bg-green-100 px-2 py-0.5 text-gray-900 text-sm capitalize dark:border-green-500 dark:bg-green-900/30 dark:text-gray-100"
+                      className="rounded-full border border-teal-300 bg-teal-100 px-2 py-0.5 text-teal-800 text-sm capitalize dark:border-teal-500 dark:bg-teal-900/30 dark:text-teal-200"
                     >
                       {type} ({multiplier}x)
                     </span>
@@ -125,7 +125,7 @@ export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrich
                 )}
               </div>
             ) : (
-              <p className="text-gray-600 text-sm dark:text-gray-500">{t.pokemon.none}</p>
+              <p className="text-gray-500 text-sm dark:text-gray-500">{t.pokemon.none}</p>
             )}
           </div>
 
