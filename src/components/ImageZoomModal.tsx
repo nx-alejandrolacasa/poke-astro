@@ -59,14 +59,12 @@ export function ImageZoomModal({ src, alt, isOpen, onClose }: ImageZoomModalProp
       </button>
 
       {/* Image container - 90% of screen */}
-      <div
-        className="flex h-[90vh] w-[90vw] items-center justify-center"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="flex h-[90vh] w-[90vw] items-center justify-center">
         <img
           src={src}
           alt={alt}
           className="max-h-full max-w-full object-contain drop-shadow-2xl"
+          onClick={(e) => e.stopPropagation()}
         />
       </div>
 

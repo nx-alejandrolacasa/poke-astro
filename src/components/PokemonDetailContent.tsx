@@ -309,8 +309,8 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
                 )
               })}
               <div className="mt-2 grid grid-cols-[90px_40px_1fr] gap-2 border-t border-gray-400 pt-2 dark:border-gray-700">
-                <div className="text-right font-bold text-sm">{t.pokemon.total}</div>
-                <div className="text-right font-bold text-sm">{totalStats}</div>
+                <div className="text-right font-bold text-sm text-gray-900 dark:text-gray-100">{t.pokemon.total}</div>
+                <div className="text-right font-bold text-sm text-gray-900 dark:text-gray-100">{totalStats}</div>
                 <div />
               </div>
             </div>
