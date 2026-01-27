@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 type ImageZoomModalProps = {
   src: string
@@ -8,6 +9,8 @@ type ImageZoomModalProps = {
 }
 
 export function ImageZoomModal({ src, alt, isOpen, onClose }: ImageZoomModalProps) {
+  const { t } = useLanguage()
+
   // Close on escape key and prevent body scroll
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -38,7 +41,7 @@ export function ImageZoomModal({ src, alt, isOpen, onClose }: ImageZoomModalProp
         type="button"
         onClick={onClose}
         className="absolute top-4 right-4 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20"
-        aria-label="Close"
+        aria-label={t.modal.close}
       >
         <svg
           className="h-8 w-8"
@@ -69,7 +72,7 @@ export function ImageZoomModal({ src, alt, isOpen, onClose }: ImageZoomModalProp
 
       {/* Hint text */}
       <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/60 text-sm">
-        Click anywhere or press Escape to close
+        {t.modal.closeHint}
       </p>
     </div>
   )

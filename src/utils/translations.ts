@@ -44,6 +44,11 @@ export type Translations = {
     none: string
     evolutionChain: string
   }
+  // Modal
+  modal: {
+    close: string
+    closeHint: string
+  }
   // Infinite scroll
   scroll: {
     loadingMore: string
@@ -151,6 +156,10 @@ export const translations: Record<Language, Translations> = {
       immuneTo: 'Immune To',
       none: 'None',
       evolutionChain: 'Evolution Chain',
+    },
+    modal: {
+      close: 'Close',
+      closeHint: 'Click anywhere or press Escape to close',
     },
     scroll: {
       loadingMore: 'Loading more Pokémon...',
@@ -273,6 +282,10 @@ export const translations: Record<Language, Translations> = {
       immuneTo: 'Inmune A',
       none: 'Ninguno',
       evolutionChain: 'Evoluciones',
+    },
+    modal: {
+      close: 'Cerrar',
+      closeHint: 'Haz clic en cualquier lugar o presiona Escape para cerrar',
     },
     scroll: {
       loadingMore: 'Cargando más Pokémon...',
