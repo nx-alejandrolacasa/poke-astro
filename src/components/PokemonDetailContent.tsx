@@ -299,7 +299,7 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
                               ? 'bg-teal-400 dark:bg-teal-500'
                               : baseStat >= 60
                                 ? 'bg-amber-400 dark:bg-amber-500'
-                                : 'bg-rose-400 dark:bg-rose-500'
+                                : 'bg-orange-400 dark:bg-orange-500'
                           }`}
                           style={{ width: `${percentage}%` }}
                         />

@@ -46,7 +46,7 @@ export function HomeContent({ totalPokemon }: HomeContentProps) {
     <div className="space-y-8 pb-8 md:space-y-12 md:pb-12">
       {/* Hero Section - Compact */}
       <section className="space-y-4 pt-4 text-center md:pt-6">
-        <h1 className="bg-gradient-to-r from-primary-600 via-purple-400 to-pink-400 bg-clip-text font-bold text-4xl text-transparent md:text-6xl dark:from-primary-400 dark:via-purple-300 dark:to-pink-300">
+        <h1 className="bg-gradient-to-r from-primary-600 via-purple-400 to-orange-400 bg-clip-text font-bold text-4xl text-transparent md:text-6xl dark:from-primary-400 dark:via-purple-300 dark:to-orange-300">
           {t.home.title}
         </h1>
         <p className="mx-auto max-w-2xl text-gray-600 text-base md:text-lg dark:text-gray-300">
@@ -82,13 +82,13 @@ export function HomeContent({ totalPokemon }: HomeContentProps) {
           </div>
 
           {/* Types */}
-          <div className="rounded-lg border-2 border-pink-300/50 bg-gradient-to-br from-pink-200 to-rose-200 p-3 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-pink-400/60 hover:shadow-2xl md:p-4 dark:border-pink-500/30 dark:from-pink-800/80 dark:to-rose-800/80 dark:hover:border-pink-400/50">
+          <div className="rounded-lg border-2 border-orange-300/50 bg-gradient-to-br from-orange-200 to-red-200 p-3 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-orange-400/60 hover:shadow-2xl md:p-4 dark:border-orange-500/30 dark:from-orange-800/80 dark:to-red-800/80 dark:hover:border-orange-400/50">
             <div className="space-y-0.5">
-              <p className="font-semibold text-pink-700 text-xs uppercase tracking-wider md:text-sm dark:text-pink-200">
+              <p className="font-semibold text-orange-700 text-xs uppercase tracking-wider md:text-sm dark:text-orange-200">
                 {t.home.types}
               </p>
-              <p className="font-black text-2xl text-pink-800 md:text-3xl dark:text-white">{pokemonTypes.length}</p>
-              <p className="text-pink-700 text-sm md:text-base dark:text-pink-200">{t.home.uniqueTypes}</p>
+              <p className="font-black text-2xl text-orange-800 md:text-3xl dark:text-white">{pokemonTypes.length}</p>
+              <p className="text-orange-700 text-sm md:text-base dark:text-orange-200">{t.home.uniqueTypes}</p>
             </div>
           </div>
 

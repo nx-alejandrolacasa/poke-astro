@@ -63,8 +63,8 @@ export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrich
     return (
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
         {statsSection}
-        <div className="rounded-lg border border-rose-300 bg-rose-100 p-4 text-center dark:border-rose-700 dark:bg-rose-900/20">
-          <p className="text-rose-700 dark:text-rose-400">{t.errors.loadFailed}</p>
+        <div className="rounded-lg border border-orange-300 bg-orange-100 p-4 text-center dark:border-orange-700 dark:bg-orange-900/20">
+          <p className="text-orange-700 dark:text-orange-400">{t.errors.loadFailed}</p>
         </div>
       </div>
     )
@@ -85,7 +85,7 @@ export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrich
         <div className="grid grid-cols-3 gap-2">
           {/* Weaknesses */}
           <div>
-            <h3 className="mb-1 font-semibold text-rose-600 text-sm dark:text-rose-400">
+            <h3 className="mb-1 font-semibold text-orange-600 text-sm dark:text-orange-400">
               {t.pokemon.weakTo} ({data.typeEffectiveness.weaknesses.length})
             </h3>
             {data.typeEffectiveness.weaknesses.length > 0 ? (
@@ -94,7 +94,7 @@ export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrich
                   ({ type, multiplier }) => (
                     <span
                       key={type}
-                      className="rounded-full border border-rose-300 bg-rose-100 px-2 py-0.5 text-rose-800 text-sm capitalize dark:border-rose-500 dark:bg-rose-900/30 dark:text-rose-200"
+                      className="rounded-full border border-orange-300 bg-orange-100 px-2 py-0.5 text-orange-800 text-sm capitalize dark:border-orange-500 dark:bg-orange-900/30 dark:text-orange-200"
                     >
                       {type} ({multiplier}x)
                     </span>
