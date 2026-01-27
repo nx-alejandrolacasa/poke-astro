@@ -7,14 +7,14 @@ import { getPokemonName } from '@/utils/pokemon'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
 import { getI18n, locales } from '@/utils/i18n'
 
-// All available Pokémon types
-const pokemonTypes = [
-  'normal', 'fire', 'water', 'electric', 'grass', 'ice',
-  'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug',
-  'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy'
-]
-
 export function getStaticPaths() {
+  // All available Pokémon types - must be inside getStaticPaths for Astro to access it
+  const pokemonTypes = [
+    'normal', 'fire', 'water', 'electric', 'grass', 'ice',
+    'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug',
+    'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy'
+  ]
+
   const paths = []
   for (const locale of locales) {
     for (const type of pokemonTypes) {

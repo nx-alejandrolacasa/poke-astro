@@ -6,20 +6,20 @@ import { GenerationInfiniteScrollWrapper } from '@/components/GenerationInfinite
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
 import { getI18n, locales } from '@/utils/i18n'
 
-// Generation data
-const generations = [
-  { id: 1, nameEn: 'Generation I', nameEs: 'Generación I', region: 'Kanto' },
-  { id: 2, nameEn: 'Generation II', nameEs: 'Generación II', region: 'Johto' },
-  { id: 3, nameEn: 'Generation III', nameEs: 'Generación III', region: 'Hoenn' },
-  { id: 4, nameEn: 'Generation IV', nameEs: 'Generación IV', region: 'Sinnoh' },
-  { id: 5, nameEn: 'Generation V', nameEs: 'Generación V', region: 'Unova' },
-  { id: 6, nameEn: 'Generation VI', nameEs: 'Generación VI', region: 'Kalos' },
-  { id: 7, nameEn: 'Generation VII', nameEs: 'Generación VII', region: 'Alola' },
-  { id: 8, nameEn: 'Generation VIII', nameEs: 'Generación VIII', region: 'Galar' },
-  { id: 9, nameEn: 'Generation IX', nameEs: 'Generación IX', region: 'Paldea' },
-]
-
 export function getStaticPaths() {
+  // Generation data - must be inside getStaticPaths for Astro to access it
+  const generations = [
+    { id: 1, nameEn: 'Generation I', nameEs: 'Generación I', region: 'Kanto' },
+    { id: 2, nameEn: 'Generation II', nameEs: 'Generación II', region: 'Johto' },
+    { id: 3, nameEn: 'Generation III', nameEs: 'Generación III', region: 'Hoenn' },
+    { id: 4, nameEn: 'Generation IV', nameEs: 'Generación IV', region: 'Sinnoh' },
+    { id: 5, nameEn: 'Generation V', nameEs: 'Generación V', region: 'Unova' },
+    { id: 6, nameEn: 'Generation VI', nameEs: 'Generación VI', region: 'Kalos' },
+    { id: 7, nameEn: 'Generation VII', nameEs: 'Generación VII', region: 'Alola' },
+    { id: 8, nameEn: 'Generation VIII', nameEs: 'Generación VIII', region: 'Galar' },
+    { id: 9, nameEn: 'Generation IX', nameEs: 'Generación IX', region: 'Paldea' },
+  ]
+
   const paths = []
   for (const locale of locales) {
     for (const gen of generations) {
