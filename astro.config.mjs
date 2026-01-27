@@ -17,6 +17,13 @@ export default defineConfig({
   output: 'server',
   integrations: [react()],
   adapter: await getAdapter(),
+  i18n: {
+    defaultLocale: 'es',
+    locales: ['en', 'es'],
+    routing: {
+      prefixDefaultLocale: true,
+    },
+  },
   vite: {
     plugins: [tailwindcss()],
   },

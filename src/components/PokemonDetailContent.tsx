@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { Pokemon } from '@/utils/pokemon'
 import { getPokemonImage, getPokemonName } from '@/utils/pokemon'
-import { useLanguage } from '@/contexts/LanguageContext'
+import type { Locale } from '@/utils/i18n'
+import { translations } from '@/utils/translations'
 import { PokemonEnrichedData } from '@/components/PokemonEnrichedData'
 import { ImageZoomModal } from '@/components/ImageZoomModal'
 import { RotatingText } from '@/components/RotatingText'
@@ -9,6 +10,7 @@ import { RotatingText } from '@/components/RotatingText'
 type PokemonDetailContentProps = {
   pokemon: Pokemon
   pokemonName: string
+  locale: Locale
 }
 
 type TranslatedAbility = {
@@ -33,8 +35,8 @@ type FlavorTextEntry = {
   version: string
 }
 
-export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailContentProps) {
-  const { t, language } = useLanguage()
+export function PokemonDetailContent({ pokemon, pokemonName, locale }: PokemonDetailContentProps) {
+  const t = translations[locale]
   // Initialize with data already available from the pokemon prop (no loading needed)
   const [abilities, setAbilities] = useState<TranslatedAbility[]>(() =>
     pokemon.abilities.map(({ ability, is_hidden }) => ({
@@ -68,7 +70,7 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
         const typesPromises = pokemon.types.map(async ({ type }) => {
           const response = await fetch(`https://pokeapi.co/api/v2/type/${type.name}`)
           const data = await response.json()
-          const translation = data.names.find((n: any) => n.language.name === language)
+          const translation = data.names.find((n: any) => n.language.name === locale)
           return {
             name: type.name,
             translatedName: translation?.name ?? type.name,
@@ -79,7 +81,7 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
         const abilitiesPromises = pokemon.abilities.map(async ({ ability, is_hidden }) => {
           const response = await fetch(`https://pokeapi.co/api/v2/ability/${ability.name}`)
           const data = await response.json()
-          const translation = data.names.find((n: any) => n.language.name === language)
+          const translation = data.names.find((n: any) => n.language.name === locale)
           return {
             name: ability.name,
             translatedName: translation?.name ?? ability.name.replaceAll('-', ' '),
@@ -91,7 +93,7 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
         const statsPromises = pokemon.stats.map(async ({ stat, base_stat }) => {
           const response = await fetch(`https://pokeapi.co/api/v2/stat/${stat.name}`)
           const data = await response.json()
-          const translation = data.names.find((n: any) => n.language.name === language)
+          const translation = data.names.find((n: any) => n.language.name === locale)
           return {
             name: stat.name,
             translatedName: translation?.name ?? t.stats[stat.name as keyof typeof t.stats] ?? stat.name,
@@ -105,7 +107,7 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
           .then(data => {
             // Get all unique flavor texts in the current language (or fallback to English)
             const entries = data.flavor_text_entries?.filter(
-              (entry: any) => entry.language.name === language
+              (entry: any) => entry.language.name === locale
             ) || data.flavor_text_entries?.filter(
               (entry: any) => entry.language.name === 'en'
             ) || []
@@ -148,7 +150,7 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
     }
 
     fetchEnrichedData()
-  }, [pokemon, pokemonName, language, t.stats])
+  }, [pokemon, pokemonName, locale, t.stats])
 
   const totalStats = stats.reduce((sum, stat) => sum + stat.baseStat, 0)
   const maxStat = 255
@@ -274,6 +276,7 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
       {/* Enriched data with stats - grid layout on tablets */}
       <PokemonEnrichedData
         pokemonName={pokemonName}
+        locale={locale}
         statsSection={
           <div className="rounded-lg border border-gray-300 bg-gray-50 p-3 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
             <h2 className="mb-2 font-bold text-base text-gray-900 md:text-lg dark:text-gray-100">

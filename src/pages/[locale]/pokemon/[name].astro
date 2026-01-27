@@ -1,0 +1,36 @@
+---
+export const prerender = true
+
+import {
+  fetchAllPokemonNames,
+  fetchPokemonByName,
+  getPokemonName,
+} from '@utils/pokemon'
+import { PokemonDetailContentWrapper } from '@/components/PokemonDetailContentWrapper'
+import Layout from '@/layouts/Layout.astro'
+import { getI18n, locales } from '@/utils/i18n'
+
+export async function getStaticPaths() {
+  // Only fetch names, not full Pokémon data (much faster!)
+  const pokemonNames = await fetchAllPokemonNames()
+
+  // Generate paths for all combinations of locale and pokemon name
+  const paths = []
+  for (const locale of locales) {
+    for (const name of pokemonNames) {
+      paths.push({ params: { locale, name } })
+    }
+  }
+  return paths
+}
+
+const { locale: localeParam, name = '' } = Astro.params
+const { locale } = getI18n(localeParam)
+
+// Only fetch basic Pokemon data at build time
+const pokemon = await fetchPokemonByName(name)
+---
+
+<Layout title={`Pokémon Astro - ${getPokemonName(name)}`} locale={locale}>
+  {pokemon && <PokemonDetailContentWrapper client:load pokemon={pokemon} pokemonName={name} locale={locale} />}
+</Layout>

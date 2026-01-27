@@ -1,9 +1,14 @@
 import { useState, useEffect, useRef } from 'react'
 import { getPokemonName } from '@/utils/pokemon'
-import { useLanguage } from '@/contexts/LanguageContext'
+import type { Locale } from '@/utils/i18n'
+import { translations } from '@/utils/translations'
 
-export function PokemonSearch() {
-  const { t } = useLanguage()
+type PokemonSearchProps = {
+  locale: Locale
+}
+
+export function PokemonSearch({ locale }: PokemonSearchProps) {
+  const t = translations[locale]
   const [query, setQuery] = useState('')
   const [suggestions, setSuggestions] = useState<string[]>([])
   const [allPokemonNames, setAllPokemonNames] = useState<string[]>([])
@@ -94,7 +99,7 @@ export function PokemonSearch() {
   }
 
   const navigateToPokemon = (name: string) => {
-    window.location.href = `/pokemon/${name}`
+    window.location.href = `/${locale}/pokemon/${name}`
     setQuery('')
     setIsOpen(false)
   }

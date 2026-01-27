@@ -1,9 +1,16 @@
 ---
 import { FooterContent } from './FooterContent'
+import type { Locale } from '@/utils/i18n'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
 ---
 
 <footer class="mt-12 border-t border-gray-200 bg-white/95 transition-colors dark:border-gray-700 dark:bg-gray-900/95">
   <div class="mx-auto max-w-7xl px-6 py-6">
-    <FooterContent client:load />
+    <FooterContent locale={locale} />
   </div>
 </footer>

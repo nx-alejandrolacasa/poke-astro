@@ -1,10 +1,10 @@
-import { LanguageProvider } from '@/contexts/LanguageContext'
+import type { Locale } from '@/utils/i18n'
 import { PokemonSearch } from './PokemonSearch'
 
-export function PokemonSearchWrapper() {
-  return (
-    <LanguageProvider>
-      <PokemonSearch />
-    </LanguageProvider>
-  )
+type PokemonSearchWrapperProps = {
+  locale: Locale
+}
+
+export function PokemonSearchWrapper({ locale }: PokemonSearchWrapperProps) {
+  return <PokemonSearch locale={locale} />
 }

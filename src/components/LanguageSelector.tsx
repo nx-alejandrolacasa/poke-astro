@@ -1,15 +1,28 @@
-import { useLanguage } from '@/contexts/LanguageContext'
+import type { Locale } from '@/utils/i18n'
 
-export function LanguageSelector() {
-  const { language, setLanguage } = useLanguage()
+type LanguageSelectorProps = {
+  locale: Locale
+}
+
+export function LanguageSelector({ locale }: LanguageSelectorProps) {
+  const switchToLocale = (newLocale: Locale) => {
+    if (newLocale === locale) return
+
+    // Get current path and replace the locale prefix
+    const currentPath = window.location.pathname
+    const pathWithoutLocale = currentPath.replace(/^\/(en|es)/, '')
+    const newPath = `/${newLocale}${pathWithoutLocale || ''}`
+
+    window.location.href = newPath
+  }
 
   return (
     <div className="flex items-center gap-1 rounded-lg border-2 border-gray-200 bg-white p-1 dark:border-gray-700 dark:bg-gray-800">
       <button
         type="button"
-        onClick={() => setLanguage('en')}
+        onClick={() => switchToLocale('en')}
         className={`rounded-md px-3 py-1.5 font-semibold text-sm transition-all ${
-          language === 'en'
+          locale === 'en'
             ? 'bg-primary-400 text-white shadow-md dark:bg-primary-500'
             : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700'
         }`}
@@ -19,9 +32,9 @@ export function LanguageSelector() {
       </button>
       <button
         type="button"
-        onClick={() => setLanguage('es')}
+        onClick={() => switchToLocale('es')}
         className={`rounded-md px-3 py-1.5 font-semibold text-sm transition-all ${
-          language === 'es'
+          locale === 'es'
             ? 'bg-primary-400 text-white shadow-md dark:bg-primary-500'
             : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700'
         }`}

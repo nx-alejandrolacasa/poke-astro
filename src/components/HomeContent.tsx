@@ -1,13 +1,14 @@
-import { useLanguage } from '@/contexts/LanguageContext'
-import { interpolate } from '@/utils/translations'
+import type { Locale } from '@/utils/i18n'
+import { translations, interpolate } from '@/utils/translations'
 import { RotatingText } from '@/components/RotatingText'
 
 type HomeContentProps = {
   totalPokemon: number
+  locale: Locale
 }
 
-export function HomeContent({ totalPokemon }: HomeContentProps) {
-  const { t, language } = useLanguage()
+export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
+  const t = translations[locale]
 
   const pokemonTypes = [
     'normal',
@@ -31,15 +32,15 @@ export function HomeContent({ totalPokemon }: HomeContentProps) {
   ]
 
   const generations = [
-    { name: language === 'es' ? 'Generación I' : 'Generation I', region: 'Kanto' },
-    { name: language === 'es' ? 'Generación II' : 'Generation II', region: 'Johto' },
-    { name: language === 'es' ? 'Generación III' : 'Generation III', region: 'Hoenn' },
-    { name: language === 'es' ? 'Generación IV' : 'Generation IV', region: 'Sinnoh' },
-    { name: language === 'es' ? 'Generación V' : 'Generation V', region: 'Unova' },
-    { name: language === 'es' ? 'Generación VI' : 'Generation VI', region: 'Kalos' },
-    { name: language === 'es' ? 'Generación VII' : 'Generation VII', region: 'Alola' },
-    { name: language === 'es' ? 'Generación VIII' : 'Generation VIII', region: 'Galar' },
-    { name: language === 'es' ? 'Generación IX' : 'Generation IX', region: 'Paldea' },
+    { name: locale === 'es' ? 'Generación I' : 'Generation I', region: 'Kanto' },
+    { name: locale === 'es' ? 'Generación II' : 'Generation II', region: 'Johto' },
+    { name: locale === 'es' ? 'Generación III' : 'Generation III', region: 'Hoenn' },
+    { name: locale === 'es' ? 'Generación IV' : 'Generation IV', region: 'Sinnoh' },
+    { name: locale === 'es' ? 'Generación V' : 'Generation V', region: 'Unova' },
+    { name: locale === 'es' ? 'Generación VI' : 'Generation VI', region: 'Kalos' },
+    { name: locale === 'es' ? 'Generación VII' : 'Generation VII', region: 'Alola' },
+    { name: locale === 'es' ? 'Generación VIII' : 'Generation VIII', region: 'Galar' },
+    { name: locale === 'es' ? 'Generación IX' : 'Generation IX', region: 'Paldea' },
   ]
 
   return (
@@ -54,7 +55,7 @@ export function HomeContent({ totalPokemon }: HomeContentProps) {
         </p>
         <div>
           <a
-            href="/pokedex"
+            href={`/${locale}/pokedex`}
             className="inline-block rounded-xl bg-gradient-to-r from-primary-500 to-purple-400 px-6 py-3 font-semibold text-base text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-primary-600 hover:to-purple-500 hover:shadow-2xl md:px-8 md:py-4 md:text-lg dark:from-primary-400 dark:to-purple-300 dark:text-gray-900 dark:hover:from-primary-500 dark:hover:to-purple-400"
           >
             {t.home.viewPokedex}
@@ -135,7 +136,7 @@ export function HomeContent({ totalPokemon }: HomeContentProps) {
             {pokemonTypes.map((type) => (
               <a
                 key={type}
-                href={`/type/${type}`}
+                href={`/${locale}/type/${type}`}
                 className="group relative overflow-hidden rounded-lg border-2 border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100 p-2 text-center shadow-md transition-all duration-300 hover:scale-105 hover:border-primary-400 hover:from-primary-50 hover:to-purple-50 hover:shadow-xl md:p-3 dark:border-gray-700 dark:from-gray-800 dark:to-gray-900 dark:hover:border-primary-500 dark:hover:from-primary-900/30 dark:hover:to-purple-900/30"
               >
                 <span className="font-semibold text-gray-700 text-xs transition-colors group-hover:text-primary-600 md:text-sm dark:text-gray-200 dark:group-hover:text-primary-400">
@@ -155,12 +156,12 @@ export function HomeContent({ totalPokemon }: HomeContentProps) {
             {generations.map((gen, index) => (
               <a
                 key={index}
-                href={`/generation/${index + 1}`}
+                href={`/${locale}/generation/${index + 1}`}
                 className="group rounded-lg border-2 border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100 p-3 shadow-md transition-all duration-300 hover:scale-[1.02] hover:border-primary-400 hover:from-primary-50 hover:to-purple-50 hover:shadow-xl md:p-4 dark:border-gray-700 dark:from-gray-800 dark:to-gray-900 dark:hover:border-primary-500 dark:hover:from-primary-900/30 dark:hover:to-purple-900/30"
               >
                 <div className="space-y-0.5 text-center">
                   <p className="font-bold text-gray-700 text-sm transition-colors group-hover:text-primary-600 md:text-base dark:text-gray-200 dark:group-hover:text-primary-400">
-                    {language === 'es' ? `Gen ${index + 1}` : `Gen ${index + 1}`}
+                    {locale === 'es' ? `Gen ${index + 1}` : `Gen ${index + 1}`}
                   </p>
                   <p className="text-gray-500 text-xs dark:text-gray-400">
                     {gen.region}

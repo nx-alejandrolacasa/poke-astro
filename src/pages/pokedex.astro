@@ -1,15 +1,6 @@
 ---
-export const prerender = true
+import { defaultLocale } from '@/utils/i18n'
 
-import { fetchPokemonPage } from '@utils/pokemon'
-import { PokemonInfiniteScrollWrapper } from '@/components/PokemonInfiniteScrollWrapper'
-import Layout from '@/layouts/Layout.astro'
-
-// Only fetch the first page at build time
-// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
-const initialData = await fetchPokemonPage(1, 30)
+// Redirect to the localized version
+return Astro.redirect(`/${defaultLocale}/pokedex`, 307)
 ---
-
-<Layout title="Pokémon Astro - Pokédex">
-  <PokemonInfiniteScrollWrapper client:load initialData={initialData} />
-</Layout>

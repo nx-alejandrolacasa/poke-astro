@@ -1,83 +1,18 @@
 ---
-export const prerender = true
+import { defaultLocale } from '@/utils/i18n'
 
-import Layout from '@/layouts/Layout.astro'
-import { TypeInfiniteScrollWrapper } from '@/components/TypeInfiniteScrollWrapper'
-import { getPokemonName } from '@/utils/pokemon'
-import type { Pokemon, PokemonList } from '@/utils/pokemon'
+const pokemonTypes = [
+  'normal', 'fire', 'water', 'electric', 'grass', 'ice',
+  'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug',
+  'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy'
+]
 
-export async function getStaticPaths() {
-  // All available Pokémon types
-  const pokemonTypes = [
-    'normal', 'fire', 'water', 'electric', 'grass', 'ice',
-    'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug',
-    'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy'
-  ]
-
-  return pokemonTypes.map((type) => ({
-    params: { type },
-  }))
+export function getStaticPaths() {
+  return pokemonTypes.map((type) => ({ params: { type } }))
 }
 
 const { type } = Astro.params
 
-// Type color mapping
-const typeColors: Record<string, string> = {
-  normal: 'from-gray-400 to-gray-500',
-  fire: 'from-orange-500 to-red-600',
-  water: 'from-blue-500 to-cyan-600',
-  electric: 'from-yellow-400 to-yellow-600',
-  grass: 'from-green-500 to-emerald-600',
-  ice: 'from-cyan-400 to-blue-400',
-  fighting: 'from-red-700 to-orange-700',
-  poison: 'from-purple-600 to-fuchsia-600',
-  ground: 'from-yellow-600 to-amber-700',
-  flying: 'from-indigo-400 to-sky-500',
-  psychic: 'from-pink-500 to-purple-600',
-  bug: 'from-lime-600 to-green-600',
-  rock: 'from-amber-700 to-stone-700',
-  ghost: 'from-purple-700 to-indigo-800',
-  dragon: 'from-indigo-600 to-purple-700',
-  dark: 'from-gray-700 to-slate-800',
-  steel: 'from-slate-500 to-gray-600',
-  fairy: 'from-pink-400 to-rose-500',
-}
-
-const gradientClass = typeColors[type] || 'from-gray-400 to-gray-500'
-
-// Fetch type data from PokéAPI
-const typeRes = await fetch(`https://pokeapi.co/api/v2/type/${type}`)
-if (!typeRes.ok) {
-  return Astro.redirect('/404')
-}
-const typeData = await typeRes.json()
-
-// Get first page of pokemon (30 items)
-const pageSize = 30
-const pokemonSlice = typeData.pokemon.slice(0, pageSize)
-
-// Fetch full details for first page
-const pokemonPromises = pokemonSlice.map(async (p: { pokemon: { url: string } }) => {
-  const res = await fetch(p.pokemon.url)
-  return res.json()
-})
-
-const results: Pokemon[] = await Promise.all(pokemonPromises)
-
-// Sort by order number
-results.sort((a, b) => a.order - b.order)
-
-const initialData: PokemonList = {
-  count: typeData.pokemon.length,
-  results,
-}
+// Redirect to the localized version
+return Astro.redirect(`/${defaultLocale}/type/${type}`, 307)
 ---
-
-<Layout title={`${getPokemonName(type)} Type Pokémon`}>
-  <TypeInfiniteScrollWrapper
-    client:load
-    initialData={initialData}
-    type={type}
-    typeColor={gradientClass}
-  />
-</Layout>
