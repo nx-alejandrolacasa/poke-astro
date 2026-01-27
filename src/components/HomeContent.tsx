@@ -113,6 +113,7 @@ export function HomeContent({ totalPokemon }: HomeContentProps) {
                 items={t.funFacts}
                 intervalMs={5000}
                 className="text-sm text-white leading-tight md:text-base"
+                indicatorStyle="subtle"
               />
             </div>
           </div>

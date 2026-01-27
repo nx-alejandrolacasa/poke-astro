@@ -4,11 +4,19 @@ type RotatingTextProps = {
   items: string[]
   intervalMs?: number
   className?: string
+  showIndicators?: boolean
+  indicatorStyle?: 'default' | 'subtle'
 }
 
 type AnimationPhase = 'idle' | 'exiting' | 'entering'
 
-export function RotatingText({ items, intervalMs = 5000, className = '' }: RotatingTextProps) {
+export function RotatingText({
+  items,
+  intervalMs = 5000,
+  className = '',
+  showIndicators = true,
+  indicatorStyle = 'default',
+}: RotatingTextProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [animationPhase, setAnimationPhase] = useState<AnimationPhase>('idle')
   const [contentHeight, setContentHeight] = useState<number | null>(null)
@@ -128,18 +136,26 @@ export function RotatingText({ items, intervalMs = 5000, className = '' }: Rotat
           {items[currentIndex]}
         </p>
       </div>
-      {items.length > 1 && (
-        <div className="mt-2 flex items-center justify-center gap-1">
+      {showIndicators && items.length > 1 && (
+        <div className={`flex items-center justify-center gap-1 ${indicatorStyle === 'subtle' ? 'mt-1.5' : 'mt-2'}`}>
           {items.map((_, index) => (
             <button
               key={index}
               type="button"
               onClick={() => handleDotClick(index)}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                index === currentIndex
-                  ? 'w-4 bg-[#3466AF]'
-                  : 'w-1.5 bg-gray-400 hover:bg-gray-500 dark:bg-gray-600 dark:hover:bg-gray-500'
-              }`}
+              className={
+                indicatorStyle === 'subtle'
+                  ? `h-1 rounded-full transition-all duration-300 ${
+                      index === currentIndex
+                        ? 'w-2 bg-white/70'
+                        : 'w-1 bg-white/30 hover:bg-white/50'
+                    }`
+                  : `h-1.5 rounded-full transition-all duration-300 ${
+                      index === currentIndex
+                        ? 'w-4 bg-[#3466AF]'
+                        : 'w-1.5 bg-gray-400 hover:bg-gray-500 dark:bg-gray-600 dark:hover:bg-gray-500'
+                    }`
+              }
               aria-label={`Show item ${index + 1}`}
             />
           ))}
