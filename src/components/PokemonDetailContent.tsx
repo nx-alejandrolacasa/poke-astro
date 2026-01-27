@@ -257,8 +257,8 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
                     key={name}
                     className={`rounded-full border px-2 py-0.5 text-sm ${
                       isHidden
-                        ? 'border-yellow-500 text-yellow-600 dark:text-yellow-400'
-                        : 'border-gray-400 text-gray-900 dark:border-gray-500 dark:text-gray-100'
+                        ? 'border-amber-400 text-amber-600 dark:border-amber-500 dark:text-amber-300'
+                        : 'border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-200'
                     }`}
                     title={isHidden ? t.pokemon.hidden : undefined}
                   >
@@ -296,10 +296,10 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
                         <div
                           className={`absolute top-0 left-0 h-3 rounded-full ${
                             baseStat >= 100
-                              ? 'bg-green-500'
+                              ? 'bg-teal-400 dark:bg-teal-500'
                               : baseStat >= 60
-                                ? 'bg-yellow-500'
-                                : 'bg-red-500'
+                                ? 'bg-amber-400 dark:bg-amber-500'
+                                : 'bg-rose-400 dark:bg-rose-500'
                           }`}
                           style={{ width: `${percentage}%` }}
                         />

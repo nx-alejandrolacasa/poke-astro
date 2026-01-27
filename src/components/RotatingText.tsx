@@ -147,13 +147,13 @@ export function RotatingText({
                 indicatorStyle === 'subtle'
                   ? `h-1 rounded-full transition-all duration-300 ${
                       index === currentIndex
-                        ? 'w-2 bg-white/70'
-                        : 'w-1 bg-white/30 hover:bg-white/50'
+                        ? 'w-2 bg-current opacity-50'
+                        : 'w-1 bg-current opacity-25 hover:opacity-40'
                     }`
                   : `h-1.5 rounded-full transition-all duration-300 ${
                       index === currentIndex
-                        ? 'w-4 bg-[#3466AF]'
-                        : 'w-1.5 bg-gray-400 hover:bg-gray-500 dark:bg-gray-600 dark:hover:bg-gray-500'
+                        ? 'w-4 bg-primary-500 dark:bg-primary-400'
+                        : 'w-1.5 bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500'
                     }`
               }
               aria-label={`Show item ${index + 1}`}

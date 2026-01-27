@@ -89,7 +89,7 @@ export function MobileMenuDrawer() {
 
           {/* Pokédex button - full version */}
           <a
-            className="flex items-center justify-center rounded-xl bg-gradient-to-r from-[#3466AF] to-purple-600 px-5 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:from-[#2855a0] hover:to-purple-700 hover:shadow-2xl active:scale-95"
+            className="flex items-center justify-center rounded-xl bg-gradient-to-r from-primary-500 to-purple-400 px-5 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:from-primary-600 hover:to-purple-500 hover:shadow-2xl active:scale-95 dark:from-primary-400 dark:to-purple-300 dark:text-gray-900 dark:hover:from-primary-500 dark:hover:to-purple-400"
             href="/pokedex"
             onClick={() => setIsOpen(false)}
           >
