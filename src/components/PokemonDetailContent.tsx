@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import type { Pokemon } from '@/utils/pokemon'
 import { getPokemonImage, getPokemonName } from '@/utils/pokemon'
 import { useLanguage } from '@/contexts/LanguageContext'
@@ -27,6 +27,11 @@ type TranslatedStat = {
   baseStat: number
 }
 
+type FlavorTextEntry = {
+  text: string
+  version: string
+}
+
 export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailContentProps) {
   const { t, language } = useLanguage()
   // Initialize with data already available from the pokemon prop (no loading needed)
@@ -50,9 +55,12 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
       baseStat: base_stat,
     }))
   )
-  const [description, setDescription] = useState<string | null>(null)
+  const [descriptions, setDescriptions] = useState<FlavorTextEntry[]>([])
+  const [currentDescriptionIndex, setCurrentDescriptionIndex] = useState(0)
+  const [isAnimating, setIsAnimating] = useState(false)
   const [descriptionLoading, setDescriptionLoading] = useState(true)
   const [isImageZoomed, setIsImageZoomed] = useState(false)
+  const rotationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
     const fetchEnrichedData = async () => {
@@ -93,20 +101,35 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
           }
         })
 
-        // Fetch description/flavor text from species endpoint (only this shows loading state)
+        // Fetch descriptions/flavor text from species endpoint (only this shows loading state)
         const speciesPromise = fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonName}`)
           .then(res => res.json())
           .then(data => {
-            const flavorEntry = data.flavor_text_entries?.find(
+            // Get all unique flavor texts in the current language (or fallback to English)
+            const entries = data.flavor_text_entries?.filter(
               (entry: any) => entry.language.name === language
-            ) || data.flavor_text_entries?.find(
+            ) || data.flavor_text_entries?.filter(
               (entry: any) => entry.language.name === 'en'
-            )
-            return flavorEntry?.flavor_text?.replace(/\f/g, ' ').replace(/\n/g, ' ') || null
-          })
-          .catch(() => null)
+            ) || []
 
-        const [translatedTypes, translatedAbilities, translatedStats, flavorText] = await Promise.all([
+            // Deduplicate by text content and clean up
+            const seen = new Set<string>()
+            const uniqueEntries: FlavorTextEntry[] = []
+            for (const entry of entries) {
+              const cleanText = entry.flavor_text?.replace(/\f/g, ' ').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim()
+              if (cleanText && !seen.has(cleanText)) {
+                seen.add(cleanText)
+                uniqueEntries.push({
+                  text: cleanText,
+                  version: entry.version?.name || 'unknown',
+                })
+              }
+            }
+            return uniqueEntries
+          })
+          .catch(() => [] as FlavorTextEntry[])
+
+        const [translatedTypes, translatedAbilities, translatedStats, flavorTexts] = await Promise.all([
           Promise.all(typesPromises),
           Promise.all(abilitiesPromises),
           Promise.all(statsPromises),
@@ -116,11 +139,12 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
         setTypes(translatedTypes)
         setAbilities(translatedAbilities)
         setStats(translatedStats)
-        setDescription(flavorText)
+        setDescriptions(flavorTexts)
+        setCurrentDescriptionIndex(0)
       } catch (error) {
         console.error('Failed to fetch enriched data:', error)
         // Keep existing data on error (already initialized from pokemon prop)
-        setDescription(null)
+        setDescriptions([])
       } finally {
         setDescriptionLoading(false)
       }
@@ -128,6 +152,33 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
 
     fetchEnrichedData()
   }, [pokemon, pokemonName, language, t.stats])
+
+  // Description rotation effect
+  useEffect(() => {
+    // Clear any existing interval
+    if (rotationIntervalRef.current) {
+      clearInterval(rotationIntervalRef.current)
+      rotationIntervalRef.current = null
+    }
+
+    // Only set up rotation if we have multiple descriptions
+    if (descriptions.length > 1) {
+      rotationIntervalRef.current = setInterval(() => {
+        setIsAnimating(true)
+        // After exit animation completes (300ms), change the description
+        setTimeout(() => {
+          setCurrentDescriptionIndex((prev) => (prev + 1) % descriptions.length)
+          setIsAnimating(false)
+        }, 300)
+      }, 5000)
+    }
+
+    return () => {
+      if (rotationIntervalRef.current) {
+        clearInterval(rotationIntervalRef.current)
+      }
+    }
+  }, [descriptions.length])
 
   const totalStats = stats.reduce((sum, stat) => sum + stat.baseStat, 0)
   const maxStat = 255
@@ -171,15 +222,46 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
             {getPokemonName(pokemonName)}
           </h1>
 
-          {/* Description - Shown prominently */}
-          {(descriptionLoading || description) && (
-            <div className="rounded-lg border border-gray-300 bg-gray-50 p-2 transition-colors md:p-3 dark:border-gray-700 dark:bg-gray-800/50">
+          {/* Description - Rotating with animation */}
+          {(descriptionLoading || descriptions.length > 0) && (
+            <div className="relative overflow-hidden rounded-lg border border-gray-300 bg-gray-50 p-2 transition-colors md:p-3 dark:border-gray-700 dark:bg-gray-800/50">
               {descriptionLoading ? (
                 <div className="h-12 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
-              ) : description ? (
-                <p className="text-gray-700 text-sm leading-relaxed md:text-base dark:text-gray-300">
-                  {description}
-                </p>
+              ) : descriptions.length > 0 ? (
+                <div className="relative min-h-[3rem]">
+                  <p
+                    className={`text-gray-700 text-sm leading-relaxed transition-all duration-300 ease-in-out md:text-base dark:text-gray-300 ${
+                      isAnimating
+                        ? 'translate-y-4 opacity-0'
+                        : 'translate-y-0 opacity-100'
+                    }`}
+                  >
+                    {descriptions[currentDescriptionIndex]?.text}
+                  </p>
+                  {descriptions.length > 1 && (
+                    <div className="mt-2 flex items-center justify-center gap-1">
+                      {descriptions.map((_, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => {
+                            setIsAnimating(true)
+                            setTimeout(() => {
+                              setCurrentDescriptionIndex(index)
+                              setIsAnimating(false)
+                            }, 300)
+                          }}
+                          className={`h-1.5 rounded-full transition-all duration-300 ${
+                            index === currentDescriptionIndex
+                              ? 'w-4 bg-[#3466AF]'
+                              : 'w-1.5 bg-gray-400 hover:bg-gray-500 dark:bg-gray-600 dark:hover:bg-gray-500'
+                          }`}
+                          aria-label={`Show description ${index + 1}`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
               ) : null}
             </div>
           )}
