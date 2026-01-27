@@ -8,8 +8,13 @@ async function getAdapter() {
     const vercel = (await import('@astrojs/vercel')).default
     return vercel()
   }
-  const cloudflare = (await import('@astrojs/cloudflare')).default
-  return cloudflare()
+  if (process.env.CF_PAGES) {
+    const cloudflare = (await import('@astrojs/cloudflare')).default
+    return cloudflare()
+  }
+  // Default to Vercel adapter for local development
+  const vercel = (await import('@astrojs/vercel')).default
+  return vercel()
 }
 
 // https://astro.build/config
