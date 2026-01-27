@@ -29,18 +29,36 @@ type TranslatedStat = {
 
 export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailContentProps) {
   const { t, language } = useLanguage()
-  const [abilities, setAbilities] = useState<TranslatedAbility[]>([])
-  const [types, setTypes] = useState<TranslatedType[]>([])
-  const [stats, setStats] = useState<TranslatedStat[]>([])
+  // Initialize with data already available from the pokemon prop (no loading needed)
+  const [abilities, setAbilities] = useState<TranslatedAbility[]>(() =>
+    pokemon.abilities.map(({ ability, is_hidden }) => ({
+      name: ability.name,
+      translatedName: ability.name.replaceAll('-', ' '),
+      isHidden: is_hidden,
+    }))
+  )
+  const [types, setTypes] = useState<TranslatedType[]>(() =>
+    pokemon.types.map(({ type }) => ({
+      name: type.name,
+      translatedName: type.name,
+    }))
+  )
+  const [stats, setStats] = useState<TranslatedStat[]>(() =>
+    pokemon.stats.map(({ stat, base_stat }) => ({
+      name: stat.name,
+      translatedName: t.stats[stat.name as keyof typeof t.stats] ?? stat.name,
+      baseStat: base_stat,
+    }))
+  )
   const [description, setDescription] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [descriptionLoading, setDescriptionLoading] = useState(true)
   const [isImageZoomed, setIsImageZoomed] = useState(false)
 
   useEffect(() => {
-    const fetchTranslations = async () => {
-      setLoading(true)
+    const fetchEnrichedData = async () => {
+      setDescriptionLoading(true)
       try {
-        // Fetch translated types
+        // Fetch translated types (silent update, no loading state)
         const typesPromises = pokemon.types.map(async ({ type }) => {
           const response = await fetch(`https://pokeapi.co/api/v2/type/${type.name}`)
           const data = await response.json()
@@ -51,7 +69,7 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
           }
         })
 
-        // Fetch translated abilities
+        // Fetch translated abilities (silent update, no loading state)
         const abilitiesPromises = pokemon.abilities.map(async ({ ability, is_hidden }) => {
           const response = await fetch(`https://pokeapi.co/api/v2/ability/${ability.name}`)
           const data = await response.json()
@@ -63,7 +81,7 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
           }
         })
 
-        // Fetch translated stats
+        // Fetch translated stats (silent update, no loading state)
         const statsPromises = pokemon.stats.map(async ({ stat, base_stat }) => {
           const response = await fetch(`https://pokeapi.co/api/v2/stat/${stat.name}`)
           const data = await response.json()
@@ -75,7 +93,7 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
           }
         })
 
-        // Fetch description/flavor text from species endpoint
+        // Fetch description/flavor text from species endpoint (only this shows loading state)
         const speciesPromise = fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonName}`)
           .then(res => res.json())
           .then(data => {
@@ -100,30 +118,15 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
         setStats(translatedStats)
         setDescription(flavorText)
       } catch (error) {
-        console.error('Failed to fetch translations:', error)
-        // Fallback to untranslated data
-        setTypes(pokemon.types.map(({ type }) => ({ name: type.name, translatedName: type.name })))
-        setAbilities(
-          pokemon.abilities.map(({ ability, is_hidden }) => ({
-            name: ability.name,
-            translatedName: ability.name.replaceAll('-', ' '),
-            isHidden: is_hidden,
-          }))
-        )
-        setStats(
-          pokemon.stats.map(({ stat, base_stat }) => ({
-            name: stat.name,
-            translatedName: t.stats[stat.name as keyof typeof t.stats] ?? stat.name,
-            baseStat: base_stat,
-          }))
-        )
+        console.error('Failed to fetch enriched data:', error)
+        // Keep existing data on error (already initialized from pokemon prop)
         setDescription(null)
       } finally {
-        setLoading(false)
+        setDescriptionLoading(false)
       }
     }
 
-    fetchTranslations()
+    fetchEnrichedData()
   }, [pokemon, pokemonName, language, t.stats])
 
   const totalStats = stats.reduce((sum, stat) => sum + stat.baseStat, 0)
@@ -169,9 +172,9 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
           </h1>
 
           {/* Description - Shown prominently */}
-          {(loading || description) && (
+          {(descriptionLoading || description) && (
             <div className="rounded-lg border border-gray-300 bg-gray-50 p-2 transition-colors md:p-3 dark:border-gray-700 dark:bg-gray-800/50">
-              {loading ? (
+              {descriptionLoading ? (
                 <div className="h-12 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
               ) : description ? (
                 <p className="text-gray-700 text-sm leading-relaxed md:text-base dark:text-gray-300">
@@ -189,18 +192,14 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
                 {t.pokemon.type}
               </h2>
               <div className="flex flex-wrap gap-1">
-                {loading ? (
-                  <div className="h-6 w-14 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
-                ) : (
-                  types.map(({ name, translatedName }) => (
-                    <span
-                      key={name}
-                      className="rounded-full border border-gray-400 bg-white px-2 py-0.5 font-medium text-gray-900 text-sm capitalize dark:border-gray-300 dark:bg-gray-800 dark:text-gray-100"
-                    >
-                      {translatedName}
-                    </span>
-                  ))
-                )}
+                {types.map(({ name, translatedName }) => (
+                  <span
+                    key={name}
+                    className="rounded-full border border-gray-400 bg-white px-2 py-0.5 font-medium text-gray-900 text-sm capitalize dark:border-gray-300 dark:bg-gray-800 dark:text-gray-100"
+                  >
+                    {translatedName}
+                  </span>
+                ))}
               </div>
             </div>
 
@@ -230,23 +229,19 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
                 {t.pokemon.abilities}
               </h2>
               <div className="flex flex-wrap gap-1">
-                {loading ? (
-                  <div className="h-6 w-16 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
-                ) : (
-                  abilities.map(({ name, translatedName, isHidden }) => (
-                    <span
-                      key={name}
-                      className={`rounded-full border px-2 py-0.5 text-sm ${
-                        isHidden
-                          ? 'border-yellow-500 text-yellow-600 dark:text-yellow-400'
-                          : 'border-gray-400 text-gray-900 dark:border-gray-500 dark:text-gray-100'
-                      }`}
-                      title={isHidden ? t.pokemon.hidden : undefined}
-                    >
-                      {translatedName}
-                    </span>
-                  ))
-                )}
+                {abilities.map(({ name, translatedName, isHidden }) => (
+                  <span
+                    key={name}
+                    className={`rounded-full border px-2 py-0.5 text-sm ${
+                      isHidden
+                        ? 'border-yellow-500 text-yellow-600 dark:text-yellow-400'
+                        : 'border-gray-400 text-gray-900 dark:border-gray-500 dark:text-gray-100'
+                    }`}
+                    title={isHidden ? t.pokemon.hidden : undefined}
+                  >
+                    {translatedName}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
@@ -262,56 +257,39 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
               {t.pokemon.baseStats}
             </h2>
             <div className="space-y-1.5">
-              {loading ? (
-                <>
-                  {[1, 2, 3, 4, 5, 6].map((i) => (
-                    <div
-                      key={i}
-                      className="grid grid-cols-[90px_40px_1fr] gap-2"
-                    >
-                      <div className="h-4 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
-                      <div className="h-4 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
-                      <div className="h-3 animate-pulse rounded-full bg-gray-300 dark:bg-gray-600" />
+              {stats.map(({ name, translatedName, baseStat }) => {
+                const percentage = (baseStat / maxStat) * 100
+                return (
+                  <div
+                    key={name}
+                    className="grid grid-cols-[90px_40px_1fr] gap-2 text-gray-900 dark:text-gray-100"
+                  >
+                    <div className="truncate text-right text-gray-600 text-sm dark:text-gray-400">
+                      {translatedName}
                     </div>
-                  ))}
-                </>
-              ) : (
-                <>
-                  {stats.map(({ name, translatedName, baseStat }) => {
-                    const percentage = (baseStat / maxStat) * 100
-                    return (
-                      <div
-                        key={name}
-                        className="grid grid-cols-[90px_40px_1fr] gap-2 text-gray-900 dark:text-gray-100"
-                      >
-                        <div className="truncate text-right text-gray-600 text-sm dark:text-gray-400">
-                          {translatedName}
-                        </div>
-                        <div className="text-right font-semibold text-sm">{baseStat}</div>
-                        <div className="flex items-center">
-                          <div className="relative h-3 w-full rounded-full bg-gray-300 dark:bg-gray-700">
-                            <div
-                              className={`absolute top-0 left-0 h-3 rounded-full ${
-                                baseStat >= 100
-                                  ? 'bg-green-500'
-                                  : baseStat >= 60
-                                    ? 'bg-yellow-500'
-                                    : 'bg-red-500'
-                              }`}
-                              style={{ width: `${percentage}%` }}
-                            />
-                          </div>
-                        </div>
+                    <div className="text-right font-semibold text-sm">{baseStat}</div>
+                    <div className="flex items-center">
+                      <div className="relative h-3 w-full rounded-full bg-gray-300 dark:bg-gray-700">
+                        <div
+                          className={`absolute top-0 left-0 h-3 rounded-full ${
+                            baseStat >= 100
+                              ? 'bg-green-500'
+                              : baseStat >= 60
+                                ? 'bg-yellow-500'
+                                : 'bg-red-500'
+                          }`}
+                          style={{ width: `${percentage}%` }}
+                        />
                       </div>
-                    )
-                  })}
-                  <div className="mt-2 grid grid-cols-[90px_40px_1fr] gap-2 border-t border-gray-400 pt-2 dark:border-gray-700">
-                    <div className="text-right font-bold text-sm">{t.pokemon.total}</div>
-                    <div className="text-right font-bold text-sm">{totalStats}</div>
-                    <div />
+                    </div>
                   </div>
-                </>
-              )}
+                )
+              })}
+              <div className="mt-2 grid grid-cols-[90px_40px_1fr] gap-2 border-t border-gray-400 pt-2 dark:border-gray-700">
+                <div className="text-right font-bold text-sm">{t.pokemon.total}</div>
+                <div className="text-right font-bold text-sm">{totalStats}</div>
+                <div />
+              </div>
             </div>
           </div>
         }
