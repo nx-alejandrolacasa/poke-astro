@@ -234,7 +234,7 @@ export function PokemonDetailContent({ pokemon, pokemonName, locale }: PokemonDe
                 {t.pokemon.height}
               </h2>
               <p className="font-semibold text-gray-900 text-base md:text-lg dark:text-gray-100">
-                {(pokemon.height / 10).toFixed(1)} m
+                {(pokemon.height / 10).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} m
               </p>
             </div>
 
@@ -244,7 +244,7 @@ export function PokemonDetailContent({ pokemon, pokemonName, locale }: PokemonDe
                 {t.pokemon.weight}
               </h2>
               <p className="font-semibold text-gray-900 text-base md:text-lg dark:text-gray-100">
-                {(pokemon.weight / 10).toFixed(1)} kg
+                {(pokemon.weight / 10).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} kg
               </p>
             </div>
 

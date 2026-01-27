@@ -14,7 +14,7 @@ export function PokemonTile({ loading = false, pokemon, locale }: PokemonTilePro
       <a href={`/${locale}/pokemon/${pokemon.name}`} title={pokemon.name}>
         <div className="relative aspect-square w-full">
           {/* Order number - positioned behind the Pokemon image */}
-          <div className="pointer-events-none absolute right-0.5 bottom-0.5 z-0 select-none font-black text-2xl text-gray-300/40 md:text-4xl dark:text-gray-600/40">
+          <div className="pointer-events-none absolute right-0.5 bottom-0.5 z-0 select-none font-black text-2xl text-gray-300/40 md:text-4xl dark:text-gray-400/50">
             #{pokemon.order.toString().padStart(3, '0')}
           </div>
           {/* Pokemon image - positioned in front */}

@@ -51,7 +51,7 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
           {t.home.title}
         </h1>
         <p className="mx-auto max-w-2xl text-gray-600 text-base md:text-lg dark:text-gray-300">
-          {interpolate(t.home.subtitle, { count: totalPokemon.toLocaleString() })}
+          {interpolate(t.home.subtitle, { count: totalPokemon.toLocaleString(locale) })}
         </p>
         <div>
           <a
@@ -76,7 +76,7 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
                 {t.home.totalPokemon}
               </p>
               <p className="font-black text-2xl text-primary-800 md:text-3xl dark:text-white">
-                {totalPokemon.toLocaleString()}
+                {totalPokemon.toLocaleString(locale)}
               </p>
               <p className="text-primary-700 text-sm md:text-base dark:text-primary-200">{t.home.speciesDiscovered}</p>
             </div>
