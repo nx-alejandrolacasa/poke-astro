@@ -1,12 +1,17 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { useLanguage } from '@/contexts/LanguageContext'
+import type { Locale } from '@/utils/i18n'
+import { translations } from '@/utils/translations'
 import { PokemonSearch } from '@/components/PokemonSearch'
 import { LanguageSelector } from '@/components/LanguageSelector'
 import { DarkModeToggle } from '@/components/DarkModeToggle'
 
-export function MobileMenuDrawer() {
-  const { t } = useLanguage()
+type MobileMenuDrawerProps = {
+  locale: Locale
+}
+
+export function MobileMenuDrawer({ locale }: MobileMenuDrawerProps) {
+  const t = translations[locale]
   const [isOpen, setIsOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
 
@@ -84,13 +89,13 @@ export function MobileMenuDrawer() {
             <label className="mb-2 block font-medium text-gray-700 text-sm dark:text-gray-300">
               {t.search.placeholder}
             </label>
-            <PokemonSearch />
+            <PokemonSearch locale={locale} />
           </div>
 
           {/* Pokédex button - full version */}
           <a
             className="flex items-center justify-center rounded-xl bg-gradient-to-r from-primary-500 to-purple-400 px-5 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:from-primary-600 hover:to-purple-500 hover:shadow-2xl active:scale-95 dark:from-primary-400 dark:to-purple-300 dark:text-gray-900 dark:hover:from-primary-500 dark:hover:to-purple-400"
-            href="/pokedex"
+            href={`/${locale}/pokedex`}
             onClick={() => setIsOpen(false)}
           >
             <svg
@@ -105,7 +110,7 @@ export function MobileMenuDrawer() {
 
           {/* Settings row */}
           <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800">
-            <LanguageSelector />
+            <LanguageSelector locale={locale} />
             <DarkModeToggle />
           </div>
         </div>

@@ -1,0 +1,21 @@
+---
+export const prerender = true
+
+import Layout from '@/layouts/Layout.astro'
+import { HomeContentWrapper } from '@/components/HomeContentWrapper'
+import { fetchPokemonCount } from '@/utils/pokemon'
+import { getI18n, locales } from '@/utils/i18n'
+
+export function getStaticPaths() {
+  return locales.map((locale) => ({ params: { locale } }))
+}
+
+const { locale: localeParam } = Astro.params
+const { locale, t } = getI18n(localeParam)
+
+const totalPokemon = await fetchPokemonCount()
+---
+
+<Layout title={t.home.title} locale={locale}>
+  <HomeContentWrapper client:load totalPokemon={totalPokemon} locale={locale} />
+</Layout>

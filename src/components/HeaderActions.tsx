@@ -2,19 +2,23 @@ import { DarkModeToggle } from '@/components/DarkModeToggle'
 import { LanguageSelector } from '@/components/LanguageSelector'
 import { HeaderPokedexButton } from '@/components/HeaderPokedexButton'
 import { MobileMenuDrawer } from '@/components/MobileMenuDrawer'
-import { LanguageProvider } from '@/contexts/LanguageContext'
+import type { Locale } from '@/utils/i18n'
 
-export function HeaderActions() {
+type HeaderActionsProps = {
+  locale: Locale
+}
+
+export function HeaderActions({ locale }: HeaderActionsProps) {
   return (
-    <LanguageProvider>
+    <>
       {/* Desktop controls - hidden on mobile */}
       <div className="hidden items-center gap-2 sm:flex sm:gap-3">
-        <LanguageSelector />
-        <HeaderPokedexButton />
+        <LanguageSelector locale={locale} />
+        <HeaderPokedexButton locale={locale} />
         <DarkModeToggle />
       </div>
       {/* Mobile menu drawer */}
-      <MobileMenuDrawer />
-    </LanguageProvider>
+      <MobileMenuDrawer locale={locale} />
+    </>
   )
 }

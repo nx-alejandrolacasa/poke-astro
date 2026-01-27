@@ -1,13 +1,6 @@
 ---
-export const prerender = true
+import { defaultLocale } from '@/utils/i18n'
 
-import { fetchPokemonCount } from '@utils/pokemon'
-import { HomeContentWrapper } from '@/components/HomeContentWrapper'
-import Layout from '@/layouts/Layout.astro'
-
-const totalPokemon = await fetchPokemonCount()
+// Redirect root to the default locale
+return Astro.redirect(`/${defaultLocale}`, 307)
 ---
-
-<Layout title="Pokémon Astro - Explore the Pokédex">
-  <HomeContentWrapper client:load totalPokemon={totalPokemon} />
-</Layout>

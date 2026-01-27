@@ -1,7 +1,12 @@
-import { useLanguage } from '@/contexts/LanguageContext'
+import type { Locale } from '@/utils/i18n'
+import { translations } from '@/utils/translations'
 
-export function FooterContent() {
-  const { t } = useLanguage()
+type FooterContentProps = {
+  locale: Locale
+}
+
+export function FooterContent({ locale }: FooterContentProps) {
+  const t = translations[locale]
 
   return (
     <div className="space-y-1.5 text-center">

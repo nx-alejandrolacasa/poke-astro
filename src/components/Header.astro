@@ -1,6 +1,13 @@
 ---
 import { PokemonSearchWrapper } from '@/components/PokemonSearchWrapper'
 import { HeaderActions } from '@/components/HeaderActions'
+import type { Locale } from '@/utils/i18n'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
 ---
 
 <header class="sticky top-0 z-40 border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-sm transition-colors dark:border-gray-700 dark:bg-gray-900/95">
@@ -8,7 +15,7 @@ import { HeaderActions } from '@/components/HeaderActions'
     <nav class="flex h-16 items-center justify-between gap-4 sm:h-20 md:gap-8">
       <!-- Logo -->
       <a
-        href="/"
+        href={`/${locale}`}
         title="Go home"
         class="flex-shrink-0 transition-transform hover:scale-105"
       >
@@ -22,12 +29,12 @@ import { HeaderActions } from '@/components/HeaderActions'
       <!-- Search - Hidden on mobile, shown on tablet+ -->
       <div class="hidden flex-1 sm:flex sm:justify-center sm:px-4">
         <div class="w-full max-w-lg">
-          <PokemonSearchWrapper client:load />
+          <PokemonSearchWrapper client:load locale={locale} />
         </div>
       </div>
 
       <!-- Navigation links -->
-      <HeaderActions client:load />
+      <HeaderActions client:load locale={locale} />
     </nav>
   </div>
 </header>

@@ -1,82 +1,14 @@
 ---
-export const prerender = true
+import { defaultLocale } from '@/utils/i18n'
 
-import Layout from '@/layouts/Layout.astro'
-import { GenerationInfiniteScrollWrapper } from '@/components/GenerationInfiniteScrollWrapper'
-import type { Pokemon, PokemonList } from '@/utils/pokemon'
+const generationIds = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 
-export async function getStaticPaths() {
-  // Generation data
-  const generations = [
-    { id: 1, name: 'Generation I', region: 'Kanto', range: [1, 151] },
-    { id: 2, name: 'Generation II', region: 'Johto', range: [152, 251] },
-    { id: 3, name: 'Generation III', region: 'Hoenn', range: [252, 386] },
-    { id: 4, name: 'Generation IV', region: 'Sinnoh', range: [387, 493] },
-    { id: 5, name: 'Generation V', region: 'Unova', range: [494, 649] },
-    { id: 6, name: 'Generation VI', region: 'Kalos', range: [650, 721] },
-    { id: 7, name: 'Generation VII', region: 'Alola', range: [722, 809] },
-    { id: 8, name: 'Generation VIII', region: 'Galar', range: [810, 905] },
-    { id: 9, name: 'Generation IX', region: 'Paldea', range: [906, 1025] },
-  ]
-
-  return generations.map((gen) => ({
-    params: { id: String(gen.id) },
-    props: { generation: gen },
-  }))
+export function getStaticPaths() {
+  return generationIds.map((id) => ({ params: { id } }))
 }
 
-const { generation } = Astro.props
+const { id } = Astro.params
 
-// Generation color mapping
-const genColors: Record<number, string> = {
-  1: 'from-red-600 to-blue-600',
-  2: 'from-yellow-500 to-purple-600',
-  3: 'from-blue-600 to-green-600',
-  4: 'from-purple-600 to-pink-600',
-  5: 'from-gray-700 to-blue-700',
-  6: 'from-pink-500 to-blue-500',
-  7: 'from-orange-500 to-blue-600',
-  8: 'from-cyan-600 to-purple-700',
-  9: 'from-red-600 to-purple-600',
-}
-
-const gradientClass = genColors[generation.id] || 'from-gray-400 to-gray-500'
-
-// Fetch generation data from PokéAPI
-const genRes = await fetch(`https://pokeapi.co/api/v2/generation/${generation.id}`)
-if (!genRes.ok) {
-  return Astro.redirect('/404')
-}
-const genData = await genRes.json()
-
-// Get first page of pokemon (30 items)
-const pageSize = 30
-const speciesSlice = genData.pokemon_species.slice(0, pageSize)
-
-// Fetch full details for first page
-const pokemonPromises = speciesSlice.map(async (species: { name: string }) => {
-  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${species.name}`)
-  if (!res.ok) return null
-  return res.json()
-})
-
-const resultsWithNull = await Promise.all(pokemonPromises)
-const results: Pokemon[] = resultsWithNull.filter((p): p is Pokemon => p !== null)
-
-// Sort by order number
-results.sort((a, b) => a.order - b.order)
-
-const initialData: PokemonList = {
-  count: genData.pokemon_species.length,
-  results,
-}
+// Redirect to the localized version
+return Astro.redirect(`/${defaultLocale}/generation/${id}`, 307)
 ---
-
-<Layout title={`${generation.name} - ${generation.region} Region Pokémon`}>
-  <GenerationInfiniteScrollWrapper
-    client:load
-    initialData={initialData}
-    generation={generation}
-    generationColor={gradientClass}
-  />
-</Layout>

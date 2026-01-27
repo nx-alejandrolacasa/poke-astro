@@ -1,5 +1,6 @@
 import { PokemonTile } from '@components/PokemonTile'
 import type { Pokemon } from '@utils/pokemon'
+import type { Locale } from '@/utils/i18n'
 import { useEffect, useState } from 'react'
 
 async function fetchPokemonByName(name: string): Promise<Pokemon | null> {
@@ -14,9 +15,10 @@ async function fetchPokemonByName(name: string): Promise<Pokemon | null> {
 
 type PokemonTileFetcherProps = {
   name: string
+  locale: Locale
 }
 
-export function PokemonTileFetcher({ name }: PokemonTileFetcherProps) {
+export function PokemonTileFetcher({ name, locale }: PokemonTileFetcherProps) {
   const [loading, setLoading] = useState<boolean>(true)
   const [pokemon, setPokemon] = useState<Pokemon>({ name } as Pokemon)
 
@@ -33,5 +35,5 @@ export function PokemonTileFetcher({ name }: PokemonTileFetcherProps) {
     getPokemonData().catch((err) => console.error(err))
   }, [name])
 
-  return <PokemonTile loading={loading} pokemon={pokemon} />
+  return <PokemonTile loading={loading} pokemon={pokemon} locale={locale} />
 }

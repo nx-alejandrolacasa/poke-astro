@@ -1,14 +1,11 @@
-import { LanguageProvider } from '@/contexts/LanguageContext'
+import type { Locale } from '@/utils/i18n'
 import { HomeContent } from './HomeContent'
 
 type HomeContentWrapperProps = {
   totalPokemon: number
+  locale: Locale
 }
 
-export function HomeContentWrapper({ totalPokemon }: HomeContentWrapperProps) {
-  return (
-    <LanguageProvider>
-      <HomeContent totalPokemon={totalPokemon} />
-    </LanguageProvider>
-  )
+export function HomeContentWrapper({ totalPokemon, locale }: HomeContentWrapperProps) {
+  return <HomeContent totalPokemon={totalPokemon} locale={locale} />
 }

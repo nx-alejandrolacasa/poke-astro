@@ -1,20 +1,22 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
-import { useLanguage } from '@/contexts/LanguageContext'
-import { interpolate } from '@/utils/translations'
+import type { Locale } from '@/utils/i18n'
+import { translations, interpolate } from '@/utils/translations'
 import { PokemonTile } from './PokemonTile'
 
 type PokemonInfiniteScrollProps = {
   initialData: PokemonList
   initialPage?: number
+  locale: Locale
 }
 
 export function PokemonInfiniteScroll({
   initialData,
   initialPage = 1,
+  locale,
 }: PokemonInfiniteScrollProps) {
-  const { t } = useLanguage()
+  const t = translations[locale]
   const [pokemon, setPokemon] = useState<Pokemon[]>(initialData.results)
   const [page, setPage] = useState(initialPage)
   const [loading, setLoading] = useState(false)
@@ -64,7 +66,7 @@ export function PokemonInfiniteScroll({
       <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {pokemon.map((poke) => (
           <li key={poke.name} className="list-none">
-            <PokemonTile pokemon={poke} />
+            <PokemonTile pokemon={poke} locale={locale} />
           </li>
         ))}
       </ul>

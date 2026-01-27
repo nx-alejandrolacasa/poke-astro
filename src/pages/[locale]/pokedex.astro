@@ -1,0 +1,24 @@
+---
+export const prerender = true
+
+import Layout from '@/layouts/Layout.astro'
+import { PokemonInfiniteScrollWrapper } from '@/components/PokemonInfiniteScrollWrapper'
+import { fetchPokemonPage } from '@/utils/pokemon'
+import { getI18n, locales } from '@/utils/i18n'
+
+export function getStaticPaths() {
+  return locales.map((locale) => ({ params: { locale } }))
+}
+
+const { locale: localeParam } = Astro.params
+const { locale, t } = getI18n(localeParam)
+
+const initialData = await fetchPokemonPage(1)
+---
+
+<Layout title={t.header.pokedex} locale={locale}>
+  <h1 class="mb-6 text-center font-bold text-2xl text-gray-900 md:text-3xl dark:text-white">
+    {t.header.pokedex}
+  </h1>
+  <PokemonInfiniteScrollWrapper client:load initialData={initialData} locale={locale} />
+</Layout>

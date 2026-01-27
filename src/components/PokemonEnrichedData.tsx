@@ -2,7 +2,8 @@ import type { EvolutionTreeNode } from '@utils/pokemon'
 import { getPokemonName } from '@utils/pokemon'
 import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
-import { useLanguage } from '@/contexts/LanguageContext'
+import type { Locale } from '@/utils/i18n'
+import { translations } from '@/utils/translations'
 
 type EnrichedData = {
   evolutionTree: EvolutionTreeNode | null
@@ -17,11 +18,12 @@ type EnrichedData = {
 
 type PokemonEnrichedDataProps = {
   pokemonName: string
+  locale: Locale
   statsSection?: ReactNode
 }
 
-export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrichedDataProps) {
-  const { t, language } = useLanguage()
+export function PokemonEnrichedData({ pokemonName, locale, statsSection }: PokemonEnrichedDataProps) {
+  const t = translations[locale]
   const [data, setData] = useState<EnrichedData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -31,7 +33,7 @@ export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrich
       try {
         setLoading(true)
         const response = await fetch(
-          `/api/pokemon/${pokemonName}/enriched?lang=${language}`
+          `/api/pokemon/${pokemonName}/enriched?lang=${locale}`
         )
         if (!response.ok) {
           throw new Error('Failed to fetch enriched data')
@@ -46,7 +48,7 @@ export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrich
     }
 
     fetchEnrichedData()
-  }, [pokemonName, language])
+  }, [pokemonName, locale])
 
   if (loading) {
     return (
@@ -158,7 +160,7 @@ export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrich
           <h2 className="mb-2 font-bold text-base text-gray-900 md:text-lg dark:text-gray-100">
             {t.pokemon.evolutionChain}
           </h2>
-          <EvolutionTree tree={data.evolutionTree!} currentPokemon={pokemonName} />
+          <EvolutionTree tree={data.evolutionTree!} currentPokemon={pokemonName} locale={locale} />
         </div>
       )}
     </div>
@@ -168,9 +170,10 @@ export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrich
 type EvolutionTreeProps = {
   tree: EvolutionTreeNode
   currentPokemon: string
+  locale: Locale
 }
 
-function EvolutionTree({ tree, currentPokemon }: EvolutionTreeProps) {
+function EvolutionTree({ tree, currentPokemon, locale }: EvolutionTreeProps) {
   const stages = collectEvolutionStages(tree)
   const hasBranching = stages.some((stage) => stage.length > 1)
 
@@ -200,6 +203,7 @@ function EvolutionTree({ tree, currentPokemon }: EvolutionTreeProps) {
                   name={pokemon.name}
                   speciesUrl={pokemon.speciesUrl}
                   isCurrentPokemon={pokemon.name === currentPokemon}
+                  locale={locale}
                 />
               </div>
             ))}
@@ -214,14 +218,15 @@ type EvolutionCardProps = {
   name: string
   speciesUrl: string
   isCurrentPokemon: boolean
+  locale: Locale
 }
 
-function EvolutionCard({ name, speciesUrl, isCurrentPokemon }: EvolutionCardProps) {
+function EvolutionCard({ name, speciesUrl, isCurrentPokemon, locale }: EvolutionCardProps) {
   const evoId = speciesUrl.split('/').slice(-2, -1)[0]
 
   return (
     <a
-      href={`/pokemon/${name}`}
+      href={`/${locale}/pokemon/${name}`}
       className={`rounded-xl border-2 p-3 transition-all hover:border-primary hover:scale-105 ${
         isCurrentPokemon
           ? 'border-primary bg-gray-200 dark:bg-gray-700'
