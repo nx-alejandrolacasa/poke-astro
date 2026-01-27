@@ -82,7 +82,7 @@ export function PokemonEnrichedData({ pokemonName, statsSection }: PokemonEnrich
         <h2 className="mb-2 font-bold text-base text-gray-900 md:text-lg dark:text-gray-100">
           {t.pokemon.typeEffectiveness}
         </h2>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-2">
           {/* Weaknesses */}
           <div>
             <h3 className="mb-1 font-semibold text-orange-600 text-sm dark:text-orange-400">
