@@ -1,9 +1,10 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import type { Pokemon } from '@/utils/pokemon'
 import { getPokemonImage, getPokemonName } from '@/utils/pokemon'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { PokemonEnrichedData } from '@/components/PokemonEnrichedData'
 import { ImageZoomModal } from '@/components/ImageZoomModal'
+import { RotatingText } from '@/components/RotatingText'
 
 type PokemonDetailContentProps = {
   pokemon: Pokemon
@@ -56,11 +57,8 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
     }))
   )
   const [descriptions, setDescriptions] = useState<FlavorTextEntry[]>([])
-  const [currentDescriptionIndex, setCurrentDescriptionIndex] = useState(0)
-  const [isAnimating, setIsAnimating] = useState(false)
   const [descriptionLoading, setDescriptionLoading] = useState(true)
   const [isImageZoomed, setIsImageZoomed] = useState(false)
-  const rotationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
     const fetchEnrichedData = async () => {
@@ -140,7 +138,6 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
         setAbilities(translatedAbilities)
         setStats(translatedStats)
         setDescriptions(flavorTexts)
-        setCurrentDescriptionIndex(0)
       } catch (error) {
         console.error('Failed to fetch enriched data:', error)
         // Keep existing data on error (already initialized from pokemon prop)
@@ -152,33 +149,6 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
 
     fetchEnrichedData()
   }, [pokemon, pokemonName, language, t.stats])
-
-  // Description rotation effect
-  useEffect(() => {
-    // Clear any existing interval
-    if (rotationIntervalRef.current) {
-      clearInterval(rotationIntervalRef.current)
-      rotationIntervalRef.current = null
-    }
-
-    // Only set up rotation if we have multiple descriptions
-    if (descriptions.length > 1) {
-      rotationIntervalRef.current = setInterval(() => {
-        setIsAnimating(true)
-        // After exit animation completes (300ms), change the description
-        setTimeout(() => {
-          setCurrentDescriptionIndex((prev) => (prev + 1) % descriptions.length)
-          setIsAnimating(false)
-        }, 300)
-      }, 5000)
-    }
-
-    return () => {
-      if (rotationIntervalRef.current) {
-        clearInterval(rotationIntervalRef.current)
-      }
-    }
-  }, [descriptions.length])
 
   const totalStats = stats.reduce((sum, stat) => sum + stat.baseStat, 0)
   const maxStat = 255
@@ -224,45 +194,16 @@ export function PokemonDetailContent({ pokemon, pokemonName }: PokemonDetailCont
 
           {/* Description - Rotating with animation */}
           {(descriptionLoading || descriptions.length > 0) && (
-            <div className="relative overflow-hidden rounded-lg border border-gray-300 bg-gray-50 p-2 transition-colors md:p-3 dark:border-gray-700 dark:bg-gray-800/50">
+            <div className="rounded-lg border border-gray-300 bg-gray-50 p-2 transition-colors md:p-3 dark:border-gray-700 dark:bg-gray-800/50">
               {descriptionLoading ? (
                 <div className="h-12 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
-              ) : descriptions.length > 0 ? (
-                <div className="relative min-h-[3rem]">
-                  <p
-                    className={`text-gray-700 text-sm leading-relaxed transition-all duration-300 ease-in-out md:text-base dark:text-gray-300 ${
-                      isAnimating
-                        ? 'translate-y-4 opacity-0'
-                        : 'translate-y-0 opacity-100'
-                    }`}
-                  >
-                    {descriptions[currentDescriptionIndex]?.text}
-                  </p>
-                  {descriptions.length > 1 && (
-                    <div className="mt-2 flex items-center justify-center gap-1">
-                      {descriptions.map((_, index) => (
-                        <button
-                          key={index}
-                          type="button"
-                          onClick={() => {
-                            setIsAnimating(true)
-                            setTimeout(() => {
-                              setCurrentDescriptionIndex(index)
-                              setIsAnimating(false)
-                            }, 300)
-                          }}
-                          className={`h-1.5 rounded-full transition-all duration-300 ${
-                            index === currentDescriptionIndex
-                              ? 'w-4 bg-[#3466AF]'
-                              : 'w-1.5 bg-gray-400 hover:bg-gray-500 dark:bg-gray-600 dark:hover:bg-gray-500'
-                          }`}
-                          aria-label={`Show description ${index + 1}`}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ) : null}
+              ) : (
+                <RotatingText
+                  items={descriptions.map((d) => d.text)}
+                  intervalMs={5000}
+                  className="text-gray-700 text-sm leading-relaxed md:text-base dark:text-gray-300"
+                />
+              )}
             </div>
           )}
 

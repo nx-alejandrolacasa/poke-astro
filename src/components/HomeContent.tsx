@@ -1,5 +1,6 @@
 import { useLanguage } from '@/contexts/LanguageContext'
 import { interpolate } from '@/utils/translations'
+import { RotatingText } from '@/components/RotatingText'
 
 type HomeContentProps = {
   totalPokemon: number
@@ -40,8 +41,6 @@ export function HomeContent({ totalPokemon }: HomeContentProps) {
     { name: language === 'es' ? 'Generación VIII' : 'Generation VIII', region: 'Galar' },
     { name: language === 'es' ? 'Generación IX' : 'Generation IX', region: 'Paldea' },
   ]
-
-  const randomFact = t.funFacts[Math.floor(Math.random() * t.funFacts.length)]
 
   return (
     <div className="space-y-8 pb-8 md:space-y-12 md:pb-12">
@@ -110,7 +109,11 @@ export function HomeContent({ totalPokemon }: HomeContentProps) {
               <p className="font-semibold text-white/90 text-xs uppercase tracking-wider md:text-sm">
                 {t.home.didYouKnow}
               </p>
-              <p className="text-sm text-white leading-tight md:text-base">{randomFact}</p>
+              <RotatingText
+                items={t.funFacts}
+                intervalMs={5000}
+                className="text-sm text-white leading-tight md:text-base"
+              />
             </div>
           </div>
         </div>
