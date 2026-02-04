@@ -1,7 +1,9 @@
-const CACHE_NAME = 'pokedex-v1'
+const CACHE_NAME = 'pokedex-v2'
 const STATIC_ASSETS = [
   '/',
   '/favicon.png',
+  '/apple-touch-icon.png',
+  '/pwa-icon-512.png',
   '/pokemon-logo.svg',
   '/loading.svg',
   '/not-found.svg',
