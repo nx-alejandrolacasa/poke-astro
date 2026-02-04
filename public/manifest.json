@@ -9,8 +9,8 @@
   "orientation": "any",
   "icons": [
     {
-      "src": "/favicon.png",
-      "sizes": "371x361",
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
       "type": "image/png",
       "purpose": "any"
     },
