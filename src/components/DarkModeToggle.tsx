@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react'
 
-function getInitialTheme(): boolean {
-  if (typeof window === 'undefined') return false
-  const savedTheme = localStorage.getItem('theme')
-  const prefersDark = window.matchMedia(
-    '(prefers-color-scheme: dark)'
-  ).matches
-  return savedTheme === 'dark' || (!savedTheme && prefersDark)
-}
-
 export function DarkModeToggle() {
-  const [isDark, setIsDark] = useState(getInitialTheme)
+  const [mounted, setMounted] = useState(false)
+  const [isDark, setIsDark] = useState(false)
+
+  useEffect(() => {
+    // Read from the <html> class which the inline head script already set
+    setIsDark(document.documentElement.classList.contains('dark'))
+    setMounted(true)
+  }, [])
 
   const toggleDarkMode = () => {
     const newIsDark = !isDark
@@ -23,6 +21,11 @@ export function DarkModeToggle() {
       document.documentElement.classList.remove('dark')
       localStorage.setItem('theme', 'light')
     }
+  }
+
+  if (!mounted) {
+    // Render invisible placeholder with same dimensions to prevent layout shift
+    return <div className="h-10 w-10" />
   }
 
   return (
