@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import type { Locale } from '@/utils/i18n'
 import { translations } from '@/utils/translations'
 
@@ -31,22 +31,75 @@ const icons: Record<Theme, { label: string; d: string }> = {
   },
 }
 
+function getStoredTheme(): Theme | null {
+  try {
+    const stored = localStorage.getItem('theme')
+    if (stored === 'dark' || stored === 'light') return stored
+  } catch {}
+  return null
+}
+
+function getPreferredTheme(): 'dark' | 'light' {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+
+function resolveTheme(setting: Theme): 'dark' | 'light' {
+  return setting === 'dark' || setting === 'light' ? setting : getPreferredTheme()
+}
+
+function applyTheme(setting: Theme) {
+  // Use window.theme if available (inline script ran), otherwise apply directly
+  if (window.theme) {
+    window.theme.setTheme(setting)
+    return
+  }
+
+  // Fallback: apply theme directly (inline script blocked by CSP)
+  const resolved = resolveTheme(setting)
+  document.documentElement.classList.toggle('dark', resolved === 'dark')
+  document.documentElement.style.colorScheme = resolved
+
+  try {
+    if (setting === 'dark' || setting === 'light') {
+      localStorage.setItem('theme', setting)
+    } else {
+      localStorage.removeItem('theme')
+    }
+  } catch {}
+
+  document.dispatchEvent(
+    new CustomEvent('theme-changed', { detail: { theme: setting } })
+  )
+}
+
+function getCurrentTheme(): Theme {
+  if (window.theme) return window.theme.getTheme() as Theme
+  return getStoredTheme() || 'auto'
+}
+
 export function DarkModeToggle({ locale }: DarkModeToggleProps) {
   const t = translations[locale]
   const [current, setCurrent] = useState<Theme>('auto')
 
   useEffect(() => {
-    setCurrent((window.theme?.getTheme() ?? 'auto') as Theme)
+    setCurrent(getCurrentTheme())
+
+    const onThemeChanged = (e: Event) => {
+      const detail = (e as CustomEvent).detail
+      if (detail?.theme) setCurrent(detail.theme as Theme)
+    }
+    document.addEventListener('theme-changed', onThemeChanged)
+    return () => document.removeEventListener('theme-changed', onThemeChanged)
   }, [])
 
-  const cycle = () => {
+  const cycle = useCallback(() => {
     setCurrent((prev) => {
       const nextIndex = (themeOrder.indexOf(prev) + 1) % themeOrder.length
       const next = themeOrder[nextIndex]
-      window.theme?.setTheme(next)
+      applyTheme(next)
       return next
     })
-  }
+  }, [])
 
   const label = t.theme[current]
   const icon = icons[current]
