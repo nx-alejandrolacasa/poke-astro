@@ -22,6 +22,7 @@
     "@astrojs/compiler-rs": "^0.1.4",
     "@astrojs/react": "5.0.0",
     "@astrojs/vercel": "10.0.0",
+    "@fontsource-variable/inter": "^5.2.8",
     "@tailwindcss/vite": "4.1.0",
     "astro": "6.0.2",
     "react": "19.1.0",

@@ -1,6 +1,6 @@
 import react from '@astrojs/react'
 import tailwindcss from '@tailwindcss/vite'
-import { defineConfig, fontProviders } from 'astro/config'
+import { defineConfig } from 'astro/config'
 
 // Conditional adapter based on deployment platform
 async function getAdapter() {
@@ -28,15 +28,6 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-
-  // Fonts API (stable in Astro 6, previously experimental)
-  fonts: [
-    {
-      provider: fontProviders.fontsource(),
-      name: 'Inter',
-      cssVariable: '--font-inter',
-    },
-  ],
 
   // Content Security Policy (stable in Astro 6, previously experimental)
   security: {
