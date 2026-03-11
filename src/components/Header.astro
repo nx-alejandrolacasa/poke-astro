@@ -1,6 +1,7 @@
 ---
 import { PokemonSearchWrapper } from '@/components/PokemonSearchWrapper'
 import { HeaderActions } from '@/components/HeaderActions'
+import DarkModeToggle from '@/components/DarkModeToggle.astro'
 import type { Locale } from '@/utils/i18n'
 
 interface Props {
@@ -31,6 +32,11 @@ const { locale } = Astro.props
         <div class="w-full max-w-lg">
           <PokemonSearchWrapper client:load locale={locale} />
         </div>
+      </div>
+
+      <!-- Desktop dark mode toggle -->
+      <div class="hidden items-center rounded-lg border-2 border-gray-200 bg-white p-1 sm:flex dark:border-gray-700 dark:bg-gray-800">
+        <DarkModeToggle locale={locale} />
       </div>
 
       <!-- Navigation links -->
