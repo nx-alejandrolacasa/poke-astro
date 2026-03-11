@@ -1,80 +1,51 @@
-import { useEffect, useState } from 'react'
-
 export function DarkModeToggle() {
-  const [mounted, setMounted] = useState(false)
-  const [isDark, setIsDark] = useState(false)
-
-  useEffect(() => {
-    // Read from the <html> class which the inline head script already set
-    setIsDark(document.documentElement.classList.contains('dark'))
-    setMounted(true)
-  }, [])
-
   const toggleDarkMode = () => {
-    const newIsDark = !isDark
-    setIsDark(newIsDark)
-
-    if (newIsDark) {
-      document.documentElement.classList.add('dark')
-      localStorage.setItem('theme', 'dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-      localStorage.setItem('theme', 'light')
-    }
-  }
-
-  if (!mounted) {
-    // Render invisible placeholder with same dimensions to prevent layout shift
-    return <div className="h-10 w-10" />
+    const isDark = document.documentElement.classList.toggle('dark')
+    localStorage.setItem('theme', isDark ? 'dark' : 'light')
   }
 
   return (
     <button
       type="button"
       onClick={toggleDarkMode}
-      className={`rounded-lg p-2 shadow-sm transition-all hover:shadow-md hover:scale-105 active:scale-95 ${
-        isDark
-          ? 'bg-gradient-to-r from-orange-400 to-yellow-500 hover:from-orange-500 hover:to-yellow-600'
-          : 'bg-gradient-to-r from-purple-400 to-indigo-500 hover:from-purple-500 hover:to-indigo-600'
-      }`}
-      title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+      className="rounded-lg bg-gradient-to-r from-purple-400 to-indigo-500 p-2 shadow-sm transition-all hover:scale-105 hover:from-purple-500 hover:to-indigo-600 hover:shadow-md active:scale-95 dark:from-orange-400 dark:to-yellow-500 dark:hover:from-orange-500 dark:hover:to-yellow-600"
+      title="Toggle dark mode"
+      aria-label="Toggle dark mode"
     >
-      {isDark ? (
-        <svg
-          className="h-6 w-6 text-white"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          role="img"
-          aria-label="Sun icon"
-        >
-          <title>Sun icon</title>
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-          />
-        </svg>
-      ) : (
-        <svg
-          className="h-6 w-6 text-white"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          role="img"
-          aria-label="Moon icon"
-        >
-          <title>Moon icon</title>
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-          />
-        </svg>
-      )}
+      {/* Sun icon - shown in dark mode */}
+      <svg
+        className="hidden h-6 w-6 text-white dark:block"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        role="img"
+        aria-label="Sun icon"
+      >
+        <title>Sun icon</title>
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+        />
+      </svg>
+      {/* Moon icon - shown in light mode */}
+      <svg
+        className="block h-6 w-6 text-white dark:hidden"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        role="img"
+        aria-label="Moon icon"
+      >
+        <title>Moon icon</title>
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+        />
+      </svg>
     </button>
   )
 }
