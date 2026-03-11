@@ -130,6 +130,9 @@ export async function fetchPokemonPage(
     res.results.map(({ name }) => fetchPokemonByName(name))
   )
 
+  // Sort by Pokédex number
+  results.sort((a, b) => a.order - b.order)
+
   return {
     count: res.count,
     results,
