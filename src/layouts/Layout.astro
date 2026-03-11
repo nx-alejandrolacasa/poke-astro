@@ -32,114 +32,61 @@ const { title, locale } = Astro.props
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Pokédex" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    {/* Inlined to avoid FOUC. Provides window.theme global. */}
     <script is:inline>
       window.theme ??= (() => {
-        var storageKey = 'theme'
-        var defaultTheme = 'auto'
-        var store =
-          typeof localStorage !== 'undefined'
-            ? localStorage
-            : { getItem: function() { return null }, setItem: function() {} }
+        const storageKey = 'theme'
+        const prefersDarkQuery = window.matchMedia('(prefers-color-scheme: dark)')
 
-        var mediaMatcher = window.matchMedia('(prefers-color-scheme: dark)')
-        var systemTheme = mediaMatcher.matches ? 'dark' : 'light'
-        mediaMatcher.addEventListener('change', function(event) {
-          systemTheme = event.matches ? 'dark' : 'light'
-          applyTheme(getTheme())
-        })
-
-        function applyTheme(theme) {
-          var resolvedTheme = theme === 'auto' ? systemTheme : theme
-          document.documentElement.classList.toggle('dark', resolvedTheme === 'dark')
-          document.documentElement.style.colorScheme = resolvedTheme
-          document.dispatchEvent(
-            new CustomEvent('theme-changed', {
-              detail: { theme: theme, systemTheme: systemTheme, defaultTheme: defaultTheme },
-            })
-          )
+        function getStoredTheme() {
+          if (typeof localStorage !== 'undefined') {
+            var stored = localStorage.getItem(storageKey)
+            if (stored === 'dark' || stored === 'light') return stored
+          }
+          return null
         }
 
-        function setTheme(theme) {
-          if (theme === undefined) theme = defaultTheme
-          store.setItem(storageKey, theme)
-          applyTheme(theme)
+        function getPreferredTheme() {
+          return prefersDarkQuery.matches ? 'dark' : 'light'
+        }
+
+        function applyTheme(setting) {
+          var resolved = (setting === 'dark' || setting === 'light') ? setting : getPreferredTheme()
+          document.documentElement.classList.toggle('dark', resolved === 'dark')
+          document.documentElement.style.colorScheme = resolved
+        }
+
+        function setTheme(setting) {
+          applyTheme(setting)
+          if (typeof localStorage !== 'undefined') {
+            if (setting === 'dark' || setting === 'light') {
+              localStorage.setItem(storageKey, setting)
+            } else {
+              localStorage.removeItem(storageKey)
+            }
+          }
+          document.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme: setting || 'auto' } }))
         }
 
         function getTheme() {
-          return store.getItem(storageKey) || defaultTheme
+          return getStoredTheme() || 'auto'
         }
 
-        function getSystemTheme() {
-          return systemTheme
-        }
+        // Apply immediately to prevent flash
+        applyTheme(getStoredTheme())
 
-        function getDefaultTheme() {
-          return defaultTheme
-        }
+        // React to OS preference changes when in auto mode
+        prefersDarkQuery.addEventListener('change', function() {
+          if (!getStoredTheme()) applyTheme(null)
+        })
 
         // Handle bfcache restore
         window.addEventListener('pageshow', function(e) {
-          if (e.persisted) applyTheme(getTheme())
+          if (e.persisted) applyTheme(getStoredTheme())
         })
 
-        return { setTheme: setTheme, getTheme: getTheme, getSystemTheme: getSystemTheme, getDefaultTheme: getDefaultTheme }
+        return { setTheme: setTheme, getTheme: getTheme }
       })()
-      theme.setTheme(theme.getTheme())
-
-      // <dark-mode-toggle> custom element
-      if (!customElements.get('dark-mode-toggle')) {
-        customElements.define(
-          'dark-mode-toggle',
-          class extends HTMLElement {
-            connectedCallback() {
-              var labels = {
-                light: this.dataset.labelLight || 'Light',
-                dark: this.dataset.labelDark || 'Dark',
-                auto: this.dataset.labelAuto || 'Auto',
-              }
-              var ariaPrefix = this.dataset.label || 'Select theme'
-              var icons = {
-                light:
-                  'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z',
-                dark: 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z',
-                auto: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
-              }
-              var themeOrder = ['auto', 'light', 'dark']
-
-              this.innerHTML =
-                '<button type="button" class="flex items-center gap-1.5 rounded-md px-3 py-1.5 font-semibold text-sm text-gray-600 transition-all hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700">' +
-                  '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">' +
-                    '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d=""></path>' +
-                  '</svg>' +
-                  '<span></span>' +
-                '</button>'
-
-              var btn = this.querySelector('button')
-              var path = this.querySelector('path')
-              var span = this.querySelector('span')
-
-              function update(current) {
-                if (current === undefined) current = theme.getTheme()
-                path.setAttribute('d', icons[current] || icons.auto)
-                span.textContent = labels[current] || labels.auto
-                btn.setAttribute('aria-label', ariaPrefix + ': ' + (labels[current] || labels.auto))
-              }
-
-              btn.addEventListener('click', function() {
-                var current = theme.getTheme()
-                var next = themeOrder[(themeOrder.indexOf(current) + 1) % themeOrder.length]
-                theme.setTheme(next)
-              })
-
-              document.addEventListener('theme-changed', function(e) {
-                update(e.detail.theme)
-              })
-
-              update()
-            }
-          }
-        )
-      }
     </script>
   </head>
   <body class="bg-white dark:bg-gray-900 transition-colors">

@@ -4,6 +4,7 @@ import type { Locale } from '@/utils/i18n'
 import { translations } from '@/utils/translations'
 import { PokemonSearch } from '@/components/PokemonSearch'
 import { LanguageSelector } from '@/components/LanguageSelector'
+import { DarkModeToggle } from '@/components/DarkModeToggle'
 
 type MobileMenuDrawerProps = {
   locale: Locale
@@ -110,9 +111,7 @@ export function MobileMenuDrawer({ locale }: MobileMenuDrawerProps) {
           {/* Settings row */}
           <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800">
             <LanguageSelector locale={locale} />
-            <div className="flex items-center rounded-lg border-2 border-gray-200 bg-white p-1 dark:border-gray-700 dark:bg-gray-800">
-              <dark-mode-toggle />
-            </div>
+            <DarkModeToggle locale={locale} />
           </div>
         </div>
       </div>
