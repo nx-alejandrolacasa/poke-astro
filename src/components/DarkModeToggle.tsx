@@ -4,39 +4,58 @@ import { translations } from '@/utils/translations'
 
 type Theme = 'auto' | 'dark' | 'light'
 
-declare global {
-  interface Window {
-    theme?: {
-      setTheme: (theme: Theme | string) => void
-      getTheme: () => Theme
-    }
-  }
-}
-
 type DarkModeToggleProps = {
   locale: Locale
 }
 
 const themeOrder: Theme[] = ['auto', 'light', 'dark']
 
+function getStoredTheme(): Theme {
+  try {
+    const stored = localStorage.getItem('theme')
+    if (stored === 'dark' || stored === 'light') return stored
+  } catch {
+    // localStorage may be unavailable
+  }
+  return 'auto'
+}
+
+function applyTheme(setting: Theme) {
+  const resolved =
+    setting === 'dark' || setting === 'light'
+      ? setting
+      : window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light'
+  document.documentElement.classList.toggle('dark', resolved === 'dark')
+  document.documentElement.style.colorScheme = resolved
+}
+
+function storeTheme(setting: Theme) {
+  try {
+    if (setting === 'dark' || setting === 'light') {
+      localStorage.setItem('theme', setting)
+    } else {
+      localStorage.removeItem('theme')
+    }
+  } catch {
+    // localStorage may be unavailable
+  }
+}
+
 export function DarkModeToggle({ locale }: DarkModeToggleProps) {
   const t = translations[locale]
   const [current, setCurrent] = useState<Theme>('auto')
 
   useEffect(() => {
-    setCurrent(window.theme?.getTheme() ?? 'auto')
-    const handler = (e: Event) => {
-      const detail = (e as CustomEvent).detail
-      setCurrent(detail?.theme ?? 'auto')
-    }
-    document.addEventListener('theme-changed', handler)
-    return () => document.removeEventListener('theme-changed', handler)
+    setCurrent(getStoredTheme())
   }, [])
 
   const cycle = () => {
     const nextIndex = (themeOrder.indexOf(current) + 1) % themeOrder.length
     const next = themeOrder[nextIndex]
-    window.theme?.setTheme(next)
+    applyTheme(next)
+    storeTheme(next)
     setCurrent(next)
   }
 
