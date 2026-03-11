@@ -17,7 +17,15 @@ export const GET: APIRoute = async ({ params }) => {
     }
 
     const genData = await genRes.json()
-    const allSpecies = genData.pokemon_species
+
+    // Sort all species references by ID (extracted from URL) before pagination
+    const allSpecies = genData.pokemon_species.sort(
+      (a: { url: string }, b: { url: string }) => {
+        const idA = Number(a.url.split('/').filter(Boolean).pop())
+        const idB = Number(b.url.split('/').filter(Boolean).pop())
+        return idA - idB
+      }
+    )
 
     // Calculate pagination
     const startIndex = (page - 1) * pageSize

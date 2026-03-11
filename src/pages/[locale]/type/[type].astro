@@ -39,6 +39,15 @@ if (!typeRes.ok) {
 }
 const typeData = await typeRes.json()
 
+// Sort all pokemon references by ID (extracted from URL) before pagination
+typeData.pokemon.sort(
+  (a: { pokemon: { url: string } }, b: { pokemon: { url: string } }) => {
+    const idA = Number(a.pokemon.url.split('/').filter(Boolean).pop())
+    const idB = Number(b.pokemon.url.split('/').filter(Boolean).pop())
+    return idA - idB
+  }
+)
+
 // Get first page of pokemon (30 items)
 const pageSize = 30
 const pokemonSlice = typeData.pokemon.slice(0, pageSize)

@@ -52,6 +52,15 @@ if (!genRes.ok) {
 }
 const genData = await genRes.json()
 
+// Sort all species references by ID (extracted from URL) before pagination
+genData.pokemon_species.sort(
+  (a: { url: string }, b: { url: string }) => {
+    const idA = Number(a.url.split('/').filter(Boolean).pop())
+    const idB = Number(b.url.split('/').filter(Boolean).pop())
+    return idA - idB
+  }
+)
+
 // Get first page of pokemon (30 items)
 const pageSize = 30
 const speciesSlice = genData.pokemon_species.slice(0, pageSize)
