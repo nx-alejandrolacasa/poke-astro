@@ -1,7 +1,16 @@
 export function DarkModeToggle() {
   const toggleDarkMode = () => {
-    const isDark = document.documentElement.classList.toggle('dark')
-    localStorage.setItem('theme', isDark ? 'dark' : 'light')
+    const isDark = !document.documentElement.classList.contains('dark')
+    if (isDark) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+    try {
+      localStorage.setItem('theme', isDark ? 'dark' : 'light')
+    } catch {
+      // localStorage may be unavailable in some contexts
+    }
   }
 
   return (

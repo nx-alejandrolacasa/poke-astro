@@ -33,15 +33,30 @@ const { title, locale } = Astro.props
     <meta name="apple-mobile-web-app-title" content="Pokédex" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <script is:inline>
-      // Prevent flash of wrong theme by applying dark class before any rendering
+      // Apply saved theme before any rendering to prevent flash
       ;(function() {
-        var savedTheme = localStorage.getItem('theme')
+        try {
+          var savedTheme = localStorage.getItem('theme')
+        } catch(e) {}
         var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
         if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
           document.documentElement.classList.add('dark')
+        } else {
+          document.documentElement.classList.remove('dark')
         }
         // Block transitions until page is ready to prevent flash
         document.documentElement.style.setProperty('transition', 'none', 'important')
+        // Handle bfcache: re-apply theme when page is restored from cache
+        window.addEventListener('pageshow', function(e) {
+          if (e.persisted) {
+            try { savedTheme = localStorage.getItem('theme') } catch(e) {}
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+              document.documentElement.classList.add('dark')
+            } else {
+              document.documentElement.classList.remove('dark')
+            }
+          }
+        })
       })()
     </script>
   </head>
