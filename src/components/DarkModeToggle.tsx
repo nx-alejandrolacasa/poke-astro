@@ -1,22 +1,15 @@
 import { useEffect, useState } from 'react'
 
+function getInitialTheme(): boolean {
+  const savedTheme = localStorage.getItem('theme')
+  const prefersDark = window.matchMedia(
+    '(prefers-color-scheme: dark)'
+  ).matches
+  return savedTheme === 'dark' || (!savedTheme && prefersDark)
+}
+
 export function DarkModeToggle() {
-  const [isDark, setIsDark] = useState(false)
-
-  useEffect(() => {
-    // Check for saved preference or system preference
-    const savedTheme = localStorage.getItem('theme')
-    const prefersDark = window.matchMedia(
-      '(prefers-color-scheme: dark)'
-    ).matches
-
-    const shouldBeDark = savedTheme === 'dark' || (!savedTheme && prefersDark)
-    setIsDark(shouldBeDark)
-
-    if (shouldBeDark) {
-      document.documentElement.classList.add('dark')
-    }
-  }, [])
+  const [isDark, setIsDark] = useState(getInitialTheme)
 
   const toggleDarkMode = () => {
     const newIsDark = !isDark
