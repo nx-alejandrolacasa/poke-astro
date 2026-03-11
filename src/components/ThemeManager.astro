@@ -50,7 +50,68 @@ const { defaultTheme = 'auto' } = Astro.props
       return defaultTheme
     }
 
+    // Handle bfcache restore
+    window.addEventListener('pageshow', function(e) {
+      if (e.persisted) applyTheme(getTheme())
+    })
+
     return { setTheme, getTheme, getSystemTheme, getDefaultTheme }
   })()
   theme.setTheme(theme.getTheme())
+
+  // <dark-mode-toggle> custom element — defined here in the head
+  // so it gets the CSP nonce from Astro's security.csp feature.
+  if (!customElements.get('dark-mode-toggle')) {
+    customElements.define(
+      'dark-mode-toggle',
+      class extends HTMLElement {
+        connectedCallback() {
+          const labels = {
+            light: this.dataset.labelLight || 'Light',
+            dark: this.dataset.labelDark || 'Dark',
+            auto: this.dataset.labelAuto || 'Auto',
+          }
+          const ariaPrefix = this.dataset.label || 'Select theme'
+          const icons = {
+            light:
+              'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z',
+            dark: 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z',
+            auto: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+          }
+          var themeOrder = ['auto', 'light', 'dark']
+
+          this.innerHTML =
+            '<button type="button" class="flex items-center gap-1.5 rounded-md px-3 py-1.5 font-semibold text-sm text-gray-600 transition-all hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700">' +
+              '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">' +
+                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d=""></path>' +
+              '</svg>' +
+              '<span></span>' +
+            '</button>'
+
+          var btn = this.querySelector('button')
+          var path = this.querySelector('path')
+          var span = this.querySelector('span')
+
+          function update(current) {
+            if (current === undefined) current = theme.getTheme()
+            path.setAttribute('d', icons[current] || icons.auto)
+            span.textContent = labels[current] || labels.auto
+            btn.setAttribute('aria-label', ariaPrefix + ': ' + (labels[current] || labels.auto))
+          }
+
+          btn.addEventListener('click', function() {
+            var current = theme.getTheme()
+            var next = themeOrder[(themeOrder.indexOf(current) + 1) % themeOrder.length]
+            theme.setTheme(next)
+          })
+
+          document.addEventListener('theme-changed', function(e) {
+            update(e.detail.theme)
+          })
+
+          update()
+        }
+      }
+    )
+  }
 </script>
