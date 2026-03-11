@@ -1,7 +1,8 @@
+@import "@fontsource-variable/inter";
 @import "tailwindcss";
 
 @config "../../tailwind.config.js";
 
 @theme {
-  /* Custom theme configuration can go here */
+  --font-inter: "Inter Variable", system-ui, sans-serif;
 }

@@ -28,4 +28,35 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+
+  // Content Security Policy (stable in Astro 6, previously experimental)
+  security: {
+    csp: true,
+  },
+
+  // Responsive images (stable in Astro 6, previously experimental)
+  image: {
+    layout: 'constrained',
+  },
+
+  // Experimental features
+  experimental: {
+    // Rust compiler: faster builds and better diagnostics (replaces Go compiler)
+    // Requires @astrojs/compiler-rs native bindings — enable only when available
+    rustCompiler: await import('@astrojs/compiler-rs')
+      .then(() => true)
+      .catch(() => false),
+    // Queued rendering: up to 2x faster rendering with queue-based engine
+    queuedRendering: {
+      enabled: true,
+    },
+    // Chrome DevTools workspace support for live editing
+    chromeDevtoolsWorkspace: true,
+    // Client-side prerendering with Speculation Rules API
+    clientPrerender: true,
+    // Content collection intellisense in editors
+    contentIntellisense: true,
+    // SVGO optimization for SVG assets
+    svgo: true,
+  },
 })
