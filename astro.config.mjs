@@ -51,7 +51,10 @@ export default defineConfig({
   // Experimental features
   experimental: {
     // Rust compiler: faster builds and better diagnostics (replaces Go compiler)
-    rustCompiler: true,
+    // Requires @astrojs/compiler-rs native bindings — enable only when available
+    rustCompiler: await import('@astrojs/compiler-rs')
+      .then(() => true)
+      .catch(() => false),
     // Queued rendering: up to 2x faster rendering with queue-based engine
     queuedRendering: {
       enabled: true,
