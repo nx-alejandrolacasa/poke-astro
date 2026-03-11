@@ -5,7 +5,7 @@
 This is a **Pokémon Pokédex application** built with Astro, React, and Tailwind CSS. It demonstrates a modern static-first web application using the PokéAPI to display Pokémon data with server-side rendering and selective client-side interactivity.
 
 **Tech Stack:**
-- **Framework:** Astro v5.16.10 (SSR mode with static prerendering)
+- **Framework:** Astro v6.0.2 (SSR mode with static prerendering)
 - **UI Library:** React 19.1.0 (for interactive components)
 - **Styling:** Tailwind CSS 4.1.0 (utility-first CSS via Vite plugin)
 - **Language:** TypeScript 5.8.3 (strict mode)
@@ -509,12 +509,12 @@ export default {
 
 ---
 
-**Last Updated:** 2026-01-22
-**Astro Version:** 5.16.10
+**Last Updated:** 2026-03-11
+**Astro Version:** 6.0.2
 **React Version:** 19.1.0
 **Tailwind CSS Version:** 4.1.0
 **TypeScript Version:** 5.8.3
-**Node Version:** 20.x (recommended)
+**Node Version:** 22.x (required, minimum 22.12.0)
 
 ---
 
@@ -560,3 +560,35 @@ This project was upgraded from legacy versions to the latest stable releases:
 - Intersection Observer API for efficient scroll detection
 - Removed middleware (no longer needed without pagination)
 - Build completes in seconds instead of minutes
+
+---
+
+## Upgrade Notes (March 2026)
+
+### Astro 6 Upgrade
+- **Astro:** 6.0.0-beta.4 → 6.0.2 (stable release)
+- **@astrojs/cloudflare:** 13.0.0-beta.2 → 13.0.2 (stable)
+- **@astrojs/vercel:** 10.0.0-beta.0 → 10.0.0 (stable)
+- **@astrojs/react:** 5.0.0-beta.2 → 5.0.0 (stable)
+
+### Key Changes Addressed
+
+**Astro 6:**
+- Upgraded from Vite 6 to Vite 7 (Environment API)
+- Node.js minimum version raised to 22.12.0 (Node 18 and 20 dropped)
+- Zod upgraded to v4 (used internally by Astro)
+- Shiki upgraded to v4 for syntax highlighting
+
+**Cloudflare Adapter v13 (Primary deployment):**
+- Dev server and prerendering now use real `workerd` runtime instead of Node.js
+- Updated `wrangler.jsonc` entrypoint to `@astrojs/cloudflare/entrypoints/server`
+- Updated `compatibility_date` to `2026-03-10`
+- `Astro.locals.runtime` removed in favor of direct Cloudflare Workers APIs
+- `cloudflareModules` option removed (no longer needed)
+
+**Vercel Adapter v10:**
+- Updated to use new Adapter API with Vite 7 Environment API
+- Deprecated `@astrojs/vercel/serverless` and `@astrojs/vercel/static` exports fully removed
+
+**Bug Fixes:**
+- Added missing `export const prerender = true` to redirect pages (`pokemon/[name]`, `type/[type]`, `generation/[id]`)

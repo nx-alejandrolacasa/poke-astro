@@ -2,6 +2,8 @@
 import { defaultLocale } from '@/utils/i18n'
 import { fetchAllPokemonNames } from '@utils/pokemon'
 
+export const prerender = true
+
 export async function getStaticPaths() {
   const pokemonNames = await fetchAllPokemonNames()
   return pokemonNames.map((name) => ({ params: { name } }))
