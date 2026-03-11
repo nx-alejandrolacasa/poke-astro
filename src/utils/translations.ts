@@ -66,6 +66,13 @@ export type Translations = {
   errors: {
     loadFailed: string
   }
+  // Theme
+  theme: {
+    light: string
+    dark: string
+    auto: string
+    label: string
+  }
   // Search
   search: {
     placeholder: string
@@ -174,6 +181,12 @@ export const translations: Record<Language, Translations> = {
     },
     errors: {
       loadFailed: 'Failed to load additional Pokemon data. Please try again later.',
+    },
+    theme: {
+      light: 'Light',
+      dark: 'Dark',
+      auto: 'Auto',
+      label: 'Select theme',
     },
     search: {
       placeholder: 'Search Pokémon...',
@@ -301,6 +314,12 @@ export const translations: Record<Language, Translations> = {
     errors: {
       loadFailed:
         'No se pudieron cargar los datos adicionales del Pokémon. Por favor, inténtalo de nuevo más tarde.',
+    },
+    theme: {
+      light: 'Claro',
+      dark: 'Oscuro',
+      auto: 'Auto',
+      label: 'Seleccionar tema',
     },
     search: {
       placeholder: 'Buscar Pokémon...',

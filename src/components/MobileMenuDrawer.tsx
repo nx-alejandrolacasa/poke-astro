@@ -111,7 +111,7 @@ export function MobileMenuDrawer({ locale }: MobileMenuDrawerProps) {
           {/* Settings row */}
           <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800">
             <LanguageSelector locale={locale} />
-            <DarkModeToggle />
+            <DarkModeToggle locale={locale} />
           </div>
         </div>
       </div>

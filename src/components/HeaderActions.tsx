@@ -15,7 +15,7 @@ export function HeaderActions({ locale }: HeaderActionsProps) {
       <div className="hidden items-center gap-2 sm:flex sm:gap-3">
         <LanguageSelector locale={locale} />
         <HeaderPokedexButton locale={locale} />
-        <DarkModeToggle />
+        <DarkModeToggle locale={locale} />
       </div>
       {/* Mobile menu drawer */}
       <MobileMenuDrawer locale={locale} />

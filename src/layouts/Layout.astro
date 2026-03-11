@@ -32,31 +32,60 @@ const { title, locale } = Astro.props
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Pokédex" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    {/* Inlined to avoid FOUC. Provides window.theme global. */}
     <script is:inline>
-      // Apply saved theme before any rendering to prevent flash
-      ;(function() {
-        try {
-          var savedTheme = localStorage.getItem('theme')
-        } catch(e) {}
-        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-          document.documentElement.classList.add('dark')
-        } else {
-          document.documentElement.classList.remove('dark')
+      window.theme ??= (() => {
+        const storageKey = 'theme'
+        const prefersDarkQuery = window.matchMedia('(prefers-color-scheme: dark)')
+
+        function getStoredTheme() {
+          if (typeof localStorage !== 'undefined') {
+            var stored = localStorage.getItem(storageKey)
+            if (stored === 'dark' || stored === 'light') return stored
+          }
+          return null
         }
-        // Block transitions until page is ready to prevent flash
-        document.documentElement.style.setProperty('transition', 'none', 'important')
-        // Handle bfcache: re-apply theme when page is restored from cache
-        window.addEventListener('pageshow', function(e) {
-          if (e.persisted) {
-            try { savedTheme = localStorage.getItem('theme') } catch(e) {}
-            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-              document.documentElement.classList.add('dark')
+
+        function getPreferredTheme() {
+          return prefersDarkQuery.matches ? 'dark' : 'light'
+        }
+
+        function applyTheme(setting) {
+          var resolved = (setting === 'dark' || setting === 'light') ? setting : getPreferredTheme()
+          document.documentElement.classList.toggle('dark', resolved === 'dark')
+          document.documentElement.style.colorScheme = resolved
+        }
+
+        function setTheme(setting) {
+          applyTheme(setting)
+          if (typeof localStorage !== 'undefined') {
+            if (setting === 'dark' || setting === 'light') {
+              localStorage.setItem(storageKey, setting)
             } else {
-              document.documentElement.classList.remove('dark')
+              localStorage.removeItem(storageKey)
             }
           }
+          document.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme: setting || 'auto' } }))
+        }
+
+        function getTheme() {
+          return getStoredTheme() || 'auto'
+        }
+
+        // Apply immediately to prevent flash
+        applyTheme(getStoredTheme())
+
+        // React to OS preference changes when in auto mode
+        prefersDarkQuery.addEventListener('change', function() {
+          if (!getStoredTheme()) applyTheme(null)
         })
+
+        // Handle bfcache restore
+        window.addEventListener('pageshow', function(e) {
+          if (e.persisted) applyTheme(getStoredTheme())
+        })
+
+        return { setTheme: setTheme, getTheme: getTheme }
       })()
     </script>
   </head>
@@ -67,13 +96,6 @@ const { title, locale } = Astro.props
     </main>
     <Footer locale={locale} />
     <script is:inline>
-      // Re-enable transitions after initial render to prevent dark mode flash
-      requestAnimationFrame(function() {
-        requestAnimationFrame(function() {
-          document.documentElement.style.removeProperty('transition')
-        })
-      })
-
       // Register service worker for PWA
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js').catch(() => {})
