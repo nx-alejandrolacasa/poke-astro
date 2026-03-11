@@ -1,18 +1,6 @@
 ---
 import { defaultLocale } from '@/utils/i18n'
 
-export const prerender = true
-
-const pokemonTypes = [
-  'normal', 'fire', 'water', 'electric', 'grass', 'ice',
-  'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug',
-  'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy'
-]
-
-export function getStaticPaths() {
-  return pokemonTypes.map((type) => ({ params: { type } }))
-}
-
 const { type } = Astro.params
 
 // Redirect to the localized version

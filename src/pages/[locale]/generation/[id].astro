@@ -1,43 +1,31 @@
 ---
-export const prerender = true
-
 import Layout from '@/layouts/Layout.astro'
 import { GenerationInfiniteScrollWrapper } from '@/components/GenerationInfiniteScrollWrapper'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
-import { getI18n, locales } from '@/utils/i18n'
+import { getI18n } from '@/utils/i18n'
 
-export function getStaticPaths() {
-  // Generation data - must be inside getStaticPaths for Astro to access it
-  const generations = [
-    { id: 1, nameEn: 'Generation I', nameEs: 'Generación I', region: 'Kanto' },
-    { id: 2, nameEn: 'Generation II', nameEs: 'Generación II', region: 'Johto' },
-    { id: 3, nameEn: 'Generation III', nameEs: 'Generación III', region: 'Hoenn' },
-    { id: 4, nameEn: 'Generation IV', nameEs: 'Generación IV', region: 'Sinnoh' },
-    { id: 5, nameEn: 'Generation V', nameEs: 'Generación V', region: 'Unova' },
-    { id: 6, nameEn: 'Generation VI', nameEs: 'Generación VI', region: 'Kalos' },
-    { id: 7, nameEn: 'Generation VII', nameEs: 'Generación VII', region: 'Alola' },
-    { id: 8, nameEn: 'Generation VIII', nameEs: 'Generación VIII', region: 'Galar' },
-    { id: 9, nameEn: 'Generation IX', nameEs: 'Generación IX', region: 'Paldea' },
-  ]
-
-  const paths = []
-  for (const locale of locales) {
-    for (const gen of generations) {
-      paths.push({
-        params: { locale, id: String(gen.id) },
-        props: { generationData: gen },
-      })
-    }
-  }
-  return paths
+const generations: Record<string, { nameEn: string; nameEs: string; region: string }> = {
+  '1': { nameEn: 'Generation I', nameEs: 'Generación I', region: 'Kanto' },
+  '2': { nameEn: 'Generation II', nameEs: 'Generación II', region: 'Johto' },
+  '3': { nameEn: 'Generation III', nameEs: 'Generación III', region: 'Hoenn' },
+  '4': { nameEn: 'Generation IV', nameEs: 'Generación IV', region: 'Sinnoh' },
+  '5': { nameEn: 'Generation V', nameEs: 'Generación V', region: 'Unova' },
+  '6': { nameEn: 'Generation VI', nameEs: 'Generación VI', region: 'Kalos' },
+  '7': { nameEn: 'Generation VII', nameEs: 'Generación VII', region: 'Alola' },
+  '8': { nameEn: 'Generation VIII', nameEs: 'Generación VIII', region: 'Galar' },
+  '9': { nameEn: 'Generation IX', nameEs: 'Generación IX', region: 'Paldea' },
 }
 
-const { locale: localeParam } = Astro.params
-const { generationData } = Astro.props
+const { locale: localeParam, id } = Astro.params
 const { locale, t } = getI18n(localeParam)
 
+const generationData = generations[id!]
+if (!generationData) {
+  return Astro.redirect(`/${locale}/404`)
+}
+
 const generation = {
-  id: generationData.id,
+  id: Number(id),
   name: locale === 'es' ? generationData.nameEs : generationData.nameEn,
   region: generationData.region,
 }
