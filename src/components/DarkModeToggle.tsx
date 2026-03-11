@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import type { Locale } from '@/utils/i18n'
 import { translations } from '@/utils/translations'
 
@@ -36,23 +36,17 @@ export function DarkModeToggle({ locale }: DarkModeToggleProps) {
   const [current, setCurrent] = useState<Theme>('auto')
 
   useEffect(() => {
-    const theme = (window.theme?.getTheme() ?? 'auto') as Theme
-    setCurrent(theme)
-
-    const onThemeChanged = (e: Event) => {
-      const detail = (e as CustomEvent).detail
-      setCurrent((detail?.theme ?? 'auto') as Theme)
-    }
-    document.addEventListener('theme-changed', onThemeChanged)
-    return () => document.removeEventListener('theme-changed', onThemeChanged)
+    setCurrent((window.theme?.getTheme() ?? 'auto') as Theme)
   }, [])
 
-  const cycle = useCallback(() => {
-    const nextIndex = (themeOrder.indexOf(current) + 1) % themeOrder.length
-    const next = themeOrder[nextIndex]
-    window.theme?.setTheme(next)
-    setCurrent(next)
-  }, [current])
+  const cycle = () => {
+    setCurrent((prev) => {
+      const nextIndex = (themeOrder.indexOf(prev) + 1) % themeOrder.length
+      const next = themeOrder[nextIndex]
+      window.theme?.setTheme(next)
+      return next
+    })
+  }
 
   const label = t.theme[current]
   const icon = icons[current]
