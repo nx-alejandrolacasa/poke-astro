@@ -1,6 +1,5 @@
-const CACHE_NAME = 'pokedex-v2'
+const CACHE_NAME = 'pokedex-v3'
 const STATIC_ASSETS = [
-  '/',
   '/favicon.png',
   '/apple-touch-icon.png',
   '/pwa-icon-512.png',
@@ -9,7 +8,7 @@ const STATIC_ASSETS = [
   '/not-found.svg',
 ]
 
-// Install event - cache static assets
+// Install event - cache static assets only
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -33,27 +32,26 @@ self.addEventListener('activate', (event) => {
   self.clients.claim()
 })
 
-// Fetch event - network first, fallback to cache
+// Fetch event - only serve known static assets from cache, let everything else go to network
 self.addEventListener('fetch', (event) => {
-  // Skip non-GET requests
   if (event.request.method !== 'GET') return
 
-  // Skip API requests - always fetch from network
-  if (event.request.url.includes('/api/')) return
+  const url = new URL(event.request.url)
+
+  // Only intercept known static assets - never cache HTML pages or hashed build assets,
+  // as that causes unstyled flashes when new deployments change asset filenames
+  const isStaticAsset = STATIC_ASSETS.some((asset) => url.pathname === asset)
+  if (!isStaticAsset) return
 
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // Clone the response before caching
+    caches.match(event.request).then((cached) => {
+      return cached || fetch(event.request).then((response) => {
         const responseClone = response.clone()
         caches.open(CACHE_NAME).then((cache) => {
           cache.put(event.request, responseClone)
         })
         return response
       })
-      .catch(() => {
-        // Fallback to cache if network fails
-        return caches.match(event.request)
-      })
+    })
   )
 })
