@@ -1,14 +1,21 @@
 import { defineMiddleware } from 'astro:middleware'
 
-export const onRequest = defineMiddleware(async (_context, next) => {
+export const onRequest = defineMiddleware(async (context, next) => {
   const response = await next()
-
-  // HTML pages must not be edge-cached because Cloudflare Workers doesn't
-  // purge its CDN cache on new deployments. Stale HTML references old hashed
-  // asset filenames (CSS/JS) that no longer exist, causing an unstyled flash.
-  // Hashed assets are already long-cached by the browser via their filenames.
+  const { pathname } = context.url
   const contentType = response.headers.get('content-type') || ''
-  if (contentType.includes('text/html')) {
+
+  if (pathname.startsWith('/api/')) {
+    // API responses (JSON): cache aggressively at the edge. Pokemon data
+    // rarely changes, so 1h edge cache + 1d stale-while-revalidate is safe.
+    response.headers.set(
+      'Cache-Control',
+      'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400'
+    )
+  } else if (contentType.includes('text/html')) {
+    // HTML pages: must revalidate on every request. Cloudflare Workers
+    // doesn't purge edge cache on deployment, so stale HTML would reference
+    // old hashed CSS/JS filenames that no longer exist (unstyled flash).
     response.headers.set(
       'Cache-Control',
       'public, no-cache'
