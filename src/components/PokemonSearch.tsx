@@ -40,11 +40,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
       setSelectedIndex(-1)
       return
     }
-
-    const filtered = allPokemonNames
-      .filter((name) => name.toLowerCase().includes(query.toLowerCase()))
-      .slice(0, 5)
-
+    const filtered = allPokemonNames.filter((name) => name.toLowerCase().includes(query.toLowerCase())).slice(0, 5)
     setSuggestions(filtered)
     setIsOpen(filtered.length > 0)
     setSelectedIndex(-1)
@@ -53,28 +49,22 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node) &&
-        inputRef.current &&
-        !inputRef.current.contains(event.target as Node)
+        dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
+        inputRef.current && !inputRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false)
       }
     }
-
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!isOpen) return
-
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault()
-        setSelectedIndex((prev) =>
-          prev < suggestions.length - 1 ? prev + 1 : prev
-        )
+        setSelectedIndex((prev) => prev < suggestions.length - 1 ? prev + 1 : prev)
         break
       case 'ArrowUp':
         e.preventDefault()
@@ -82,11 +72,8 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
         break
       case 'Enter':
         e.preventDefault()
-        if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
-          navigateToPokemon(suggestions[selectedIndex])
-        } else if (suggestions.length > 0) {
-          navigateToPokemon(suggestions[0])
-        }
+        if (selectedIndex >= 0 && selectedIndex < suggestions.length) navigateToPokemon(suggestions[selectedIndex])
+        else if (suggestions.length > 0) navigateToPokemon(suggestions[0])
         break
       case 'Escape':
         setIsOpen(false)
@@ -113,50 +100,25 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
           onFocus={() => query && suggestions.length > 0 && setIsOpen(true)}
           placeholder={isLoading ? t.search.loading : t.search.placeholder}
           disabled={isLoading}
-          className="w-full rounded-2xl px-4 py-2.5 pr-10 font-body text-sm transition-all duration-200 placeholder:opacity-50 focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
-          style={{
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border-soft)',
-            color: 'var(--text-primary)',
-          }}
+          className="search-input w-full rounded-2xl px-4 py-2.5 pr-10 text-sm transition-all placeholder:opacity-50 disabled:cursor-not-allowed disabled:opacity-50"
           aria-label="Search Pokémon"
           aria-autocomplete="list"
           aria-controls="search-suggestions"
           aria-expanded={isOpen}
         />
-        <svg
-          className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 opacity-40"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-          />
+        <svg className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
       </div>
 
       {isOpen && suggestions.length > 0 && (
-        <div
-          ref={dropdownRef}
-          id="search-suggestions"
-          className="absolute z-50 mt-2 w-full overflow-hidden rounded-2xl shadow-soft-lg"
-          style={{ background: 'var(--bg-card)', border: '1px solid var(--border-soft)' }}
-          role="listbox"
-        >
+        <div ref={dropdownRef} id="search-suggestions" className="search-dropdown absolute z-50 mt-2 w-full overflow-hidden rounded-2xl shadow-soft-lg" role="listbox">
           {suggestions.map((name, index) => (
             <button
               key={name}
               onClick={() => navigateToPokemon(name)}
               onMouseEnter={() => setSelectedIndex(index)}
-              className="block w-full px-4 py-3 text-left transition-colors"
-              style={{
-                background: index === selectedIndex ? 'var(--bg-card-hover)' : 'transparent',
-                color: 'var(--text-primary)',
-              }}
+              className={`themed-text block w-full px-4 py-3 text-left transition-colors ${index === selectedIndex ? 'search-option-active' : ''}`}
               role="option"
               aria-selected={index === selectedIndex}
             >
@@ -168,11 +130,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
       )}
 
       {isOpen && query && suggestions.length === 0 && (
-        <div
-          ref={dropdownRef}
-          className="absolute z-50 mt-2 w-full rounded-2xl px-4 py-3 shadow-soft-lg"
-          style={{ background: 'var(--bg-card)', border: '1px solid var(--border-soft)', color: 'var(--text-secondary)' }}
-        >
+        <div ref={dropdownRef} className="search-dropdown themed-text-secondary absolute z-50 mt-2 w-full rounded-2xl px-4 py-3 shadow-soft-lg">
           {t.search.noResults}
         </div>
       )}

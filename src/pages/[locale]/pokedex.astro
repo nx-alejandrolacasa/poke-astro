@@ -11,11 +11,10 @@ const initialData = await fetchPokemonPage(1)
 ---
 
 <Layout title={t.header.pokedex} locale={locale}>
-  <!-- Pokédex Header -->
-  <div class="relative mb-8 overflow-hidden rounded-4xl p-8 text-center shadow-soft-lg md:p-12" style="background: linear-gradient(135deg, #D8EAFD 0%, #FDE8D4 35%, #E8D4F0 65%, #DAEFD4 100%);">
-    <div class="pointer-events-none absolute -top-12 -right-12 h-48 w-48 rounded-full opacity-[0.08]" style="border: 20px solid currentColor;"></div>
-    <div class="pointer-events-none absolute -bottom-8 -left-8 h-32 w-32 rounded-full opacity-[0.05]" style="border: 16px solid currentColor;"></div>
-    <h1 class="font-heading text-4xl font-bold md:text-6xl" style="color: #2D1B0E;">
+  <div class="pokedex-header relative mb-8 overflow-hidden rounded-4xl p-8 text-center shadow-soft-lg md:p-12">
+    <div class="pointer-events-none absolute -top-12 -right-12 h-48 w-48 rounded-full border-[20px] border-current opacity-[0.08]"></div>
+    <div class="pointer-events-none absolute -bottom-8 -left-8 h-32 w-32 rounded-full border-[16px] border-current opacity-[0.05]"></div>
+    <h1 class="font-heading text-4xl font-bold text-[#2D1B0E] md:text-6xl">
       {t.header.pokedex}
     </h1>
   </div>

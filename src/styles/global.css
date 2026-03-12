@@ -1,15 +1,15 @@
-@import "@fontsource-variable/fredoka";
-@import "@fontsource-variable/quicksand";
+@import "@fontsource-variable/bitter";
+@import "@fontsource-variable/source-sans-3";
 @import "tailwindcss";
 
 @config "../../tailwind.config.js";
 
 @theme {
-  --font-heading: "Fredoka Variable", system-ui, sans-serif;
-  --font-body: "Quicksand Variable", system-ui, sans-serif;
+  --font-heading: "Bitter Variable", "Georgia", serif;
+  --font-body: "Source Sans 3 Variable", system-ui, sans-serif;
 }
 
-/* Base styles */
+/* ===== Base Styles ===== */
 html {
   font-family: var(--font-body);
   scroll-behavior: smooth;
@@ -19,7 +19,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
 }
 
-/* Creamy gradient backgrounds */
+/* ===== Theme Variables ===== */
 :root {
   --bg-main: linear-gradient(160deg, #FFF8F0 0%, #FFF0E8 30%, #F8F0FF 60%, #F0F6FF 100%);
   --bg-card: #fffcf8;
@@ -44,82 +44,226 @@ body {
   color: var(--text-primary);
 }
 
-/* Custom keyframes */
-@keyframes float-gentle {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
+/* ===== Themed Utility Classes ===== */
+.themed-text { color: var(--text-primary); }
+.themed-text-secondary { color: var(--text-secondary); }
+.themed-bg { background: var(--bg-card); }
+.themed-bg-hover { background: var(--bg-card-hover); }
+.themed-border { border-color: var(--border-soft); }
+.themed-border-b { border-bottom: 1px solid var(--border-soft); }
+.themed-border-t { border-top: 1px solid var(--border-soft); }
+.themed-bg-soft { background-color: var(--border-soft); }
 
-@keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-@keyframes pokeball-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* Utility animations */
-.animate-float-gentle {
-  animation: float-gentle 3s ease-in-out infinite;
-}
-
-.animate-fade-in-up {
-  animation: fade-in-up 0.5s ease-out both;
-}
-
-/* Stagger delays for grid items */
-.stagger-1 { animation-delay: 0.05s; }
-.stagger-2 { animation-delay: 0.1s; }
-.stagger-3 { animation-delay: 0.15s; }
-.stagger-4 { animation-delay: 0.2s; }
-.stagger-5 { animation-delay: 0.25s; }
-.stagger-6 { animation-delay: 0.3s; }
-
-/* Card glass effect */
+/* ===== Glass Effects ===== */
 .glass-card {
   background: var(--bg-card);
   backdrop-filter: blur(12px);
   border: 1px solid var(--border-soft);
 }
-
 .glass-card:hover {
   background: var(--bg-card-hover);
 }
 
-/* Pokeball loading spinner */
-.pokeball-spin {
-  animation: pokeball-spin 1s linear infinite;
+.glass-header {
+  background: color-mix(in srgb, var(--bg-card) 90%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-soft);
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 8px;
+/* ===== Type Color Scoping System =====
+   Add .ptype-{name} to a parent element to set --pt-* CSS variables,
+   then use .pt-* utility classes on children to consume them.
+*/
+.ptype-normal   { --pt-l: #F5F0E8; --pt-m: #C6B98C; --pt-d: #6B6744; --pt-a: #A8A77A; }
+.ptype-fire     { --pt-l: #FDE8D4; --pt-m: #F4A261; --pt-d: #B85E1B; --pt-a: #EE8130; }
+.ptype-water    { --pt-l: #D8EAFD; --pt-m: #6EA8E0; --pt-d: #2A5EA0; --pt-a: #6390F0; }
+.ptype-electric { --pt-l: #FDF5D4; --pt-m: #F0D252; --pt-d: #8B7A0A; --pt-a: #F7D02C; }
+.ptype-grass    { --pt-l: #DAEFD4; --pt-m: #7CC263; --pt-d: #3A6A22; --pt-a: #7AC74C; }
+.ptype-ice      { --pt-l: #D4F0F0; --pt-m: #81CCC8; --pt-d: #2A6E6A; --pt-a: #96D9D6; }
+.ptype-fighting { --pt-l: #F4D4D4; --pt-m: #D45353; --pt-d: #8B1F1A; --pt-a: #C22E28; }
+.ptype-poison   { --pt-l: #E8D4F0; --pt-m: #A768B4; --pt-d: #6B2F79; --pt-a: #A33EA1; }
+.ptype-ground   { --pt-l: #F4EAD4; --pt-m: #D4AD5E; --pt-d: #7A5F22; --pt-a: #E2BF65; }
+.ptype-flying   { --pt-l: #E0D8F4; --pt-m: #A190D0; --pt-d: #5A4A8B; --pt-a: #A98FF3; }
+.ptype-psychic  { --pt-l: #F8D4E0; --pt-m: #E66B8A; --pt-d: #8B2A4E; --pt-a: #F95587; }
+.ptype-bug      { --pt-l: #E4F0D4; --pt-m: #98B620; --pt-d: #5E700A; --pt-a: #A6B91A; }
+.ptype-rock     { --pt-l: #EDE8D4; --pt-m: #B69E3A; --pt-d: #6A5B1F; --pt-a: #B6A136; }
+.ptype-ghost    { --pt-l: #DCD4E8; --pt-m: #7B619B; --pt-d: #4A3068; --pt-a: #735797; }
+.ptype-dragon   { --pt-l: #D8D0F8; --pt-m: #7B4FE0; --pt-d: #4A1EB0; --pt-a: #6F35FC; }
+.ptype-dark     { --pt-l: #DED8D4; --pt-m: #8A6F5E; --pt-d: #4A3024; --pt-a: #705746; }
+.ptype-steel    { --pt-l: #E4E4EC; --pt-m: #A0A0BC; --pt-d: #5E5E7A; --pt-a: #B7B7CE; }
+.ptype-fairy    { --pt-l: #F4D8EA; --pt-m: #D085AD; --pt-d: #7A2A5A; --pt-a: #D685AD; }
+
+/* Type utility classes (consume scoped --pt-* vars) */
+.pt-bg         { background-color: var(--pt-l); }
+.pt-text       { color: var(--pt-d); }
+.pt-accent-bg  { background-color: var(--pt-a); }
+.pt-accent-text { color: var(--pt-a); }
+.pt-badge {
+  background-color: var(--pt-l);
+  color: var(--pt-d);
+  border: 1px solid color-mix(in srgb, var(--pt-m) 25%, transparent);
+}
+.pt-badge-dashed {
+  background-color: var(--pt-l);
+  color: var(--pt-d);
+  border: 1px dashed color-mix(in srgb, var(--pt-m) 40%, transparent);
+}
+.pt-dot        { background-color: var(--pt-a); }
+.pt-spinner    { border-top-color: var(--pt-a); }
+.pt-number {
+  background-color: var(--pt-l);
+  color: var(--pt-d);
+}
+.pt-desc {
+  background-color: color-mix(in srgb, var(--pt-l) 50%, transparent);
+  border: 1px solid color-mix(in srgb, var(--pt-m) 19%, transparent);
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+/* Tile card (uses scoped type vars) */
+.tile-type {
+  background: linear-gradient(to bottom, var(--bg-card), color-mix(in srgb, var(--pt-l) 25%, transparent));
+  border-bottom: 3px solid color-mix(in srgb, var(--pt-m) 50%, transparent);
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(180, 160, 130, 0.3);
-  border-radius: 4px;
+/* Tile glow effect */
+.tile-glow {
+  background-color: var(--pt-a);
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(180, 160, 130, 0.5);
+/* Type page header */
+.type-page-header {
+  background: linear-gradient(135deg, var(--pt-a), var(--pt-m));
 }
 
-.dark ::-webkit-scrollbar-thumb {
-  background: rgba(120, 100, 80, 0.3);
+/* Type button (home page) */
+.type-btn {
+  background: linear-gradient(135deg, var(--pt-l), white);
+  border-bottom: 2px solid color-mix(in srgb, var(--pt-m) 37%, transparent);
 }
 
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: rgba(120, 100, 80, 0.5);
+/* Detail hero gradient with dual-type support */
+.detail-hero {
+  background: linear-gradient(135deg, var(--pt-l) 0%, white 50%, var(--pt2-l, var(--pt-l)) 100%);
 }
+[data-type2="normal"]   { --pt2-l: #F5F0E8; }
+[data-type2="fire"]     { --pt2-l: #FDE8D4; }
+[data-type2="water"]    { --pt2-l: #D8EAFD; }
+[data-type2="electric"] { --pt2-l: #FDF5D4; }
+[data-type2="grass"]    { --pt2-l: #DAEFD4; }
+[data-type2="ice"]      { --pt2-l: #D4F0F0; }
+[data-type2="fighting"] { --pt2-l: #F4D4D4; }
+[data-type2="poison"]   { --pt2-l: #E8D4F0; }
+[data-type2="ground"]   { --pt2-l: #F4EAD4; }
+[data-type2="flying"]   { --pt2-l: #E0D8F4; }
+[data-type2="psychic"]  { --pt2-l: #F8D4E0; }
+[data-type2="bug"]      { --pt2-l: #E4F0D4; }
+[data-type2="rock"]     { --pt2-l: #EDE8D4; }
+[data-type2="ghost"]    { --pt2-l: #DCD4E8; }
+[data-type2="dragon"]   { --pt2-l: #D8D0F8; }
+[data-type2="dark"]     { --pt2-l: #DED8D4; }
+[data-type2="steel"]    { --pt2-l: #E4E4EC; }
+[data-type2="fairy"]    { --pt2-l: #F4D8EA; }
+
+/* ===== Generation Styles ===== */
+.gen-header-1 { background: linear-gradient(135deg, #F8A4A4, #A4D4E8); }
+.gen-header-2 { background: linear-gradient(135deg, #F4D88C, #C8C8D0); }
+.gen-header-3 { background: linear-gradient(135deg, #E8948C, #8CD4A8); }
+.gen-header-4 { background: linear-gradient(135deg, #8CB8E8, #E8B8C8); }
+.gen-header-5 { background: linear-gradient(135deg, #8896A8, #D0D4D8); }
+.gen-header-6 { background: linear-gradient(135deg, #8CA8E8, #E8948C); }
+.gen-header-7 { background: linear-gradient(135deg, #F0C470, #90B8E8); }
+.gen-header-8 { background: linear-gradient(135deg, #B88CD4, #8CB0D8); }
+.gen-header-9 { background: linear-gradient(135deg, #E89090, #B088D0); }
+
+.gen-card-1 { background: linear-gradient(135deg, rgba(248,164,164,0.25), rgba(164,212,232,0.25)); border-bottom: 2px solid rgba(248,164,164,0.5); }
+.gen-card-2 { background: linear-gradient(135deg, rgba(244,216,140,0.25), rgba(200,200,208,0.25)); border-bottom: 2px solid rgba(244,216,140,0.5); }
+.gen-card-3 { background: linear-gradient(135deg, rgba(232,148,140,0.25), rgba(140,212,168,0.25)); border-bottom: 2px solid rgba(232,148,140,0.5); }
+.gen-card-4 { background: linear-gradient(135deg, rgba(140,184,232,0.25), rgba(232,184,200,0.25)); border-bottom: 2px solid rgba(140,184,232,0.5); }
+.gen-card-5 { background: linear-gradient(135deg, rgba(136,150,168,0.25), rgba(208,212,216,0.25)); border-bottom: 2px solid rgba(136,150,168,0.5); }
+.gen-card-6 { background: linear-gradient(135deg, rgba(140,168,232,0.25), rgba(232,148,140,0.25)); border-bottom: 2px solid rgba(140,168,232,0.5); }
+.gen-card-7 { background: linear-gradient(135deg, rgba(240,196,112,0.25), rgba(144,184,232,0.25)); border-bottom: 2px solid rgba(240,196,112,0.5); }
+.gen-card-8 { background: linear-gradient(135deg, rgba(184,140,212,0.25), rgba(140,176,216,0.25)); border-bottom: 2px solid rgba(184,140,212,0.5); }
+.gen-card-9 { background: linear-gradient(135deg, rgba(232,144,144,0.25), rgba(176,136,208,0.25)); border-bottom: 2px solid rgba(232,144,144,0.5); }
+
+/* ===== Fixed Gradients ===== */
+.home-hero      { background: linear-gradient(135deg, #FDE8D4 0%, #D8EAFD 35%, #E8D4F0 65%, #DAEFD4 100%); }
+.pokedex-header { background: linear-gradient(135deg, #D8EAFD 0%, #FDE8D4 35%, #E8D4F0 65%, #DAEFD4 100%); }
+.btn-rainbow    { background: linear-gradient(135deg, #EE8130, #F95587, #6390F0); }
+.btn-pokeball   { background: linear-gradient(135deg, #EE8130, #F95587); }
+.lang-active    { background: linear-gradient(135deg, #6390F0, #A190D0); color: white; }
+.toggle-sun     { background: linear-gradient(135deg, #F0C470, #F4A261); }
+.toggle-moon    { background: linear-gradient(135deg, #735797, #A190D0); }
+
+/* Footer link colors */
+.link-fire   { color: #EE8130; }
+.link-water  { color: #6390F0; }
+.link-grass  { color: #7AC74C; }
+.link-flying { color: #A190D0; }
+
+/* ===== Stat Bars (using <progress> for CSP compliance) ===== */
+progress.stat-bar {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 12px;
+  border-radius: 9999px;
+  border: none;
+  overflow: hidden;
+}
+progress.stat-bar::-webkit-progress-bar {
+  background: var(--border-soft);
+  border-radius: 9999px;
+}
+progress.stat-bar.stat-high::-webkit-progress-value { background-color: #7AC74C; border-radius: 9999px; }
+progress.stat-bar.stat-mid::-webkit-progress-value  { background-color: #F7D02C; border-radius: 9999px; }
+progress.stat-bar.stat-low::-webkit-progress-value  { background-color: #EE8130; border-radius: 9999px; }
+progress.stat-bar.stat-high::-moz-progress-bar { background-color: #7AC74C; border-radius: 9999px; }
+progress.stat-bar.stat-mid::-moz-progress-bar  { background-color: #F7D02C; border-radius: 9999px; }
+progress.stat-bar.stat-low::-moz-progress-bar  { background-color: #EE8130; border-radius: 9999px; }
+
+/* ===== Search Styles ===== */
+.search-input {
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  color: var(--text-primary);
+}
+.search-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--border-soft) 50%, transparent);
+}
+.search-dropdown {
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+}
+.search-option-active {
+  background: var(--bg-card-hover);
+}
+
+/* ===== Drawer ===== */
+.drawer-panel {
+  background: var(--bg-main);
+  background-attachment: fixed;
+}
+
+/* ===== Keyframe Animations ===== */
+@keyframes pokeball-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.pokeball-spin { animation: pokeball-spin 1s linear infinite; }
+.animate-fade-in-up { animation: fade-in-up 0.5s ease-out both; }
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(180, 160, 130, 0.3); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(180, 160, 130, 0.5); }
+.dark ::-webkit-scrollbar-thumb { background: rgba(120, 100, 80, 0.3); }
+.dark ::-webkit-scrollbar-thumb:hover { background: rgba(120, 100, 80, 0.5); }

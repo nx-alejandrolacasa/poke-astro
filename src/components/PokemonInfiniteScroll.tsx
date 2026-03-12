@@ -22,30 +22,21 @@ export function PokemonInfiniteScroll({
   const [loading, setLoading] = useState(false)
   const [hasMore, setHasMore] = useState(true)
 
-  const { ref, inView } = useInView({
-    threshold: 0,
-    rootMargin: '500px',
-  })
+  const { ref, inView } = useInView({ threshold: 0, rootMargin: '500px' })
 
   const loadMore = useCallback(async () => {
     if (loading || !hasMore) return
-
     setLoading(true)
     try {
       const nextPage = page + 1
       const response = await fetch(`/api/pokemon/page/${nextPage}`)
       const data: PokemonList = await response.json()
-
       if (data.results.length === 0) {
         setHasMore(false)
       } else {
         setPokemon((prev) => [...prev, ...data.results])
         setPage(nextPage)
-
-        const totalLoaded = pokemon.length + data.results.length
-        if (totalLoaded >= data.count) {
-          setHasMore(false)
-        }
+        if (pokemon.length + data.results.length >= data.count) setHasMore(false)
       }
     } catch (error) {
       console.error('Failed to load more Pokemon:', error)
@@ -55,9 +46,7 @@ export function PokemonInfiniteScroll({
   }, [page, loading, hasMore, pokemon.length])
 
   useEffect(() => {
-    if (inView && hasMore && !loading) {
-      loadMore()
-    }
+    if (inView && hasMore && !loading) loadMore()
   }, [inView, hasMore, loading, loadMore])
 
   return (
@@ -70,13 +59,12 @@ export function PokemonInfiniteScroll({
         ))}
       </ul>
 
-      {/* Loading indicator */}
       {hasMore && (
         <div ref={ref} className="my-10 flex justify-center">
           {loading ? (
             <div className="text-center">
-              <div className="mx-auto h-12 w-12 rounded-full border-t-4 pokeball-spin" style={{ borderColor: '#EE8130' }} />
-              <p className="mt-3 font-heading text-sm" style={{ color: 'var(--text-secondary)' }}>{t.scroll.loadingMore}</p>
+              <div className="ptype-fire pt-spinner mx-auto h-12 w-12 rounded-full border-t-4 border-transparent pokeball-spin" />
+              <p className="themed-text-secondary mt-3 font-heading text-sm">{t.scroll.loadingMore}</p>
             </div>
           ) : (
             <div className="h-10" />
@@ -86,12 +74,8 @@ export function PokemonInfiniteScroll({
 
       {!hasMore && pokemon.length > 0 && (
         <div className="my-10 text-center">
-          <p className="font-heading text-lg font-bold" style={{ color: 'var(--text-secondary)' }}>
-            {t.scroll.caughtAll}
-          </p>
-          <p className="mt-1 text-sm" style={{ color: 'var(--text-secondary)' }}>
-            {interpolate(t.scroll.showingAll, { count: pokemon.length })}
-          </p>
+          <p className="themed-text-secondary font-heading text-lg font-bold">{t.scroll.caughtAll}</p>
+          <p className="themed-text-secondary mt-1 text-sm">{interpolate(t.scroll.showingAll, { count: pokemon.length })}</p>
         </div>
       )}
     </div>
