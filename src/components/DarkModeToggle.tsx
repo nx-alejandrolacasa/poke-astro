@@ -82,7 +82,10 @@ export function DarkModeToggle({ locale }: DarkModeToggleProps) {
   const [current, setCurrent] = useState<Theme>('auto')
 
   useEffect(() => {
-    setCurrent(getCurrentTheme())
+    const theme = getCurrentTheme()
+    setCurrent(theme)
+    // Apply on mount in case the inline head script was blocked by CSP
+    applyTheme(theme)
 
     const onThemeChanged = (e: Event) => {
       const detail = (e as CustomEvent).detail
