@@ -1,10 +1,13 @@
 ---
-import Layout from '@/layouts/Layout.astro'
 import { GenerationInfiniteScrollWrapper } from '@/components/GenerationInfiniteScrollWrapper'
-import type { Pokemon, PokemonList } from '@/utils/pokemon'
+import Layout from '@/layouts/Layout.astro'
 import { getI18n } from '@/utils/i18n'
+import type { Pokemon, PokemonList } from '@/utils/pokemon'
 
-const generations: Record<string, { nameEn: string; nameEs: string; region: string }> = {
+const generations: Record<
+  string,
+  { nameEn: string; nameEs: string; region: string }
+> = {
   '1': { nameEn: 'Generation I', nameEs: 'Generación I', region: 'Kanto' },
   '2': { nameEn: 'Generation II', nameEs: 'Generación II', region: 'Johto' },
   '3': { nameEn: 'Generation III', nameEs: 'Generación III', region: 'Hoenn' },
@@ -12,14 +15,19 @@ const generations: Record<string, { nameEn: string; nameEs: string; region: stri
   '5': { nameEn: 'Generation V', nameEs: 'Generación V', region: 'Unova' },
   '6': { nameEn: 'Generation VI', nameEs: 'Generación VI', region: 'Kalos' },
   '7': { nameEn: 'Generation VII', nameEs: 'Generación VII', region: 'Alola' },
-  '8': { nameEn: 'Generation VIII', nameEs: 'Generación VIII', region: 'Galar' },
+  '8': {
+    nameEn: 'Generation VIII',
+    nameEs: 'Generación VIII',
+    region: 'Galar',
+  },
   '9': { nameEn: 'Generation IX', nameEs: 'Generación IX', region: 'Paldea' },
 }
 
-const { locale: localeParam, id } = Astro.params
+const { locale: localeParam, id = '' } = Astro.params
+// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 const { locale, t } = getI18n(localeParam)
 
-const generationData = generations[id!]
+const generationData = generations[id]
 if (!generationData) {
   return Astro.redirect(`/${locale}/404`)
 }
@@ -43,23 +51,24 @@ const genColors: Record<number, string> = {
   9: 'from-red-600 to-purple-600',
 }
 
+// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 const gradientClass = genColors[generation.id] || 'from-gray-400 to-gray-500'
 
 // Fetch generation data from PokéAPI
-const genRes = await fetch(`https://pokeapi.co/api/v2/generation/${generation.id}`)
+const genRes = await fetch(
+  `https://pokeapi.co/api/v2/generation/${generation.id}`
+)
 if (!genRes.ok) {
   return Astro.redirect(`/${locale}/404`)
 }
 const genData = await genRes.json()
 
 // Sort all species references by ID (extracted from URL) before pagination
-genData.pokemon_species.sort(
-  (a: { url: string }, b: { url: string }) => {
-    const idA = Number(a.url.split('/').filter(Boolean).pop())
-    const idB = Number(b.url.split('/').filter(Boolean).pop())
-    return idA - idB
-  }
-)
+genData.pokemon_species.sort((a: { url: string }, b: { url: string }) => {
+  const idA = Number(a.url.split('/').filter(Boolean).pop())
+  const idB = Number(b.url.split('/').filter(Boolean).pop())
+  return idA - idB
+})
 
 // Get first page of pokemon (30 items)
 const pageSize = 30
@@ -73,11 +82,14 @@ const pokemonPromises = speciesSlice.map(async (species: { name: string }) => {
 })
 
 const resultsWithNull = await Promise.all(pokemonPromises)
-const results: Pokemon[] = resultsWithNull.filter((p): p is Pokemon => p !== null)
+const results: Pokemon[] = resultsWithNull.filter(
+  (p): p is Pokemon => p !== null
+)
 
 // Sort by order number
 results.sort((a, b) => a.order - b.order)
 
+// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 const initialData: PokemonList = {
   count: genData.pokemon_species.length,
   results,

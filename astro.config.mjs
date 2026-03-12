@@ -29,7 +29,6 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
-
   // Responsive images (stable in Astro 6, previously experimental)
   image: {
     layout: 'constrained',

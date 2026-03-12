@@ -8,9 +8,13 @@ type PokemonTileProps = {
   locale: Locale
 }
 
-export function PokemonTile({ loading = false, pokemon, locale }: PokemonTileProps) {
+export function PokemonTile({
+  loading = false,
+  pokemon,
+  locale,
+}: PokemonTileProps) {
   return (
-    <div className="rounded-lg border-2 border-gray-200 bg-white p-2 text-center shadow-md transition-all hover:border-primary hover:shadow-lg hover:scale-[1.02] md:rounded-xl md:p-3 dark:border-gray-700 dark:bg-gray-800">
+    <div className="rounded-lg border-2 border-gray-200 bg-white p-2 text-center shadow-md transition-all hover:scale-[1.02] hover:border-primary hover:shadow-lg md:rounded-xl md:p-3 dark:border-gray-700 dark:bg-gray-800">
       <a href={`/${locale}/pokemon/${pokemon.name}`} title={pokemon.name}>
         <div className="relative aspect-square w-full">
           {/* Order number - positioned behind the Pokemon image */}

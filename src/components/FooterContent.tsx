@@ -19,7 +19,7 @@ export function FooterContent({ locale }: FooterContentProps) {
       <p className="text-[11px] text-gray-500 leading-relaxed dark:text-gray-500">
         {t.footer.fairUse}
       </p>
-      <div className="border-t border-gray-200 pt-3 mt-3 dark:border-gray-700">
+      <div className="mt-3 border-gray-200 border-t pt-3 dark:border-gray-700">
         <p className="text-[11px] text-gray-400 dark:text-gray-500">
           {t.footer.dataBy}{' '}
           <a

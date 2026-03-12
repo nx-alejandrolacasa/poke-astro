@@ -1,12 +1,14 @@
 ---
-import Layout from '@/layouts/Layout.astro'
 import { HomeContentWrapper } from '@/components/HomeContentWrapper'
-import { fetchPokemonCount } from '@/utils/pokemon'
+import Layout from '@/layouts/Layout.astro'
 import { getI18n } from '@/utils/i18n'
+import { fetchPokemonCount } from '@/utils/pokemon'
 
 const { locale: localeParam } = Astro.params
+// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 const { locale, t } = getI18n(localeParam)
 
+// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 const totalPokemon = await fetchPokemonCount()
 ---
 

@@ -35,7 +35,9 @@ export const GET: APIRoute = async ({ params }) => {
     // Fetch full details for this page
     const pokemonPromises = speciesSlice.map(
       async (species: { name: string }) => {
-        const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${species.name}`)
+        const res = await fetch(
+          `https://pokeapi.co/api/v2/pokemon/${species.name}`
+        )
         if (!res.ok) return null
         return res.json()
       }
@@ -63,12 +65,9 @@ export const GET: APIRoute = async ({ params }) => {
     })
   } catch (error) {
     console.error('Failed to fetch generation Pokemon:', error)
-    return new Response(
-      JSON.stringify({ error: 'Failed to fetch Pokemon' }),
-      {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    )
+    return new Response(JSON.stringify({ error: 'Failed to fetch Pokemon' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
 }

@@ -325,10 +325,14 @@ export function getTranslatedName(
 /**
  * Fetch ability details with translations
  */
-export async function fetchAbilityDetails(abilityName: string): Promise<AbilityDetails | null> {
+export async function fetchAbilityDetails(
+  abilityName: string
+): Promise<AbilityDetails | null> {
   const res = await fetch(`https://pokeapi.co/api/v2/ability/${abilityName}`)
   if (!res.ok) {
-    console.warn(`Failed to fetch ability details for ${abilityName}: ${res.status}`)
+    console.warn(
+      `Failed to fetch ability details for ${abilityName}: ${res.status}`
+    )
     return null
   }
   return res.json()
@@ -337,7 +341,9 @@ export async function fetchAbilityDetails(abilityName: string): Promise<AbilityD
 /**
  * Fetch stat details with translations
  */
-export async function fetchStatDetails(statName: string): Promise<StatDetails | null> {
+export async function fetchStatDetails(
+  statName: string
+): Promise<StatDetails | null> {
   const res = await fetch(`https://pokeapi.co/api/v2/stat/${statName}`)
   if (!res.ok) {
     console.warn(`Failed to fetch stat details for ${statName}: ${res.status}`)
@@ -349,9 +355,18 @@ export async function fetchStatDetails(statName: string): Promise<StatDetails | 
 /**
  * Get flavor text in a specific language from species data
  */
-export function getFlavorText(species: PokemonSpecies, languageCode: string): string | null {
-  const entry = species.flavor_text_entries.find((e) => e.language.name === languageCode)
+export function getFlavorText(
+  species: PokemonSpecies,
+  languageCode: string
+): string | null {
+  const entry = species.flavor_text_entries.find(
+    (e) => e.language.name === languageCode
+  )
   if (!entry) return null
   // Clean up flavor text (remove form feeds and extra whitespace)
-  return entry.flavor_text.replace(/\f/g, ' ').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim()
+  return entry.flavor_text
+    .replace(/\f/g, ' ')
+    .replace(/\n/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
 }

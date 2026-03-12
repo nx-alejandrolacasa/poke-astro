@@ -1,7 +1,7 @@
 import { PokemonTile } from '@components/PokemonTile'
 import type { Pokemon } from '@utils/pokemon'
-import type { Locale } from '@/utils/i18n'
 import { useEffect, useState } from 'react'
+import type { Locale } from '@/utils/i18n'
 
 async function fetchPokemonByName(name: string): Promise<Pokemon | null> {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)

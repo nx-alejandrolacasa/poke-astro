@@ -44,25 +44,33 @@ export const GET: APIRoute = async ({ params, url }) => {
       ...typeEffectiveness.weaknesses.map(({ type }) =>
         fetchTypeDetails(type).then((details) => ({
           original: type,
-          translated: details?.names.find((n) => n.language.name === language)?.name ?? type,
+          translated:
+            details?.names.find((n) => n.language.name === language)?.name ??
+            type,
         }))
       ),
       ...typeEffectiveness.resistances.map(({ type }) =>
         fetchTypeDetails(type).then((details) => ({
           original: type,
-          translated: details?.names.find((n) => n.language.name === language)?.name ?? type,
+          translated:
+            details?.names.find((n) => n.language.name === language)?.name ??
+            type,
         }))
       ),
       ...typeEffectiveness.immunities.map((type) =>
         fetchTypeDetails(type).then((details) => ({
           original: type,
-          translated: details?.names.find((n) => n.language.name === language)?.name ?? type,
+          translated:
+            details?.names.find((n) => n.language.name === language)?.name ??
+            type,
         }))
       ),
     ]
 
     const typeTranslations = await Promise.all(typeTranslationsPromises)
-    const translationMap = new Map(typeTranslations.map((t) => [t.original, t.translated]))
+    const translationMap = new Map(
+      typeTranslations.map((t) => [t.original, t.translated])
+    )
 
     // Apply translations to type effectiveness
     const translatedTypeEffectiveness = {
@@ -70,10 +78,12 @@ export const GET: APIRoute = async ({ params, url }) => {
         type: translationMap.get(type) ?? type,
         multiplier,
       })),
-      resistances: typeEffectiveness.resistances.map(({ type, multiplier }) => ({
-        type: translationMap.get(type) ?? type,
-        multiplier,
-      })),
+      resistances: typeEffectiveness.resistances.map(
+        ({ type, multiplier }) => ({
+          type: translationMap.get(type) ?? type,
+          multiplier,
+        })
+      ),
       immunities: typeEffectiveness.immunities.map(
         (type) => translationMap.get(type) ?? type
       ),

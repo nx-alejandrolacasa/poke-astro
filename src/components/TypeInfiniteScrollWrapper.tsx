@@ -1,6 +1,6 @@
 import type { Locale } from '@/utils/i18n'
-import { TypeInfiniteScroll } from './TypeInfiniteScroll'
 import type { PokemonList } from '@/utils/pokemon'
+import { TypeInfiniteScroll } from './TypeInfiniteScroll'
 
 type TypeInfiniteScrollWrapperProps = {
   initialData: PokemonList

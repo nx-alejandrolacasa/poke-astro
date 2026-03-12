@@ -22,7 +22,11 @@ type PokemonEnrichedDataProps = {
   statsSection?: ReactNode
 }
 
-export function PokemonEnrichedData({ pokemonName, locale, statsSection }: PokemonEnrichedDataProps) {
+export function PokemonEnrichedData({
+  pokemonName,
+  locale,
+  statsSection,
+}: PokemonEnrichedDataProps) {
   const t = translations[locale]
   const [data, setData] = useState<EnrichedData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -55,7 +59,7 @@ export function PokemonEnrichedData({ pokemonName, locale, statsSection }: Pokem
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
         {statsSection}
         <div className="flex items-center justify-center rounded-lg border border-gray-300 bg-gray-50 p-8 dark:border-gray-700 dark:bg-gray-800/50">
-          <div className="h-10 w-10 animate-spin rounded-full border-t-4 border-primary" />
+          <div className="h-10 w-10 animate-spin rounded-full border-primary border-t-4" />
         </div>
       </div>
     )
@@ -66,13 +70,13 @@ export function PokemonEnrichedData({ pokemonName, locale, statsSection }: Pokem
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
         {statsSection}
         <div className="rounded-lg border border-orange-300 bg-orange-100 p-4 text-center dark:border-orange-700 dark:bg-orange-900/20">
-          <p className="text-orange-700 dark:text-orange-400">{t.errors.loadFailed}</p>
+          <p className="text-orange-700 dark:text-orange-400">
+            {t.errors.loadFailed}
+          </p>
         </div>
       </div>
     )
   }
-
-  const hasEvolutions = data.evolutions.length > 1 && data.evolutionTree
 
   return (
     <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
@@ -104,14 +108,17 @@ export function PokemonEnrichedData({ pokemonName, locale, statsSection }: Pokem
                 )}
               </div>
             ) : (
-              <p className="text-gray-500 text-sm dark:text-gray-500">{t.pokemon.none}</p>
+              <p className="text-gray-500 text-sm dark:text-gray-500">
+                {t.pokemon.none}
+              </p>
             )}
           </div>
 
           {/* Resistances */}
           <div>
-            <h3 className="mb-1 font-semibold text-teal-600 text-sm dark:text-teal-400">
-              {t.pokemon.resistantTo} ({data.typeEffectiveness.resistances.length})
+            <h3 className="mb-1 font-semibold text-sm text-teal-600 dark:text-teal-400">
+              {t.pokemon.resistantTo} (
+              {data.typeEffectiveness.resistances.length})
             </h3>
             {data.typeEffectiveness.resistances.length > 0 ? (
               <div className="flex flex-wrap gap-1">
@@ -119,7 +126,7 @@ export function PokemonEnrichedData({ pokemonName, locale, statsSection }: Pokem
                   ({ type, multiplier }) => (
                     <span
                       key={type}
-                      className="rounded-full border border-teal-300 bg-teal-100 px-2 py-0.5 text-teal-800 text-sm capitalize dark:border-teal-500 dark:bg-teal-900/30 dark:text-teal-200"
+                      className="rounded-full border border-teal-300 bg-teal-100 px-2 py-0.5 text-sm text-teal-800 capitalize dark:border-teal-500 dark:bg-teal-900/30 dark:text-teal-200"
                     >
                       {type} ({multiplier}x)
                     </span>
@@ -127,7 +134,9 @@ export function PokemonEnrichedData({ pokemonName, locale, statsSection }: Pokem
                 )}
               </div>
             ) : (
-              <p className="text-gray-500 text-sm dark:text-gray-500">{t.pokemon.none}</p>
+              <p className="text-gray-500 text-sm dark:text-gray-500">
+                {t.pokemon.none}
+              </p>
             )}
           </div>
 
@@ -148,19 +157,25 @@ export function PokemonEnrichedData({ pokemonName, locale, statsSection }: Pokem
                 ))}
               </div>
             ) : (
-              <p className="text-gray-600 text-sm dark:text-gray-500">{t.pokemon.none}</p>
+              <p className="text-gray-600 text-sm dark:text-gray-500">
+                {t.pokemon.none}
+              </p>
             )}
           </div>
         </div>
       </div>
 
       {/* Evolution Chain - Spans full width */}
-      {hasEvolutions && (
+      {data.evolutionTree && data.evolutions.length > 1 && (
         <div className="rounded-lg border border-gray-300 bg-gray-50 p-3 transition-colors md:col-span-2 dark:border-gray-700 dark:bg-gray-800/50">
           <h2 className="mb-2 font-bold text-base text-gray-900 md:text-lg dark:text-gray-100">
             {t.pokemon.evolutionChain}
           </h2>
-          <EvolutionTree tree={data.evolutionTree!} currentPokemon={pokemonName} locale={locale} />
+          <EvolutionTree
+            tree={data.evolutionTree}
+            currentPokemon={pokemonName}
+            locale={locale}
+          />
         </div>
       )}
     </div>
@@ -180,24 +195,29 @@ function EvolutionTree({ tree, currentPokemon, locale }: EvolutionTreeProps) {
   return (
     <div className="flex flex-col items-center justify-center gap-4 md:flex-row md:flex-wrap">
       {stages.map((stage, stageIndex) => (
-        <div key={stageIndex} className="flex flex-col items-center gap-4 md:flex-row">
+        <div
+          key={stage.map((p) => p.name).join('-')}
+          className="flex flex-col items-center gap-4 md:flex-row"
+        >
           {stageIndex > 0 && (
             <>
-              <div className="font-bold text-gray-600 text-2xl md:hidden dark:text-gray-500">
+              <div className="font-bold text-2xl text-gray-600 md:hidden dark:text-gray-500">
                 ↓
               </div>
-              <div className="hidden font-bold text-gray-600 text-2xl md:block dark:text-gray-500">
+              <div className="hidden font-bold text-2xl text-gray-600 md:block dark:text-gray-500">
                 →
               </div>
             </>
           )}
           <div
-            className={`flex flex-col items-center gap-2 md:flex-row ${hasBranching && stage.length > 1 ? 'rounded-xl border-2 border-dashed border-gray-400 p-2 dark:border-gray-600' : ''}`}
+            className={`flex flex-col items-center gap-2 md:flex-row ${hasBranching && stage.length > 1 ? 'rounded-xl border-2 border-gray-400 border-dashed p-2 dark:border-gray-600' : ''}`}
           >
             {stage.map((pokemon, pokemonIndex) => (
               <div key={pokemon.name} className="flex items-center">
                 {pokemonIndex > 0 && stage.length > 1 && (
-                  <span className="mx-2 hidden font-bold text-gray-400 text-lg md:inline">/</span>
+                  <span className="mx-2 hidden font-bold text-gray-400 text-lg md:inline">
+                    /
+                  </span>
                 )}
                 <EvolutionCard
                   name={pokemon.name}
@@ -221,13 +241,18 @@ type EvolutionCardProps = {
   locale: Locale
 }
 
-function EvolutionCard({ name, speciesUrl, isCurrentPokemon, locale }: EvolutionCardProps) {
+function EvolutionCard({
+  name,
+  speciesUrl,
+  isCurrentPokemon,
+  locale,
+}: EvolutionCardProps) {
   const evoId = speciesUrl.split('/').slice(-2, -1)[0]
 
   return (
     <a
       href={`/${locale}/pokemon/${name}`}
-      className={`rounded-xl border-2 p-3 transition-all hover:border-primary hover:scale-105 ${
+      className={`rounded-xl border-2 p-3 transition-all hover:scale-105 hover:border-primary ${
         isCurrentPokemon
           ? 'border-primary bg-gray-200 dark:bg-gray-700'
           : 'border-gray-400 bg-white dark:border-gray-600 dark:bg-gray-800'
@@ -242,7 +267,7 @@ function EvolutionCard({ name, speciesUrl, isCurrentPokemon, locale }: Evolution
             loading="lazy"
           />
         )}
-        <p className="font-semibold text-gray-900 text-base capitalize dark:text-gray-100">
+        <p className="font-semibold text-base text-gray-900 capitalize dark:text-gray-100">
           {getPokemonName(name)}
         </p>
       </div>

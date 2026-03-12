@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
-import type { Pokemon, PokemonList } from '@/utils/pokemon'
 import type { Locale } from '@/utils/i18n'
-import { translations, interpolate } from '@/utils/translations'
+import type { Pokemon, PokemonList } from '@/utils/pokemon'
+import { interpolate, translations } from '@/utils/translations'
 import { PokemonTile } from './PokemonTile'
 
 type TypeInfiniteScrollProps = {
@@ -22,7 +22,9 @@ export function TypeInfiniteScroll({
   const [pokemon, setPokemon] = useState<Pokemon[]>(initialData.results)
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(false)
-  const [hasMore, setHasMore] = useState(initialData.count > initialData.results.length)
+  const [hasMore, setHasMore] = useState(
+    initialData.count > initialData.results.length
+  )
 
   const { ref, inView } = useInView({
     threshold: 0,
@@ -66,11 +68,13 @@ export function TypeInfiniteScroll({
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className={`bg-gradient-to-r ${typeColor} rounded-2xl p-8 md:p-12 text-center shadow-xl`}>
-        <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+      <div
+        className={`bg-gradient-to-r ${typeColor} rounded-2xl p-8 text-center shadow-xl md:p-12`}
+      >
+        <h1 className="mb-4 font-bold text-4xl text-white md:text-6xl">
           {t.pages.typeTitle} {t.types[type as keyof typeof t.types]}
         </h1>
-        <p className="text-lg md:text-xl text-white/90">
+        <p className="text-lg text-white/90 md:text-xl">
           {interpolate(t.pages.speciesCount, { count: initialData.count })}
         </p>
       </div>
@@ -79,10 +83,21 @@ export function TypeInfiniteScroll({
       <div>
         <a
           href={`/${locale}`}
-          className="inline-flex items-center gap-2 text-primary hover:text-primary-600 dark:text-primary-300 dark:hover:text-primary-400 transition-colors font-semibold"
+          className="inline-flex items-center gap-2 font-semibold text-primary transition-colors hover:text-primary-600 dark:text-primary-300 dark:hover:text-primary-400"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+          <svg
+            className="h-5 w-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
           {t.pages.backToHome}
         </a>
@@ -107,7 +122,9 @@ export function TypeInfiniteScroll({
                 alt="Loading..."
                 className="mx-auto h-16 w-16 animate-spin"
               />
-              <p className="mt-2 text-gray-500 dark:text-gray-400">{t.scroll.loadingMore}</p>
+              <p className="mt-2 text-gray-500 dark:text-gray-400">
+                {t.scroll.loadingMore}
+              </p>
             </div>
           ) : (
             <div className="h-10" />
