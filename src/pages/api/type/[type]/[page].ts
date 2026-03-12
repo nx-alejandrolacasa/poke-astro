@@ -17,7 +17,15 @@ export const GET: APIRoute = async ({ params }) => {
     }
 
     const typeData = await typeRes.json()
-    const allPokemonRefs = typeData.pokemon
+
+    // Sort all pokemon references by ID (extracted from URL) before pagination
+    const allPokemonRefs = typeData.pokemon.sort(
+      (a: { pokemon: { url: string } }, b: { pokemon: { url: string } }) => {
+        const idA = Number(a.pokemon.url.split('/').filter(Boolean).pop())
+        const idB = Number(b.pokemon.url.split('/').filter(Boolean).pop())
+        return idA - idB
+      }
+    )
 
     // Calculate pagination
     const startIndex = (page - 1) * pageSize

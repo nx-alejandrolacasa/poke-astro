@@ -5,6 +5,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Prevent white flash before JS runs for users who prefer dark mode */
+html {
+  color-scheme: light dark;
+}
+
 @theme {
   --font-inter: "Inter Variable", system-ui, sans-serif;
 }
