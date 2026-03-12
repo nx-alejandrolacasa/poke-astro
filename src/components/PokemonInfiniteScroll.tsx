@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
-import type { Pokemon, PokemonList } from '@/utils/pokemon'
 import type { Locale } from '@/utils/i18n'
-import { translations, interpolate } from '@/utils/translations'
+import type { Pokemon, PokemonList } from '@/utils/pokemon'
+import { interpolate, translations } from '@/utils/translations'
 import { PokemonTile } from './PokemonTile'
 
 type PokemonInfiniteScrollProps = {
@@ -81,7 +81,9 @@ export function PokemonInfiniteScroll({
                 alt="Loading..."
                 className="mx-auto h-16 w-16 animate-spin"
               />
-              <p className="mt-2 text-gray-500 dark:text-gray-400">{t.scroll.loadingMore}</p>
+              <p className="mt-2 text-gray-500 dark:text-gray-400">
+                {t.scroll.loadingMore}
+              </p>
             </div>
           ) : (
             <div className="h-10" />

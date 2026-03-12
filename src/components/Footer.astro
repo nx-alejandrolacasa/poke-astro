@@ -1,11 +1,12 @@
 ---
-import { FooterContent } from './FooterContent'
 import type { Locale } from '@/utils/i18n'
+import { FooterContent } from './FooterContent'
 
 interface Props {
   locale: Locale
 }
 
+// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 const { locale } = Astro.props
 ---
 

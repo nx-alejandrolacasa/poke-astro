@@ -1,6 +1,6 @@
 import type { Locale } from '@/utils/i18n'
-import { GenerationInfiniteScroll } from './GenerationInfiniteScroll'
 import type { PokemonList } from '@/utils/pokemon'
+import { GenerationInfiniteScroll } from './GenerationInfiniteScroll'
 
 type GenerationInfiniteScrollWrapperProps = {
   initialData: PokemonList

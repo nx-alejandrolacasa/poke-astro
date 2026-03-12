@@ -1,11 +1,11 @@
 ---
-import Layout from '@/layouts/Layout.astro'
 import { TypeInfiniteScrollWrapper } from '@/components/TypeInfiniteScrollWrapper'
-import { getPokemonName } from '@/utils/pokemon'
-import type { Pokemon, PokemonList } from '@/utils/pokemon'
+import Layout from '@/layouts/Layout.astro'
 import { getI18n } from '@/utils/i18n'
+import type { Pokemon, PokemonList } from '@/utils/pokemon'
+import { getPokemonName } from '@/utils/pokemon'
 
-const { locale: localeParam, type } = Astro.params
+const { locale: localeParam, type = '' } = Astro.params
 const { locale, t } = getI18n(localeParam)
 
 // Type color mapping
@@ -30,7 +30,8 @@ const typeColors: Record<string, string> = {
   fairy: 'from-pink-400 to-rose-500',
 }
 
-const gradientClass = typeColors[type!] || 'from-gray-400 to-gray-500'
+// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
+const gradientClass = typeColors[type] || 'from-gray-400 to-gray-500'
 
 // Fetch type data from PokéAPI
 const typeRes = await fetch(`https://pokeapi.co/api/v2/type/${type}`)
@@ -53,29 +54,33 @@ const pageSize = 30
 const pokemonSlice = typeData.pokemon.slice(0, pageSize)
 
 // Fetch full details for first page
-const pokemonPromises = pokemonSlice.map(async (p: { pokemon: { url: string } }) => {
-  const res = await fetch(p.pokemon.url)
-  return res.json()
-})
+const pokemonPromises = pokemonSlice.map(
+  async (p: { pokemon: { url: string } }) => {
+    const res = await fetch(p.pokemon.url)
+    return res.json()
+  }
+)
 
 const results: Pokemon[] = await Promise.all(pokemonPromises)
 
 // Sort by order number
 results.sort((a, b) => a.order - b.order)
 
+// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 const initialData: PokemonList = {
   count: typeData.pokemon.length,
   results,
 }
 
-const typeName = t.types[type as keyof typeof t.types] || getPokemonName(type!)
+// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
+const typeName = t.types[type as keyof typeof t.types] || getPokemonName(type)
 ---
 
 <Layout title={`${typeName} - ${t.pages.typeTitle}`} locale={locale}>
   <TypeInfiniteScrollWrapper
     client:load
     initialData={initialData}
-    type={type!}
+    type={type}
     typeColor={gradientClass}
     locale={locale}
   />

@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { LanguageSelector } from '@/components/LanguageSelector'
+import { PokemonSearch } from '@/components/PokemonSearch'
 import type { Locale } from '@/utils/i18n'
 import { translations } from '@/utils/translations'
-import { PokemonSearch } from '@/components/PokemonSearch'
-import { LanguageSelector } from '@/components/LanguageSelector'
-import { DarkModeToggle } from '@/components/DarkModeToggle'
 
 type MobileMenuDrawerProps = {
   locale: Locale
@@ -56,7 +55,7 @@ export function MobileMenuDrawer({ locale }: MobileMenuDrawerProps) {
         aria-label={t.header.menu}
       >
         {/* Drawer header */}
-        <div className="flex shrink-0 items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900">
+        <div className="flex shrink-0 items-center justify-between border-gray-200 border-b bg-white p-4 dark:border-gray-700 dark:bg-gray-900">
           <span className="font-semibold text-gray-900 text-lg dark:text-gray-100">
             {t.header.menu}
           </span>
@@ -71,6 +70,7 @@ export function MobileMenuDrawer({ locale }: MobileMenuDrawerProps) {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -86,9 +86,9 @@ export function MobileMenuDrawer({ locale }: MobileMenuDrawerProps) {
         <div className="flex flex-1 flex-col gap-6 bg-white p-4 dark:bg-gray-900">
           {/* Search */}
           <div>
-            <label className="mb-2 block font-medium text-gray-700 text-sm dark:text-gray-300">
+            <span className="mb-2 block font-medium text-gray-700 text-sm dark:text-gray-300">
               {t.search.placeholder}
-            </label>
+            </span>
             <PokemonSearch locale={locale} />
           </div>
 
@@ -102,6 +102,7 @@ export function MobileMenuDrawer({ locale }: MobileMenuDrawerProps) {
               className="mr-2 h-5 w-5"
               viewBox="0 0 24 24"
               fill="currentColor"
+              aria-hidden="true"
             >
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
             </svg>
@@ -111,7 +112,9 @@ export function MobileMenuDrawer({ locale }: MobileMenuDrawerProps) {
           {/* Settings row */}
           <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800">
             <LanguageSelector locale={locale} />
-            <DarkModeToggle />
+            <div className="flex items-center rounded-lg border-2 border-gray-200 bg-white p-1 dark:border-gray-700 dark:bg-gray-800">
+              <theme-toggle data-locale={locale} />
+            </div>
           </div>
         </div>
       </div>
@@ -133,6 +136,7 @@ export function MobileMenuDrawer({ locale }: MobileMenuDrawerProps) {
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
+          aria-hidden="true"
         >
           <path
             strokeLinecap="round"

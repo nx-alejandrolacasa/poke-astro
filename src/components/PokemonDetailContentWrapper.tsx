@@ -1,6 +1,6 @@
 import type { Locale } from '@/utils/i18n'
-import { PokemonDetailContent } from './PokemonDetailContent'
 import type { Pokemon } from '@/utils/pokemon'
+import { PokemonDetailContent } from './PokemonDetailContent'
 
 type PokemonDetailContentWrapperProps = {
   pokemon: Pokemon
@@ -14,6 +14,10 @@ export function PokemonDetailContentWrapper({
   locale,
 }: PokemonDetailContentWrapperProps) {
   return (
-    <PokemonDetailContent pokemon={pokemon} pokemonName={pokemonName} locale={locale} />
+    <PokemonDetailContent
+      pokemon={pokemon}
+      pokemonName={pokemonName}
+      locale={locale}
+    />
   )
 }

@@ -1,15 +1,14 @@
 ---
-import {
-  fetchPokemonByName,
-  getPokemonName,
-} from '@utils/pokemon'
+import { fetchPokemonByName, getPokemonName } from '@utils/pokemon'
 import { PokemonDetailContentWrapper } from '@/components/PokemonDetailContentWrapper'
 import Layout from '@/layouts/Layout.astro'
 import { getI18n } from '@/utils/i18n'
 
 const { locale: localeParam, name = '' } = Astro.params
+// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 const { locale } = getI18n(localeParam)
 
+// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 const pokemon = await fetchPokemonByName(name)
 ---
 

@@ -8,7 +8,12 @@ type ImageZoomModalProps = {
   onClose: () => void
 }
 
-export function ImageZoomModal({ src, alt, isOpen, onClose }: ImageZoomModalProps) {
+export function ImageZoomModal({
+  src,
+  alt,
+  isOpen,
+  onClose,
+}: ImageZoomModalProps) {
   const { t } = useLanguage()
 
   // Close on escape key and prevent body scroll
@@ -32,6 +37,7 @@ export function ImageZoomModal({ src, alt, isOpen, onClose }: ImageZoomModalProp
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
       onClick={onClose}
+      onKeyDown={(e) => { if (e.key === 'Escape') onClose() }}
       role="dialog"
       aria-modal="true"
       aria-label={`Enlarged image of ${alt}`}
@@ -48,6 +54,7 @@ export function ImageZoomModal({ src, alt, isOpen, onClose }: ImageZoomModalProp
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
+          aria-hidden="true"
         >
           <path
             strokeLinecap="round"
@@ -65,11 +72,12 @@ export function ImageZoomModal({ src, alt, isOpen, onClose }: ImageZoomModalProp
           alt={alt}
           className="max-h-full max-w-full object-contain drop-shadow-2xl"
           onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => e.stopPropagation()}
         />
       </div>
 
       {/* Hint text */}
-      <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/60 text-sm">
+      <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-sm text-white/60">
         {t.modal.closeHint}
       </p>
     </div>

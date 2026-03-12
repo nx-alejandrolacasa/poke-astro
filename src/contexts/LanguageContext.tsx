@@ -1,5 +1,5 @@
-import { createContext, useContext, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import type { Language, Translations } from '@/utils/translations'
 import { translations } from '@/utils/translations'
 
@@ -38,7 +38,10 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
 
     // Listen for language changes from other React islands
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === LANGUAGE_STORAGE_KEY && (e.newValue === 'en' || e.newValue === 'es')) {
+      if (
+        e.key === LANGUAGE_STORAGE_KEY &&
+        (e.newValue === 'en' || e.newValue === 'es')
+      ) {
         setLanguageState(e.newValue)
       }
     }
@@ -78,7 +81,11 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     t: translations[language],
   }
 
-  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>
+  return (
+    <LanguageContext.Provider value={value}>
+      {children}
+    </LanguageContext.Provider>
+  )
 }
 
 export function useLanguage() {

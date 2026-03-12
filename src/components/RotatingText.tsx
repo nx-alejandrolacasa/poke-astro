@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 type RotatingTextProps = {
   items: string[]
@@ -22,14 +22,16 @@ export function RotatingText({
   const [contentHeight, setContentHeight] = useState<number | null>(null)
   const contentRef = useRef<HTMLParagraphElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const rotationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const rotationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
+    null
+  )
 
   // Measure content height for smooth transitions
   useEffect(() => {
     if (contentRef.current && animationPhase === 'idle') {
       setContentHeight(contentRef.current.offsetHeight)
     }
-  }, [currentIndex, animationPhase, items])
+  }, [animationPhase])
 
   const advanceToNext = useCallback(() => {
     if (items.length <= 1 || animationPhase !== 'idle') return
@@ -51,22 +53,25 @@ export function RotatingText({
     }, 300)
   }, [items.length, animationPhase])
 
-  const goToIndex = useCallback((index: number) => {
-    if (index === currentIndex || animationPhase !== 'idle') return
+  const goToIndex = useCallback(
+    (index: number) => {
+      if (index === currentIndex || animationPhase !== 'idle') return
 
-    setAnimationPhase('exiting')
+      setAnimationPhase('exiting')
 
-    setTimeout(() => {
-      setCurrentIndex(index)
-      setAnimationPhase('entering')
+      setTimeout(() => {
+        setCurrentIndex(index)
+        setAnimationPhase('entering')
 
-      requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          setAnimationPhase('idle')
+          requestAnimationFrame(() => {
+            setAnimationPhase('idle')
+          })
         })
-      })
-    }, 300)
-  }, [currentIndex, animationPhase])
+      }, 300)
+    },
+    [currentIndex, animationPhase]
+  )
 
   // Auto-rotation
   useEffect(() => {
@@ -115,7 +120,6 @@ export function RotatingText({
         return 'translate-y-4 opacity-0 transition-all duration-300 ease-in-out'
       case 'entering':
         return '-translate-y-4 opacity-0 transition-none'
-      case 'idle':
       default:
         return 'translate-y-0 opacity-100 transition-all duration-300 ease-in-out'
     }
@@ -131,16 +135,21 @@ export function RotatingText({
         <p
           ref={contentRef}
           onClick={items.length > 1 ? handleClick : undefined}
+          onKeyDown={items.length > 1 ? (e) => { if (e.key === 'Enter' || e.key === ' ') handleClick() } : undefined}
+          role={items.length > 1 ? 'button' : undefined}
+          tabIndex={items.length > 1 ? 0 : undefined}
           className={`${getAnimationClasses()} ${items.length > 1 ? 'cursor-pointer' : ''}`}
         >
           {items[currentIndex]}
         </p>
       </div>
       {showIndicators && items.length > 1 && (
-        <div className={`flex items-center justify-center gap-1 ${indicatorStyle === 'subtle' ? 'mt-1.5' : 'mt-2'}`}>
-          {items.map((_, index) => (
+        <div
+          className={`flex items-center justify-center gap-1 ${indicatorStyle === 'subtle' ? 'mt-1.5' : 'mt-2'}`}
+        >
+          {items.map((item, index) => (
             <button
-              key={index}
+              key={item}
               type="button"
               onClick={() => handleDotClick(index)}
               className={

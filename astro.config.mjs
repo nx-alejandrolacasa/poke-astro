@@ -29,11 +29,6 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
-  // Content Security Policy (stable in Astro 6, previously experimental)
-  security: {
-    csp: true,
-  },
-
   // Responsive images (stable in Astro 6, previously experimental)
   image: {
     layout: 'constrained',

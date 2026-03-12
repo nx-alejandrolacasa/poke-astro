@@ -1,12 +1,13 @@
 ---
-import { PokemonSearchWrapper } from '@/components/PokemonSearchWrapper'
 import { HeaderActions } from '@/components/HeaderActions'
+import { PokemonSearchWrapper } from '@/components/PokemonSearchWrapper'
 import type { Locale } from '@/utils/i18n'
 
 interface Props {
   locale: Locale
 }
 
+// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 const { locale } = Astro.props
 ---
 

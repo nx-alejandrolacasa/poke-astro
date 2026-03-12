@@ -1,7 +1,7 @@
 ---
 import '@/styles/global.css'
-import Header from '@/components/Header.astro'
 import Footer from '@/components/Footer.astro'
+import Header from '@/components/Header.astro'
 import type { Locale } from '@/utils/i18n'
 
 export interface Props {
@@ -32,12 +32,102 @@ const { title, locale } = Astro.props
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Pokédex" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    {/* Inlined to avoid FOUC. Provides window.theme global. */}
     <script is:inline>
-      // Prevent flash of wrong theme
-      const savedTheme = localStorage.getItem('theme')
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-        document.documentElement.classList.add('dark')
+      window.theme ??= (() => {
+        const storageKey = 'theme'
+        const prefersDarkQuery = window.matchMedia('(prefers-color-scheme: dark)')
+
+        function getStoredTheme() {
+          if (typeof localStorage !== 'undefined') {
+            var stored = localStorage.getItem(storageKey)
+            if (stored === 'dark' || stored === 'light') return stored
+          }
+          return null
+        }
+
+        function getPreferredTheme() {
+          return prefersDarkQuery.matches ? 'dark' : 'light'
+        }
+
+        function applyTheme(setting) {
+          var resolved = (setting === 'dark' || setting === 'light') ? setting : getPreferredTheme()
+          document.documentElement.classList.toggle('dark', resolved === 'dark')
+          document.documentElement.style.colorScheme = resolved
+        }
+
+        function setTheme(setting) {
+          applyTheme(setting)
+          if (typeof localStorage !== 'undefined') {
+            if (setting === 'dark' || setting === 'light') {
+              localStorage.setItem(storageKey, setting)
+            } else {
+              localStorage.removeItem(storageKey)
+            }
+          }
+          document.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme: setting || 'auto' } }))
+        }
+
+        function getTheme() {
+          return getStoredTheme() || 'auto'
+        }
+
+        // Apply immediately to prevent flash
+        applyTheme(getStoredTheme())
+
+        // React to OS preference changes when in auto mode
+        prefersDarkQuery.addEventListener('change', function() {
+          if (!getStoredTheme()) applyTheme(null)
+        })
+
+        // Handle bfcache restore
+        window.addEventListener('pageshow', function(e) {
+          if (e.persisted) applyTheme(getStoredTheme())
+        })
+
+        return { setTheme: setTheme, getTheme: getTheme }
+      })()
+
+      // <theme-toggle> custom element — framework-free, works immediately
+      if (!customElements.get('theme-toggle')) {
+        var order = ['auto', 'light', 'dark']
+        var iconPaths = {
+          auto: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+          light: 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z',
+          dark: 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z'
+        }
+        var labels = {
+          en: { auto: 'Auto', light: 'Light', dark: 'Dark', label: 'Select theme' },
+          es: { auto: 'Auto', light: 'Claro', dark: 'Oscuro', label: 'Seleccionar tema' }
+        }
+
+        customElements.define('theme-toggle', class extends HTMLElement {
+          connectedCallback() {
+            this.update()
+            this._cycle = this.cycle.bind(this)
+            this.querySelector('button').addEventListener('click', this._cycle)
+            this._update = this.update.bind(this)
+            document.addEventListener('theme-changed', this._update)
+          }
+          disconnectedCallback() {
+            this.querySelector('button')?.removeEventListener('click', this._cycle)
+            document.removeEventListener('theme-changed', this._update)
+          }
+          cycle() {
+            var current = window.theme.getTheme()
+            var next = order[(order.indexOf(current) + 1) % order.length]
+            window.theme.setTheme(next)
+          }
+          update() {
+            var current = window.theme ? window.theme.getTheme() : 'auto'
+            var locale = this.getAttribute('data-locale') || 'es'
+            var t = labels[locale] || labels.es
+            var d = iconPaths[current]
+            this.innerHTML = '<button type="button" class="flex items-center gap-1.5 rounded-md px-3 py-1.5 font-semibold text-sm text-gray-600 transition-all hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700" title="' + t.label + ': ' + t[current] + '" aria-label="' + t.label + ': ' + t[current] + '"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="' + d + '" /></svg><span>' + t[current] + '</span></button>'
+            // Re-attach click handler after innerHTML
+            if (this._cycle) this.querySelector('button').addEventListener('click', this._cycle)
+          }
+        })
       }
     </script>
   </head>

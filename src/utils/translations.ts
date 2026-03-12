@@ -66,6 +66,13 @@ export type Translations = {
   errors: {
     loadFailed: string
   }
+  // Theme
+  theme: {
+    light: string
+    dark: string
+    auto: string
+    label: string
+  }
   // Search
   search: {
     placeholder: string
@@ -173,7 +180,14 @@ export const translations: Record<Language, Translations> = {
       region: 'Region',
     },
     errors: {
-      loadFailed: 'Failed to load additional Pokemon data. Please try again later.',
+      loadFailed:
+        'Failed to load additional Pokemon data. Please try again later.',
+    },
+    theme: {
+      light: 'Light',
+      dark: 'Dark',
+      auto: 'Auto',
+      label: 'Select theme',
     },
     search: {
       placeholder: 'Search Pokémon...',
@@ -224,10 +238,10 @@ export const translations: Record<Language, Translations> = {
       "Gengar is said to be Clefable's shadow—they have nearly identical silhouettes",
       'Spinda has over 4 billion possible spot patterns, making each one unique',
       'Arcanine was originally planned to be a legendary Pokémon',
-      'Poliwag\'s swirl pattern is based on visible tadpole intestines',
+      "Poliwag's swirl pattern is based on visible tadpole intestines",
       'Hitmonchan and Hitmonlee are named after Jackie Chan and Bruce Lee',
       "Vaporeon's cellular structure is similar to water, allowing it to melt into water",
-      'The cry of Charizard in Generation I is the same as Rhyhorn\'s cry',
+      "The cry of Charizard in Generation I is the same as Rhyhorn's cry",
       'Psychic was the most overpowered type in Gen I with no real counters',
     ],
     footer: {
@@ -302,6 +316,12 @@ export const translations: Record<Language, Translations> = {
       loadFailed:
         'No se pudieron cargar los datos adicionales del Pokémon. Por favor, inténtalo de nuevo más tarde.',
     },
+    theme: {
+      light: 'Claro',
+      dark: 'Oscuro',
+      auto: 'Auto',
+      label: 'Seleccionar tema',
+    },
     search: {
       placeholder: 'Buscar Pokémon...',
       loading: 'Cargando...',
@@ -371,7 +391,10 @@ export const translations: Record<Language, Translations> = {
 }
 
 // Helper function to replace placeholders in translations
-export function interpolate(text: string, values: Record<string, string | number>): string {
+export function interpolate(
+  text: string,
+  values: Record<string, string | number>
+): string {
   return text.replace(/\{(\w+)\}/g, (_, key) => {
     return values[key]?.toString() ?? `{${key}}`
   })

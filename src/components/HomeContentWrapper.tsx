@@ -6,6 +6,9 @@ type HomeContentWrapperProps = {
   locale: Locale
 }
 
-export function HomeContentWrapper({ totalPokemon, locale }: HomeContentWrapperProps) {
+export function HomeContentWrapper({
+  totalPokemon,
+  locale,
+}: HomeContentWrapperProps) {
   return <HomeContent totalPokemon={totalPokemon} locale={locale} />
 }

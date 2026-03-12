@@ -39,7 +39,9 @@ export function localizeUrl(path: string, locale: Locale): string {
   // Remove leading slash if present
   const cleanPath = path.startsWith('/') ? path.slice(1) : path
   // Remove existing locale prefix if present
-  const pathWithoutLocale = cleanPath.replace(/^(en|es)\//, '').replace(/^(en|es)$/, '')
+  const pathWithoutLocale = cleanPath
+    .replace(/^(en|es)\//, '')
+    .replace(/^(en|es)$/, '')
   // Build new path with locale
   return `/${locale}${pathWithoutLocale ? `/${pathWithoutLocale}` : ''}`
 }

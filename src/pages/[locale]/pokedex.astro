@@ -1,12 +1,14 @@
 ---
-import Layout from '@/layouts/Layout.astro'
 import { PokemonInfiniteScrollWrapper } from '@/components/PokemonInfiniteScrollWrapper'
-import { fetchPokemonPage } from '@/utils/pokemon'
+import Layout from '@/layouts/Layout.astro'
 import { getI18n } from '@/utils/i18n'
+import { fetchPokemonPage } from '@/utils/pokemon'
 
 const { locale: localeParam } = Astro.params
+// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 const { locale, t } = getI18n(localeParam)
 
+// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 const initialData = await fetchPokemonPage(1)
 ---
 

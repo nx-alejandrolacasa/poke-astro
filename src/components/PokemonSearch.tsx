@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
-import { getPokemonName } from '@/utils/pokemon'
+import { useEffect, useRef, useState } from 'react'
 import type { Locale } from '@/utils/i18n'
+import { getPokemonName } from '@/utils/pokemon'
 import { translations } from '@/utils/translations'
 
 type PokemonSearchProps = {
@@ -110,6 +110,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
         <input
           ref={inputRef}
           type="text"
+          role="combobox"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -123,10 +124,11 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
           aria-expanded={isOpen}
         />
         <svg
-          className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 dark:text-gray-500"
+          className="pointer-events-none absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 text-gray-400 dark:text-gray-500"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
+          aria-hidden="true"
         >
           <path
             strokeLinecap="round"
@@ -146,6 +148,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
         >
           {suggestions.map((name, index) => (
             <button
+              type="button"
               key={name}
               onClick={() => navigateToPokemon(name)}
               onMouseEnter={() => setSelectedIndex(index)}

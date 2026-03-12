@@ -1,6 +1,6 @@
-import type { Locale } from '@/utils/i18n'
-import { translations, interpolate } from '@/utils/translations'
 import { RotatingText } from '@/components/RotatingText'
+import type { Locale } from '@/utils/i18n'
+import { interpolate, translations } from '@/utils/translations'
 
 type HomeContentProps = {
   totalPokemon: number
@@ -32,15 +32,42 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
   ]
 
   const generations = [
-    { name: locale === 'es' ? 'Generación I' : 'Generation I', region: 'Kanto' },
-    { name: locale === 'es' ? 'Generación II' : 'Generation II', region: 'Johto' },
-    { name: locale === 'es' ? 'Generación III' : 'Generation III', region: 'Hoenn' },
-    { name: locale === 'es' ? 'Generación IV' : 'Generation IV', region: 'Sinnoh' },
-    { name: locale === 'es' ? 'Generación V' : 'Generation V', region: 'Unova' },
-    { name: locale === 'es' ? 'Generación VI' : 'Generation VI', region: 'Kalos' },
-    { name: locale === 'es' ? 'Generación VII' : 'Generation VII', region: 'Alola' },
-    { name: locale === 'es' ? 'Generación VIII' : 'Generation VIII', region: 'Galar' },
-    { name: locale === 'es' ? 'Generación IX' : 'Generation IX', region: 'Paldea' },
+    {
+      name: locale === 'es' ? 'Generación I' : 'Generation I',
+      region: 'Kanto',
+    },
+    {
+      name: locale === 'es' ? 'Generación II' : 'Generation II',
+      region: 'Johto',
+    },
+    {
+      name: locale === 'es' ? 'Generación III' : 'Generation III',
+      region: 'Hoenn',
+    },
+    {
+      name: locale === 'es' ? 'Generación IV' : 'Generation IV',
+      region: 'Sinnoh',
+    },
+    {
+      name: locale === 'es' ? 'Generación V' : 'Generation V',
+      region: 'Unova',
+    },
+    {
+      name: locale === 'es' ? 'Generación VI' : 'Generation VI',
+      region: 'Kalos',
+    },
+    {
+      name: locale === 'es' ? 'Generación VII' : 'Generation VII',
+      region: 'Alola',
+    },
+    {
+      name: locale === 'es' ? 'Generación VIII' : 'Generation VIII',
+      region: 'Galar',
+    },
+    {
+      name: locale === 'es' ? 'Generación IX' : 'Generation IX',
+      region: 'Paldea',
+    },
   ]
 
   return (
@@ -50,8 +77,10 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
         <h1 className="bg-gradient-to-r from-primary-600 via-purple-400 to-orange-400 bg-clip-text font-bold text-4xl text-transparent md:text-6xl dark:from-primary-400 dark:via-purple-300 dark:to-orange-300">
           {t.home.title}
         </h1>
-        <p className="mx-auto max-w-2xl text-gray-600 text-base md:text-lg dark:text-gray-300">
-          {interpolate(t.home.subtitle, { count: totalPokemon.toLocaleString(locale) })}
+        <p className="mx-auto max-w-2xl text-base text-gray-600 md:text-lg dark:text-gray-300">
+          {interpolate(t.home.subtitle, {
+            count: totalPokemon.toLocaleString(locale),
+          })}
         </p>
         <div>
           <a
@@ -65,7 +94,7 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
 
       {/* Bento Grid Statistics - All in one row on landscape tablets */}
       <section className="space-y-3">
-        <h2 className="text-center font-bold text-xl text-gray-900 md:text-2xl dark:text-white">
+        <h2 className="text-center font-bold text-gray-900 text-xl md:text-2xl dark:text-white">
           {t.home.byTheNumbers}
         </h2>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 md:gap-3">
@@ -78,7 +107,9 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
               <p className="font-black text-2xl text-primary-800 md:text-3xl dark:text-white">
                 {totalPokemon.toLocaleString(locale)}
               </p>
-              <p className="text-primary-700 text-sm md:text-base dark:text-primary-200">{t.home.speciesDiscovered}</p>
+              <p className="text-primary-700 text-sm md:text-base dark:text-primary-200">
+                {t.home.speciesDiscovered}
+              </p>
             </div>
           </div>
 
@@ -88,8 +119,12 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
               <p className="font-semibold text-orange-700 text-xs uppercase tracking-wider md:text-sm dark:text-orange-200">
                 {t.home.types}
               </p>
-              <p className="font-black text-2xl text-orange-800 md:text-3xl dark:text-white">{pokemonTypes.length}</p>
-              <p className="text-orange-700 text-sm md:text-base dark:text-orange-200">{t.home.uniqueTypes}</p>
+              <p className="font-black text-2xl text-orange-800 md:text-3xl dark:text-white">
+                {pokemonTypes.length}
+              </p>
+              <p className="text-orange-700 text-sm md:text-base dark:text-orange-200">
+                {t.home.uniqueTypes}
+              </p>
             </div>
           </div>
 
@@ -99,8 +134,12 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
               <p className="font-semibold text-teal-700 text-xs uppercase tracking-wider md:text-sm dark:text-teal-200">
                 {t.home.generations}
               </p>
-              <p className="font-black text-2xl text-teal-800 md:text-3xl dark:text-white">{generations.length}</p>
-              <p className="text-teal-700 text-sm md:text-base dark:text-teal-200">{t.home.pokemonGenerations}</p>
+              <p className="font-black text-2xl text-teal-800 md:text-3xl dark:text-white">
+                {generations.length}
+              </p>
+              <p className="text-sm text-teal-700 md:text-base dark:text-teal-200">
+                {t.home.pokemonGenerations}
+              </p>
             </div>
           </div>
 
@@ -113,7 +152,7 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
               <RotatingText
                 items={t.funFacts}
                 intervalMs={5000}
-                className="text-sm text-amber-800 leading-tight md:text-base dark:text-amber-100"
+                className="text-amber-800 text-sm leading-tight md:text-base dark:text-amber-100"
                 indicatorStyle="subtle"
               />
             </div>
@@ -129,7 +168,7 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
 
         {/* Types Grid - More columns on tablets */}
         <div>
-          <h3 className="mb-3 font-semibold text-lg text-gray-900 md:text-xl dark:text-white">
+          <h3 className="mb-3 font-semibold text-gray-900 text-lg md:text-xl dark:text-white">
             {t.home.pokemonTypes}
           </h3>
           <div className="grid grid-cols-3 gap-2 sm:grid-cols-6 md:grid-cols-9">
@@ -149,13 +188,13 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
 
         {/* Generations Grid - More compact */}
         <div>
-          <h3 className="mb-3 font-semibold text-lg text-gray-900 md:text-xl dark:text-white">
+          <h3 className="mb-3 font-semibold text-gray-900 text-lg md:text-xl dark:text-white">
             {t.home.byGeneration}
           </h3>
           <div className="grid grid-cols-3 gap-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9">
             {generations.map((gen, index) => (
               <a
-                key={index}
+                key={gen.region}
                 href={`/${locale}/generation/${index + 1}`}
                 className="group rounded-lg border-2 border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100 p-3 shadow-md transition-all duration-300 hover:scale-[1.02] hover:border-primary-400 hover:from-primary-50 hover:to-purple-50 hover:shadow-xl md:p-4 dark:border-gray-700 dark:from-gray-800 dark:to-gray-900 dark:hover:border-primary-500 dark:hover:from-primary-900/30 dark:hover:to-purple-900/30"
               >
