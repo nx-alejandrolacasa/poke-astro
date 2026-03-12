@@ -10,9 +10,13 @@ export function HeaderPokedexButton({ locale }: HeaderPokedexButtonProps) {
 
   return (
     <a
-      className="rounded-xl bg-gradient-to-r from-primary-500 to-purple-400 px-5 py-2.5 font-semibold text-white shadow-lg transition-all duration-300 hover:from-primary-600 hover:to-purple-500 hover:shadow-2xl hover:scale-105 active:scale-95 dark:from-primary-400 dark:to-purple-300 dark:text-gray-900 dark:hover:from-primary-500 dark:hover:to-purple-400"
+      className="inline-flex items-center gap-1.5 rounded-2xl px-5 py-2.5 font-heading font-bold text-white shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-soft-md active:translate-y-0"
+      style={{ background: 'linear-gradient(135deg, #EE8130, #F95587)' }}
       href={`/${locale}/pokedex`}
     >
+      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+      </svg>
       {t.header.pokedex}
     </a>
   )

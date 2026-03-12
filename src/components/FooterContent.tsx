@@ -9,22 +9,23 @@ export function FooterContent({ locale }: FooterContentProps) {
   const t = translations[locale]
 
   return (
-    <div className="space-y-1.5 text-center">
-      <p className="text-[11px] text-gray-500 leading-relaxed dark:text-gray-500">
+    <div className="space-y-2 text-center">
+      <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)', opacity: 0.7 }}>
         {t.footer.disclaimer}
       </p>
-      <p className="text-[11px] text-gray-500 leading-relaxed dark:text-gray-500">
+      <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)', opacity: 0.7 }}>
         {t.footer.trademarks}
       </p>
-      <p className="text-[11px] text-gray-500 leading-relaxed dark:text-gray-500">
+      <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)', opacity: 0.7 }}>
         {t.footer.fairUse}
       </p>
-      <div className="border-t border-gray-200 pt-3 mt-3 dark:border-gray-700">
-        <p className="text-[11px] text-gray-400 dark:text-gray-500">
+      <div className="pt-3 mt-3" style={{ borderTop: '1px solid var(--border-soft)' }}>
+        <p className="text-[11px]" style={{ color: 'var(--text-secondary)', opacity: 0.5 }}>
           {t.footer.dataBy}{' '}
           <a
             href="https://pokeapi.co"
-            className="text-primary-500 transition-colors hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300"
+            className="font-semibold transition-opacity hover:opacity-80"
+            style={{ color: '#EE8130' }}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -33,7 +34,8 @@ export function FooterContent({ locale }: FooterContentProps) {
           . {t.footer.builtWith}{' '}
           <a
             href="https://astro.build"
-            className="text-primary-500 transition-colors hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300"
+            className="font-semibold transition-opacity hover:opacity-80"
+            style={{ color: '#6390F0' }}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -42,7 +44,8 @@ export function FooterContent({ locale }: FooterContentProps) {
           ,{' '}
           <a
             href="https://react.dev"
-            className="text-primary-500 transition-colors hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300"
+            className="font-semibold transition-opacity hover:opacity-80"
+            style={{ color: '#7AC74C' }}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -51,7 +54,8 @@ export function FooterContent({ locale }: FooterContentProps) {
           {' & '}
           <a
             href="https://tailwindcss.com"
-            className="text-primary-500 transition-colors hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300"
+            className="font-semibold transition-opacity hover:opacity-80"
+            style={{ color: '#A190D0' }}
             target="_blank"
             rel="noopener noreferrer"
           >

@@ -1,8 +1,125 @@
-@import "@fontsource-variable/inter";
+@import "@fontsource-variable/fredoka";
+@import "@fontsource-variable/quicksand";
 @import "tailwindcss";
 
 @config "../../tailwind.config.js";
 
 @theme {
-  --font-inter: "Inter Variable", system-ui, sans-serif;
+  --font-heading: "Fredoka Variable", system-ui, sans-serif;
+  --font-body: "Quicksand Variable", system-ui, sans-serif;
+}
+
+/* Base styles */
+html {
+  font-family: var(--font-body);
+  scroll-behavior: smooth;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+/* Creamy gradient backgrounds */
+:root {
+  --bg-main: linear-gradient(160deg, #FFF8F0 0%, #FFF0E8 30%, #F8F0FF 60%, #F0F6FF 100%);
+  --bg-card: #fffcf8;
+  --bg-card-hover: #fff8f0;
+  --text-primary: #2D1B0E;
+  --text-secondary: #6B5744;
+  --border-soft: rgba(180, 160, 130, 0.2);
+}
+
+.dark {
+  --bg-main: linear-gradient(160deg, #1a1520 0%, #1e1a25 30%, #1a1e28 60%, #181520 100%);
+  --bg-card: rgba(30, 25, 35, 0.8);
+  --bg-card-hover: rgba(40, 35, 48, 0.9);
+  --text-primary: #F0E8E0;
+  --text-secondary: #B8A898;
+  --border-soft: rgba(120, 100, 80, 0.2);
+}
+
+body {
+  background: var(--bg-main);
+  background-attachment: fixed;
+  color: var(--text-primary);
+}
+
+/* Custom keyframes */
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pokeball-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Utility animations */
+.animate-float-gentle {
+  animation: float-gentle 3s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out both;
+}
+
+/* Stagger delays for grid items */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+.stagger-6 { animation-delay: 0.3s; }
+
+/* Card glass effect */
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-soft);
+}
+
+.glass-card:hover {
+  background: var(--bg-card-hover);
+}
+
+/* Pokeball loading spinner */
+.pokeball-spin {
+  animation: pokeball-spin 1s linear infinite;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(180, 160, 130, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(180, 160, 130, 0.5);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(120, 100, 80, 0.3);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 100, 80, 0.5);
 }

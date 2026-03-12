@@ -3,6 +3,7 @@ import { useInView } from 'react-intersection-observer'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
 import type { Locale } from '@/utils/i18n'
 import { translations, interpolate } from '@/utils/translations'
+import { GENERATION_THEMES } from '@/utils/typeColors'
 import { PokemonTile } from './PokemonTile'
 
 type GenerationInfiniteScrollProps = {
@@ -19,10 +20,10 @@ type GenerationInfiniteScrollProps = {
 export function GenerationInfiniteScroll({
   initialData,
   generation,
-  generationColor,
   locale,
 }: GenerationInfiniteScrollProps) {
   const t = translations[locale]
+  const theme = GENERATION_THEMES[generation.id - 1] || GENERATION_THEMES[0]
   const [pokemon, setPokemon] = useState<Pokemon[]>(initialData.results)
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(false)
@@ -48,7 +49,6 @@ export function GenerationInfiniteScroll({
         setPokemon((prev) => [...prev, ...data.results])
         setPage(nextPage)
 
-        // Check if we've reached the end
         const totalLoaded = pokemon.length + data.results.length
         if (totalLoaded >= data.count) {
           setHasMore(false)
@@ -70,14 +70,21 @@ export function GenerationInfiniteScroll({
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className={`bg-gradient-to-r ${generationColor} rounded-2xl p-8 md:p-12 text-center shadow-xl`}>
-        <h1 className="text-4xl md:text-6xl font-bold text-white mb-2">
+      <div
+        className="relative overflow-hidden rounded-4xl p-8 text-center shadow-soft-lg md:p-12"
+        style={{ background: `linear-gradient(135deg, ${theme.from} 0%, ${theme.to} 100%)` }}
+      >
+        {/* Decorative circles */}
+        <div className="pointer-events-none absolute -top-10 -right-10 h-40 w-40 rounded-full opacity-10" style={{ backgroundColor: 'white' }} />
+        <div className="pointer-events-none absolute -bottom-8 -left-8 h-32 w-32 rounded-full opacity-10" style={{ backgroundColor: 'white' }} />
+
+        <h1 className="font-heading text-4xl font-bold text-white md:text-6xl">
           {generation.name}
         </h1>
-        <p className="text-2xl md:text-3xl text-white/90 mb-4">
+        <p className="mt-2 font-heading text-2xl text-white/90 md:text-3xl">
           {generation.region} {t.pages.region}
         </p>
-        <p className="text-lg md:text-xl text-white/80">
+        <p className="mt-3 text-lg text-white/80 md:text-xl">
           {interpolate(t.pages.speciesCount, { count: initialData.count })}
         </p>
       </div>
@@ -86,9 +93,10 @@ export function GenerationInfiniteScroll({
       <div>
         <a
           href={`/${locale}`}
-          className="inline-flex items-center gap-2 text-primary hover:text-primary-600 dark:text-primary-300 dark:hover:text-primary-400 transition-colors font-semibold"
+          className="inline-flex items-center gap-2 font-heading font-bold transition-colors hover:opacity-70"
+          style={{ color: 'var(--text-secondary)' }}
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
           </svg>
           {t.pages.backToHome}
@@ -96,7 +104,7 @@ export function GenerationInfiniteScroll({
       </div>
 
       {/* Pokémon Grid */}
-      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 md:gap-4 lg:grid-cols-5 xl:grid-cols-6">
         {pokemon.map((poke) => (
           <li key={poke.name} className="list-none">
             <PokemonTile pokemon={poke} locale={locale} />
@@ -104,17 +112,13 @@ export function GenerationInfiniteScroll({
         ))}
       </ul>
 
-      {/* Loading indicator and intersection observer trigger */}
+      {/* Loading indicator */}
       {hasMore && (
-        <div ref={ref} className="my-8 flex justify-center">
+        <div ref={ref} className="my-10 flex justify-center">
           {loading ? (
             <div className="text-center">
-              <img
-                src="/loading.svg"
-                alt="Loading..."
-                className="mx-auto h-16 w-16 animate-spin"
-              />
-              <p className="mt-2 text-gray-500 dark:text-gray-400">{t.scroll.loadingMore}</p>
+              <div className="mx-auto h-12 w-12 rounded-full border-t-4 pokeball-spin" style={{ borderColor: theme.from }} />
+              <p className="mt-3 font-heading text-sm" style={{ color: 'var(--text-secondary)' }}>{t.scroll.loadingMore}</p>
             </div>
           ) : (
             <div className="h-10" />
@@ -123,9 +127,11 @@ export function GenerationInfiniteScroll({
       )}
 
       {!hasMore && pokemon.length > 0 && (
-        <div className="my-8 text-center text-gray-500 dark:text-gray-400">
-          <p>{t.scroll.caughtAll}</p>
-          <p className="mt-1 text-sm">
+        <div className="my-10 text-center">
+          <p className="font-heading text-lg font-bold" style={{ color: 'var(--text-secondary)' }}>
+            {t.scroll.caughtAll}
+          </p>
+          <p className="mt-1 text-sm" style={{ color: 'var(--text-secondary)' }}>
             {interpolate(t.scroll.showingAll, { count: pokemon.length })}
           </p>
         </div>

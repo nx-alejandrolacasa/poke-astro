@@ -6,6 +6,7 @@ import { translations } from '@/utils/translations'
 import { PokemonEnrichedData } from '@/components/PokemonEnrichedData'
 import { ImageZoomModal } from '@/components/ImageZoomModal'
 import { RotatingText } from '@/components/RotatingText'
+import { getTypeColor } from '@/utils/typeColors'
 
 type PokemonDetailContentProps = {
   pokemon: Pokemon
@@ -37,7 +38,9 @@ type FlavorTextEntry = {
 
 export function PokemonDetailContent({ pokemon, pokemonName, locale }: PokemonDetailContentProps) {
   const t = translations[locale]
-  // Initialize with data already available from the pokemon prop (no loading needed)
+  const primaryType = pokemon.types[0]?.type.name || 'normal'
+  const typeColor = getTypeColor(primaryType)
+
   const [abilities, setAbilities] = useState<TranslatedAbility[]>(() =>
     pokemon.abilities.map(({ ability, is_hidden }) => ({
       name: ability.name,
@@ -66,7 +69,6 @@ export function PokemonDetailContent({ pokemon, pokemonName, locale }: PokemonDe
     const fetchEnrichedData = async () => {
       setDescriptionLoading(true)
       try {
-        // Fetch translated types (silent update, no loading state)
         const typesPromises = pokemon.types.map(async ({ type }) => {
           const response = await fetch(`https://pokeapi.co/api/v2/type/${type.name}`)
           const data = await response.json()
@@ -77,7 +79,6 @@ export function PokemonDetailContent({ pokemon, pokemonName, locale }: PokemonDe
           }
         })
 
-        // Fetch translated abilities (silent update, no loading state)
         const abilitiesPromises = pokemon.abilities.map(async ({ ability, is_hidden }) => {
           const response = await fetch(`https://pokeapi.co/api/v2/ability/${ability.name}`)
           const data = await response.json()
@@ -89,7 +90,6 @@ export function PokemonDetailContent({ pokemon, pokemonName, locale }: PokemonDe
           }
         })
 
-        // Fetch translated stats (silent update, no loading state)
         const statsPromises = pokemon.stats.map(async ({ stat, base_stat }) => {
           const response = await fetch(`https://pokeapi.co/api/v2/stat/${stat.name}`)
           const data = await response.json()
@@ -101,18 +101,15 @@ export function PokemonDetailContent({ pokemon, pokemonName, locale }: PokemonDe
           }
         })
 
-        // Fetch descriptions/flavor text from species endpoint (only this shows loading state)
         const speciesPromise = fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonName}`)
           .then(res => res.json())
           .then(data => {
-            // Get all unique flavor texts in the current language (or fallback to English)
             const entries = data.flavor_text_entries?.filter(
               (entry: any) => entry.language.name === locale
             ) || data.flavor_text_entries?.filter(
               (entry: any) => entry.language.name === 'en'
             ) || []
 
-            // Deduplicate by text content and clean up
             const seen = new Set<string>()
             const uniqueEntries: FlavorTextEntry[] = []
             for (const entry of entries) {
@@ -142,7 +139,6 @@ export function PokemonDetailContent({ pokemon, pokemonName, locale }: PokemonDe
         setDescriptions(flavorTexts)
       } catch (error) {
         console.error('Failed to fetch enriched data:', error)
-        // Keep existing data on error (already initialized from pokemon prop)
         setDescriptions([])
       } finally {
         setDescriptionLoading(false)
@@ -156,164 +152,199 @@ export function PokemonDetailContent({ pokemon, pokemonName, locale }: PokemonDe
   const maxStat = 255
 
   return (
-    <div className="space-y-4 md:space-y-6">
-      {/* Header Section with Image and Basic Info - Side by side on tablets */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-[200px_1fr] md:gap-4 lg:grid-cols-[240px_1fr] lg:gap-6">
-        {/* Left Column - Image (compact on tablets) */}
-        <div className="flex flex-col items-center justify-start">
-          <button
-            type="button"
-            onClick={() => setIsImageZoomed(true)}
-            className="relative w-full max-w-[180px] cursor-zoom-in transition-transform hover:scale-105 md:max-w-full"
-            aria-label={`Enlarge ${pokemon.name} image`}
-          >
-            <img
-              className="aspect-square w-full drop-shadow-2xl"
-              src={getPokemonImage(pokemon)}
-              alt={`${pokemon.name} official artwork`}
-            />
-            <span className="absolute top-1 right-1 rounded-full bg-gray-900/80 px-2 py-0.5 font-mono font-bold text-white text-xs backdrop-blur-sm md:text-sm dark:bg-white/80 dark:text-gray-900">
-              #{pokemon.order.toString().padStart(3, '0')}
-            </span>
-            <span className="absolute bottom-1 left-1 rounded-full bg-gray-900/60 p-1.5 text-white backdrop-blur-sm">
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-              </svg>
-            </span>
-          </button>
-          {/* Pokemon Name below image on mobile */}
-          <h1 className="mt-2 text-center font-extrabold text-xl text-gray-900 capitalize tracking-tight md:hidden dark:text-gray-100">
-            {getPokemonName(pokemonName)}
-          </h1>
-        </div>
+    <div className="space-y-5 md:space-y-6">
+      {/* Hero Section with type-colored gradient */}
+      <div
+        className="relative overflow-hidden rounded-4xl p-5 md:p-8"
+        style={{
+          background: `linear-gradient(135deg, ${typeColor.light} 0%, white 50%, ${pokemon.types[1] ? getTypeColor(pokemon.types[1].type.name).light : typeColor.light} 100%)`,
+        }}
+      >
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-[220px_1fr] md:gap-6 lg:grid-cols-[260px_1fr]">
+          {/* Image */}
+          <div className="flex flex-col items-center justify-start">
+            <button
+              type="button"
+              onClick={() => setIsImageZoomed(true)}
+              className="relative w-full max-w-[200px] cursor-zoom-in transition-transform duration-300 hover:scale-105 md:max-w-full"
+              aria-label={`Enlarge ${pokemon.name} image`}
+            >
+              {/* Glow behind image */}
+              <div
+                className="absolute inset-0 rounded-full opacity-30 blur-3xl"
+                style={{ backgroundColor: typeColor.accent }}
+              />
+              <img
+                className="relative aspect-square w-full drop-shadow-2xl"
+                src={getPokemonImage(pokemon)}
+                alt={`${pokemon.name} official artwork`}
+              />
+              <span
+                className="absolute top-1 right-1 rounded-full px-2.5 py-1 font-heading text-xs font-bold md:text-sm"
+                style={{ backgroundColor: typeColor.light, color: typeColor.dark }}
+              >
+                #{pokemon.order.toString().padStart(3, '0')}
+              </span>
+              <span
+                className="absolute bottom-1 left-1 rounded-full p-1.5 text-white"
+                style={{ backgroundColor: `${typeColor.accent}90` }}
+              >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                </svg>
+              </span>
+            </button>
+            {/* Name on mobile */}
+            <h1
+              className="mt-3 text-center font-heading text-2xl font-bold capitalize tracking-tight md:hidden"
+              style={{ color: typeColor.dark }}
+            >
+              {getPokemonName(pokemonName)}
+            </h1>
+          </div>
 
-        {/* Right Column - Name, Description and Basic Info */}
-        <div className="space-y-2 md:space-y-3">
-          {/* Pokemon Name - Hidden on mobile, shown on tablets+ */}
-          <h1 className="hidden font-extrabold text-2xl text-gray-900 capitalize tracking-tight md:block lg:text-3xl dark:text-gray-100">
-            {getPokemonName(pokemonName)}
-          </h1>
+          {/* Info Column */}
+          <div className="space-y-3">
+            {/* Name (desktop) */}
+            <h1
+              className="hidden font-heading text-3xl font-bold capitalize tracking-tight md:block lg:text-4xl"
+              style={{ color: typeColor.dark }}
+            >
+              {getPokemonName(pokemonName)}
+            </h1>
 
-          {/* Description - Rotating with animation */}
-          {(descriptionLoading || descriptions.length > 0) && (
-            <div className="rounded-lg border border-gray-300 bg-gray-50 p-2 transition-colors md:p-3 dark:border-gray-700 dark:bg-gray-800/50">
-              {descriptionLoading ? (
-                <div className="h-12 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
-              ) : (
-                <RotatingText
-                  items={descriptions.map((d) => d.text)}
-                  intervalMs={5000}
-                  className="text-gray-700 text-sm leading-relaxed md:text-base dark:text-gray-300"
-                />
-              )}
-            </div>
-          )}
-
-          {/* Compact info grid - 2x2 on mobile, 4 cols on tablet */}
-          <div className="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
-            {/* Types */}
-            <div className="rounded-lg border border-gray-300 bg-gray-50 p-2 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
-              <h2 className="mb-1 font-bold text-gray-900 text-sm md:text-base dark:text-gray-100">
-                {t.pokemon.type}
-              </h2>
-              <div className="flex flex-wrap gap-1">
-                {types.map(({ name, translatedName }) => (
-                  <span
-                    key={name}
-                    className="rounded-full border border-gray-400 bg-white px-2 py-0.5 font-medium text-gray-900 text-sm capitalize dark:border-gray-300 dark:bg-gray-800 dark:text-gray-100"
-                  >
-                    {translatedName}
-                  </span>
-                ))}
+            {/* Description */}
+            {(descriptionLoading || descriptions.length > 0) && (
+              <div
+                className="rounded-2xl p-3 md:p-4"
+                style={{ backgroundColor: `${typeColor.light}80`, border: `1px solid ${typeColor.medium}30` }}
+              >
+                {descriptionLoading ? (
+                  <div className="h-12 animate-pulse rounded-xl" style={{ backgroundColor: `${typeColor.medium}20` }} />
+                ) : (
+                  <RotatingText
+                    items={descriptions.map((d) => d.text)}
+                    intervalMs={5000}
+                    className="text-sm leading-relaxed md:text-base"
+                  />
+                )}
               </div>
-            </div>
+            )}
 
-            {/* Height */}
-            <div className="rounded-lg border border-gray-300 bg-gray-50 p-2 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
-              <h2 className="mb-1 font-bold text-gray-900 text-sm md:text-base dark:text-gray-100">
-                {t.pokemon.height}
-              </h2>
-              <p className="font-semibold text-gray-900 text-base md:text-lg dark:text-gray-100">
-                {(pokemon.height / 10).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} m
-              </p>
-            </div>
+            {/* Info grid */}
+            <div className="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
+              {/* Types */}
+              <div className="glass-card rounded-2xl p-3">
+                <h2 className="mb-1.5 font-heading text-sm font-bold md:text-base">
+                  {t.pokemon.type}
+                </h2>
+                <div className="flex flex-wrap gap-1.5">
+                  {types.map(({ name, translatedName }) => {
+                    const tc = getTypeColor(name)
+                    return (
+                      <span
+                        key={name}
+                        className="rounded-full px-2.5 py-0.5 text-sm font-semibold capitalize"
+                        style={{ backgroundColor: tc.light, color: tc.dark, border: `1px solid ${tc.medium}40` }}
+                      >
+                        {translatedName}
+                      </span>
+                    )
+                  })}
+                </div>
+              </div>
 
-            {/* Weight */}
-            <div className="rounded-lg border border-gray-300 bg-gray-50 p-2 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
-              <h2 className="mb-1 font-bold text-gray-900 text-sm md:text-base dark:text-gray-100">
-                {t.pokemon.weight}
-              </h2>
-              <p className="font-semibold text-gray-900 text-base md:text-lg dark:text-gray-100">
-                {(pokemon.weight / 10).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} kg
-              </p>
-            </div>
+              {/* Height */}
+              <div className="glass-card rounded-2xl p-3">
+                <h2 className="mb-1.5 font-heading text-sm font-bold md:text-base">
+                  {t.pokemon.height}
+                </h2>
+                <p className="font-heading text-lg font-bold md:text-xl" style={{ color: typeColor.accent }}>
+                  {(pokemon.height / 10).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} m
+                </p>
+              </div>
 
-            {/* Abilities */}
-            <div className="rounded-lg border border-gray-300 bg-gray-50 p-2 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
-              <h2 className="mb-1 font-bold text-gray-900 text-sm md:text-base dark:text-gray-100">
-                {t.pokemon.abilities}
-              </h2>
-              <div className="flex flex-wrap gap-1">
-                {abilities.map(({ name, translatedName, isHidden }) => (
-                  <span
-                    key={name}
-                    className={`rounded-full border px-2 py-0.5 text-sm ${
-                      isHidden
-                        ? 'border-amber-400 text-amber-600 dark:border-amber-500 dark:text-amber-300'
-                        : 'border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-200'
-                    }`}
-                    title={isHidden ? t.pokemon.hidden : undefined}
-                  >
-                    {translatedName}
-                  </span>
-                ))}
+              {/* Weight */}
+              <div className="glass-card rounded-2xl p-3">
+                <h2 className="mb-1.5 font-heading text-sm font-bold md:text-base">
+                  {t.pokemon.weight}
+                </h2>
+                <p className="font-heading text-lg font-bold md:text-xl" style={{ color: typeColor.accent }}>
+                  {(pokemon.weight / 10).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} kg
+                </p>
+              </div>
+
+              {/* Abilities */}
+              <div className="glass-card rounded-2xl p-3">
+                <h2 className="mb-1.5 font-heading text-sm font-bold md:text-base">
+                  {t.pokemon.abilities}
+                </h2>
+                <div className="flex flex-wrap gap-1">
+                  {abilities.map(({ name, translatedName, isHidden }) => (
+                    <span
+                      key={name}
+                      className={`rounded-full px-2 py-0.5 text-sm ${
+                        isHidden
+                          ? 'font-medium italic'
+                          : 'font-semibold'
+                      }`}
+                      style={isHidden
+                        ? { backgroundColor: `${typeColor.light}`, color: typeColor.dark, border: `1px dashed ${typeColor.medium}60` }
+                        : { backgroundColor: `${typeColor.light}`, color: typeColor.dark, border: `1px solid ${typeColor.medium}40` }
+                      }
+                      title={isHidden ? t.pokemon.hidden : undefined}
+                    >
+                      {translatedName}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Enriched data with stats - grid layout on tablets */}
+      {/* Stats and Enriched Data */}
       <PokemonEnrichedData
         pokemonName={pokemonName}
         locale={locale}
+        typeColor={typeColor}
         statsSection={
-          <div className="rounded-lg border border-gray-300 bg-gray-50 p-3 transition-colors dark:border-gray-700 dark:bg-gray-800/50">
-            <h2 className="mb-2 font-bold text-base text-gray-900 md:text-lg dark:text-gray-100">
+          <div className="glass-card rounded-3xl p-4 shadow-soft md:p-5">
+            <h2 className="mb-3 font-heading text-lg font-bold md:text-xl">
               {t.pokemon.baseStats}
             </h2>
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               {stats.map(({ name, translatedName, baseStat }) => {
                 const percentage = (baseStat / maxStat) * 100
+                const statColor = baseStat >= 100
+                  ? getTypeColor('grass').accent
+                  : baseStat >= 60
+                    ? getTypeColor('electric').accent
+                    : getTypeColor('fire').accent
                 return (
                   <div
                     key={name}
-                    className="grid grid-cols-[90px_40px_1fr] gap-2 text-gray-900 dark:text-gray-100"
+                    className="grid grid-cols-[90px_40px_1fr] items-center gap-2"
                   >
-                    <div className="truncate text-right text-gray-600 text-sm dark:text-gray-400">
+                    <div className="truncate text-right text-sm" style={{ color: 'var(--text-secondary)' }}>
                       {translatedName}
                     </div>
-                    <div className="text-right font-semibold text-sm">{baseStat}</div>
+                    <div className="text-right font-heading text-sm font-bold">{baseStat}</div>
                     <div className="flex items-center">
-                      <div className="relative h-3 w-full rounded-full bg-gray-300 dark:bg-gray-700">
+                      <div className="relative h-3 w-full overflow-hidden rounded-full" style={{ backgroundColor: 'var(--border-soft)' }}>
                         <div
-                          className={`absolute top-0 left-0 h-3 rounded-full ${
-                            baseStat >= 100
-                              ? 'bg-teal-400 dark:bg-teal-500'
-                              : baseStat >= 60
-                                ? 'bg-amber-400 dark:bg-amber-500'
-                                : 'bg-orange-400 dark:bg-orange-500'
-                          }`}
-                          style={{ width: `${percentage}%` }}
+                          className="absolute top-0 left-0 h-3 rounded-full transition-all duration-700 ease-out"
+                          style={{ width: `${percentage}%`, backgroundColor: statColor }}
                         />
                       </div>
                     </div>
                   </div>
                 )
               })}
-              <div className="mt-2 grid grid-cols-[90px_40px_1fr] gap-2 border-t border-gray-400 pt-2 dark:border-gray-700">
-                <div className="text-right font-bold text-sm text-gray-900 dark:text-gray-100">{t.pokemon.total}</div>
-                <div className="text-right font-bold text-sm text-gray-900 dark:text-gray-100">{totalStats}</div>
+              <div className="mt-2 grid grid-cols-[90px_40px_1fr] gap-2 border-t pt-2" style={{ borderColor: 'var(--border-soft)' }}>
+                <div className="text-right font-heading text-sm font-bold">{t.pokemon.total}</div>
+                <div className="text-right font-heading text-sm font-bold">{totalStats}</div>
                 <div />
               </div>
             </div>

@@ -8,7 +8,6 @@ export function LanguageSelector({ locale }: LanguageSelectorProps) {
   const switchToLocale = (newLocale: Locale) => {
     if (newLocale === locale) return
 
-    // Get current path and replace the locale prefix
     const currentPath = window.location.pathname
     const pathWithoutLocale = currentPath.replace(/^\/(en|es)/, '')
     const newPath = `/${newLocale}${pathWithoutLocale || ''}`
@@ -17,15 +16,18 @@ export function LanguageSelector({ locale }: LanguageSelectorProps) {
   }
 
   return (
-    <div className="flex items-center gap-1 rounded-lg border-2 border-gray-200 bg-white p-1 dark:border-gray-700 dark:bg-gray-800">
+    <div
+      className="flex items-center gap-0.5 rounded-xl p-1"
+      style={{ background: 'var(--bg-card)', border: '1px solid var(--border-soft)' }}
+    >
       <button
         type="button"
         onClick={() => switchToLocale('en')}
-        className={`rounded-md px-3 py-1.5 font-semibold text-sm transition-all ${
-          locale === 'en'
-            ? 'bg-primary-400 text-white shadow-md dark:bg-primary-500'
-            : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700'
-        }`}
+        className="rounded-lg px-3 py-1.5 font-heading text-sm font-bold transition-all"
+        style={locale === 'en'
+          ? { background: 'linear-gradient(135deg, #6390F0, #A190D0)', color: 'white' }
+          : { color: 'var(--text-secondary)' }
+        }
         aria-label="Switch to English"
       >
         EN
@@ -33,11 +35,11 @@ export function LanguageSelector({ locale }: LanguageSelectorProps) {
       <button
         type="button"
         onClick={() => switchToLocale('es')}
-        className={`rounded-md px-3 py-1.5 font-semibold text-sm transition-all ${
-          locale === 'es'
-            ? 'bg-primary-400 text-white shadow-md dark:bg-primary-500'
-            : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700'
-        }`}
+        className="rounded-lg px-3 py-1.5 font-heading text-sm font-bold transition-all"
+        style={locale === 'es'
+          ? { background: 'linear-gradient(135deg, #6390F0, #A190D0)', color: 'white' }
+          : { color: 'var(--text-secondary)' }
+        }
         aria-label="Cambiar a Español"
       >
         ES

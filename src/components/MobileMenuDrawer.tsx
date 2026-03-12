@@ -15,12 +15,10 @@ export function MobileMenuDrawer({ locale }: MobileMenuDrawerProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
 
-  // Only render portal after component mounts (client-side)
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  // Close drawer on escape key and prevent body scroll
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setIsOpen(false)
@@ -40,7 +38,8 @@ export function MobileMenuDrawer({ locale }: MobileMenuDrawerProps) {
       {/* Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm transition-opacity sm:hidden"
+          className="fixed inset-0 z-[100] backdrop-blur-sm transition-opacity sm:hidden"
+          style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}
           onClick={() => setIsOpen(false)}
           aria-hidden="true"
         />
@@ -48,22 +47,27 @@ export function MobileMenuDrawer({ locale }: MobileMenuDrawerProps) {
 
       {/* Drawer */}
       <div
-        className={`fixed inset-y-0 right-0 z-[100] flex w-80 max-w-[85vw] transform flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out sm:hidden dark:bg-gray-900 ${
+        className={`fixed inset-y-0 right-0 z-[100] flex w-80 max-w-[85vw] transform flex-col shadow-2xl transition-transform duration-300 ease-in-out sm:hidden ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
+        style={{ background: 'var(--bg-main)', backgroundAttachment: 'fixed' }}
         role="dialog"
         aria-modal="true"
         aria-label={t.header.menu}
       >
         {/* Drawer header */}
-        <div className="flex shrink-0 items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900">
-          <span className="font-semibold text-gray-900 text-lg dark:text-gray-100">
+        <div
+          className="flex shrink-0 items-center justify-between p-4"
+          style={{ borderBottom: '1px solid var(--border-soft)' }}
+        >
+          <span className="font-heading text-lg font-bold">
             {t.header.menu}
           </span>
           <button
             type="button"
             onClick={() => setIsOpen(false)}
-            className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+            className="rounded-xl p-2 transition-colors"
+            style={{ color: 'var(--text-secondary)' }}
             aria-label={t.header.close}
           >
             <svg
@@ -83,23 +87,24 @@ export function MobileMenuDrawer({ locale }: MobileMenuDrawerProps) {
         </div>
 
         {/* Drawer content */}
-        <div className="flex flex-1 flex-col gap-6 bg-white p-4 dark:bg-gray-900">
+        <div className="flex flex-1 flex-col gap-6 p-4">
           {/* Search */}
           <div>
-            <label className="mb-2 block font-medium text-gray-700 text-sm dark:text-gray-300">
+            <label className="mb-2 block font-heading text-sm font-bold" style={{ color: 'var(--text-secondary)' }}>
               {t.search.placeholder}
             </label>
             <PokemonSearch locale={locale} />
           </div>
 
-          {/* Pokédex button - full version */}
+          {/* Pokédex button */}
           <a
-            className="flex items-center justify-center rounded-xl bg-gradient-to-r from-primary-500 to-purple-400 px-5 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:from-primary-600 hover:to-purple-500 hover:shadow-2xl active:scale-95 dark:from-primary-400 dark:to-purple-300 dark:text-gray-900 dark:hover:from-primary-500 dark:hover:to-purple-400"
+            className="flex items-center justify-center gap-2 rounded-2xl px-5 py-3 font-heading font-bold text-white shadow-soft transition-all duration-300 active:translate-y-0.5"
+            style={{ background: 'linear-gradient(135deg, #EE8130, #F95587)' }}
             href={`/${locale}/pokedex`}
             onClick={() => setIsOpen(false)}
           >
             <svg
-              className="mr-2 h-5 w-5"
+              className="h-5 w-5"
               viewBox="0 0 24 24"
               fill="currentColor"
             >
@@ -109,7 +114,10 @@ export function MobileMenuDrawer({ locale }: MobileMenuDrawerProps) {
           </a>
 
           {/* Settings row */}
-          <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800">
+          <div
+            className="flex items-center justify-between rounded-2xl p-3"
+            style={{ background: 'var(--bg-card)', border: '1px solid var(--border-soft)' }}
+          >
             <LanguageSelector locale={locale} />
             <DarkModeToggle />
           </div>
@@ -120,11 +128,12 @@ export function MobileMenuDrawer({ locale }: MobileMenuDrawerProps) {
 
   return (
     <>
-      {/* Hamburger button - visible on mobile only */}
+      {/* Hamburger button */}
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100 sm:hidden dark:text-gray-300 dark:hover:bg-gray-800"
+        className="rounded-xl p-2 transition-colors sm:hidden"
+        style={{ color: 'var(--text-secondary)' }}
         aria-label={t.header.menu}
         aria-expanded={isOpen}
       >
@@ -143,7 +152,6 @@ export function MobileMenuDrawer({ locale }: MobileMenuDrawerProps) {
         </svg>
       </button>
 
-      {/* Portal the backdrop and drawer to document.body */}
       {mounted && createPortal(drawerContent, document.body)}
     </>
   )

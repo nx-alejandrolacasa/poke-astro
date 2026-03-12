@@ -11,7 +11,7 @@ type HeaderActionsProps = {
 export function HeaderActions({ locale }: HeaderActionsProps) {
   return (
     <>
-      {/* Desktop controls - hidden on mobile */}
+      {/* Desktop controls */}
       <div className="hidden items-center gap-2 sm:flex sm:gap-3">
         <LanguageSelector locale={locale} />
         <HeaderPokedexButton locale={locale} />

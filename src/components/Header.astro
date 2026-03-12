@@ -10,14 +10,14 @@ interface Props {
 const { locale } = Astro.props
 ---
 
-<header class="sticky top-0 z-40 border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-sm transition-colors dark:border-gray-700 dark:bg-gray-900/95">
+<header class="sticky top-0 z-40 transition-colors" style="background: color-mix(in srgb, var(--bg-card) 90%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border-soft);">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <nav class="flex h-16 items-center justify-between gap-4 sm:h-20 md:gap-8">
       <!-- Logo -->
       <a
         href={`/${locale}`}
         title="Go home"
-        class="flex-shrink-0 transition-transform hover:scale-105"
+        class="flex-shrink-0 transition-transform duration-300 hover:scale-105"
       >
         <img
           class="h-10 sm:h-14"

@@ -18,7 +18,6 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  // Fetch all Pokemon names on mount
   useEffect(() => {
     async function loadPokemonNames() {
       try {
@@ -34,7 +33,6 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
     loadPokemonNames()
   }, [])
 
-  // Update suggestions when query changes
   useEffect(() => {
     if (query.trim() === '') {
       setSuggestions([])
@@ -52,7 +50,6 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
     setSelectedIndex(-1)
   }, [query, allPokemonNames])
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -116,14 +113,19 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
           onFocus={() => query && suggestions.length > 0 && setIsOpen(true)}
           placeholder={isLoading ? t.search.loading : t.search.placeholder}
           disabled={isLoading}
-          className="w-full rounded-lg border-2 border-gray-300 bg-white px-4 py-2 pr-10 text-gray-900 placeholder-gray-500 transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:ring-primary-900"
+          className="w-full rounded-2xl px-4 py-2.5 pr-10 font-body text-sm transition-all duration-200 placeholder:opacity-50 focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
+          style={{
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-soft)',
+            color: 'var(--text-primary)',
+          }}
           aria-label="Search Pokémon"
           aria-autocomplete="list"
           aria-controls="search-suggestions"
           aria-expanded={isOpen}
         />
         <svg
-          className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 dark:text-gray-500"
+          className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 opacity-40"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -141,7 +143,8 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
         <div
           ref={dropdownRef}
           id="search-suggestions"
-          className="absolute z-50 mt-2 w-full overflow-hidden rounded-lg border-2 border-gray-200 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-700"
+          className="absolute z-50 mt-2 w-full overflow-hidden rounded-2xl shadow-soft-lg"
+          style={{ background: 'var(--bg-card)', border: '1px solid var(--border-soft)' }}
           role="listbox"
         >
           {suggestions.map((name, index) => (
@@ -149,16 +152,16 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
               key={name}
               onClick={() => navigateToPokemon(name)}
               onMouseEnter={() => setSelectedIndex(index)}
-              className={`block w-full px-4 py-3 text-left transition-colors ${
-                index === selectedIndex
-                  ? 'bg-primary text-white'
-                  : 'text-gray-900 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-600'
-              }`}
+              className="block w-full px-4 py-3 text-left transition-colors"
+              style={{
+                background: index === selectedIndex ? 'var(--bg-card-hover)' : 'transparent',
+                color: 'var(--text-primary)',
+              }}
               role="option"
               aria-selected={index === selectedIndex}
             >
-              <span className="font-medium">{getPokemonName(name)}</span>
-              <span className="ml-2 text-sm opacity-75">#{name}</span>
+              <span className="font-heading font-bold">{getPokemonName(name)}</span>
+              <span className="ml-2 text-sm opacity-50">#{name}</span>
             </button>
           ))}
         </div>
@@ -167,7 +170,8 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
       {isOpen && query && suggestions.length === 0 && (
         <div
           ref={dropdownRef}
-          className="absolute z-50 mt-2 w-full rounded-lg border-2 border-gray-200 bg-white px-4 py-3 text-gray-500 shadow-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400"
+          className="absolute z-50 mt-2 w-full rounded-2xl px-4 py-3 shadow-soft-lg"
+          style={{ background: 'var(--bg-card)', border: '1px solid var(--border-soft)', color: 'var(--text-secondary)' }}
         >
           {t.search.noResults}
         </div>

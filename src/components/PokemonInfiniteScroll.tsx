@@ -42,7 +42,6 @@ export function PokemonInfiniteScroll({
         setPokemon((prev) => [...prev, ...data.results])
         setPage(nextPage)
 
-        // Check if we've reached the end
         const totalLoaded = pokemon.length + data.results.length
         if (totalLoaded >= data.count) {
           setHasMore(false)
@@ -63,7 +62,7 @@ export function PokemonInfiniteScroll({
 
   return (
     <div>
-      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 md:gap-4 lg:grid-cols-5 xl:grid-cols-6">
         {pokemon.map((poke) => (
           <li key={poke.name} className="list-none">
             <PokemonTile pokemon={poke} locale={locale} />
@@ -71,17 +70,13 @@ export function PokemonInfiniteScroll({
         ))}
       </ul>
 
-      {/* Loading indicator and intersection observer trigger */}
+      {/* Loading indicator */}
       {hasMore && (
-        <div ref={ref} className="my-8 flex justify-center">
+        <div ref={ref} className="my-10 flex justify-center">
           {loading ? (
             <div className="text-center">
-              <img
-                src="/loading.svg"
-                alt="Loading..."
-                className="mx-auto h-16 w-16 animate-spin"
-              />
-              <p className="mt-2 text-gray-500 dark:text-gray-400">{t.scroll.loadingMore}</p>
+              <div className="mx-auto h-12 w-12 rounded-full border-t-4 pokeball-spin" style={{ borderColor: '#EE8130' }} />
+              <p className="mt-3 font-heading text-sm" style={{ color: 'var(--text-secondary)' }}>{t.scroll.loadingMore}</p>
             </div>
           ) : (
             <div className="h-10" />
@@ -90,9 +85,11 @@ export function PokemonInfiniteScroll({
       )}
 
       {!hasMore && pokemon.length > 0 && (
-        <div className="my-8 text-center text-gray-500 dark:text-gray-400">
-          <p>{t.scroll.caughtAll}</p>
-          <p className="mt-1 text-sm">
+        <div className="my-10 text-center">
+          <p className="font-heading text-lg font-bold" style={{ color: 'var(--text-secondary)' }}>
+            {t.scroll.caughtAll}
+          </p>
+          <p className="mt-1 text-sm" style={{ color: 'var(--text-secondary)' }}>
             {interpolate(t.scroll.showingAll, { count: pokemon.length })}
           </p>
         </div>

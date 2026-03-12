@@ -4,7 +4,6 @@ export function DarkModeToggle() {
   const [isDark, setIsDark] = useState(false)
 
   useEffect(() => {
-    // Check for saved preference or system preference
     const savedTheme = localStorage.getItem('theme')
     const prefersDark = window.matchMedia(
       '(prefers-color-scheme: dark)'
@@ -35,17 +34,18 @@ export function DarkModeToggle() {
     <button
       type="button"
       onClick={toggleDarkMode}
-      className={`rounded-lg p-2 shadow-sm transition-all hover:shadow-md hover:scale-105 active:scale-95 ${
-        isDark
-          ? 'bg-gradient-to-r from-orange-400 to-yellow-500 hover:from-orange-500 hover:to-yellow-600'
-          : 'bg-gradient-to-r from-purple-400 to-indigo-500 hover:from-purple-500 hover:to-indigo-600'
-      }`}
+      className="rounded-xl p-2 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-soft-md active:translate-y-0"
+      style={{
+        background: isDark
+          ? 'linear-gradient(135deg, #F0C470, #F4A261)'
+          : 'linear-gradient(135deg, #735797, #A190D0)',
+      }}
       title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
     >
       {isDark ? (
         <svg
-          className="h-6 w-6 text-white"
+          className="h-5 w-5 text-white"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -62,7 +62,7 @@ export function DarkModeToggle() {
         </svg>
       ) : (
         <svg
-          className="h-6 w-6 text-white"
+          className="h-5 w-5 text-white"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"

@@ -11,7 +11,6 @@ type ImageZoomModalProps = {
 export function ImageZoomModal({ src, alt, isOpen, onClose }: ImageZoomModalProps) {
   const { t } = useLanguage()
 
-  // Close on escape key and prevent body scroll
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
@@ -30,7 +29,8 @@ export function ImageZoomModal({ src, alt, isOpen, onClose }: ImageZoomModalProp
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md"
+      style={{ backgroundColor: 'rgba(0,0,0,0.75)' }}
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -40,7 +40,8 @@ export function ImageZoomModal({ src, alt, isOpen, onClose }: ImageZoomModalProp
       <button
         type="button"
         onClick={onClose}
-        className="absolute top-4 right-4 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20"
+        className="absolute top-4 right-4 rounded-full p-2 text-white transition-colors"
+        style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
         aria-label={t.modal.close}
       >
         <svg
@@ -58,7 +59,7 @@ export function ImageZoomModal({ src, alt, isOpen, onClose }: ImageZoomModalProp
         </svg>
       </button>
 
-      {/* Image container - 90% of screen */}
+      {/* Image container */}
       <div className="flex h-[90vh] w-[90vw] items-center justify-center">
         <img
           src={src}
@@ -69,7 +70,7 @@ export function ImageZoomModal({ src, alt, isOpen, onClose }: ImageZoomModalProp
       </div>
 
       {/* Hint text */}
-      <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/60 text-sm">
+      <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-sm text-white/50">
         {t.modal.closeHint}
       </p>
     </div>
