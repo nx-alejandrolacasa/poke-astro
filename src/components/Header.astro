@@ -20,16 +20,12 @@ const { locale } = Astro.props
         title="Home"
         class="flex-shrink-0 transition-transform active:scale-90 hover:scale-105"
       >
-        <svg class="h-7 w-7 sm:h-8 sm:w-8" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="1.5" class="text-gray-300 dark:text-dex-border" />
-          <path d="M1 12h8.5m5 0H23" stroke="currentColor" stroke-width="1.5" class="text-gray-300 dark:text-dex-border" />
-          <circle cx="12" cy="12" r="11" fill="none" />
-          <path d="M12 1a11 11 0 0 1 0 22" fill="currentColor" class="text-primary-500 dark:text-primary" />
-          <path d="M12 1a11 11 0 0 0 0 22" fill="currentColor" class="text-white dark:text-dex-surface" />
-          <path d="M1 12h8.5a2.5 2.5 0 0 1 5 0H23" stroke="currentColor" stroke-width="1.5" class="text-gray-400 dark:text-gray-600" />
-          <circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="currentColor" stroke-width="1" class="text-white dark:text-gray-300" />
-          <circle cx="12" cy="12" r="1.5" fill="currentColor" class="text-gray-400 dark:text-gray-500" />
-        </svg>
+        <img
+          src="/pokeball-pixel.svg"
+          alt="Home"
+          class="h-7 w-7 sm:h-8 sm:w-8"
+          style="image-rendering: pixelated;"
+        />
       </a>
 
       <!-- Search — always visible -->
