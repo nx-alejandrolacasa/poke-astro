@@ -1,6 +1,7 @@
 import type { Pokemon } from '@utils/pokemon'
 import { getPokemonImage, getTypeColor } from '@utils/pokemon'
 import type { Locale } from '@/utils/i18n'
+import { translations } from '@/utils/translations'
 
 type PokemonTileProps = {
   loading?: boolean
@@ -10,6 +11,7 @@ type PokemonTileProps = {
 
 export function PokemonTile({ loading = false, pokemon, locale }: PokemonTileProps) {
   const typeColor = getTypeColor(pokemon)
+  const t = translations[locale]
 
   return (
     <div
@@ -18,10 +20,7 @@ export function PokemonTile({ loading = false, pokemon, locale }: PokemonTilePro
     >
       <a href={`/${locale}/pokemon/${pokemon.name}`} title={pokemon.name}>
         <div className="relative aspect-square w-full">
-          <div
-            className="pointer-events-none absolute right-0.5 bottom-0.5 z-0 select-none font-mono font-black text-2xl md:text-4xl"
-            style={{ color: `${typeColor}20` }}
-          >
+          <div className="pointer-events-none absolute right-0.5 bottom-0.5 z-0 select-none font-mono font-black text-2xl text-gray-300/30 md:text-4xl dark:text-gray-600/30">
             #{pokemon.order.toString().padStart(3, '0')}
           </div>
           <img
@@ -35,10 +34,10 @@ export function PokemonTile({ loading = false, pokemon, locale }: PokemonTilePro
             {pokemon.name.replaceAll('-', ' ')}
           </span>
           <span
-            className="mt-0.5 block font-mono text-[9px] uppercase tracking-wider opacity-60"
+            className="mt-0.5 block font-mono text-[9px] uppercase tracking-wider opacity-70"
             style={{ color: typeColor }}
           >
-            {pokemon.types.map(t => t.type.name).join(' / ')}
+            {pokemon.types.map(pt => t.types[pt.type.name as keyof typeof t.types] ?? pt.type.name).join(' / ')}
           </span>
         </div>
       </a>

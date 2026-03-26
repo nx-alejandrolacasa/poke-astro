@@ -6,6 +6,7 @@ export type Translations = {
     pokedex: string
     menu: string
     close: string
+    search: string
   }
   // Home page
   home: {
@@ -136,6 +137,7 @@ export const translations: Record<Language, Translations> = {
       pokedex: 'Pokédex',
       menu: 'Menu',
       close: 'Close',
+      search: 'Search',
     },
     home: {
       title: 'Explore the World of Pokémon',
@@ -277,6 +279,7 @@ export const translations: Record<Language, Translations> = {
       pokedex: 'Pokédex',
       menu: 'Menú',
       close: 'Cerrar',
+      search: 'Buscar',
     },
     home: {
       title: 'Explora el Mundo de Pokémon',

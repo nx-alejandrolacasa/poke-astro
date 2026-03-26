@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import type { Locale } from '@/utils/i18n'
+import { locales, localizeUrl } from '@/utils/i18n'
 import { translations } from '@/utils/translations'
 
 type ThemeMode = 'auto' | 'light' | 'dark'
@@ -9,6 +10,15 @@ type SettingsDrawerProps = {
   locale: Locale
   isOpen: boolean
   onClose: () => void
+}
+
+declare global {
+  interface Window {
+    theme?: {
+      setTheme: (mode: string) => void
+      getTheme: () => string
+    }
+  }
 }
 
 export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps) {
@@ -21,11 +31,9 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
   }, [])
 
   useEffect(() => {
-    const saved = localStorage.getItem('theme')
-    if (saved === 'dark' || saved === 'light') {
-      setThemeMode(saved)
-    } else {
-      setThemeMode('auto')
+    if (window.theme) {
+      const current = window.theme.getTheme()
+      setThemeMode(current === 'dark' || current === 'light' ? current : 'auto')
     }
   }, [])
 
@@ -45,24 +53,24 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
 
   const applyTheme = (mode: ThemeMode) => {
     setThemeMode(mode)
-    if (mode === 'auto') {
-      localStorage.removeItem('theme')
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      document.documentElement.classList.toggle('dark', prefersDark)
-    } else if (mode === 'dark') {
-      localStorage.setItem('theme', 'dark')
-      document.documentElement.classList.add('dark')
-    } else {
-      localStorage.setItem('theme', 'light')
-      document.documentElement.classList.remove('dark')
+    if (window.theme) {
+      window.theme.setTheme(mode)
     }
   }
 
   const switchToLocale = (newLocale: Locale) => {
     if (newLocale === locale) return
-    const currentPath = window.location.pathname
-    const pathWithoutLocale = currentPath.replace(/^\/(en|es)/, '')
-    window.location.href = `/${newLocale}${pathWithoutLocale || ''}`
+    window.location.href = localizeUrl(window.location.pathname, newLocale)
+  }
+
+  const getLocaleDisplayName = (lang: Locale): string => {
+    try {
+      const displayNames = new Intl.DisplayNames([lang], { type: 'language' })
+      const name = displayNames.of(lang) ?? lang
+      return name.charAt(0).toUpperCase() + name.slice(1)
+    } catch {
+      return lang.toUpperCase()
+    }
   }
 
   const themeModes: { key: ThemeMode; label: string }[] = [
@@ -137,7 +145,7 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
               {t.settings.language}
             </label>
             <div className="flex gap-2">
-              {(['en', 'es'] as const).map((lang) => (
+              {locales.map((lang) => (
                 <button
                   key={lang}
                   type="button"
@@ -148,7 +156,7 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
                       : 'border-gray-200 text-gray-500 hover:text-gray-700 hover:bg-gray-50 dark:border-dex-border dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-dex-surface'
                   }`}
                 >
-                  {lang === 'en' ? 'English' : 'Español'}
+                  {getLocaleDisplayName(lang)}
                 </button>
               ))}
             </div>

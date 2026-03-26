@@ -114,6 +114,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
           placeholder={isLoading ? t.search.loading : t.search.placeholder}
           disabled={isLoading}
           className="w-full rounded-sm border border-gray-300 bg-white px-4 py-2 pr-10 text-sm text-gray-900 placeholder-gray-400 transition-all focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-dex-border dark:bg-dex-bg dark:text-neon-cyan dark:placeholder-primary/30 dark:font-mono dark:focus:border-primary dark:focus:ring-primary/10 dark:focus:shadow-[0_0_12px_rgba(59,130,246,0.15)]"
+          role="combobox"
           aria-label="Search Pokémon"
           aria-autocomplete="list"
           aria-controls="search-suggestions"
@@ -138,6 +139,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
         >
           {suggestions.map((name, index) => (
             <button
+              type="button"
               key={name}
               onClick={() => navigateToPokemon(name)}
               onMouseEnter={() => setSelectedIndex(index)}

@@ -35,6 +35,17 @@ type FlavorTextEntry = {
   version: string
 }
 
+type PokeApiNameEntry = {
+  language: { name: string }
+  name: string
+}
+
+type PokeApiFlavorTextEntry = {
+  flavor_text: string
+  language: { name: string }
+  version?: { name: string }
+}
+
 export function PokemonDetailContent({ pokemon, pokemonName, locale }: PokemonDetailContentProps) {
   const t = translations[locale]
   const [abilities, setAbilities] = useState<TranslatedAbility[]>(() =>
@@ -68,28 +79,28 @@ export function PokemonDetailContent({ pokemon, pokemonName, locale }: PokemonDe
         const typesPromises = pokemon.types.map(async ({ type }) => {
           const response = await fetch(`https://pokeapi.co/api/v2/type/${type.name}`)
           const data = await response.json()
-          const translation = data.names.find((n: any) => n.language.name === locale)
+          const translation = data.names.find((n: PokeApiNameEntry) => n.language.name === locale)
           return { name: type.name, translatedName: translation?.name ?? type.name }
         })
 
         const abilitiesPromises = pokemon.abilities.map(async ({ ability, is_hidden }) => {
           const response = await fetch(`https://pokeapi.co/api/v2/ability/${ability.name}`)
           const data = await response.json()
-          const translation = data.names.find((n: any) => n.language.name === locale)
+          const translation = data.names.find((n: PokeApiNameEntry) => n.language.name === locale)
           return { name: ability.name, translatedName: translation?.name ?? ability.name.replaceAll('-', ' '), isHidden: is_hidden }
         })
 
         const statsPromises = pokemon.stats.map(async ({ stat, base_stat }) => {
           const response = await fetch(`https://pokeapi.co/api/v2/stat/${stat.name}`)
           const data = await response.json()
-          const translation = data.names.find((n: any) => n.language.name === locale)
+          const translation = data.names.find((n: PokeApiNameEntry) => n.language.name === locale)
           return { name: stat.name, translatedName: translation?.name ?? t.stats[stat.name as keyof typeof t.stats] ?? stat.name, baseStat: base_stat }
         })
 
         const speciesPromise = fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonName}`)
           .then(res => res.json())
           .then(data => {
-            const entries = data.flavor_text_entries?.filter((entry: any) => entry.language.name === locale) || data.flavor_text_entries?.filter((entry: any) => entry.language.name === 'en') || []
+            const entries = data.flavor_text_entries?.filter((entry: PokeApiFlavorTextEntry) => entry.language.name === locale) || data.flavor_text_entries?.filter((entry: PokeApiFlavorTextEntry) => entry.language.name === 'en') || []
             const seen = new Set<string>()
             const uniqueEntries: FlavorTextEntry[] = []
             for (const entry of entries) {

@@ -38,7 +38,7 @@ export function HeaderActions({ locale }: HeaderActionsProps) {
           type="button"
           onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
           className="rounded-sm p-2 text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-dex-surface"
-          aria-label="Search"
+          aria-label={t.header.search}
         >
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
