@@ -134,7 +134,7 @@ export function PokemonDetailContent({ pokemon, pokemonName, locale }: PokemonDe
         <div className="flex flex-col items-center justify-start">
           <button type="button" onClick={() => setIsImageZoomed(true)} className="relative w-full max-w-[180px] cursor-zoom-in transition-transform hover:scale-105 md:max-w-full" aria-label={`Enlarge ${pokemon.name} image`}>
             <img className="aspect-square w-full drop-shadow-2xl" src={getPokemonImage(pokemon)} alt={`${pokemon.name} official artwork`} />
-            <span className="absolute top-1 right-1 rounded-md bg-gray-900/80 px-2 py-0.5 font-mono font-bold text-white text-xs backdrop-blur-sm md:text-sm dark:bg-primary/20 dark:text-neon-cyan dark:border dark:border-primary/30">#{pokemon.order.toString().padStart(3, '0')}</span>
+            <span className="absolute top-1 right-1 rounded-sm bg-gray-900/80 px-2 py-0.5 font-mono font-bold text-white text-xs backdrop-blur-sm md:text-sm dark:bg-primary/20 dark:text-neon-cyan dark:border dark:border-primary/30">#{pokemon.order.toString().padStart(3, '0')}</span>
             <span className="absolute bottom-1 left-1 rounded-full bg-gray-900/60 p-1.5 text-white backdrop-blur-sm dark:bg-primary/20 dark:text-neon-cyan">
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" /></svg>
             </span>
@@ -146,7 +146,7 @@ export function PokemonDetailContent({ pokemon, pokemonName, locale }: PokemonDe
           <h1 className="hidden font-display font-bold text-2xl uppercase tracking-wider text-gray-900 md:block lg:text-3xl dark:text-neon-cyan">{getPokemonName(pokemonName)}</h1>
 
           {(descriptionLoading || descriptions.length > 0) && (
-            <div className="hud-corners rounded-lg border border-gray-200 bg-gray-50 p-2 transition-colors md:p-3 dark:border-dex-border dark:bg-dex-surface">
+            <div className="hud-corners rounded-sm border border-gray-200 bg-gray-50 p-2 transition-colors md:p-3 dark:border-dex-border dark:bg-dex-surface">
               {descriptionLoading ? (
                 <div className="h-12 animate-pulse rounded bg-gray-200 dark:bg-dex-border" />
               ) : (
@@ -159,27 +159,27 @@ export function PokemonDetailContent({ pokemon, pokemonName, locale }: PokemonDe
           )}
 
           <div className="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-2 transition-colors dark:border-dex-border dark:bg-dex-surface">
+            <div className="rounded-sm border border-gray-200 bg-gray-50 p-2 transition-colors dark:border-dex-border dark:bg-dex-surface">
               <h2 className="mb-1 font-display text-[9px] font-bold uppercase tracking-widest text-gray-500 md:text-[10px] dark:text-primary/60">{t.pokemon.type}</h2>
               <div className="flex flex-wrap gap-1">
                 {types.map(({ name, translatedName }) => (
-                  <span key={name} className="rounded-md border border-gray-300 bg-white px-2 py-0.5 font-medium text-gray-800 text-xs capitalize dark:border-primary/30 dark:bg-primary/5 dark:font-mono dark:text-neon-cyan">{translatedName}</span>
+                  <span key={name} className="rounded-sm border border-gray-300 bg-white px-2 py-0.5 font-medium text-gray-800 text-xs capitalize dark:border-primary/30 dark:bg-primary/5 dark:font-mono dark:text-neon-cyan">{translatedName}</span>
                 ))}
               </div>
             </div>
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-2 transition-colors dark:border-dex-border dark:bg-dex-surface">
+            <div className="rounded-sm border border-gray-200 bg-gray-50 p-2 transition-colors dark:border-dex-border dark:bg-dex-surface">
               <h2 className="mb-1 font-display text-[9px] font-bold uppercase tracking-widest text-gray-500 md:text-[10px] dark:text-primary/60">{t.pokemon.height}</h2>
               <p className="font-mono font-semibold text-gray-900 text-base md:text-lg dark:text-neon-cyan">{(pokemon.height / 10).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} m</p>
             </div>
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-2 transition-colors dark:border-dex-border dark:bg-dex-surface">
+            <div className="rounded-sm border border-gray-200 bg-gray-50 p-2 transition-colors dark:border-dex-border dark:bg-dex-surface">
               <h2 className="mb-1 font-display text-[9px] font-bold uppercase tracking-widest text-gray-500 md:text-[10px] dark:text-primary/60">{t.pokemon.weight}</h2>
               <p className="font-mono font-semibold text-gray-900 text-base md:text-lg dark:text-neon-cyan">{(pokemon.weight / 10).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} kg</p>
             </div>
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-2 transition-colors dark:border-dex-border dark:bg-dex-surface">
+            <div className="rounded-sm border border-gray-200 bg-gray-50 p-2 transition-colors dark:border-dex-border dark:bg-dex-surface">
               <h2 className="mb-1 font-display text-[9px] font-bold uppercase tracking-widest text-gray-500 md:text-[10px] dark:text-primary/60">{t.pokemon.abilities}</h2>
               <div className="flex flex-wrap gap-1">
                 {abilities.map(({ name, translatedName, isHidden }) => (
-                  <span key={name} className={`rounded-md border px-2 py-0.5 text-xs dark:font-mono ${isHidden ? 'border-amber-300 text-amber-700 dark:border-neon-amber/40 dark:text-neon-amber' : 'border-gray-300 text-gray-700 dark:border-dex-border dark:text-gray-300'}`} title={isHidden ? t.pokemon.hidden : undefined}>{translatedName}</span>
+                  <span key={name} className={`rounded-sm border px-2 py-0.5 text-xs dark:font-mono ${isHidden ? 'border-amber-300 text-amber-700 dark:border-neon-amber/40 dark:text-neon-amber' : 'border-gray-300 text-gray-700 dark:border-dex-border dark:text-gray-300'}`} title={isHidden ? t.pokemon.hidden : undefined}>{translatedName}</span>
                 ))}
               </div>
             </div>
@@ -191,7 +191,7 @@ export function PokemonDetailContent({ pokemon, pokemonName, locale }: PokemonDe
         pokemonName={pokemonName}
         locale={locale}
         statsSection={
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 transition-colors dark:border-dex-border dark:bg-dex-surface">
+          <div className="rounded-sm border border-gray-200 bg-gray-50 p-3 transition-colors dark:border-dex-border dark:bg-dex-surface">
             <h2 className="mb-2 font-display text-xs font-bold uppercase tracking-wider text-gray-800 md:text-sm dark:text-primary/70">{t.pokemon.baseStats}</h2>
             <div className="space-y-1.5">
               {stats.map(({ name, translatedName, baseStat }) => {

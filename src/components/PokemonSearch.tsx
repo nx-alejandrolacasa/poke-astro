@@ -113,7 +113,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
           onFocus={() => query && suggestions.length > 0 && setIsOpen(true)}
           placeholder={isLoading ? t.search.loading : t.search.placeholder}
           disabled={isLoading}
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pr-10 text-sm text-gray-900 placeholder-gray-400 transition-all focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-dex-border dark:bg-dex-bg dark:text-neon-cyan dark:placeholder-primary/30 dark:font-mono dark:focus:border-primary dark:focus:ring-primary/10 dark:focus:shadow-[0_0_12px_rgba(59,130,246,0.15)]"
+          className="w-full rounded-sm border border-gray-300 bg-white px-4 py-2 pr-10 text-sm text-gray-900 placeholder-gray-400 transition-all focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-dex-border dark:bg-dex-bg dark:text-neon-cyan dark:placeholder-primary/30 dark:font-mono dark:focus:border-primary dark:focus:ring-primary/10 dark:focus:shadow-[0_0_12px_rgba(59,130,246,0.15)]"
           aria-label="Search Pokémon"
           aria-autocomplete="list"
           aria-controls="search-suggestions"
@@ -133,7 +133,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
         <div
           ref={dropdownRef}
           id="search-suggestions"
-          className="absolute z-50 mt-2 w-full overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg dark:border-dex-border dark:bg-dex-panel"
+          className="absolute z-50 mt-2 w-full overflow-hidden rounded-sm border border-gray-200 bg-white shadow-lg dark:border-dex-border dark:bg-dex-panel"
           role="listbox"
         >
           {suggestions.map((name, index) => (
@@ -159,7 +159,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
       {isOpen && query && suggestions.length === 0 && (
         <div
           ref={dropdownRef}
-          className="absolute z-50 mt-2 w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-gray-500 shadow-lg dark:border-dex-border dark:bg-dex-panel dark:text-gray-400 dark:font-mono"
+          className="absolute z-50 mt-2 w-full rounded-sm border border-gray-200 bg-white px-4 py-3 text-sm text-gray-500 shadow-lg dark:border-dex-border dark:bg-dex-panel dark:text-gray-400 dark:font-mono"
         >
           {t.search.noResults}
         </div>

@@ -48,7 +48,7 @@ export function GenerationInfiniteScroll({ initialData, generation, generationCo
 
   return (
     <div className="space-y-8">
-      <div className={`bg-gradient-to-r ${generationColor} rounded-2xl p-8 md:p-12 text-center shadow-xl relative overflow-hidden`}>
+      <div className={`bg-gradient-to-r ${generationColor} rounded-sm p-8 md:p-12 text-center shadow-xl relative overflow-hidden`}>
         <div className="absolute inset-0 bg-black/10 dark:bg-black/30" />
         <div className="relative z-10">
           <h1 className="text-3xl md:text-5xl font-display font-bold text-white uppercase tracking-wider mb-2">{generation.name}</h1>

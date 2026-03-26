@@ -97,7 +97,7 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-dex-surface"
+            className="rounded-sm p-2 text-gray-500 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-dex-surface"
             aria-label={t.header.close}
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -109,7 +109,7 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
         {/* Drawer content */}
         <div className="flex flex-1 flex-col gap-8 p-5">
           {/* Theme Mode */}
-          <div className="hud-corners rounded-lg border border-gray-200 p-4 dark:border-dex-border">
+          <div className="hud-corners rounded-sm border border-gray-200 p-4 dark:border-dex-border">
             <label className="mb-3 block font-display text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-primary/70">
               {t.settings.theme}
             </label>
@@ -119,7 +119,7 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
                   key={key}
                   type="button"
                   onClick={() => applyTheme(key)}
-                  className={`flex-1 rounded-md px-3 py-2 font-mono text-xs font-medium transition-all border ${
+                  className={`flex-1 rounded-sm px-3 py-2 font-mono text-xs font-medium transition-all border ${
                     themeMode === key
                       ? 'border-primary-500 text-primary-600 bg-primary-50 shadow-sm dark:border-primary dark:text-neon-cyan dark:bg-primary/10 dark:shadow-[0_0_8px_rgba(59,130,246,0.2)]'
                       : 'border-gray-200 text-gray-500 hover:text-gray-700 hover:bg-gray-50 dark:border-dex-border dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-dex-surface'
@@ -132,7 +132,7 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
           </div>
 
           {/* Language */}
-          <div className="hud-corners rounded-lg border border-gray-200 p-4 dark:border-dex-border">
+          <div className="hud-corners rounded-sm border border-gray-200 p-4 dark:border-dex-border">
             <label className="mb-3 block font-display text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-primary/70">
               {t.settings.language}
             </label>
@@ -142,7 +142,7 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
                   key={lang}
                   type="button"
                   onClick={() => switchToLocale(lang)}
-                  className={`flex-1 rounded-md px-3 py-2 font-mono text-xs font-medium transition-all border ${
+                  className={`flex-1 rounded-sm px-3 py-2 font-mono text-xs font-medium transition-all border ${
                     locale === lang
                       ? 'border-primary-500 text-primary-600 bg-primary-50 shadow-sm dark:border-primary dark:text-neon-cyan dark:bg-primary/10 dark:shadow-[0_0_8px_rgba(59,130,246,0.2)]'
                       : 'border-gray-200 text-gray-500 hover:text-gray-700 hover:bg-gray-50 dark:border-dex-border dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-dex-surface'

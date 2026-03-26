@@ -10,7 +10,7 @@ type PokemonTileProps = {
 
 export function PokemonTile({ loading = false, pokemon, locale }: PokemonTileProps) {
   return (
-    <div className="holo-shimmer rounded-xl border-2 border-gray-200 bg-white p-2 text-center shadow-md transition-all hover:border-primary-400 hover:shadow-lg hover:scale-[1.02] md:p-3 dark:border-dex-border dark:bg-dex-surface glow-border">
+    <div className="holo-shimmer rounded-sm border-2 border-gray-200 bg-white p-2 text-center shadow-md transition-all hover:border-primary-400 hover:shadow-lg hover:scale-[1.02] md:p-3 dark:border-dex-border dark:bg-dex-surface glow-border">
       <a href={`/${locale}/pokemon/${pokemon.name}`} title={pokemon.name}>
         <div className="relative aspect-square w-full">
           <div className="pointer-events-none absolute right-0.5 bottom-0.5 z-0 select-none font-mono font-black text-2xl text-gray-300/40 md:text-4xl dark:text-neon-cyan/15">

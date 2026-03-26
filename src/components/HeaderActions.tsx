@@ -22,7 +22,7 @@ export function HeaderActions({ locale }: HeaderActionsProps) {
         <button
           type="button"
           onClick={() => setSettingsOpen(true)}
-          className="rounded-lg p-2 text-gray-500 transition-all hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-dex-surface dark:hover:text-neon-cyan"
+          className="rounded-sm p-2 text-gray-500 transition-all hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-dex-surface dark:hover:text-neon-cyan"
           aria-label={t.settings.title}
         >
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -37,7 +37,7 @@ export function HeaderActions({ locale }: HeaderActionsProps) {
         <button
           type="button"
           onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-          className="rounded-lg p-2 text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-dex-surface"
+          className="rounded-sm p-2 text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-dex-surface"
           aria-label="Search"
         >
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -46,7 +46,7 @@ export function HeaderActions({ locale }: HeaderActionsProps) {
         </button>
         <a
           href={`/${locale}/pokedex`}
-          className="rounded-lg p-2 text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-dex-surface"
+          className="rounded-sm p-2 text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-dex-surface"
           aria-label={t.header.pokedex}
         >
           <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
@@ -56,7 +56,7 @@ export function HeaderActions({ locale }: HeaderActionsProps) {
         <button
           type="button"
           onClick={() => setSettingsOpen(true)}
-          className="rounded-lg p-2 text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-dex-surface"
+          className="rounded-sm p-2 text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-dex-surface"
           aria-label={t.settings.title}
         >
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
