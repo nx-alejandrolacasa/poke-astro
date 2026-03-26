@@ -179,12 +179,10 @@ function DetailPanel({
 }) {
   const attack = getAttackMatchups(type, gen1)
   const defense = getDefenseMatchups(type, gen1)
-  const color = TYPE_COLORS[type]
 
   return (
     <div
       className="hud-corners rounded-sm border border-gray-200 bg-white p-4 shadow-lg transition-all duration-300 md:p-6 dark:border-dex-border dark:bg-dex-surface"
-      style={{ borderTopColor: color, borderTopWidth: '3px' }}
     >
       <div className="mb-4 flex items-center gap-3">
         <TypeBadge type={type} size="lg" locale={locale} />

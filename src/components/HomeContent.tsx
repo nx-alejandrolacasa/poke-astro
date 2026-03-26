@@ -39,12 +39,18 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
         <p className="mx-auto max-w-2xl text-gray-600 text-sm md:text-base dark:text-gray-400">
           {interpolate(t.home.subtitle, { count: totalPokemon.toLocaleString(locale) })}
         </p>
-        <div>
+        <div className="flex flex-wrap items-center justify-center gap-3">
           <a
             href={`/${locale}/pokedex`}
             className="inline-block rounded-sm border-2 border-primary-500 bg-primary-50 px-6 py-3 font-display text-xs font-bold uppercase tracking-wider text-primary-600 transition-all duration-200 active:scale-95 active:bg-primary-100 hover:bg-primary-100 hover:shadow-lg md:px-8 md:py-4 md:text-sm dark:border-primary dark:bg-primary/10 dark:text-neon-cyan dark:active:bg-primary/20 dark:hover:bg-primary/20"
           >
             {t.home.viewPokedex}
+          </a>
+          <a
+            href={`/${locale}/types`}
+            className="inline-block rounded-sm border-2 border-gray-300 bg-white px-6 py-3 font-display text-xs font-bold uppercase tracking-wider text-gray-600 transition-all duration-200 active:scale-95 hover:border-gray-400 hover:bg-gray-50 hover:shadow-lg md:px-8 md:py-4 md:text-sm dark:border-dex-border dark:bg-dex-surface dark:text-gray-300 dark:hover:border-neon-cyan/40 dark:hover:text-neon-cyan"
+          >
+            {t.header.typeChart}
           </a>
         </div>
       </section>
