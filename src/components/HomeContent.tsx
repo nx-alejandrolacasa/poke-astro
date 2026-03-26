@@ -50,7 +50,7 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
             href={`/${locale}/types`}
             className="inline-block rounded-sm border-2 border-neon-purple bg-purple-50 px-6 py-3 font-display text-xs font-bold uppercase tracking-wider text-purple-600 transition-all duration-200 active:scale-95 active:bg-purple-100 hover:bg-purple-100 hover:shadow-lg md:px-8 md:py-4 md:text-sm dark:border-neon-purple dark:bg-neon-purple/10 dark:text-neon-purple dark:active:bg-neon-purple/20 dark:hover:bg-neon-purple/20"
           >
-            {t.header.typeChart}
+            {t.header.typeChart} {"→"}
           </a>
         </div>
       </section>
