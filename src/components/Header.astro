@@ -11,28 +11,33 @@ interface Props {
 const { locale } = Astro.props
 ---
 
-<header class="sticky top-0 z-40 border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-md transition-colors dark:border-dex-border dark:bg-dex-panel/95">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <nav class="flex h-14 items-center justify-between gap-4 sm:h-16 md:gap-8">
-      <!-- Logo / Branding -->
+<header class="sticky top-0 z-40 border-b border-gray-200 bg-white/95 backdrop-blur-md transition-colors dark:border-dex-border dark:bg-dex-panel/95">
+  <div class="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8">
+    <nav class="flex h-12 items-center gap-3 sm:h-14">
+      <!-- Pokédex indicator — home link -->
       <a
         href={`/${locale}`}
-        title="Go home"
-        class="flex-shrink-0 transition-transform hover:scale-105"
+        title="Home"
+        class="flex items-center gap-2 flex-shrink-0 transition-transform active:scale-90 hover:scale-105"
       >
-        <span class="font-display font-bold text-lg tracking-widest uppercase text-gray-900 sm:text-xl dark:bg-gradient-to-r dark:from-primary dark:to-neon-cyan dark:bg-clip-text dark:text-transparent">
-          Pokédex
-        </span>
+        <!-- Main LED (Pokéball-style) -->
+        <div class="relative h-7 w-7 rounded-full border-2 border-gray-300 bg-gradient-to-br from-primary-400 to-primary-600 shadow-sm dark:border-primary/40 dark:from-primary-500 dark:to-primary-700 dark:shadow-[0_0_8px_rgba(227,53,13,0.3)]">
+          <div class="absolute top-1/2 left-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/50 bg-white dark:bg-gray-200"></div>
+        </div>
+        <!-- Small indicator LEDs -->
+        <div class="hidden items-center gap-1 sm:flex">
+          <div class="h-2 w-2 rounded-full bg-neon-red/80 dark:shadow-[0_0_4px_rgba(227,53,13,0.4)]"></div>
+          <div class="h-2 w-2 rounded-full bg-neon-amber/80 dark:shadow-[0_0_4px_rgba(245,158,11,0.4)]"></div>
+          <div class="h-2 w-2 rounded-full bg-neon-green/80 dark:shadow-[0_0_4px_rgba(16,185,129,0.4)]"></div>
+        </div>
       </a>
 
-      <!-- Search - Hidden on mobile, shown on tablet+ -->
-      <div class="hidden flex-1 sm:flex sm:justify-center sm:px-4">
-        <div class="w-full max-w-lg">
-          <PokemonSearchWrapper client:load locale={locale} />
-        </div>
+      <!-- Search — always visible, takes remaining space -->
+      <div class="flex-1">
+        <PokemonSearchWrapper client:load locale={locale} />
       </div>
 
-      <!-- Actions -->
+      <!-- Actions (gear icon only) -->
       <HeaderActions client:load locale={locale} />
     </nav>
   </div>
