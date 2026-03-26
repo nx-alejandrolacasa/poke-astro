@@ -168,7 +168,7 @@ function EffectivenessCell({
     <button
       type="button"
       onClick={onClick}
-      className={`flex h-8 w-8 items-center justify-center rounded-sm font-mono text-[11px] transition-all duration-100 sm:h-9 sm:w-9 sm:text-xs md:h-10 md:w-10 md:text-sm ${bg} ${text} ${highlight} cursor-pointer hover:ring-2 hover:ring-primary/60 dark:hover:ring-neon-cyan/40`}
+      className={`flex h-8 w-8 items-center justify-center rounded-sm font-mono text-[11px] transition-all duration-100 sm:h-9 sm:w-9 sm:text-xs md:h-10 md:w-10 md:text-sm ${bg} ${text} ${highlight} cursor-pointer hover:ring-2 hover:ring-primary/60 dark:hover:ring-neon-blue/40`}
       title={`${attackerType} \u2192 ${defenderType}: ${multiplier}x`}
       aria-label={`${attackerType} attacking ${defenderType}: ${multiplier}x effectiveness`}
     >

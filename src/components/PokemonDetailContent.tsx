@@ -145,16 +145,16 @@ export function PokemonDetailContent({ pokemon, pokemonName, locale }: PokemonDe
         <div className="flex flex-col items-center justify-start">
           <button type="button" onClick={() => setIsImageZoomed(true)} className="relative w-full max-w-[180px] cursor-zoom-in transition-transform hover:scale-105 md:max-w-full" aria-label={`Enlarge ${pokemon.name} image`}>
             <img className="aspect-square w-full drop-shadow-2xl" src={getPokemonImage(pokemon)} alt={`${pokemon.name} official artwork`} />
-            <span className="absolute top-1 right-1 rounded-sm bg-gray-900/80 px-2 py-0.5 font-mono font-bold text-white text-xs backdrop-blur-sm md:text-sm dark:bg-primary/20 dark:text-neon-cyan dark:border dark:border-primary/30">#{pokemon.order.toString().padStart(3, '0')}</span>
-            <span className="absolute bottom-1 left-1 rounded-full bg-gray-900/60 p-1.5 text-white backdrop-blur-sm dark:bg-primary/20 dark:text-neon-cyan">
+            <span className="absolute top-1 right-1 rounded-sm bg-gray-900/80 px-2 py-0.5 font-mono font-bold text-white text-xs backdrop-blur-sm md:text-sm dark:bg-primary/20 dark:text-neon-blue dark:border dark:border-primary/30">#{pokemon.order.toString().padStart(3, '0')}</span>
+            <span className="absolute bottom-1 left-1 rounded-full bg-gray-900/60 p-1.5 text-white backdrop-blur-sm dark:bg-primary/20 dark:text-neon-blue">
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" /></svg>
             </span>
           </button>
-          <h1 className="mt-2 text-center font-display font-bold text-xl uppercase tracking-wider text-gray-900 md:hidden dark:text-neon-cyan">{getPokemonName(pokemonName)}</h1>
+          <h1 className="mt-2 text-center font-display font-bold text-xl uppercase tracking-wider text-gray-900 md:hidden dark:text-neon-blue">{getPokemonName(pokemonName)}</h1>
         </div>
 
         <div className="space-y-2 md:space-y-3">
-          <h1 className="hidden font-display font-bold text-2xl uppercase tracking-wider text-gray-900 md:block lg:text-3xl dark:text-neon-cyan">{getPokemonName(pokemonName)}</h1>
+          <h1 className="hidden font-display font-bold text-2xl uppercase tracking-wider text-gray-900 md:block lg:text-3xl dark:text-neon-blue">{getPokemonName(pokemonName)}</h1>
 
           {(descriptionLoading || descriptions.length > 0) && (
             <div className="hud-corners rounded-sm border border-gray-200 bg-gray-50 p-2 transition-colors md:p-3 dark:border-dex-border dark:bg-dex-surface">
@@ -174,17 +174,17 @@ export function PokemonDetailContent({ pokemon, pokemonName, locale }: PokemonDe
               <h2 className="mb-1 font-display text-[9px] font-bold uppercase tracking-widest text-gray-500 md:text-[10px] dark:text-primary/60">{t.pokemon.type}</h2>
               <div className="flex flex-wrap gap-1">
                 {types.map(({ name, translatedName }) => (
-                  <span key={name} className="rounded-sm border border-gray-300 bg-white px-2 py-0.5 font-medium text-gray-800 text-xs capitalize dark:border-primary/30 dark:bg-primary/5 dark:font-mono dark:text-neon-cyan">{translatedName}</span>
+                  <span key={name} className="rounded-sm border border-gray-300 bg-white px-2 py-0.5 font-medium text-gray-800 text-xs capitalize dark:border-primary/30 dark:bg-primary/5 dark:font-mono dark:text-neon-blue">{translatedName}</span>
                 ))}
               </div>
             </div>
             <div className="rounded-sm border border-gray-200 bg-gray-50 p-2 transition-colors dark:border-dex-border dark:bg-dex-surface">
               <h2 className="mb-1 font-display text-[9px] font-bold uppercase tracking-widest text-gray-500 md:text-[10px] dark:text-primary/60">{t.pokemon.height}</h2>
-              <p className="font-mono font-semibold text-gray-900 text-base md:text-lg dark:text-neon-cyan">{(pokemon.height / 10).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} m</p>
+              <p className="font-mono font-semibold text-gray-900 text-base md:text-lg dark:text-neon-blue">{(pokemon.height / 10).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} m</p>
             </div>
             <div className="rounded-sm border border-gray-200 bg-gray-50 p-2 transition-colors dark:border-dex-border dark:bg-dex-surface">
               <h2 className="mb-1 font-display text-[9px] font-bold uppercase tracking-widest text-gray-500 md:text-[10px] dark:text-primary/60">{t.pokemon.weight}</h2>
-              <p className="font-mono font-semibold text-gray-900 text-base md:text-lg dark:text-neon-cyan">{(pokemon.weight / 10).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} kg</p>
+              <p className="font-mono font-semibold text-gray-900 text-base md:text-lg dark:text-neon-blue">{(pokemon.weight / 10).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} kg</p>
             </div>
             <div className="rounded-sm border border-gray-200 bg-gray-50 p-2 transition-colors dark:border-dex-border dark:bg-dex-surface">
               <h2 className="mb-1 font-display text-[9px] font-bold uppercase tracking-widest text-gray-500 md:text-[10px] dark:text-primary/60">{t.pokemon.abilities}</h2>
@@ -213,7 +213,7 @@ export function PokemonDetailContent({ pokemon, pokemonName, locale }: PokemonDe
                     <div className="text-right font-mono font-bold text-xs">{baseStat}</div>
                     <div className="flex items-center">
                       <div className="relative h-2.5 w-full rounded-full bg-gray-200 dark:bg-dex-border">
-                        <div className={`absolute top-0 left-0 h-2.5 rounded-full transition-all ${baseStat >= 100 ? 'bg-emerald-400 dark:bg-neon-green' : baseStat >= 60 ? 'bg-amber-400 dark:bg-neon-amber' : 'bg-orange-400 dark:bg-neon-red'}`} style={{ width: `${percentage}%` }} />
+                        <div className={`absolute top-0 left-0 h-2.5 rounded-full transition-all ${baseStat >= 100 ? 'bg-emerald-400 dark:bg-neon-blue' : baseStat >= 60 ? 'bg-amber-400 dark:bg-neon-amber' : 'bg-orange-400 dark:bg-neon-red'}`} style={{ width: `${percentage}%` }} />
                       </div>
                     </div>
                   </div>
@@ -221,7 +221,7 @@ export function PokemonDetailContent({ pokemon, pokemonName, locale }: PokemonDe
               })}
               <div className="mt-2 grid grid-cols-[90px_40px_1fr] gap-2 border-t border-gray-300 pt-2 dark:border-dex-border">
                 <div className="text-right font-display text-xs font-bold text-gray-900 uppercase dark:text-gray-100">{t.pokemon.total}</div>
-                <div className="text-right font-mono font-bold text-xs text-gray-900 dark:text-neon-cyan">{totalStats}</div>
+                <div className="text-right font-mono font-bold text-xs text-gray-900 dark:text-neon-blue">{totalStats}</div>
                 <div />
               </div>
             </div>
