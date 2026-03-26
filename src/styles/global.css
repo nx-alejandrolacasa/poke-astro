@@ -1,9 +1,11 @@
 @import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+@import "@fontsource/orbitron/400.css";
+@import "@fontsource/orbitron/700.css";
+@import "@fontsource/orbitron/900.css";
 @import "tailwindcss";
 
-@config "../../tailwind.config.js";
-
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* Prevent white flash before JS runs for users who prefer dark mode */
 html {
@@ -11,5 +13,316 @@ html {
 }
 
 @theme {
+  /* Fonts */
   --font-inter: "Inter Variable", system-ui, sans-serif;
+  --font-display: "Orbitron", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+  --font-body: "Inter Variable", system-ui, sans-serif;
+
+  /* Device chassis colors — green CRT tint */
+  --color-dex-bg: #050a05;
+  --color-dex-panel: #0a120a;
+  --color-dex-surface: #111a11;
+  --color-dex-border: #1a2e1a;
+  --color-dex-border-glow: #33ff33;
+
+  /* Neon accent system */
+  --color-neon-blue: #3b82f6;
+  --color-neon-cyan: #33ff33;
+  --color-neon-green: #10b981;
+  --color-neon-amber: #f59e0b;
+  --color-neon-red: #E3350D;
+  --color-neon-purple: #a855f7;
+  --color-neon-pink: #ec4899;
+
+  /* Primary palette — Pokédex Red */
+  --color-primary-50: #fef2f0;
+  --color-primary-100: #fde3de;
+  --color-primary-200: #fcc5b8;
+  --color-primary-300: #f9977f;
+  --color-primary-400: #f26a4a;
+  --color-primary-500: #E3350D;
+  --color-primary-600: #c42d0b;
+  --color-primary-700: #a3250a;
+  --color-primary-800: #86200d;
+  --color-primary-900: #6f1e11;
+  --color-primary: #E3350D;
+
+  /* Animations */
+  --animate-glow-pulse: glow-pulse 2s ease-in-out infinite;
+  --animate-data-appear: data-appear 0.4s ease-out forwards;
+  --animate-radar-sweep: radar-sweep 1.2s linear infinite;
+  --animate-holo-shimmer: holo-shimmer 3s ease-in-out infinite;
+  --animate-screen-flicker: screen-flicker 4s ease-in-out infinite;
+  --animate-boot-up: boot-up 0.8s ease-out forwards;
+  --animate-ambient-shift: ambient-shift 20s ease-in-out infinite;
+
+  @keyframes glow-pulse {
+    0%, 100% { box-shadow: 0 0 5px currentColor, 0 0 10px currentColor; }
+    50% { box-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor; }
+  }
+
+  @keyframes data-appear {
+    0% { opacity: 0; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes radar-sweep {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  @keyframes holo-shimmer {
+    0% { background-position: 200% center; }
+    100% { background-position: -200% center; }
+  }
+
+  @keyframes screen-flicker {
+    0%, 97%, 100% { opacity: 1; }
+    97.5% { opacity: 0.95; }
+    98% { opacity: 1; }
+    98.5% { opacity: 0.97; }
+  }
+
+  @keyframes boot-up {
+    0% { opacity: 0; filter: brightness(2) saturate(0); }
+    30% { opacity: 0.5; filter: brightness(1.5) saturate(0.5); }
+    100% { opacity: 1; filter: brightness(1) saturate(1); }
+  }
+
+  @keyframes ambient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    25% { background-position: 100% 25%; }
+    50% { background-position: 50% 100%; }
+    75% { background-position: 0% 75%; }
+  }
+}
+
+/* === TFT/CRT SCREEN EFFECTS === */
+@layer base {
+  /* Animated ambient gradient background (dark mode) */
+  .dark body {
+    background:
+      linear-gradient(
+        135deg,
+        #050a05 0%,
+        #081208 20%,
+        #050a05 40%,
+        #060e06 60%,
+        #0a100a 80%,
+        #050a05 100%
+      );
+    background-size: 300% 300%;
+    animation: ambient-shift 20s ease-in-out infinite;
+  }
+
+  /* Noise grain texture — SVG inline for performance */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+  }
+
+  .dark body::after {
+    opacity: 0.04;
+  }
+
+  /* Vignette — darkened edges */
+  .dark body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 40%,
+      rgba(0, 0, 0, 0.35) 100%
+    );
+  }
+
+  /* Screen flicker on dark mode main content */
+  .dark main {
+    animation: screen-flicker 4s ease-in-out infinite;
+  }
+
+  /* Boot-up animation */
+  .dark main > * {
+    animation: boot-up 0.6s ease-out forwards;
+    animation-delay: 0.05s;
+    opacity: 0;
+  }
+
+  /* Phosphor glow on headings — green CRT */
+  .dark h1, .dark h2, .dark h3 {
+    text-shadow: 0 0 10px rgba(51, 255, 51, 0.15), 0 0 3px rgba(51, 255, 51, 0.08);
+  }
+
+  /* Chromatic aberration on display headings */
+  .dark .font-display {
+    text-shadow:
+      -0.5px 0 rgba(51, 255, 51, 0.3),
+      0.5px 0 rgba(51, 255, 51, 0.15),
+      0 0 15px rgba(51, 255, 51, 0.1);
+  }
+
+  /* Light mode: subtle warm tint */
+  body {
+    background: linear-gradient(180deg, #fef2f0 0%, #ffffff 15%, #ffffff 85%, #fef2f0 100%);
+    background-attachment: fixed;
+  }
+}
+
+/* Holographic shimmer for cards */
+@layer utilities {
+  .holo-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .holo-shimmer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 40%,
+      rgba(227, 53, 13, 0.06) 44%,
+      rgba(168, 85, 247, 0.06) 48%,
+      rgba(59, 130, 246, 0.06) 52%,
+      rgba(236, 72, 153, 0.06) 56%,
+      transparent 60%
+    );
+    background-size: 200% 100%;
+    animation: holo-shimmer 3s ease-in-out infinite;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 1;
+    border-radius: inherit;
+  }
+  .holo-shimmer:hover::before {
+    opacity: 1;
+  }
+  .dark .holo-shimmer::before {
+    background: linear-gradient(
+      105deg,
+      transparent 40%,
+      rgba(51, 255, 51, 0.04) 45%,
+      rgba(51, 255, 51, 0.06) 50%,
+      rgba(51, 255, 51, 0.04) 55%,
+      transparent 60%
+    );
+    background-size: 200% 100%;
+  }
+
+  /* Glow border utility */
+  .glow-border {
+    box-shadow: 0 0 0 1px rgba(227, 53, 13, 0.15),
+                0 0 8px rgba(227, 53, 13, 0.06);
+    transition: box-shadow 0.3s ease;
+  }
+  .glow-border:hover {
+    box-shadow: 0 0 0 1px rgba(227, 53, 13, 0.4),
+                0 0 15px rgba(227, 53, 13, 0.12),
+                0 0 30px rgba(227, 53, 13, 0.06);
+  }
+  .dark .glow-border {
+    box-shadow: 0 0 0 1px rgba(51, 255, 51, 0.1),
+                0 0 8px rgba(51, 255, 51, 0.04);
+  }
+  .dark .glow-border:hover {
+    box-shadow: 0 0 0 1px rgba(51, 255, 51, 0.3),
+                0 0 15px rgba(51, 255, 51, 0.1),
+                0 0 30px rgba(51, 255, 51, 0.05);
+  }
+
+  /* HUD corner accents */
+  .hud-corners {
+    position: relative;
+  }
+  .hud-corners::before,
+  .hud-corners::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-color: rgba(227, 53, 13, 0.35);
+    pointer-events: none;
+    z-index: 2;
+  }
+  .dark .hud-corners::before,
+  .dark .hud-corners::after {
+    border-color: rgba(51, 255, 51, 0.25);
+  }
+  .hud-corners::before {
+    top: -1px;
+    left: -1px;
+    border-top: 2px solid;
+    border-left: 2px solid;
+  }
+  .hud-corners::after {
+    bottom: -1px;
+    right: -1px;
+    border-bottom: 2px solid;
+    border-right: 2px solid;
+  }
+
+  /* Phosphor text glow */
+  .phosphor-glow {
+    text-shadow: 0 0 6px rgba(51, 255, 51, 0.2), 0 0 2px rgba(51, 255, 51, 0.1);
+  }
+}
+
+/* Radar loading animation */
+@layer components {
+  .radar-loader {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid rgba(227, 53, 13, 0.2);
+    position: relative;
+  }
+  .radar-loader::before {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: #E3350D;
+    animation: radar-sweep 1.2s linear infinite;
+  }
+  .radar-loader::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    background: #E3350D;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8px #E3350D;
+  }
+  .dark .radar-loader {
+    border-color: rgba(51, 255, 51, 0.2);
+  }
+  .dark .radar-loader::before {
+    border-top-color: #33ff33;
+  }
+  .dark .radar-loader::after {
+    background: #33ff33;
+    box-shadow: 0 0 8px #33ff33;
+  }
+
+  /* Glow line separator */
+  .glow-line {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(51, 255, 51, 0.3), transparent);
+  }
 }

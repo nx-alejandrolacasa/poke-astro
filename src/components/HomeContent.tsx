@@ -1,5 +1,6 @@
 import { RotatingText } from '@/components/RotatingText'
 import type { Locale } from '@/utils/i18n'
+import { typeColors } from '@/utils/pokemon'
 import { interpolate, translations } from '@/utils/translations'
 
 type HomeContentProps = {
@@ -11,200 +12,103 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
   const t = translations[locale]
 
   const pokemonTypes = [
-    'normal',
-    'fire',
-    'water',
-    'electric',
-    'grass',
-    'ice',
-    'fighting',
-    'poison',
-    'ground',
-    'flying',
-    'psychic',
-    'bug',
-    'rock',
-    'ghost',
-    'dragon',
-    'dark',
-    'steel',
-    'fairy',
+    'normal', 'fire', 'water', 'electric', 'grass', 'ice',
+    'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug',
+    'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy',
   ]
 
   const generations = [
-    {
-      name: locale === 'es' ? 'Generación I' : 'Generation I',
-      region: 'Kanto',
-    },
-    {
-      name: locale === 'es' ? 'Generación II' : 'Generation II',
-      region: 'Johto',
-    },
-    {
-      name: locale === 'es' ? 'Generación III' : 'Generation III',
-      region: 'Hoenn',
-    },
-    {
-      name: locale === 'es' ? 'Generación IV' : 'Generation IV',
-      region: 'Sinnoh',
-    },
-    {
-      name: locale === 'es' ? 'Generación V' : 'Generation V',
-      region: 'Unova',
-    },
-    {
-      name: locale === 'es' ? 'Generación VI' : 'Generation VI',
-      region: 'Kalos',
-    },
-    {
-      name: locale === 'es' ? 'Generación VII' : 'Generation VII',
-      region: 'Alola',
-    },
-    {
-      name: locale === 'es' ? 'Generación VIII' : 'Generation VIII',
-      region: 'Galar',
-    },
-    {
-      name: locale === 'es' ? 'Generación IX' : 'Generation IX',
-      region: 'Paldea',
-    },
+    { name: locale === 'es' ? 'Generación I' : 'Generation I', region: 'Kanto' },
+    { name: locale === 'es' ? 'Generación II' : 'Generation II', region: 'Johto' },
+    { name: locale === 'es' ? 'Generación III' : 'Generation III', region: 'Hoenn' },
+    { name: locale === 'es' ? 'Generación IV' : 'Generation IV', region: 'Sinnoh' },
+    { name: locale === 'es' ? 'Generación V' : 'Generation V', region: 'Unova' },
+    { name: locale === 'es' ? 'Generación VI' : 'Generation VI', region: 'Kalos' },
+    { name: locale === 'es' ? 'Generación VII' : 'Generation VII', region: 'Alola' },
+    { name: locale === 'es' ? 'Generación VIII' : 'Generation VIII', region: 'Galar' },
+    { name: locale === 'es' ? 'Generación IX' : 'Generation IX', region: 'Paldea' },
   ]
 
   return (
     <div className="space-y-8 pb-8 md:space-y-12 md:pb-12">
-      {/* Hero Section - Compact */}
+      {/* Hero Section */}
       <section className="space-y-4 pt-4 text-center md:pt-6">
-        <h1 className="bg-gradient-to-r from-primary-600 via-purple-400 to-orange-400 bg-clip-text font-bold text-4xl text-transparent md:text-6xl dark:from-primary-400 dark:via-purple-300 dark:to-orange-300">
+        <h1 className="font-display font-bold text-3xl uppercase tracking-wider text-gray-900 md:text-5xl dark:bg-gradient-to-r dark:from-primary dark:via-neon-cyan dark:to-neon-purple dark:bg-clip-text dark:text-transparent">
           {t.home.title}
         </h1>
-        <p className="mx-auto max-w-2xl text-base text-gray-600 md:text-lg dark:text-gray-300">
-          {interpolate(t.home.subtitle, {
-            count: totalPokemon.toLocaleString(locale),
-          })}
+        <p className="mx-auto max-w-2xl text-gray-600 text-sm md:text-base dark:text-gray-400">
+          {interpolate(t.home.subtitle, { count: totalPokemon.toLocaleString(locale) })}
         </p>
         <div>
           <a
             href={`/${locale}/pokedex`}
-            className="inline-block rounded-xl bg-gradient-to-r from-primary-500 to-purple-400 px-6 py-3 font-semibold text-base text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-primary-600 hover:to-purple-500 hover:shadow-2xl md:px-8 md:py-4 md:text-lg dark:from-primary-400 dark:to-purple-300 dark:text-gray-900 dark:hover:from-primary-500 dark:hover:to-purple-400"
+            className="inline-block rounded-sm border-2 border-primary-500 bg-primary-50 px-6 py-3 font-display text-xs font-bold uppercase tracking-wider text-primary-600 transition-all duration-200 active:scale-95 active:bg-primary-100 hover:bg-primary-100 hover:shadow-lg md:px-8 md:py-4 md:text-sm dark:border-primary dark:bg-primary/10 dark:text-neon-cyan dark:active:bg-primary/20 dark:hover:bg-primary/20"
           >
             {t.home.viewPokedex}
           </a>
         </div>
       </section>
 
-      {/* Bento Grid Statistics - All in one row on landscape tablets */}
+      {/* Statistics Bento Grid */}
       <section className="space-y-3">
-        <h2 className="text-center font-bold text-gray-900 text-xl md:text-2xl dark:text-white">
+        <h2 className="text-center font-display text-xs font-bold uppercase tracking-widest text-gray-700 md:text-sm dark:text-primary/70">
           {t.home.byTheNumbers}
         </h2>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 md:gap-3">
-          {/* Total Pokemon */}
-          <div className="rounded-lg border-2 border-primary-300/50 bg-gradient-to-br from-primary-200 to-purple-200 p-3 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-primary-400/60 hover:shadow-2xl md:p-4 dark:border-primary-500/30 dark:from-primary-800/80 dark:to-purple-800/80 dark:hover:border-primary-400/50">
+          <div className="hud-corners rounded-sm border border-gray-200 bg-white p-3 shadow-sm transition-all duration-300 hover:shadow-lg hover:scale-[1.02] md:p-4 dark:border-dex-border dark:bg-dex-surface">
             <div className="space-y-0.5">
-              <p className="font-semibold text-primary-700 text-xs uppercase tracking-wider md:text-sm dark:text-primary-200">
-                {t.home.totalPokemon}
-              </p>
-              <p className="font-black text-2xl text-primary-800 md:text-3xl dark:text-white">
-                {totalPokemon.toLocaleString(locale)}
-              </p>
-              <p className="text-primary-700 text-sm md:text-base dark:text-primary-200">
-                {t.home.speciesDiscovered}
-              </p>
+              <p className="font-display text-[9px] font-bold uppercase tracking-widest text-gray-500 md:text-[10px] dark:text-primary/60">{t.home.totalPokemon}</p>
+              <p className="font-mono font-black text-2xl text-gray-900 md:text-3xl dark:text-neon-cyan">{totalPokemon.toLocaleString(locale)}</p>
+              <p className="text-gray-500 text-xs md:text-sm dark:text-gray-500">{t.home.speciesDiscovered}</p>
             </div>
           </div>
-
-          {/* Types */}
-          <div className="rounded-lg border-2 border-orange-300/50 bg-gradient-to-br from-orange-200 to-red-200 p-3 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-orange-400/60 hover:shadow-2xl md:p-4 dark:border-orange-500/30 dark:from-orange-800/80 dark:to-red-800/80 dark:hover:border-orange-400/50">
+          <div className="hud-corners rounded-sm border border-gray-200 bg-white p-3 shadow-sm transition-all duration-300 hover:shadow-lg hover:scale-[1.02] md:p-4 dark:border-dex-border dark:bg-dex-surface">
             <div className="space-y-0.5">
-              <p className="font-semibold text-orange-700 text-xs uppercase tracking-wider md:text-sm dark:text-orange-200">
-                {t.home.types}
-              </p>
-              <p className="font-black text-2xl text-orange-800 md:text-3xl dark:text-white">
-                {pokemonTypes.length}
-              </p>
-              <p className="text-orange-700 text-sm md:text-base dark:text-orange-200">
-                {t.home.uniqueTypes}
-              </p>
+              <p className="font-display text-[9px] font-bold uppercase tracking-widest text-gray-500 md:text-[10px] dark:text-neon-amber/60">{t.home.types}</p>
+              <p className="font-mono font-black text-2xl text-gray-900 md:text-3xl dark:text-neon-amber">{pokemonTypes.length}</p>
+              <p className="text-gray-500 text-xs md:text-sm dark:text-gray-500">{t.home.uniqueTypes}</p>
             </div>
           </div>
-
-          {/* Generations */}
-          <div className="rounded-lg border-2 border-teal-300/50 bg-gradient-to-br from-teal-200 to-emerald-200 p-3 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-teal-400/60 hover:shadow-2xl md:p-4 dark:border-teal-500/30 dark:from-teal-800/80 dark:to-emerald-800/80 dark:hover:border-teal-400/50">
+          <div className="hud-corners rounded-sm border border-gray-200 bg-white p-3 shadow-sm transition-all duration-300 hover:shadow-lg hover:scale-[1.02] md:p-4 dark:border-dex-border dark:bg-dex-surface">
             <div className="space-y-0.5">
-              <p className="font-semibold text-teal-700 text-xs uppercase tracking-wider md:text-sm dark:text-teal-200">
-                {t.home.generations}
-              </p>
-              <p className="font-black text-2xl text-teal-800 md:text-3xl dark:text-white">
-                {generations.length}
-              </p>
-              <p className="text-sm text-teal-700 md:text-base dark:text-teal-200">
-                {t.home.pokemonGenerations}
-              </p>
+              <p className="font-display text-[9px] font-bold uppercase tracking-widest text-gray-500 md:text-[10px] dark:text-neon-green/60">{t.home.generations}</p>
+              <p className="font-mono font-black text-2xl text-gray-900 md:text-3xl dark:text-neon-green">{generations.length}</p>
+              <p className="text-gray-500 text-xs md:text-sm dark:text-gray-500">{t.home.pokemonGenerations}</p>
             </div>
           </div>
-
-          {/* Fun Fact Card */}
-          <div className="rounded-lg border-2 border-amber-300/50 bg-gradient-to-br from-amber-200 to-orange-200 p-3 shadow-lg transition-all duration-300 hover:border-amber-400/60 hover:shadow-2xl md:p-4 dark:border-amber-500/30 dark:from-amber-800/80 dark:to-orange-800/80 dark:hover:border-amber-400/50">
+          <div className="hud-corners rounded-sm border border-gray-200 bg-white p-3 shadow-sm transition-all duration-300 hover:shadow-lg md:p-4 dark:border-dex-border dark:bg-dex-surface">
             <div className="space-y-0.5">
-              <p className="font-semibold text-amber-700 text-xs uppercase tracking-wider md:text-sm dark:text-amber-200">
-                {t.home.didYouKnow}
-              </p>
-              <RotatingText
-                items={t.funFacts}
-                intervalMs={5000}
-                className="text-amber-800 text-sm leading-tight md:text-base dark:text-amber-100"
-                indicatorStyle="subtle"
-              />
+              <p className="font-display text-[9px] font-bold uppercase tracking-widest text-gray-500 md:text-[10px] dark:text-neon-purple/60">{t.home.didYouKnow}</p>
+              <RotatingText items={t.funFacts} intervalMs={5000} className="text-xs text-gray-700 leading-tight md:text-sm dark:text-gray-300" indicatorStyle="subtle" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Quick Access Categories - Compact */}
+      {/* Browse by Category */}
       <section className="space-y-4">
-        <h2 className="text-center font-bold text-2xl text-gray-900 md:text-3xl dark:text-white">
-          {t.home.browseByCategory}
-        </h2>
-
-        {/* Types Grid - More columns on tablets */}
+        <h2 className="text-center font-display text-sm font-bold uppercase tracking-widest text-gray-800 md:text-base dark:text-gray-200">{t.home.browseByCategory}</h2>
         <div>
-          <h3 className="mb-3 font-semibold text-gray-900 text-lg md:text-xl dark:text-white">
-            {t.home.pokemonTypes}
-          </h3>
+          <h3 className="mb-3 font-display text-xs font-bold uppercase tracking-wider text-gray-600 md:text-sm dark:text-primary/50">{t.home.pokemonTypes}</h3>
           <div className="grid grid-cols-3 gap-2 sm:grid-cols-6 md:grid-cols-9">
-            {pokemonTypes.map((type) => (
-              <a
-                key={type}
-                href={`/${locale}/type/${type}`}
-                className="group relative overflow-hidden rounded-lg border-2 border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100 p-2 text-center shadow-md transition-all duration-300 hover:scale-105 hover:border-primary-400 hover:from-primary-50 hover:to-purple-50 hover:shadow-xl md:p-3 dark:border-gray-700 dark:from-gray-800 dark:to-gray-900 dark:hover:border-primary-500 dark:hover:from-primary-900/30 dark:hover:to-purple-900/30"
-              >
-                <span className="font-semibold text-gray-700 text-xs transition-colors group-hover:text-primary-600 md:text-sm dark:text-gray-200 dark:group-hover:text-primary-400">
-                  {t.types[type as keyof typeof t.types]}
-                </span>
-              </a>
-            ))}
+            {pokemonTypes.map((type) => {
+              const color = typeColors[type] ?? '#a8a878'
+              return (
+                <a key={type} href={`/${locale}/type/${type}`} className="group rounded-sm border border-gray-200 bg-white p-2 text-center shadow-sm transition-all duration-200 active:scale-95 md:p-3 dark:border-dex-border dark:bg-dex-surface" style={{ borderBottomWidth: '2px', borderBottomColor: color }}>
+                  <span className="font-semibold text-xs md:text-sm dark:font-mono" style={{ color }}>{t.types[type as keyof typeof t.types]}</span>
+                </a>
+              )
+            })}
           </div>
         </div>
-
-        {/* Generations Grid - More compact */}
         <div>
-          <h3 className="mb-3 font-semibold text-gray-900 text-lg md:text-xl dark:text-white">
-            {t.home.byGeneration}
-          </h3>
+          <h3 className="mb-3 font-display text-xs font-bold uppercase tracking-wider text-gray-600 md:text-sm dark:text-primary/50">{t.home.byGeneration}</h3>
           <div className="grid grid-cols-3 gap-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9">
             {generations.map((gen, index) => (
-              <a
-                key={gen.region}
-                href={`/${locale}/generation/${index + 1}`}
-                className="group rounded-lg border-2 border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100 p-3 shadow-md transition-all duration-300 hover:scale-[1.02] hover:border-primary-400 hover:from-primary-50 hover:to-purple-50 hover:shadow-xl md:p-4 dark:border-gray-700 dark:from-gray-800 dark:to-gray-900 dark:hover:border-primary-500 dark:hover:from-primary-900/30 dark:hover:to-purple-900/30"
-              >
+              <a key={index} href={`/${locale}/generation/${index + 1}`} className="group rounded-sm border border-gray-200 bg-white p-3 shadow-sm transition-all duration-200 active:scale-95 md:p-4 dark:border-dex-border dark:bg-dex-surface">
                 <div className="space-y-0.5 text-center">
-                  <p className="font-bold text-gray-700 text-sm transition-colors group-hover:text-primary-600 md:text-base dark:text-gray-200 dark:group-hover:text-primary-400">
-                    {locale === 'es' ? `Gen ${index + 1}` : `Gen ${index + 1}`}
-                  </p>
-                  <p className="text-gray-500 text-xs dark:text-gray-400">
-                    {gen.region}
-                  </p>
+                  <p className="font-mono font-bold text-gray-700 text-sm transition-colors group-hover:text-primary-600 md:text-base dark:text-gray-300 dark:group-hover:text-neon-cyan">Gen {index + 1}</p>
+                  <p className="text-gray-500 text-xs dark:text-gray-500">{gen.region}</p>
                 </div>
               </a>
             ))}

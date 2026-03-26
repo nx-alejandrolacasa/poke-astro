@@ -9,6 +9,7 @@ type RotatingTextProps = {
 }
 
 type AnimationPhase = 'idle' | 'exiting' | 'entering'
+type Direction = 'next' | 'prev'
 
 export function RotatingText({
   items,
@@ -19,59 +20,54 @@ export function RotatingText({
 }: RotatingTextProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [animationPhase, setAnimationPhase] = useState<AnimationPhase>('idle')
+  const [direction, setDirection] = useState<Direction>('next')
   const [contentHeight, setContentHeight] = useState<number | null>(null)
   const contentRef = useRef<HTMLParagraphElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const rotationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
-    null
-  )
+  const rotationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const touchStartX = useRef<number | null>(null)
 
-  // Measure content height for smooth transitions
   useEffect(() => {
     if (contentRef.current && animationPhase === 'idle') {
       setContentHeight(contentRef.current.offsetHeight)
     }
   }, [animationPhase])
 
-  const advanceToNext = useCallback(() => {
-    if (items.length <= 1 || animationPhase !== 'idle') return
-
-    // Phase 1: Exit animation (text moves down and fades out)
+  const goTo = useCallback((index: number, dir: Direction) => {
+    if (index === currentIndex || animationPhase !== 'idle') return
+    setDirection(dir)
     setAnimationPhase('exiting')
 
     setTimeout(() => {
-      // Phase 2: Update index and position new text above (invisible)
-      setCurrentIndex((prev) => (prev + 1) % items.length)
+      setCurrentIndex(index)
       setAnimationPhase('entering')
 
-      // Phase 3: After a brief moment, animate text down to normal position
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setAnimationPhase('idle')
         })
       })
-    }, 300)
-  }, [items.length, animationPhase])
+    }, 250)
+  }, [currentIndex, animationPhase])
 
-  const goToIndex = useCallback(
-    (index: number) => {
-      if (index === currentIndex || animationPhase !== 'idle') return
+  const advanceToNext = useCallback(() => {
+    if (items.length <= 1 || animationPhase !== 'idle') return
+    goTo((currentIndex + 1) % items.length, 'next')
+  }, [items.length, animationPhase, currentIndex, goTo])
 
-      setAnimationPhase('exiting')
+  const advanceToPrev = useCallback(() => {
+    if (items.length <= 1 || animationPhase !== 'idle') return
+    goTo((currentIndex - 1 + items.length) % items.length, 'prev')
+  }, [items.length, animationPhase, currentIndex, goTo])
 
-      setTimeout(() => {
-        setCurrentIndex(index)
-        setAnimationPhase('entering')
-
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            setAnimationPhase('idle')
-          })
-        })
-      }, 300)
-    },
-    [currentIndex, animationPhase]
-  )
+  const resetInterval = useCallback(() => {
+    if (rotationIntervalRef.current) {
+      clearInterval(rotationIntervalRef.current)
+    }
+    if (items.length > 1) {
+      rotationIntervalRef.current = setInterval(advanceToNext, intervalMs)
+    }
+  }, [items.length, intervalMs, advanceToNext])
 
   // Auto-rotation
   useEffect(() => {
@@ -91,37 +87,49 @@ export function RotatingText({
     }
   }, [items.length, intervalMs, advanceToNext])
 
-  // Reset interval when manually advancing
+  // Swipe handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return
+    const diff = e.changedTouches[0].clientX - touchStartX.current
+    const threshold = 40
+    if (Math.abs(diff) > threshold) {
+      if (diff < 0) {
+        advanceToNext()
+      } else {
+        advanceToPrev()
+      }
+      resetInterval()
+    }
+    touchStartX.current = null
+  }
+
   const handleClick = () => {
-    if (rotationIntervalRef.current) {
-      clearInterval(rotationIntervalRef.current)
-    }
     advanceToNext()
-    if (items.length > 1) {
-      rotationIntervalRef.current = setInterval(advanceToNext, intervalMs)
-    }
+    resetInterval()
   }
 
   const handleDotClick = (index: number) => {
-    if (rotationIntervalRef.current) {
-      clearInterval(rotationIntervalRef.current)
-    }
-    goToIndex(index)
-    if (items.length > 1) {
-      rotationIntervalRef.current = setInterval(advanceToNext, intervalMs)
-    }
+    goTo(index, index > currentIndex ? 'next' : 'prev')
+    resetInterval()
   }
 
   if (items.length === 0) return null
 
   const getAnimationClasses = () => {
+    const exitDir = direction === 'next' ? '-translate-x-6' : 'translate-x-6'
+    const enterDir = direction === 'next' ? 'translate-x-6' : '-translate-x-6'
+
     switch (animationPhase) {
       case 'exiting':
-        return 'translate-y-4 opacity-0 transition-all duration-300 ease-in-out'
+        return `${exitDir} opacity-0 transition-all duration-250 ease-in-out`
       case 'entering':
-        return '-translate-y-4 opacity-0 transition-none'
+        return `${enterDir} opacity-0 transition-none`
       default:
-        return 'translate-y-0 opacity-100 transition-all duration-300 ease-in-out'
+        return 'translate-x-0 opacity-100 transition-all duration-250 ease-in-out'
     }
   }
 
@@ -131,14 +139,19 @@ export function RotatingText({
         ref={containerRef}
         className="relative overflow-hidden transition-[height] duration-300 ease-in-out"
         style={{ height: contentHeight ? `${contentHeight}px` : 'auto' }}
+        onTouchStart={items.length > 1 ? handleTouchStart : undefined}
+        onTouchEnd={items.length > 1 ? handleTouchEnd : undefined}
       >
         <p
           ref={contentRef}
           onClick={items.length > 1 ? handleClick : undefined}
-          onKeyDown={items.length > 1 ? (e) => { if (e.key === 'Enter' || e.key === ' ') handleClick() } : undefined}
+          onKeyDown={items.length > 1 ? (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Enter' || e.key === ' ') { e.preventDefault(); advanceToNext(); resetInterval() }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); advanceToPrev(); resetInterval() }
+          } : undefined}
           role={items.length > 1 ? 'button' : undefined}
           tabIndex={items.length > 1 ? 0 : undefined}
-          className={`${getAnimationClasses()} ${items.length > 1 ? 'cursor-pointer' : ''}`}
+          className={`${getAnimationClasses()} ${items.length > 1 ? 'cursor-pointer select-none' : ''}`}
         >
           {items[currentIndex]}
         </p>
@@ -161,8 +174,8 @@ export function RotatingText({
                     }`
                   : `h-1.5 rounded-full transition-all duration-300 ${
                       index === currentIndex
-                        ? 'w-4 bg-primary-500 dark:bg-primary-400'
-                        : 'w-1.5 bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500'
+                        ? 'w-4 bg-primary-500 dark:bg-primary'
+                        : 'w-1.5 bg-gray-300 hover:bg-gray-400 dark:bg-dex-border dark:hover:bg-gray-600'
                     }`
               }
               aria-label={`Show item ${index + 1}`}

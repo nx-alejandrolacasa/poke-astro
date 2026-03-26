@@ -24,7 +24,7 @@ const { title, locale } = Astro.props
 
     <!-- PWA Meta Tags -->
     <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#ef4444" />
+    <meta name="theme-color" content="#0a0e17" />
     <meta name="description" content="Una Pokédex moderna con información de todos los Pokémon" />
 
     <!-- iOS PWA Support -->
@@ -123,7 +123,7 @@ const { title, locale } = Astro.props
             var locale = this.getAttribute('data-locale') || 'es'
             var t = labels[locale] || labels.es
             var d = iconPaths[current]
-            this.innerHTML = '<button type="button" class="flex items-center gap-1.5 rounded-md px-3 py-1.5 font-semibold text-sm text-gray-600 transition-all hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700" title="' + t.label + ': ' + t[current] + '" aria-label="' + t.label + ': ' + t[current] + '"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="' + d + '" /></svg><span>' + t[current] + '</span></button>'
+            this.innerHTML = '<button type="button" class="flex items-center gap-1.5 rounded-sm px-3 py-1.5 font-semibold text-sm text-gray-600 transition-all hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700" title="' + t.label + ': ' + t[current] + '" aria-label="' + t.label + ': ' + t[current] + '"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="' + d + '" /></svg><span>' + t[current] + '</span></button>'
             // Re-attach click handler after innerHTML
             if (this._cycle) this.querySelector('button').addEventListener('click', this._cycle)
           }
@@ -131,7 +131,7 @@ const { title, locale } = Astro.props
       }
     </script>
   </head>
-  <body class="bg-white dark:bg-gray-900 transition-colors">
+  <body class="text-gray-900 transition-colors dark:text-gray-100">
     <Header locale={locale} />
     <main class="mx-auto p-4 max-w-7xl md:p-6">
       <slot />
