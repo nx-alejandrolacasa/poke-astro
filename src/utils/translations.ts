@@ -288,7 +288,7 @@ export const translations: Record<Language, Translations> = {
       title: 'Explora el Mundo de Pokémon',
       subtitle:
         'Descubre información detallada sobre todas las {count} especies de Pokémon, sus estadísticas, tipos, habilidades y evoluciones.',
-      viewPokedex: 'Ver Pokédex Completa →',
+      viewPokedex: 'Ver Pokédex →',
       byTheNumbers: 'En Números',
       totalPokemon: 'Total de Pokémon',
       speciesDiscovered: 'Especies descubiertas en todas las regiones',
