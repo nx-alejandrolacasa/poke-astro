@@ -4,6 +4,7 @@ export type Translations = {
   // Header
   header: {
     pokedex: string
+    typeChart: string
     menu: string
     close: string
     search: string
@@ -135,6 +136,7 @@ export const translations: Record<Language, Translations> = {
   en: {
     header: {
       pokedex: 'Pokédex',
+      typeChart: 'Type Chart',
       menu: 'Menu',
       close: 'Close',
       search: 'Search',
@@ -277,6 +279,7 @@ export const translations: Record<Language, Translations> = {
   es: {
     header: {
       pokedex: 'Pokédex',
+      typeChart: 'Tabla de Tipos',
       menu: 'Menú',
       close: 'Cerrar',
       search: 'Buscar',

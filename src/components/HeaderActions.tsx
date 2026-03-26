@@ -13,6 +13,15 @@ export function HeaderActions({ locale }: HeaderActionsProps) {
 
   return (
     <>
+      {/* Type Chart link */}
+      <a
+        href={`/${locale}/types`}
+        className="hidden flex-shrink-0 rounded-sm px-2 py-1.5 font-display text-[10px] font-bold uppercase tracking-wider text-gray-500 transition-all duration-150 hover:bg-gray-100 hover:text-gray-700 sm:block dark:text-gray-400 dark:hover:bg-dex-surface dark:hover:text-neon-cyan"
+      >
+        {t.header.typeChart}
+      </a>
+
+      {/* Settings gear */}
       <button
         type="button"
         onClick={() => setSettingsOpen(true)}

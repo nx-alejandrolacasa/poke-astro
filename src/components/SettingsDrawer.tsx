@@ -116,6 +116,24 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
 
         {/* Drawer content */}
         <div className="flex flex-1 flex-col gap-8 p-5">
+          {/* Navigation links */}
+          <div className="flex flex-col gap-2">
+            <a
+              href={`/${locale}/pokedex`}
+              onClick={onClose}
+              className="rounded-sm border border-gray-200 bg-gray-50 px-4 py-3 font-display text-[10px] font-bold uppercase tracking-widest text-gray-700 transition-all active:scale-95 hover:bg-gray-100 dark:border-dex-border dark:bg-dex-surface dark:text-neon-cyan dark:hover:bg-dex-border"
+            >
+              {t.header.pokedex}
+            </a>
+            <a
+              href={`/${locale}/types`}
+              onClick={onClose}
+              className="rounded-sm border border-gray-200 bg-gray-50 px-4 py-3 font-display text-[10px] font-bold uppercase tracking-widest text-gray-700 transition-all active:scale-95 hover:bg-gray-100 dark:border-dex-border dark:bg-dex-surface dark:text-neon-cyan dark:hover:bg-dex-border"
+            >
+              {t.header.typeChart}
+            </a>
+          </div>
+
           {/* Theme Mode */}
           <div className="hud-corners rounded-sm border border-gray-200 p-4 dark:border-dex-border">
             <label className="mb-3 block font-display text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-primary/70">
