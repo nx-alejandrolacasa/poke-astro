@@ -58,14 +58,14 @@ export function PokemonInfiniteScroll({ initialData, initialPage = 1, locale }: 
           {loading ? (
             <div className="text-center">
               <div className="radar-loader mx-auto" />
-              <p className="mt-3 font-mono text-xs text-gray-500 dark:text-neon-blue/50">{t.scroll.loadingMore}</p>
+              <p className="mt-3 font-mono text-xs text-gray-500 dark:text-primary/50">{t.scroll.loadingMore}</p>
             </div>
           ) : <div className="h-10" />}
         </div>
       )}
       {!hasMore && pokemon.length > 0 && (
         <div className="my-8 text-center">
-          <p className="font-mono text-sm text-gray-500 dark:text-neon-blue/60">{t.scroll.caughtAll}</p>
+          <p className="font-mono text-sm text-gray-500 dark:text-primary/60">{t.scroll.caughtAll}</p>
           <p className="mt-1 font-mono text-xs text-gray-400 dark:text-gray-600">{interpolate(t.scroll.showingAll, { count: pokemon.length })}</p>
         </div>
       )}

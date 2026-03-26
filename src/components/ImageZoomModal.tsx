@@ -38,7 +38,7 @@ export function ImageZoomModal({ src, alt, isOpen, onClose }: ImageZoomModalProp
       <button
         type="button"
         onClick={onClose}
-        className="absolute top-4 right-4 rounded-lg border border-white/10 bg-white/5 p-2 text-white transition-colors hover:bg-white/10 dark:border-neon-blue/20 dark:hover:bg-neon-blue/10"
+        className="absolute top-4 right-4 rounded-lg border border-white/10 bg-white/5 p-2 text-white transition-colors hover:bg-white/10 dark:border-primary/20 dark:hover:bg-primary/10"
         aria-label={t.modal.close}
       >
         <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">

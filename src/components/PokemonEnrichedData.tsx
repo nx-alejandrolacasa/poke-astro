@@ -73,7 +73,7 @@ export function PokemonEnrichedData({ pokemonName, locale, statsSection }: Pokem
     <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
       {statsSection}
       <div className="hud-corners rounded-lg border border-gray-200 bg-gray-50 p-3 transition-colors dark:border-dex-border dark:bg-dex-surface">
-        <h2 className="mb-2 font-display text-xs font-bold uppercase tracking-wider text-gray-800 md:text-sm dark:text-neon-blue/70">{t.pokemon.typeEffectiveness}</h2>
+        <h2 className="mb-2 font-display text-xs font-bold uppercase tracking-wider text-gray-800 md:text-sm dark:text-primary/70">{t.pokemon.typeEffectiveness}</h2>
         <div className="grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-2">
           <div>
             <h3 className="mb-1 font-display text-[10px] font-bold uppercase tracking-widest text-orange-600 dark:text-neon-red/80">{t.pokemon.weakTo} ({data.typeEffectiveness.weaknesses.length})</h3>
@@ -109,7 +109,7 @@ export function PokemonEnrichedData({ pokemonName, locale, statsSection }: Pokem
       </div>
       {hasEvolutions && (
         <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 transition-colors md:col-span-2 dark:border-dex-border dark:bg-dex-surface">
-          <h2 className="mb-2 font-display text-xs font-bold uppercase tracking-wider text-gray-800 md:text-sm dark:text-neon-blue/70">{t.pokemon.evolutionChain}</h2>
+          <h2 className="mb-2 font-display text-xs font-bold uppercase tracking-wider text-gray-800 md:text-sm dark:text-primary/70">{t.pokemon.evolutionChain}</h2>
           <EvolutionTree tree={data.evolutionTree!} currentPokemon={pokemonName} locale={locale} />
         </div>
       )}
@@ -129,8 +129,8 @@ function EvolutionTree({ tree, currentPokemon, locale }: EvolutionTreeProps) {
         <div key={stageIndex} className="flex flex-col items-center gap-4 md:flex-row">
           {stageIndex > 0 && (
             <>
-              <div className="font-mono font-bold text-gray-400 text-2xl md:hidden dark:text-neon-blue/40">↓</div>
-              <div className="hidden font-mono font-bold text-gray-400 text-2xl md:block dark:text-neon-blue/40">→</div>
+              <div className="font-mono font-bold text-gray-400 text-2xl md:hidden dark:text-primary/40">↓</div>
+              <div className="hidden font-mono font-bold text-gray-400 text-2xl md:block dark:text-primary/40">→</div>
             </>
           )}
           <div className={`flex flex-col items-center gap-2 md:flex-row ${hasBranching && stage.length > 1 ? 'rounded-xl border-2 border-dashed border-gray-300 p-2 dark:border-dex-border' : ''}`}>
@@ -152,7 +152,7 @@ type EvolutionCardProps = { name: string; speciesUrl: string; isCurrentPokemon: 
 function EvolutionCard({ name, speciesUrl, isCurrentPokemon, locale }: EvolutionCardProps) {
   const evoId = speciesUrl.split('/').slice(-2, -1)[0]
   return (
-    <a href={`/${locale}/pokemon/${name}`} className={`rounded-xl border-2 p-3 transition-all hover:scale-105 ${isCurrentPokemon ? 'border-primary-400 bg-primary-50 dark:border-neon-blue dark:bg-neon-blue/5' : 'border-gray-300 bg-white hover:border-primary-300 dark:border-dex-border dark:bg-dex-panel dark:hover:border-neon-blue/50'}`}>
+    <a href={`/${locale}/pokemon/${name}`} className={`rounded-xl border-2 p-3 transition-all hover:scale-105 ${isCurrentPokemon ? 'border-primary-400 bg-primary-50 dark:border-primary dark:bg-primary/5' : 'border-gray-300 bg-white hover:border-primary-300 dark:border-dex-border dark:bg-dex-panel dark:hover:border-primary/50'}`}>
       <div className="text-center">
         {evoId && <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${evoId}.png`} alt={name} className="mx-auto h-24 w-24 object-contain md:h-28 md:w-28" loading="lazy" />}
         <p className="font-semibold text-gray-900 text-sm capitalize dark:font-mono dark:text-xs dark:uppercase dark:tracking-wider dark:text-gray-200">{getPokemonName(name)}</p>

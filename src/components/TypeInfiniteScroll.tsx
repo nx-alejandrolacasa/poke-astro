@@ -56,7 +56,7 @@ export function TypeInfiniteScroll({ initialData, type, typeColor, locale }: Typ
         </div>
       </div>
       <div>
-        <a href={`/${locale}`} className="inline-flex items-center gap-2 font-mono text-sm text-primary-600 transition-colors hover:text-primary-700 dark:text-neon-blue/70 dark:hover:text-neon-cyan">
+        <a href={`/${locale}`} className="inline-flex items-center gap-2 font-mono text-sm text-primary-600 transition-colors hover:text-primary-700 dark:text-primary/70 dark:hover:text-neon-cyan">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
           {t.pages.backToHome}
         </a>
@@ -66,12 +66,12 @@ export function TypeInfiniteScroll({ initialData, type, typeColor, locale }: Typ
       </ul>
       {hasMore && (
         <div ref={ref} className="my-8 flex justify-center">
-          {loading ? (<div className="text-center"><div className="radar-loader mx-auto" /><p className="mt-3 font-mono text-xs text-gray-500 dark:text-neon-blue/50">{t.scroll.loadingMore}</p></div>) : <div className="h-10" />}
+          {loading ? (<div className="text-center"><div className="radar-loader mx-auto" /><p className="mt-3 font-mono text-xs text-gray-500 dark:text-primary/50">{t.scroll.loadingMore}</p></div>) : <div className="h-10" />}
         </div>
       )}
       {!hasMore && pokemon.length > 0 && (
         <div className="my-8 text-center">
-          <p className="font-mono text-sm text-gray-500 dark:text-neon-blue/60">{t.scroll.caughtAll}</p>
+          <p className="font-mono text-sm text-gray-500 dark:text-primary/60">{t.scroll.caughtAll}</p>
           <p className="mt-1 font-mono text-xs text-gray-400 dark:text-gray-600">{interpolate(t.scroll.showingAll, { count: pokemon.length })}</p>
         </div>
       )}

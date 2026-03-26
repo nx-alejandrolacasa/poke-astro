@@ -22,13 +22,13 @@ export function FooterContent({ locale }: FooterContentProps) {
       <div className="border-t border-gray-200 pt-3 mt-3 dark:border-dex-border">
         <p className="text-[11px] text-gray-400 font-mono dark:text-gray-600">
           {t.footer.dataBy}{' '}
-          <a href="https://pokeapi.co" className="text-primary-500 transition-colors hover:text-primary-600 dark:text-neon-blue/60 dark:hover:text-neon-blue" target="_blank" rel="noopener noreferrer">PokéAPI</a>
+          <a href="https://pokeapi.co" className="text-primary-500 transition-colors hover:text-primary-600 dark:text-primary/60 dark:hover:text-primary" target="_blank" rel="noopener noreferrer">PokéAPI</a>
           . {t.footer.builtWith}{' '}
-          <a href="https://astro.build" className="text-primary-500 transition-colors hover:text-primary-600 dark:text-neon-blue/60 dark:hover:text-neon-blue" target="_blank" rel="noopener noreferrer">Astro</a>
+          <a href="https://astro.build" className="text-primary-500 transition-colors hover:text-primary-600 dark:text-primary/60 dark:hover:text-primary" target="_blank" rel="noopener noreferrer">Astro</a>
           ,{' '}
-          <a href="https://react.dev" className="text-primary-500 transition-colors hover:text-primary-600 dark:text-neon-blue/60 dark:hover:text-neon-blue" target="_blank" rel="noopener noreferrer">React</a>
+          <a href="https://react.dev" className="text-primary-500 transition-colors hover:text-primary-600 dark:text-primary/60 dark:hover:text-primary" target="_blank" rel="noopener noreferrer">React</a>
           {' & '}
-          <a href="https://tailwindcss.com" className="text-primary-500 transition-colors hover:text-primary-600 dark:text-neon-blue/60 dark:hover:text-neon-blue" target="_blank" rel="noopener noreferrer">Tailwind CSS</a>
+          <a href="https://tailwindcss.com" className="text-primary-500 transition-colors hover:text-primary-600 dark:text-primary/60 dark:hover:text-primary" target="_blank" rel="noopener noreferrer">Tailwind CSS</a>
           .
         </p>
       </div>

@@ -113,14 +113,14 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
           onFocus={() => query && suggestions.length > 0 && setIsOpen(true)}
           placeholder={isLoading ? t.search.loading : t.search.placeholder}
           disabled={isLoading}
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pr-10 text-sm text-gray-900 placeholder-gray-400 transition-all focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-dex-border dark:bg-dex-bg dark:text-neon-cyan dark:placeholder-neon-blue/30 dark:font-mono dark:focus:border-neon-blue dark:focus:ring-neon-blue/10 dark:focus:shadow-[0_0_12px_rgba(59,130,246,0.15)]"
+          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pr-10 text-sm text-gray-900 placeholder-gray-400 transition-all focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-dex-border dark:bg-dex-bg dark:text-neon-cyan dark:placeholder-primary/30 dark:font-mono dark:focus:border-primary dark:focus:ring-primary/10 dark:focus:shadow-[0_0_12px_rgba(59,130,246,0.15)]"
           aria-label="Search Pokémon"
           aria-autocomplete="list"
           aria-controls="search-suggestions"
           aria-expanded={isOpen}
         />
         <svg
-          className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-neon-blue/40"
+          className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-primary/40"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -143,7 +143,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
               onMouseEnter={() => setSelectedIndex(index)}
               className={`block w-full px-4 py-2.5 text-left text-sm transition-colors ${
                 index === selectedIndex
-                  ? 'bg-primary-50 text-primary-700 dark:bg-neon-blue/15 dark:text-neon-cyan'
+                  ? 'bg-primary-50 text-primary-700 dark:bg-primary/15 dark:text-neon-cyan'
                   : 'text-gray-900 hover:bg-gray-50 dark:text-gray-100 dark:hover:bg-dex-surface'
               }`}
               role="option"

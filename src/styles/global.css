@@ -22,33 +22,33 @@ html {
   --font-body: "Inter Variable", system-ui, sans-serif;
 
   /* Device chassis colors */
-  --color-dex-bg: #0a0e17;
-  --color-dex-panel: #111827;
-  --color-dex-surface: #1a2235;
-  --color-dex-border: #1e3a5f;
-  --color-dex-border-glow: #2563eb;
+  --color-dex-bg: #0c0a12;
+  --color-dex-panel: #15121d;
+  --color-dex-surface: #1e1a28;
+  --color-dex-border: #3a1525;
+  --color-dex-border-glow: #E3350D;
 
   /* Neon accent system */
   --color-neon-blue: #3b82f6;
   --color-neon-cyan: #22d3ee;
   --color-neon-green: #10b981;
   --color-neon-amber: #f59e0b;
-  --color-neon-red: #ef4444;
+  --color-neon-red: #E3350D;
   --color-neon-purple: #a855f7;
   --color-neon-pink: #ec4899;
 
-  /* Primary palette */
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-primary-800: #1e40af;
-  --color-primary-900: #1e3a8a;
-  --color-primary: #3b82f6;
+  /* Primary palette — Pokédex Red */
+  --color-primary-50: #fef2f0;
+  --color-primary-100: #fde3de;
+  --color-primary-200: #fcc5b8;
+  --color-primary-300: #f9977f;
+  --color-primary-400: #f26a4a;
+  --color-primary-500: #E3350D;
+  --color-primary-600: #c42d0b;
+  --color-primary-700: #a3250a;
+  --color-primary-800: #86200d;
+  --color-primary-900: #6f1e11;
+  --color-primary: #E3350D;
 
   /* Animations */
   --animate-glow-pulse: glow-pulse 2s ease-in-out infinite;
@@ -120,9 +120,10 @@ html {
     background: linear-gradient(
       105deg,
       transparent 40%,
-      rgba(59, 130, 246, 0.08) 45%,
-      rgba(168, 85, 247, 0.08) 50%,
-      rgba(236, 72, 153, 0.08) 55%,
+      rgba(227, 53, 13, 0.06) 44%,
+      rgba(168, 85, 247, 0.06) 48%,
+      rgba(59, 130, 246, 0.06) 52%,
+      rgba(236, 72, 153, 0.06) 56%,
       transparent 60%
     );
     background-size: 200% 100%;
@@ -139,14 +140,14 @@ html {
 
   /* Glow border utility */
   .glow-border {
-    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2),
-                0 0 8px rgba(59, 130, 246, 0.08);
+    box-shadow: 0 0 0 1px rgba(227, 53, 13, 0.15),
+                0 0 8px rgba(227, 53, 13, 0.06);
     transition: box-shadow 0.3s ease;
   }
   .glow-border:hover {
-    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5),
-                0 0 15px rgba(59, 130, 246, 0.15),
-                0 0 30px rgba(59, 130, 246, 0.08);
+    box-shadow: 0 0 0 1px rgba(227, 53, 13, 0.4),
+                0 0 15px rgba(227, 53, 13, 0.12),
+                0 0 30px rgba(227, 53, 13, 0.06);
   }
 
   /* HUD corner accents */
@@ -159,7 +160,7 @@ html {
     position: absolute;
     width: 12px;
     height: 12px;
-    border-color: rgba(59, 130, 246, 0.4);
+    border-color: rgba(227, 53, 13, 0.35);
     pointer-events: none;
     z-index: 2;
   }
@@ -183,7 +184,7 @@ html {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    border: 2px solid rgba(59, 130, 246, 0.2);
+    border: 2px solid rgba(227, 53, 13, 0.2);
     position: relative;
   }
   .radar-loader::before {
@@ -192,7 +193,7 @@ html {
     inset: 2px;
     border-radius: 50%;
     border: 2px solid transparent;
-    border-top-color: #3b82f6;
+    border-top-color: #E3350D;
     animation: radar-sweep 1.2s linear infinite;
   }
   .radar-loader::after {
@@ -202,15 +203,15 @@ html {
     left: 50%;
     width: 6px;
     height: 6px;
-    background: #3b82f6;
+    background: #E3350D;
     border-radius: 50%;
     transform: translate(-50%, -50%);
-    box-shadow: 0 0 8px #3b82f6;
+    box-shadow: 0 0 8px #E3350D;
   }
 
   /* Glow line separator */
   .glow-line {
     height: 1px;
-    background: linear-gradient(to right, transparent, rgba(59, 130, 246, 0.4), transparent);
+    background: linear-gradient(to right, transparent, rgba(227, 53, 13, 0.35), transparent);
   }
 }
