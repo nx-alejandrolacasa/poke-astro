@@ -86,21 +86,21 @@ export function PokemonEnrichedData({ pokemonName, locale, statsSection }: Pokem
             ) : <p className="text-gray-400 text-xs dark:text-gray-600">{t.pokemon.none}</p>}
           </div>
           <div>
-            <h3 className="mb-1 font-display text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-neon-green/80">{t.pokemon.resistantTo} ({data.typeEffectiveness.resistances.length})</h3>
+            <h3 className="mb-1 font-display text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-neon-blue/80">{t.pokemon.resistantTo} ({data.typeEffectiveness.resistances.length})</h3>
             {data.typeEffectiveness.resistances.length > 0 ? (
               <div className="flex flex-wrap gap-1">
                 {data.typeEffectiveness.resistances.map(({ type, multiplier }) => (
-                  <span key={type} className="rounded-sm border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-emerald-800 text-xs capitalize dark:border-neon-green/30 dark:bg-neon-green/10 dark:font-mono dark:text-neon-green">{type} ({multiplier}x)</span>
+                  <span key={type} className="rounded-sm border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-emerald-800 text-xs capitalize dark:border-neon-blue/30 dark:bg-neon-blue/10 dark:font-mono dark:text-neon-blue">{type} ({multiplier}x)</span>
                 ))}
               </div>
             ) : <p className="text-gray-400 text-xs dark:text-gray-600">{t.pokemon.none}</p>}
           </div>
           <div>
-            <h3 className="mb-1 font-display text-[10px] font-bold uppercase tracking-widest text-primary-600 dark:text-neon-cyan/80">{t.pokemon.immuneTo} ({data.typeEffectiveness.immunities.length})</h3>
+            <h3 className="mb-1 font-display text-[10px] font-bold uppercase tracking-widest text-primary-600 dark:text-neon-blue/80">{t.pokemon.immuneTo} ({data.typeEffectiveness.immunities.length})</h3>
             {data.typeEffectiveness.immunities.length > 0 ? (
               <div className="flex flex-wrap gap-1">
                 {data.typeEffectiveness.immunities.map((type) => (
-                  <span key={type} className="rounded-sm border border-primary-200 bg-primary-50 px-2 py-0.5 text-primary-800 text-xs capitalize dark:border-neon-cyan/30 dark:bg-neon-cyan/10 dark:font-mono dark:text-neon-cyan">{type} (0x)</span>
+                  <span key={type} className="rounded-sm border border-primary-200 bg-primary-50 px-2 py-0.5 text-primary-800 text-xs capitalize dark:border-neon-blue/30 dark:bg-neon-blue/10 dark:font-mono dark:text-neon-blue">{type} (0x)</span>
                 ))}
               </div>
             ) : <p className="text-gray-400 text-xs dark:text-gray-600">{t.pokemon.none}</p>}

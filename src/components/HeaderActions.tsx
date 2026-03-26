@@ -13,10 +13,11 @@ export function HeaderActions({ locale }: HeaderActionsProps) {
 
   return (
     <>
+      {/* Settings gear */}
       <button
         type="button"
         onClick={() => setSettingsOpen(true)}
-        className="flex-shrink-0 rounded-sm p-2 text-gray-500 transition-all duration-150 active:scale-90 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-dex-surface dark:hover:text-neon-cyan"
+        className="flex-shrink-0 rounded-sm p-2 text-gray-500 transition-all duration-150 active:scale-90 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-dex-surface dark:hover:text-neon-blue"
         aria-label={t.settings.title}
       >
         <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

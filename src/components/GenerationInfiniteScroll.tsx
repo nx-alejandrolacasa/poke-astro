@@ -57,7 +57,7 @@ export function GenerationInfiniteScroll({ initialData, generation, generationCo
         </div>
       </div>
       <div>
-        <a href={`/${locale}`} className="inline-flex items-center gap-2 font-mono text-sm text-primary-600 transition-colors hover:text-primary-700 dark:text-primary/70 dark:hover:text-neon-cyan">
+        <a href={`/${locale}`} className="inline-flex items-center gap-2 font-mono text-sm text-primary-600 transition-colors hover:text-primary-700 dark:text-primary/70 dark:hover:text-neon-blue">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
           {t.pages.backToHome}
         </a>

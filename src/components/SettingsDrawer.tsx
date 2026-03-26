@@ -99,7 +99,7 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
       >
         {/* Drawer header */}
         <div className="flex shrink-0 items-center justify-between p-5 border-b border-gray-200 dark:border-dex-border">
-          <h2 className="font-display font-bold text-sm uppercase tracking-widest text-gray-900 dark:text-neon-cyan">
+          <h2 className="font-display font-bold text-sm uppercase tracking-widest text-gray-900 dark:text-neon-blue">
             {t.settings.title}
           </h2>
           <button
@@ -129,7 +129,7 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
                   onClick={() => applyTheme(key)}
                   className={`flex-1 rounded-sm px-3 py-2 font-mono text-xs font-medium transition-all border ${
                     themeMode === key
-                      ? 'border-primary-500 text-primary-600 bg-primary-50 shadow-sm dark:border-primary dark:text-neon-cyan dark:bg-primary/10 dark:shadow-[0_0_8px_rgba(59,130,246,0.2)]'
+                      ? 'border-primary-500 text-primary-600 bg-primary-50 shadow-sm dark:border-primary dark:text-neon-blue dark:bg-primary/10 dark:shadow-[0_0_8px_rgba(59,130,246,0.2)]'
                       : 'border-gray-200 text-gray-500 hover:text-gray-700 hover:bg-gray-50 dark:border-dex-border dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-dex-surface'
                   }`}
                 >
@@ -152,7 +152,7 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
                   onClick={() => switchToLocale(lang)}
                   className={`flex-1 rounded-sm px-3 py-2 font-mono text-xs font-medium transition-all border ${
                     locale === lang
-                      ? 'border-primary-500 text-primary-600 bg-primary-50 shadow-sm dark:border-primary dark:text-neon-cyan dark:bg-primary/10 dark:shadow-[0_0_8px_rgba(59,130,246,0.2)]'
+                      ? 'border-primary-500 text-primary-600 bg-primary-50 shadow-sm dark:border-primary dark:text-neon-blue dark:bg-primary/10 dark:shadow-[0_0_8px_rgba(59,130,246,0.2)]'
                       : 'border-gray-200 text-gray-500 hover:text-gray-700 hover:bg-gray-50 dark:border-dex-border dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-dex-surface'
                   }`}
                 >
