@@ -42,7 +42,7 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
         <div className="flex flex-wrap items-center justify-center gap-3">
           <a
             href={`/${locale}/pokedex`}
-            className="inline-block rounded-sm border-2 border-primary-500 bg-primary-50 px-6 py-3 font-display text-xs font-bold uppercase tracking-wider text-primary-600 transition-all duration-200 active:scale-95 active:bg-primary-100 hover:bg-primary-100 hover:shadow-lg md:px-8 md:py-4 md:text-sm dark:border-primary dark:bg-primary/10 dark:text-neon-blue dark:active:bg-primary/20 dark:hover:bg-primary/20"
+            className="inline-block rounded-sm border-2 border-primary-500 bg-primary-50 px-6 py-3 font-display text-xs font-bold uppercase tracking-wider text-primary-600 transition-all duration-200 active:scale-95 active:bg-primary-100 hover:bg-primary-100 hover:shadow-lg md:px-8 md:py-4 md:text-sm dark:border-primary dark:bg-primary/10 dark:text-primary dark:active:bg-primary/20 dark:hover:bg-primary/20"
           >
             {t.home.viewPokedex}
           </a>
