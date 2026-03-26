@@ -10,7 +10,7 @@ export function HeaderPokedexButton({ locale }: HeaderPokedexButtonProps) {
 
   return (
     <a
-      className="rounded-sm border border-primary-300 bg-primary-50 px-4 py-1.5 font-display text-xs font-bold uppercase tracking-wider text-primary-600 transition-all hover:bg-primary-100 hover:shadow-md dark:border-primary/40 dark:bg-primary/5 dark:text-neon-cyan dark:hover:border-primary dark:hover:bg-primary/10 dark:hover:shadow-[0_0_12px_rgba(59,130,246,0.2)]"
+      className="rounded-sm border border-primary-300 bg-primary-50 px-4 py-1.5 font-display text-xs font-bold uppercase tracking-wider text-primary-600 transition-all duration-150 active:scale-95 active:bg-primary-100 hover:bg-primary-100 hover:shadow-md dark:border-primary/40 dark:bg-primary/5 dark:text-neon-cyan dark:active:bg-primary/15 dark:hover:border-primary dark:hover:bg-primary/10"
       href={`/${locale}/pokedex`}
     >
       {t.header.pokedex}

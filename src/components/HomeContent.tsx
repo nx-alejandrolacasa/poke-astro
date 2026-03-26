@@ -1,5 +1,6 @@
 import { RotatingText } from '@/components/RotatingText'
 import type { Locale } from '@/utils/i18n'
+import { typeColors } from '@/utils/pokemon'
 import { interpolate, translations } from '@/utils/translations'
 
 type HomeContentProps = {
@@ -41,7 +42,7 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
         <div>
           <a
             href={`/${locale}/pokedex`}
-            className="inline-block rounded-sm border-2 border-primary-500 bg-primary-50 px-6 py-3 font-display text-xs font-bold uppercase tracking-wider text-primary-600 transition-all duration-300 hover:bg-primary-100 hover:shadow-lg md:px-8 md:py-4 md:text-sm dark:border-primary dark:bg-primary/10 dark:text-neon-cyan dark:hover:bg-primary/20 dark:hover:shadow-[0_0_20px_rgba(59,130,246,0.25)]"
+            className="inline-block rounded-sm border-2 border-primary-500 bg-primary-50 px-6 py-3 font-display text-xs font-bold uppercase tracking-wider text-primary-600 transition-all duration-200 active:scale-95 active:bg-primary-100 hover:bg-primary-100 hover:shadow-lg md:px-8 md:py-4 md:text-sm dark:border-primary dark:bg-primary/10 dark:text-neon-cyan dark:active:bg-primary/20 dark:hover:bg-primary/20"
           >
             {t.home.viewPokedex}
           </a>
@@ -90,18 +91,21 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
         <div>
           <h3 className="mb-3 font-display text-xs font-bold uppercase tracking-wider text-gray-600 md:text-sm dark:text-primary/50">{t.home.pokemonTypes}</h3>
           <div className="grid grid-cols-3 gap-2 sm:grid-cols-6 md:grid-cols-9">
-            {pokemonTypes.map((type) => (
-              <a key={type} href={`/${locale}/type/${type}`} className="group rounded-sm border border-gray-200 bg-white p-2 text-center shadow-sm transition-all duration-200 hover:border-primary-400 hover:shadow-md hover:scale-105 md:p-3 dark:border-dex-border dark:bg-dex-surface dark:hover:border-primary/50 dark:hover:shadow-[0_0_10px_rgba(59,130,246,0.1)]">
-                <span className="font-semibold text-gray-700 text-xs transition-colors group-hover:text-primary-600 md:text-sm dark:font-mono dark:text-gray-400 dark:group-hover:text-neon-cyan">{t.types[type as keyof typeof t.types]}</span>
-              </a>
-            ))}
+            {pokemonTypes.map((type) => {
+              const color = typeColors[type] ?? '#a8a878'
+              return (
+                <a key={type} href={`/${locale}/type/${type}`} className="group rounded-sm border border-gray-200 bg-white p-2 text-center shadow-sm transition-all duration-200 active:scale-95 md:p-3 dark:border-dex-border dark:bg-dex-surface" style={{ borderBottomWidth: '2px', borderBottomColor: color }}>
+                  <span className="font-semibold text-xs md:text-sm dark:font-mono" style={{ color }}>{t.types[type as keyof typeof t.types]}</span>
+                </a>
+              )
+            })}
           </div>
         </div>
         <div>
           <h3 className="mb-3 font-display text-xs font-bold uppercase tracking-wider text-gray-600 md:text-sm dark:text-primary/50">{t.home.byGeneration}</h3>
           <div className="grid grid-cols-3 gap-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9">
             {generations.map((gen, index) => (
-              <a key={index} href={`/${locale}/generation/${index + 1}`} className="group rounded-sm border border-gray-200 bg-white p-3 shadow-sm transition-all duration-200 hover:border-primary-400 hover:shadow-md hover:scale-[1.02] md:p-4 dark:border-dex-border dark:bg-dex-surface dark:hover:border-primary/50 dark:hover:shadow-[0_0_10px_rgba(59,130,246,0.1)]">
+              <a key={index} href={`/${locale}/generation/${index + 1}`} className="group rounded-sm border border-gray-200 bg-white p-3 shadow-sm transition-all duration-200 active:scale-95 md:p-4 dark:border-dex-border dark:bg-dex-surface">
                 <div className="space-y-0.5 text-center">
                   <p className="font-mono font-bold text-gray-700 text-sm transition-colors group-hover:text-primary-600 md:text-base dark:text-gray-300 dark:group-hover:text-neon-cyan">Gen {index + 1}</p>
                   <p className="text-gray-500 text-xs dark:text-gray-500">{gen.region}</p>

@@ -57,6 +57,7 @@ html {
   --animate-holo-shimmer: holo-shimmer 3s ease-in-out infinite;
   --animate-screen-flicker: screen-flicker 4s ease-in-out infinite;
   --animate-boot-up: boot-up 0.8s ease-out forwards;
+  --animate-ambient-shift: ambient-shift 20s ease-in-out infinite;
 
   @keyframes glow-pulse {
     0%, 100% { box-shadow: 0 0 5px currentColor, 0 0 10px currentColor; }
@@ -90,51 +91,51 @@ html {
     30% { opacity: 0.5; filter: brightness(1.5) saturate(0.5); }
     100% { opacity: 1; filter: brightness(1) saturate(1); }
   }
+
+  @keyframes ambient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    25% { background-position: 100% 25%; }
+    50% { background-position: 50% 100%; }
+    75% { background-position: 0% 75%; }
+  }
 }
 
-/* === TFT/CRT SCREEN EFFECTS (dark mode only) === */
+/* === TFT/CRT SCREEN EFFECTS === */
 @layer base {
-  /* Scanline overlay — finer RGB subpixel pattern */
+  /* Animated ambient gradient background (dark mode) */
+  .dark body {
+    background:
+      linear-gradient(
+        135deg,
+        #0c0a12 0%,
+        #1a0a15 20%,
+        #0c0a12 40%,
+        #0a1018 60%,
+        #12081a 80%,
+        #0c0a12 100%
+      );
+    background-size: 300% 300%;
+    animation: ambient-shift 20s ease-in-out infinite;
+  }
+
+  /* Noise grain texture — SVG inline for performance */
   body::after {
     content: '';
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 9999;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0, 0, 0, 0.02) 2px,
-      rgba(0, 0, 0, 0.02) 4px
-    );
-    mix-blend-mode: multiply;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
   }
 
   .dark body::after {
-    background:
-      /* Fine scanlines */
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 1px,
-        rgba(0, 0, 0, 0.15) 1px,
-        rgba(0, 0, 0, 0.15) 2px
-      ),
-      /* RGB subpixel columns */
-      repeating-linear-gradient(
-        90deg,
-        rgba(227, 53, 13, 0.015) 0px,
-        transparent 1px,
-        rgba(16, 185, 129, 0.015) 2px,
-        transparent 3px,
-        rgba(59, 130, 246, 0.015) 4px,
-        transparent 5px
-      );
-    mix-blend-mode: screen;
+    opacity: 0.04;
   }
 
-  /* Vignette — darkened edges like an old CRT */
+  /* Vignette — darkened edges */
   .dark body::before {
     content: '';
     position: fixed;
@@ -143,8 +144,8 @@ html {
     z-index: 9998;
     background: radial-gradient(
       ellipse at center,
-      transparent 50%,
-      rgba(0, 0, 0, 0.25) 100%
+      transparent 40%,
+      rgba(0, 0, 0, 0.35) 100%
     );
   }
 
@@ -153,24 +154,30 @@ html {
     animation: screen-flicker 4s ease-in-out infinite;
   }
 
-  /* Boot-up animation — content fades in like screen powering on */
+  /* Boot-up animation */
   .dark main > * {
-    animation: boot-up 0.8s ease-out forwards;
-    animation-delay: 0.1s;
+    animation: boot-up 0.6s ease-out forwards;
+    animation-delay: 0.05s;
     opacity: 0;
   }
 
-  /* Phosphor glow on headings in dark mode */
+  /* Phosphor glow on headings */
   .dark h1, .dark h2, .dark h3 {
-    text-shadow: 0 0 8px rgba(227, 53, 13, 0.15), 0 0 2px rgba(227, 53, 13, 0.08);
+    text-shadow: 0 0 10px rgba(227, 53, 13, 0.12), 0 0 3px rgba(227, 53, 13, 0.06);
   }
 
-  /* Chromatic aberration on hero headings */
+  /* Chromatic aberration on display headings */
   .dark .font-display {
     text-shadow:
-      -0.5px 0 rgba(227, 53, 13, 0.3),
-      0.5px 0 rgba(34, 211, 238, 0.2),
-      0 0 12px rgba(227, 53, 13, 0.1);
+      -0.5px 0 rgba(227, 53, 13, 0.25),
+      0.5px 0 rgba(34, 211, 238, 0.15),
+      0 0 15px rgba(227, 53, 13, 0.08);
+  }
+
+  /* Light mode: subtle warm tint */
+  body {
+    background: linear-gradient(180deg, #fef2f0 0%, #ffffff 15%, #ffffff 85%, #fef2f0 100%);
+    background-attachment: fixed;
   }
 }
 

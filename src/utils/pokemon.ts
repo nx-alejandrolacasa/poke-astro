@@ -165,6 +165,33 @@ export function getPokemonImage(pokemon: Pokemon) {
   )
 }
 
+/** Solid color for a Pokémon type — used for card accents, borders, badges */
+export const typeColors: Record<string, string> = {
+  normal: '#a8a878',
+  fire: '#f08030',
+  water: '#6890f0',
+  electric: '#f8d030',
+  grass: '#78c850',
+  ice: '#98d8d8',
+  fighting: '#c03028',
+  poison: '#a040a0',
+  ground: '#e0c068',
+  flying: '#a890f0',
+  psychic: '#f85888',
+  bug: '#a8b820',
+  rock: '#b8a038',
+  ghost: '#705898',
+  dragon: '#7038f8',
+  dark: '#705848',
+  steel: '#b8b8d0',
+  fairy: '#ee99ac',
+}
+
+export function getTypeColor(pokemon: Pokemon): string {
+  const primaryType = pokemon.types[0]?.type.name ?? 'normal'
+  return typeColors[primaryType] ?? typeColors.normal
+}
+
 export function getPokemonName(name: string) {
   return name
     .replaceAll('-', ' ')

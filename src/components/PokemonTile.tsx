@@ -1,5 +1,5 @@
 import type { Pokemon } from '@utils/pokemon'
-import { getPokemonImage } from '@utils/pokemon'
+import { getPokemonImage, getTypeColor } from '@utils/pokemon'
 import type { Locale } from '@/utils/i18n'
 
 type PokemonTileProps = {
@@ -9,22 +9,38 @@ type PokemonTileProps = {
 }
 
 export function PokemonTile({ loading = false, pokemon, locale }: PokemonTileProps) {
+  const typeColor = getTypeColor(pokemon)
+
   return (
-    <div className="holo-shimmer rounded-sm border-2 border-gray-200 bg-white p-2 text-center shadow-md transition-all hover:border-primary-400 hover:shadow-lg hover:scale-[1.02] md:p-3 dark:border-dex-border dark:bg-dex-surface glow-border">
+    <div
+      className="holo-shimmer rounded-sm border border-gray-200 bg-white p-2 text-center shadow-sm transition-all duration-200 active:scale-[0.97] active:shadow-md md:p-3 dark:border-dex-border dark:bg-dex-surface glow-border"
+      style={{ borderLeftWidth: '3px', borderLeftColor: typeColor }}
+    >
       <a href={`/${locale}/pokemon/${pokemon.name}`} title={pokemon.name}>
         <div className="relative aspect-square w-full">
-          <div className="pointer-events-none absolute right-0.5 bottom-0.5 z-0 select-none font-mono font-black text-2xl text-gray-300/40 md:text-4xl dark:text-neon-cyan/15">
+          <div
+            className="pointer-events-none absolute right-0.5 bottom-0.5 z-0 select-none font-mono font-black text-2xl md:text-4xl"
+            style={{ color: `${typeColor}20` }}
+          >
             #{pokemon.order.toString().padStart(3, '0')}
           </div>
           <img
-            className="relative z-10 aspect-square w-full"
+            className="relative z-10 aspect-square w-full drop-shadow-sm"
             src={loading ? '/loading.svg' : getPokemonImage(pokemon)}
             alt={`${pokemon.name} official artwork`}
           />
         </div>
-        <span className="mt-1 block overflow-hidden text-ellipsis whitespace-nowrap font-bold text-gray-900 text-xs capitalize md:mt-2 md:text-sm dark:font-mono dark:text-xs dark:uppercase dark:tracking-wider dark:text-gray-200">
-          {pokemon.name.replaceAll('-', ' ')}
-        </span>
+        <div className="mt-1 md:mt-2">
+          <span className="block overflow-hidden text-ellipsis whitespace-nowrap font-bold text-gray-900 text-xs capitalize md:text-sm dark:font-mono dark:text-xs dark:uppercase dark:tracking-wider dark:text-gray-200">
+            {pokemon.name.replaceAll('-', ' ')}
+          </span>
+          <span
+            className="mt-0.5 block font-mono text-[9px] uppercase tracking-wider opacity-60"
+            style={{ color: typeColor }}
+          >
+            {pokemon.types.map(t => t.type.name).join(' / ')}
+          </span>
+        </div>
       </a>
     </div>
   )
