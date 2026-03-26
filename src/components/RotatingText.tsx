@@ -161,8 +161,8 @@ export function RotatingText({
                     }`
                   : `h-1.5 rounded-full transition-all duration-300 ${
                       index === currentIndex
-                        ? 'w-4 bg-primary-500 dark:bg-primary-400'
-                        : 'w-1.5 bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500'
+                        ? 'w-4 bg-primary-500 dark:bg-neon-blue'
+                        : 'w-1.5 bg-gray-300 hover:bg-gray-400 dark:bg-dex-border dark:hover:bg-gray-600'
                     }`
               }
               aria-label={`Show item ${index + 1}`}

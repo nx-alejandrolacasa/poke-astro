@@ -111,6 +111,15 @@ export type Translations = {
   }
   // Fun facts
   funFacts: string[]
+  // Settings
+  settings: {
+    title: string
+    theme: string
+    language: string
+    auto: string
+    light: string
+    dark: string
+  }
   // Footer
   footer: {
     disclaimer: string
@@ -244,6 +253,14 @@ export const translations: Record<Language, Translations> = {
       "The cry of Charizard in Generation I is the same as Rhyhorn's cry",
       'Psychic was the most overpowered type in Gen I with no real counters',
     ],
+    settings: {
+      title: 'Configure Pokédex',
+      theme: 'Display Mode',
+      language: 'Language',
+      auto: 'Auto',
+      light: 'Light',
+      dark: 'Dark',
+    },
     footer: {
       disclaimer:
         'This website is fan-made with no affiliation, sponsorship, or official relationship with Nintendo, Game Freak, Creatures Inc., or The Pokémon Company.',
@@ -377,6 +394,14 @@ export const translations: Record<Language, Translations> = {
       'El grito de Charizard en la primera generación es igual al de Rhyhorn',
       'Psíquico fue el tipo más dominante en Gen I sin verdaderos contadores',
     ],
+    settings: {
+      title: 'Configurar Pokédex',
+      theme: 'Modo de Pantalla',
+      language: 'Idioma',
+      auto: 'Auto',
+      light: 'Claro',
+      dark: 'Oscuro',
+    },
     footer: {
       disclaimer:
         'Este sitio web está creado por fans, sin ningún tipo de afiliación, patrocinio ni relación oficial con Nintendo, Game Freak, Creatures Inc. o The Pokémon Company.',

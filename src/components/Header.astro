@@ -11,20 +11,18 @@ interface Props {
 const { locale } = Astro.props
 ---
 
-<header class="sticky top-0 z-40 border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-sm transition-colors dark:border-gray-700 dark:bg-gray-900/95">
+<header class="sticky top-0 z-40 border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-md transition-colors dark:border-dex-border dark:bg-dex-panel/95">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <nav class="flex h-16 items-center justify-between gap-4 sm:h-20 md:gap-8">
-      <!-- Logo -->
+    <nav class="flex h-14 items-center justify-between gap-4 sm:h-16 md:gap-8">
+      <!-- Logo / Branding -->
       <a
         href={`/${locale}`}
         title="Go home"
         class="flex-shrink-0 transition-transform hover:scale-105"
       >
-        <img
-          class="h-10 sm:h-14"
-          src="/pokemon-logo.svg"
-          alt="Pokemon"
-        />
+        <span class="font-display font-bold text-lg tracking-widest uppercase text-gray-900 sm:text-xl dark:bg-gradient-to-r dark:from-neon-blue dark:to-neon-cyan dark:bg-clip-text dark:text-transparent">
+          Pokédex
+        </span>
       </a>
 
       <!-- Search - Hidden on mobile, shown on tablet+ -->
@@ -34,8 +32,10 @@ const { locale } = Astro.props
         </div>
       </div>
 
-      <!-- Navigation links -->
+      <!-- Actions -->
       <HeaderActions client:load locale={locale} />
     </nav>
   </div>
+  <!-- Glow line under header (dark mode only) -->
+  <div class="hidden dark:block glow-line"></div>
 </header>

@@ -8,15 +8,9 @@ type ImageZoomModalProps = {
   onClose: () => void
 }
 
-export function ImageZoomModal({
-  src,
-  alt,
-  isOpen,
-  onClose,
-}: ImageZoomModalProps) {
+export function ImageZoomModal({ src, alt, isOpen, onClose }: ImageZoomModalProps) {
   const { t } = useLanguage()
 
-  // Close on escape key and prevent body scroll
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
@@ -35,49 +29,33 @@ export function ImageZoomModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md"
       onClick={onClose}
-      onKeyDown={(e) => { if (e.key === 'Escape') onClose() }}
       role="dialog"
       aria-modal="true"
       aria-label={`Enlarged image of ${alt}`}
     >
-      {/* Close button */}
       <button
         type="button"
         onClick={onClose}
-        className="absolute top-4 right-4 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20"
+        className="absolute top-4 right-4 rounded-lg border border-white/10 bg-white/5 p-2 text-white transition-colors hover:bg-white/10 dark:border-neon-blue/20 dark:hover:bg-neon-blue/10"
         aria-label={t.modal.close}
       >
-        <svg
-          className="h-8 w-8"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          aria-hidden="true"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M6 18L18 6M6 6l12 12"
-          />
+        <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
 
-      {/* Image container - 90% of screen */}
       <div className="flex h-[90vh] w-[90vw] items-center justify-center">
         <img
           src={src}
           alt={alt}
           className="max-h-full max-w-full object-contain drop-shadow-2xl"
           onClick={(e) => e.stopPropagation()}
-          onKeyDown={(e) => e.stopPropagation()}
         />
       </div>
 
-      {/* Hint text */}
-      <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-sm text-white/60">
+      <p className="absolute bottom-4 left-1/2 -translate-x-1/2 font-mono text-xs text-white/40">
         {t.modal.closeHint}
       </p>
     </div>
