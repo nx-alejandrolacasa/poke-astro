@@ -28,9 +28,11 @@ const { locale } = Astro.props
         />
       </a>
 
-      <!-- Search — always visible -->
-      <div class="flex-1">
-        <PokemonSearchWrapper client:load locale={locale} />
+      <!-- Search — always visible, centered -->
+      <div class="flex-1 flex justify-center">
+        <div class="w-full max-w-md">
+          <PokemonSearchWrapper client:load locale={locale} />
+        </div>
       </div>
 
       <!-- Gear icon -->
