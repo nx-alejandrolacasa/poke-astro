@@ -19,16 +19,16 @@ html {
   --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
   --font-body: "Inter Variable", system-ui, sans-serif;
 
-  /* Device chassis colors */
-  --color-dex-bg: #0c0a12;
-  --color-dex-panel: #15121d;
-  --color-dex-surface: #1e1a28;
-  --color-dex-border: #3a1525;
-  --color-dex-border-glow: #E3350D;
+  /* Device chassis colors — green CRT tint */
+  --color-dex-bg: #050a05;
+  --color-dex-panel: #0a120a;
+  --color-dex-surface: #111a11;
+  --color-dex-border: #1a2e1a;
+  --color-dex-border-glow: #33ff33;
 
   /* Neon accent system */
   --color-neon-blue: #3b82f6;
-  --color-neon-cyan: #22d3ee;
+  --color-neon-cyan: #33ff33;
   --color-neon-green: #10b981;
   --color-neon-amber: #f59e0b;
   --color-neon-red: #E3350D;
@@ -105,12 +105,12 @@ html {
     background:
       linear-gradient(
         135deg,
-        #0c0a12 0%,
-        #1a0a15 20%,
-        #0c0a12 40%,
-        #0a1018 60%,
-        #12081a 80%,
-        #0c0a12 100%
+        #050a05 0%,
+        #081208 20%,
+        #050a05 40%,
+        #060e06 60%,
+        #0a100a 80%,
+        #050a05 100%
       );
     background-size: 300% 300%;
     animation: ambient-shift 20s ease-in-out infinite;
@@ -159,17 +159,17 @@ html {
     opacity: 0;
   }
 
-  /* Phosphor glow on headings */
+  /* Phosphor glow on headings — green CRT */
   .dark h1, .dark h2, .dark h3 {
-    text-shadow: 0 0 10px rgba(227, 53, 13, 0.12), 0 0 3px rgba(227, 53, 13, 0.06);
+    text-shadow: 0 0 10px rgba(51, 255, 51, 0.15), 0 0 3px rgba(51, 255, 51, 0.08);
   }
 
   /* Chromatic aberration on display headings */
   .dark .font-display {
     text-shadow:
-      -0.5px 0 rgba(227, 53, 13, 0.25),
-      0.5px 0 rgba(34, 211, 238, 0.15),
-      0 0 15px rgba(227, 53, 13, 0.08);
+      -0.5px 0 rgba(51, 255, 51, 0.3),
+      0.5px 0 rgba(51, 255, 51, 0.15),
+      0 0 15px rgba(51, 255, 51, 0.1);
   }
 
   /* Light mode: subtle warm tint */
@@ -209,6 +209,17 @@ html {
   .holo-shimmer:hover::before {
     opacity: 1;
   }
+  .dark .holo-shimmer::before {
+    background: linear-gradient(
+      105deg,
+      transparent 40%,
+      rgba(51, 255, 51, 0.04) 45%,
+      rgba(51, 255, 51, 0.06) 50%,
+      rgba(51, 255, 51, 0.04) 55%,
+      transparent 60%
+    );
+    background-size: 200% 100%;
+  }
 
   /* Glow border utility */
   .glow-border {
@@ -220,6 +231,15 @@ html {
     box-shadow: 0 0 0 1px rgba(227, 53, 13, 0.4),
                 0 0 15px rgba(227, 53, 13, 0.12),
                 0 0 30px rgba(227, 53, 13, 0.06);
+  }
+  .dark .glow-border {
+    box-shadow: 0 0 0 1px rgba(51, 255, 51, 0.1),
+                0 0 8px rgba(51, 255, 51, 0.04);
+  }
+  .dark .glow-border:hover {
+    box-shadow: 0 0 0 1px rgba(51, 255, 51, 0.3),
+                0 0 15px rgba(51, 255, 51, 0.1),
+                0 0 30px rgba(51, 255, 51, 0.05);
   }
 
   /* HUD corner accents */
@@ -236,6 +256,10 @@ html {
     pointer-events: none;
     z-index: 2;
   }
+  .dark .hud-corners::before,
+  .dark .hud-corners::after {
+    border-color: rgba(51, 255, 51, 0.25);
+  }
   .hud-corners::before {
     top: -1px;
     left: -1px;
@@ -251,7 +275,7 @@ html {
 
   /* Phosphor text glow */
   .phosphor-glow {
-    text-shadow: 0 0 6px rgba(227, 53, 13, 0.2), 0 0 2px rgba(227, 53, 13, 0.1);
+    text-shadow: 0 0 6px rgba(51, 255, 51, 0.2), 0 0 2px rgba(51, 255, 51, 0.1);
   }
 }
 
@@ -285,10 +309,20 @@ html {
     transform: translate(-50%, -50%);
     box-shadow: 0 0 8px #E3350D;
   }
+  .dark .radar-loader {
+    border-color: rgba(51, 255, 51, 0.2);
+  }
+  .dark .radar-loader::before {
+    border-top-color: #33ff33;
+  }
+  .dark .radar-loader::after {
+    background: #33ff33;
+    box-shadow: 0 0 8px #33ff33;
+  }
 
   /* Glow line separator */
   .glow-line {
     height: 1px;
-    background: linear-gradient(to right, transparent, rgba(227, 53, 13, 0.35), transparent);
+    background: linear-gradient(to right, transparent, rgba(51, 255, 51, 0.3), transparent);
   }
 }
