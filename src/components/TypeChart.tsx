@@ -137,7 +137,7 @@ function EffectivenessCell({
   } else if (multiplier === 0.5) {
     bg = 'bg-orange-400 dark:bg-neon-amber'
     text = 'text-white dark:text-dex-bg font-semibold'
-    label = '\u00BD'
+    label = '\u00bd'
   } else if (multiplier === 0) {
     bg = 'bg-gray-800 dark:bg-black'
     text = 'text-gray-500 dark:text-neon-red font-bold'
@@ -403,7 +403,7 @@ export function TypeChart({ locale }: TypeChartProps) {
         <div className="mx-auto max-w-2xl rounded-sm border border-amber-200 bg-amber-50 p-3 text-center font-mono text-amber-800 text-xs dark:border-neon-amber/30 dark:bg-neon-amber/5 dark:text-neon-amber">
           {locale === 'es' ? (
             <>
-              <strong>Gen I:</strong> Sin tipos Siniestro, Acero ni Hada. Fantasma no afectaba a Ps\u00edquico, Bicho era super eficaz contra Veneno, y Hielo no era resistido por Fuego.
+              <strong>Gen I:</strong> Sin tipos Siniestro, Acero ni Hada. Fantasma no afectaba a Ps{"í"}quico, Bicho era super eficaz contra Veneno, y Hielo no era resistido por Fuego.
             </>
           ) : (
             <>
@@ -457,19 +457,19 @@ export function TypeChart({ locale }: TypeChartProps) {
           <span className="flex items-center gap-1">
             <span className="inline-block h-3.5 w-3.5 rounded-sm bg-emerald-500 dark:bg-neon-green" />
             <span className="text-gray-500 dark:text-gray-400">
-              2\u00D7 {locale === 'es' ? 'Super eficaz' : 'Super effective'}
+              {"2\u00d7"} {locale === 'es' ? 'Super eficaz' : 'Super effective'}
             </span>
           </span>
           <span className="flex items-center gap-1">
             <span className="inline-block h-3.5 w-3.5 rounded-sm bg-orange-400 dark:bg-neon-amber" />
             <span className="text-gray-500 dark:text-gray-400">
-              \u00BD\u00D7 {locale === 'es' ? 'Poco eficaz' : 'Not very effective'}
+              {"\u00bd\u00d7"} {locale === 'es' ? 'Poco eficaz' : 'Not very effective'}
             </span>
           </span>
           <span className="flex items-center gap-1">
             <span className="inline-block h-3.5 w-3.5 rounded-sm bg-gray-800 dark:bg-black" />
             <span className="text-gray-500 dark:text-gray-400">
-              0\u00D7 {locale === 'es' ? 'Sin efecto' : 'No effect'}
+              {"0\u00d7"} {locale === 'es' ? 'Sin efecto' : 'No effect'}
             </span>
           </span>
         </div>
@@ -483,7 +483,7 @@ export function TypeChart({ locale }: TypeChartProps) {
                   <th className="sticky left-0 z-10 bg-white dark:bg-dex-surface">
                     <div className="flex h-12 w-16 items-end justify-end p-1 sm:w-20 md:h-14 md:w-24">
                       <span className="font-mono text-[9px] uppercase tracking-wider text-gray-400 sm:text-[10px] md:text-xs dark:text-primary/40">
-                        ATK\u2192
+                        {"ATK\u2192"}
                       </span>
                     </div>
                   </th>
