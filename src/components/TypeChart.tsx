@@ -150,8 +150,8 @@ function EffectivenessCell({
     text = 'text-white dark:text-dex-bg font-semibold'
     label = '\u00bd'
   } else if (multiplier === 0) {
-    bg = 'bg-red-700 dark:bg-neon-red'
-    text = 'text-white dark:text-dex-bg font-bold'
+    bg = 'bg-red-700 dark:bg-neon-red/20'
+    text = 'text-white dark:text-neon-red font-bold'
     label = '0'
   } else {
     bg = 'bg-gray-100 dark:bg-dex-surface/50'
