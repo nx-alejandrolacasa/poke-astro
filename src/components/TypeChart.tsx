@@ -142,7 +142,7 @@ function EffectivenessCell({
   let label: string
 
   if (multiplier === 2) {
-    bg = 'bg-emerald-500 dark:bg-neon-green'
+    bg = 'bg-emerald-500 dark:bg-neon-blue'
     text = 'text-white dark:text-dex-bg font-bold'
     label = '2'
   } else if (multiplier === 0.5) {
@@ -161,7 +161,7 @@ function EffectivenessCell({
 
   const highlight =
     isHighlightedRow || isHighlightedCol
-      ? 'ring-1 ring-inset ring-primary/30 dark:ring-neon-cyan/20'
+      ? 'ring-1 ring-inset ring-primary/30 dark:ring-neon-blue/20'
       : ''
 
   return (
@@ -369,7 +369,7 @@ export function TypeChart({ locale }: TypeChartProps) {
     <div className="space-y-6 pb-8 md:space-y-8 md:pb-12">
       {/* Header */}
       <section className="space-y-4 pt-4 text-center md:pt-6">
-        <h1 className="font-display font-bold text-xl uppercase tracking-wider text-gray-900 md:text-3xl dark:bg-gradient-to-r dark:from-neon-green dark:via-neon-cyan dark:to-neon-purple dark:bg-clip-text dark:text-transparent">
+        <h1 className="font-display font-bold text-xl uppercase tracking-wider text-gray-900 md:text-3xl dark:text-neon-blue">
           {locale === 'es' ? 'Tabla de Tipos' : 'Type Chart'}
         </h1>
         <p className="mx-auto max-w-2xl text-sm md:text-base" style={{ color: '#6b7280' }}>
@@ -387,7 +387,7 @@ export function TypeChart({ locale }: TypeChartProps) {
             onClick={() => setGen1(false)}
             className={`rounded-sm px-4 py-2 font-mono text-xs font-semibold transition-all duration-200 ${
               !gen1
-                ? 'bg-primary-50 text-primary-600 shadow-sm dark:bg-primary/10 dark:text-neon-cyan dark:shadow-[0_0_8px_rgba(51,255,51,0.15)]'
+                ? 'bg-primary-50 text-primary-600 shadow-sm dark:bg-primary/10 dark:text-neon-blue dark:shadow-[0_0_8px_rgba(59,130,246,0.15)]'
                 : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
             }`}
           >
@@ -399,7 +399,7 @@ export function TypeChart({ locale }: TypeChartProps) {
             onClick={() => setGen1(true)}
             className={`rounded-sm px-4 py-2 font-mono text-xs font-semibold transition-all duration-200 ${
               gen1
-                ? 'bg-primary-50 text-primary-600 shadow-sm dark:bg-primary/10 dark:text-neon-cyan dark:shadow-[0_0_8px_rgba(51,255,51,0.15)]'
+                ? 'bg-primary-50 text-primary-600 shadow-sm dark:bg-primary/10 dark:text-neon-blue dark:shadow-[0_0_8px_rgba(59,130,246,0.15)]'
                 : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
             }`}
           >
@@ -466,8 +466,8 @@ export function TypeChart({ locale }: TypeChartProps) {
         {/* Legend */}
         <div className="flex flex-wrap justify-center gap-4 font-mono text-[10px] md:text-xs">
           <span className="flex items-center gap-1.5">
-            <span className="inline-block h-4 w-4 rounded-sm bg-emerald-500 dark:bg-neon-green" />
-            <span className="text-emerald-700 dark:text-neon-green">
+            <span className="inline-block h-4 w-4 rounded-sm bg-emerald-500 dark:bg-neon-blue" />
+            <span className="text-emerald-700 dark:text-neon-blue">
               {"2\u00d7"} {locale === 'es' ? 'Super eficaz' : 'Super effective'}
             </span>
           </span>
