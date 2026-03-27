@@ -13,7 +13,7 @@ const initialData = await fetchPokemonPage(1)
 ---
 
 <Layout title={t.header.pokedex} locale={locale}>
-  <h1 class="mb-6 text-center font-display font-bold text-xl uppercase tracking-widest text-gray-900 md:text-2xl dark:text-neon-blue">
+  <h1 class="mb-8 text-center text-3xl font-bold tracking-tight text-ink md:text-4xl dark:text-dark-ink">
     {t.header.pokedex}
   </h1>
   <PokemonInfiniteScrollWrapper client:load initialData={initialData} locale={locale} />

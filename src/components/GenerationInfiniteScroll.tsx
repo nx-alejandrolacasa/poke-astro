@@ -48,32 +48,28 @@ export function GenerationInfiniteScroll({ initialData, generation, generationCo
 
   return (
     <div className="space-y-8">
-      <div className={`bg-gradient-to-r ${generationColor} rounded-sm p-8 md:p-12 text-center shadow-xl relative overflow-hidden`}>
-        <div className="absolute inset-0 bg-black/10 dark:bg-black/30" />
-        <div className="relative z-10">
-          <h1 className="text-3xl md:text-5xl font-display font-bold text-white uppercase tracking-wider mb-2">{generation.name}</h1>
-          <p className="text-xl md:text-2xl text-white/90 font-mono mb-4">{generation.region} {t.pages.region}</p>
-          <p className="text-sm md:text-base text-white/70 font-mono">{interpolate(t.pages.speciesCount, { count: initialData.count })}</p>
-        </div>
-      </div>
-      <div>
-        <a href={`/${locale}`} className="inline-flex items-center gap-2 font-mono text-sm text-primary-600 transition-colors hover:text-primary-700 dark:text-primary/70 dark:hover:text-neon-blue">
+      <div className="space-y-2 pt-4 md:pt-6">
+        <a href={`/${locale}`} className="inline-flex items-center gap-1.5 text-sm text-ink-muted transition-colors hover:text-primary dark:text-dark-ink-muted dark:hover:text-primary">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
           {t.pages.backToHome}
         </a>
+        <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-ink dark:text-dark-ink">
+          {generation.name} <span className="text-ink-muted dark:text-dark-ink-muted">{generation.region}</span>
+        </h1>
+        <p className="text-sm text-ink-muted md:text-base dark:text-dark-ink-muted">{interpolate(t.pages.speciesCount, { count: initialData.count })}</p>
       </div>
-      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+      <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-5 lg:grid-cols-5 xl:grid-cols-6">
         {pokemon.map((poke) => (<li key={poke.name} className="list-none"><PokemonTile pokemon={poke} locale={locale} /></li>))}
       </ul>
       {hasMore && (
-        <div ref={ref} className="my-8 flex justify-center">
-          {loading ? (<div className="text-center"><div className="radar-loader mx-auto" /><p className="mt-3 font-mono text-xs text-gray-500 dark:text-primary/50">{t.scroll.loadingMore}</p></div>) : <div className="h-10" />}
+        <div ref={ref} className="my-10 flex justify-center">
+          {loading ? (<div className="text-center"><div className="prismatic-loader mx-auto" /><p className="mt-3 text-xs text-ink-muted dark:text-dark-ink-muted">{t.scroll.loadingMore}</p></div>) : <div className="h-10" />}
         </div>
       )}
       {!hasMore && pokemon.length > 0 && (
-        <div className="my-8 text-center">
-          <p className="font-mono text-sm text-gray-500 dark:text-primary/60">{t.scroll.caughtAll}</p>
-          <p className="mt-1 font-mono text-xs text-gray-400 dark:text-gray-600">{interpolate(t.scroll.showingAll, { count: pokemon.length })}</p>
+        <div className="my-10 text-center">
+          <p className="text-sm text-ink-muted dark:text-dark-ink-muted">{t.scroll.caughtAll}</p>
+          <p className="mt-1 text-xs text-ink-faint dark:text-dark-ink-faint">{interpolate(t.scroll.showingAll, { count: pokemon.length })}</p>
         </div>
       )}
     </div>
