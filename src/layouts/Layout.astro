@@ -24,13 +24,14 @@ const { title, locale } = Astro.props
 
     <!-- PWA Meta Tags -->
     <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#0a0e17" />
-    <meta name="description" content="Una Pokédex moderna con información de todos los Pokémon" />
+    <meta name="theme-color" content="#fefefe" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0c0c18" media="(prefers-color-scheme: dark)" />
+    <meta name="description" content="Una Pokedex moderna con informacion de todos los Pokemon" />
 
     <!-- iOS PWA Support -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="Pokédex" />
+    <meta name="apple-mobile-web-app-title" content="Pokedex" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     {/* Inlined to avoid FOUC. Provides window.theme global. */}
     <script is:inline>
@@ -123,7 +124,7 @@ const { title, locale } = Astro.props
             var locale = this.getAttribute('data-locale') || 'es'
             var t = labels[locale] || labels.es
             var d = iconPaths[current]
-            this.innerHTML = '<button type="button" class="flex items-center gap-1.5 rounded-sm px-3 py-1.5 font-semibold text-sm text-gray-600 transition-all hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700" title="' + t.label + ': ' + t[current] + '" aria-label="' + t.label + ': ' + t[current] + '"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="' + d + '" /></svg><span>' + t[current] + '</span></button>'
+            this.innerHTML = '<button type="button" class="flex items-center gap-1.5 rounded-xl px-3 py-1.5 font-medium text-sm text-ink-muted transition-all hover:bg-black/5 dark:text-dark-ink-muted dark:hover:bg-white/5" title="' + t.label + ': ' + t[current] + '" aria-label="' + t.label + ': ' + t[current] + '"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="' + d + '" /></svg><span>' + t[current] + '</span></button>'
             // Re-attach click handler after innerHTML
             if (this._cycle) this.querySelector('button').addEventListener('click', this._cycle)
           }
@@ -131,9 +132,9 @@ const { title, locale } = Astro.props
       }
     </script>
   </head>
-  <body class="text-gray-900 transition-colors dark:text-gray-100">
+  <body class="text-ink transition-colors dark:text-dark-ink">
     <Header locale={locale} />
-    <main class="mx-auto p-4 max-w-7xl md:p-6">
+    <main class="mx-auto max-w-7xl p-4 md:p-6">
       <slot />
     </main>
     <Footer locale={locale} />
@@ -147,6 +148,6 @@ const { title, locale } = Astro.props
 </html>
 <style is:global>
   html {
-    font-family: var(--font-inter), system-ui, sans-serif;
+    font-family: "Inter Variable", system-ui, -apple-system, sans-serif;
   }
 </style>

@@ -48,25 +48,25 @@ export function PokemonInfiniteScroll({ initialData, initialPage = 1, locale }: 
 
   return (
     <div>
-      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+      <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-5 lg:grid-cols-5 xl:grid-cols-6">
         {pokemon.map((poke) => (
           <li key={poke.name} className="list-none"><PokemonTile pokemon={poke} locale={locale} /></li>
         ))}
       </ul>
       {hasMore && (
-        <div ref={ref} className="my-8 flex justify-center">
+        <div ref={ref} className="my-10 flex justify-center">
           {loading ? (
             <div className="text-center">
-              <div className="radar-loader mx-auto" />
-              <p className="mt-3 font-mono text-xs text-gray-500 dark:text-primary/50">{t.scroll.loadingMore}</p>
+              <div className="prismatic-loader mx-auto" />
+              <p className="mt-3 text-xs text-ink-muted dark:text-dark-ink-muted">{t.scroll.loadingMore}</p>
             </div>
           ) : <div className="h-10" />}
         </div>
       )}
       {!hasMore && pokemon.length > 0 && (
-        <div className="my-8 text-center">
-          <p className="font-mono text-sm text-gray-500 dark:text-primary/60">{t.scroll.caughtAll}</p>
-          <p className="mt-1 font-mono text-xs text-gray-400 dark:text-gray-600">{interpolate(t.scroll.showingAll, { count: pokemon.length })}</p>
+        <div className="my-10 text-center">
+          <p className="text-sm text-ink-muted dark:text-dark-ink-muted">{t.scroll.caughtAll}</p>
+          <p className="mt-1 text-xs text-ink-faint dark:text-dark-ink-faint">{interpolate(t.scroll.showingAll, { count: pokemon.length })}</p>
         </div>
       )}
     </div>

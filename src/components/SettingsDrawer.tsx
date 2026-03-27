@@ -83,29 +83,28 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
     <>
       {isOpen && (
         <div
-          className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm transition-opacity"
+          className="fixed inset-0 z-[100] bg-black/30 backdrop-blur-sm transition-opacity"
           onClick={onClose}
           aria-hidden="true"
         />
       )}
 
       <div
-        className={`fixed inset-y-0 right-0 z-[100] flex w-80 max-w-[85vw] transform flex-col shadow-2xl transition-transform duration-300 ease-in-out bg-white dark:bg-dex-panel border-l border-gray-200 dark:border-dex-border ${
+        className={`fixed inset-y-0 right-0 z-[100] flex w-80 max-w-[85vw] transform flex-col shadow-2xl transition-transform duration-300 ease-in-out bg-white dark:bg-dark-surface border-l border-black/[0.06] dark:border-white/[0.06] ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         role="dialog"
         aria-modal="true"
         aria-label={t.settings.title}
       >
-        {/* Drawer header */}
-        <div className="flex shrink-0 items-center justify-between p-5 border-b border-gray-200 dark:border-dex-border">
-          <h2 className="font-display font-bold text-sm uppercase tracking-widest text-gray-900 dark:text-neon-blue">
+        <div className="flex shrink-0 items-center justify-between p-5 border-b border-surface-sunken dark:border-dark-border">
+          <h2 className="font-bold text-sm text-ink dark:text-dark-ink">
             {t.settings.title}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-sm p-2 text-gray-500 transition-all duration-150 active:scale-90 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-dex-surface"
+            className="rounded-xl p-2 text-ink-muted transition-all duration-150 active:scale-90 hover:bg-black/5 dark:text-dark-ink-muted dark:hover:bg-white/5"
             aria-label={t.header.close}
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -114,11 +113,9 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
           </button>
         </div>
 
-        {/* Drawer content */}
         <div className="flex flex-1 flex-col gap-8 p-5">
-          {/* Theme Mode */}
-          <div className="hud-corners rounded-sm border border-gray-200 p-4 dark:border-dex-border">
-            <label className="mb-3 block font-display text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-primary/70">
+          <div className="rounded-2xl bg-surface-sunken p-4 dark:bg-dark-raised">
+            <label className="mb-3 block text-[10px] font-semibold uppercase tracking-wider text-ink-faint dark:text-dark-ink-faint">
               {t.settings.theme}
             </label>
             <div className="flex gap-2">
@@ -127,10 +124,10 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
                   key={key}
                   type="button"
                   onClick={() => applyTheme(key)}
-                  className={`flex-1 rounded-sm px-3 py-2 font-mono text-xs font-medium transition-all border ${
+                  className={`flex-1 rounded-xl px-3 py-2 text-xs font-medium transition-all ${
                     themeMode === key
-                      ? 'border-primary-500 text-primary-600 bg-primary-50 shadow-sm dark:border-primary dark:text-neon-blue dark:bg-primary/10 dark:shadow-[0_0_8px_rgba(59,130,246,0.2)]'
-                      : 'border-gray-200 text-gray-500 hover:text-gray-700 hover:bg-gray-50 dark:border-dex-border dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-dex-surface'
+                      ? 'bg-white text-primary shadow-sm dark:bg-dark-surface dark:text-primary'
+                      : 'text-ink-muted hover:text-ink hover:bg-white/50 dark:text-dark-ink-muted dark:hover:text-dark-ink dark:hover:bg-dark-surface/50'
                   }`}
                 >
                   {label}
@@ -139,9 +136,8 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
             </div>
           </div>
 
-          {/* Language */}
-          <div className="hud-corners rounded-sm border border-gray-200 p-4 dark:border-dex-border">
-            <label className="mb-3 block font-display text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-primary/70">
+          <div className="rounded-2xl bg-surface-sunken p-4 dark:bg-dark-raised">
+            <label className="mb-3 block text-[10px] font-semibold uppercase tracking-wider text-ink-faint dark:text-dark-ink-faint">
               {t.settings.language}
             </label>
             <div className="flex gap-2">
@@ -150,10 +146,10 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
                   key={lang}
                   type="button"
                   onClick={() => switchToLocale(lang)}
-                  className={`flex-1 rounded-sm px-3 py-2 font-mono text-xs font-medium transition-all border ${
+                  className={`flex-1 rounded-xl px-3 py-2 text-xs font-medium transition-all ${
                     locale === lang
-                      ? 'border-primary-500 text-primary-600 bg-primary-50 shadow-sm dark:border-primary dark:text-neon-blue dark:bg-primary/10 dark:shadow-[0_0_8px_rgba(59,130,246,0.2)]'
-                      : 'border-gray-200 text-gray-500 hover:text-gray-700 hover:bg-gray-50 dark:border-dex-border dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-dex-surface'
+                      ? 'bg-white text-primary shadow-sm dark:bg-dark-surface dark:text-primary'
+                      : 'text-ink-muted hover:text-ink hover:bg-white/50 dark:text-dark-ink-muted dark:hover:text-dark-ink dark:hover:bg-dark-surface/50'
                   }`}
                 >
                   {getLocaleDisplayName(lang)}
@@ -163,10 +159,9 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
           </div>
         </div>
 
-        {/* Footer branding */}
-        <div className="border-t border-gray-200 p-4 dark:border-dex-border">
-          <p className="font-mono text-[10px] text-center text-gray-400 uppercase tracking-widest dark:text-gray-600">
-            Pokédex v2.0
+        <div className="border-t border-surface-sunken p-4 dark:border-dark-border">
+          <p className="text-[10px] text-center text-ink-faint uppercase tracking-widest dark:text-dark-ink-faint">
+            Pokedex v2.0
           </p>
         </div>
       </div>

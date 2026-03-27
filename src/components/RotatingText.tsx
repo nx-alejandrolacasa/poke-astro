@@ -175,7 +175,7 @@ export function RotatingText({
                   : `h-1.5 rounded-full transition-all duration-300 ${
                       index === currentIndex
                         ? 'w-4 bg-primary-500 dark:bg-primary'
-                        : 'w-1.5 bg-gray-300 hover:bg-gray-400 dark:bg-dex-border dark:hover:bg-gray-600'
+                        : 'w-1.5 bg-ink-faint/30 hover:bg-ink-faint/50 dark:bg-dark-ink-faint/30 dark:hover:bg-dark-ink-faint/50'
                     }`
               }
               aria-label={`Show item ${index + 1}`}

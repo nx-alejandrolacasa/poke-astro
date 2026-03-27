@@ -11,33 +11,31 @@ interface Props {
 const { locale } = Astro.props
 ---
 
-<header class="sticky top-0 z-40 border-b border-gray-200 bg-white/95 backdrop-blur-md transition-colors dark:border-dex-border dark:bg-dex-panel/95">
-  <div class="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8">
-    <nav class="flex h-12 items-center gap-3 sm:h-14">
-      <!-- Pokéball home link -->
+<div class="sticky top-0 z-40 px-4 pt-4 sm:px-6 sm:pt-5">
+  <header class="chromatic-shadow mx-auto max-w-5xl rounded-2xl bg-white/90 backdrop-blur-xl transition-colors dark:bg-dark-surface/90">
+    <nav class="flex h-14 items-center gap-4 px-5 sm:h-16 sm:px-7">
+      <!-- Pokemon logo home link -->
       <a
         href={`/${locale}`}
         title="Home"
-        class="flex-shrink-0 transition-transform active:scale-90 hover:scale-105"
+        class="flex-shrink-0 transition-transform active:scale-95 hover:scale-105"
       >
         <img
-          src="/pokeball-pixel.svg"
-          alt="Home"
-          class="h-7 w-7 sm:h-8 sm:w-8"
-          style="image-rendering: pixelated;"
+          src="/pokemon-logo.svg"
+          alt="Pokemon"
+          class="h-6 w-auto sm:h-7"
         />
       </a>
 
-      <!-- Search — always visible, centered -->
+      <!-- Search -->
       <div class="flex-1 flex justify-center">
         <div class="w-full max-w-md">
           <PokemonSearchWrapper client:load locale={locale} />
         </div>
       </div>
 
-      <!-- Gear icon -->
+      <!-- Settings -->
       <HeaderActions client:load locale={locale} />
     </nav>
-  </div>
-  <div class="hidden dark:block glow-line"></div>
-</header>
+  </header>
+</div>

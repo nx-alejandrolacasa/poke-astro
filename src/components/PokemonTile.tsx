@@ -9,18 +9,28 @@ type PokemonTileProps = {
   locale: Locale
 }
 
+const shadowPalettes = [
+  'chromatic-shadow',
+  'chromatic-shadow-b',
+  'chromatic-shadow-c',
+]
+
+function getShadowClass(pokemonOrder: number): string {
+  return shadowPalettes[pokemonOrder % shadowPalettes.length]
+}
+
 export function PokemonTile({ loading = false, pokemon, locale }: PokemonTileProps) {
   const typeColor = getTypeColor(pokemon)
   const t = translations[locale]
+  const shadowClass = getShadowClass(pokemon.order)
 
   return (
     <div
-      className="holo-shimmer rounded-sm border border-gray-200 bg-white p-2 text-center shadow-sm transition-all duration-200 active:scale-[0.97] active:shadow-md md:p-3 dark:border-dex-border dark:bg-dex-surface glow-border"
-      style={{ borderLeftWidth: '3px', borderLeftColor: typeColor }}
+      className={`${shadowClass} rounded-2xl bg-white p-3 text-center transition-all duration-300 active:scale-[0.97] md:p-4 dark:bg-dark-surface`}
     >
       <a href={`/${locale}/pokemon/${pokemon.name}`} title={pokemon.name}>
         <div className="relative aspect-square w-full">
-          <div className="pointer-events-none absolute right-0.5 bottom-0.5 z-0 select-none font-mono font-black text-2xl text-gray-300/30 md:text-4xl dark:text-gray-600/30">
+          <div className="pointer-events-none absolute right-0.5 bottom-0.5 z-0 select-none font-mono font-black text-2xl text-ink/[0.06] md:text-4xl dark:text-dark-ink/[0.08]">
             #{pokemon.order.toString().padStart(3, '0')}
           </div>
           <img
@@ -29,12 +39,12 @@ export function PokemonTile({ loading = false, pokemon, locale }: PokemonTilePro
             alt={`${pokemon.name} official artwork`}
           />
         </div>
-        <div className="mt-1 md:mt-2">
-          <span className="block overflow-hidden text-ellipsis whitespace-nowrap font-bold text-gray-900 text-xs capitalize md:text-sm dark:font-mono dark:text-xs dark:uppercase dark:tracking-wider dark:text-gray-200">
+        <div className="mt-2 md:mt-3">
+          <span className="block overflow-hidden text-ellipsis whitespace-nowrap font-semibold text-ink text-sm capitalize md:text-base dark:text-dark-ink">
             {pokemon.name.replaceAll('-', ' ')}
           </span>
           <span
-            className="mt-0.5 block font-mono text-[9px] uppercase tracking-wider opacity-70"
+            className="mt-0.5 block text-xs font-medium capitalize opacity-70"
             style={{ color: typeColor }}
           >
             {pokemon.types.map(pt => t.types[pt.type.name as keyof typeof t.types] ?? pt.type.name).join(' / ')}

@@ -47,10 +47,10 @@ export function PokemonEnrichedData({ pokemonName, locale, statsSection }: Pokem
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
         {statsSection}
-        <div className="flex items-center justify-center rounded-sm border border-gray-200 bg-gray-50 p-8 dark:border-dex-border dark:bg-dex-surface">
-          <div className="radar-loader" />
+        <div className="flex items-center justify-center rounded-2xl bg-white p-8 dark:bg-dark-surface">
+          <div className="prismatic-loader" />
         </div>
       </div>
     )
@@ -58,10 +58,10 @@ export function PokemonEnrichedData({ pokemonName, locale, statsSection }: Pokem
 
   if (error || !data) {
     return (
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
         {statsSection}
-        <div className="rounded-sm border border-orange-300 bg-orange-50 p-4 text-center dark:border-neon-red/30 dark:bg-neon-red/5">
-          <p className="text-orange-700 dark:text-neon-red">{t.errors.loadFailed}</p>
+        <div className="rounded-2xl bg-orange-50 p-4 text-center dark:bg-orange-500/10">
+          <p className="text-orange-700 dark:text-orange-400">{t.errors.loadFailed}</p>
         </div>
       </div>
     )
@@ -70,46 +70,46 @@ export function PokemonEnrichedData({ pokemonName, locale, statsSection }: Pokem
   const hasEvolutions = data.evolutions.length > 1 && data.evolutionTree
 
   return (
-    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
       {statsSection}
-      <div className="hud-corners rounded-sm border border-gray-200 bg-gray-50 p-3 transition-colors dark:border-dex-border dark:bg-dex-surface">
-        <h2 className="mb-2 font-display text-xs font-bold uppercase tracking-wider text-gray-800 md:text-sm dark:text-primary/70">{t.pokemon.typeEffectiveness}</h2>
+      <div className="chromatic-shadow-c rounded-2xl bg-white p-4 transition-colors dark:bg-dark-surface">
+        <h2 className="mb-3 text-sm font-bold text-ink md:text-base dark:text-dark-ink">{t.pokemon.typeEffectiveness}</h2>
         <div className="grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-2">
           <div>
-            <h3 className="mb-1 font-display text-[10px] font-bold uppercase tracking-widest text-orange-600 dark:text-neon-red/80">{t.pokemon.weakTo} ({data.typeEffectiveness.weaknesses.length})</h3>
+            <h3 className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-orange-500 dark:text-orange-400">{t.pokemon.weakTo} ({data.typeEffectiveness.weaknesses.length})</h3>
             {data.typeEffectiveness.weaknesses.length > 0 ? (
               <div className="flex flex-wrap gap-1">
                 {data.typeEffectiveness.weaknesses.map(({ type, multiplier }) => (
-                  <span key={type} className="rounded-sm border border-orange-200 bg-orange-50 px-2 py-0.5 text-orange-800 text-xs capitalize dark:border-neon-red/30 dark:bg-neon-red/10 dark:font-mono dark:text-neon-red">{type} ({multiplier}x)</span>
+                  <span key={type} className="rounded-lg bg-orange-50 px-2 py-0.5 text-orange-700 text-xs capitalize dark:bg-orange-500/10 dark:text-orange-400">{type} ({multiplier}x)</span>
                 ))}
               </div>
-            ) : <p className="text-gray-400 text-xs dark:text-gray-600">{t.pokemon.none}</p>}
+            ) : <p className="text-xs text-ink-faint dark:text-dark-ink-faint">{t.pokemon.none}</p>}
           </div>
           <div>
-            <h3 className="mb-1 font-display text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-neon-blue/80">{t.pokemon.resistantTo} ({data.typeEffectiveness.resistances.length})</h3>
+            <h3 className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-500 dark:text-emerald-400">{t.pokemon.resistantTo} ({data.typeEffectiveness.resistances.length})</h3>
             {data.typeEffectiveness.resistances.length > 0 ? (
               <div className="flex flex-wrap gap-1">
                 {data.typeEffectiveness.resistances.map(({ type, multiplier }) => (
-                  <span key={type} className="rounded-sm border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-emerald-800 text-xs capitalize dark:border-neon-blue/30 dark:bg-neon-blue/10 dark:font-mono dark:text-neon-blue">{type} ({multiplier}x)</span>
+                  <span key={type} className="rounded-lg bg-emerald-50 px-2 py-0.5 text-emerald-700 text-xs capitalize dark:bg-emerald-500/10 dark:text-emerald-400">{type} ({multiplier}x)</span>
                 ))}
               </div>
-            ) : <p className="text-gray-400 text-xs dark:text-gray-600">{t.pokemon.none}</p>}
+            ) : <p className="text-xs text-ink-faint dark:text-dark-ink-faint">{t.pokemon.none}</p>}
           </div>
           <div>
-            <h3 className="mb-1 font-display text-[10px] font-bold uppercase tracking-widest text-primary-600 dark:text-neon-blue/80">{t.pokemon.immuneTo} ({data.typeEffectiveness.immunities.length})</h3>
+            <h3 className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-violet-500 dark:text-violet-400">{t.pokemon.immuneTo} ({data.typeEffectiveness.immunities.length})</h3>
             {data.typeEffectiveness.immunities.length > 0 ? (
               <div className="flex flex-wrap gap-1">
                 {data.typeEffectiveness.immunities.map((type) => (
-                  <span key={type} className="rounded-sm border border-primary-200 bg-primary-50 px-2 py-0.5 text-primary-800 text-xs capitalize dark:border-neon-blue/30 dark:bg-neon-blue/10 dark:font-mono dark:text-neon-blue">{type} (0x)</span>
+                  <span key={type} className="rounded-lg bg-violet-50 px-2 py-0.5 text-violet-700 text-xs capitalize dark:bg-violet-500/10 dark:text-violet-400">{type} (0x)</span>
                 ))}
               </div>
-            ) : <p className="text-gray-400 text-xs dark:text-gray-600">{t.pokemon.none}</p>}
+            ) : <p className="text-xs text-ink-faint dark:text-dark-ink-faint">{t.pokemon.none}</p>}
           </div>
         </div>
       </div>
       {hasEvolutions && (
-        <div className="rounded-sm border border-gray-200 bg-gray-50 p-3 transition-colors md:col-span-2 dark:border-dex-border dark:bg-dex-surface">
-          <h2 className="mb-2 font-display text-xs font-bold uppercase tracking-wider text-gray-800 md:text-sm dark:text-primary/70">{t.pokemon.evolutionChain}</h2>
+        <div className="chromatic-shadow-b rounded-2xl bg-white p-4 transition-colors md:col-span-2 dark:bg-dark-surface">
+          <h2 className="mb-3 text-sm font-bold text-ink md:text-base dark:text-dark-ink">{t.pokemon.evolutionChain}</h2>
           <EvolutionTree tree={data.evolutionTree!} currentPokemon={pokemonName} locale={locale} />
         </div>
       )}
@@ -129,14 +129,14 @@ function EvolutionTree({ tree, currentPokemon, locale }: EvolutionTreeProps) {
         <div key={stageIndex} className="flex flex-col items-center gap-4 md:flex-row">
           {stageIndex > 0 && (
             <>
-              <div className="font-mono font-bold text-gray-400 text-2xl md:hidden dark:text-primary/40">↓</div>
-              <div className="hidden font-mono font-bold text-gray-400 text-2xl md:block dark:text-primary/40">→</div>
+              <div className="text-2xl font-bold text-ink-faint md:hidden dark:text-dark-ink-faint">&darr;</div>
+              <div className="hidden text-2xl font-bold text-ink-faint md:block dark:text-dark-ink-faint">&rarr;</div>
             </>
           )}
-          <div className={`flex flex-col items-center gap-2 md:flex-row ${hasBranching && stage.length > 1 ? 'rounded-sm border-2 border-dashed border-gray-300 p-2 dark:border-dex-border' : ''}`}>
+          <div className={`flex flex-col items-center gap-2 md:flex-row ${hasBranching && stage.length > 1 ? 'rounded-xl border-2 border-dashed border-ink-faint/30 p-2 dark:border-dark-ink-faint/30' : ''}`}>
             {stage.map((pokemon, pokemonIndex) => (
               <div key={pokemon.name} className="flex items-center">
-                {pokemonIndex > 0 && stage.length > 1 && <span className="mx-2 hidden font-mono font-bold text-gray-400 text-lg md:inline dark:text-dex-border">/</span>}
+                {pokemonIndex > 0 && stage.length > 1 && <span className="mx-2 hidden text-lg font-bold text-ink-faint md:inline dark:text-dark-ink-faint">/</span>}
                 <EvolutionCard name={pokemon.name} speciesUrl={pokemon.speciesUrl} isCurrentPokemon={pokemon.name === currentPokemon} locale={locale} />
               </div>
             ))}
@@ -152,10 +152,10 @@ type EvolutionCardProps = { name: string; speciesUrl: string; isCurrentPokemon: 
 function EvolutionCard({ name, speciesUrl, isCurrentPokemon, locale }: EvolutionCardProps) {
   const evoId = speciesUrl.split('/').slice(-2, -1)[0]
   return (
-    <a href={`/${locale}/pokemon/${name}`} className={`rounded-sm border-2 p-3 transition-all hover:scale-105 ${isCurrentPokemon ? 'border-primary-400 bg-primary-50 dark:border-primary dark:bg-primary/5' : 'border-gray-300 bg-white hover:border-primary-300 dark:border-dex-border dark:bg-dex-panel dark:hover:border-primary/50'}`}>
+    <a href={`/${locale}/pokemon/${name}`} className={`chromatic-shadow-sm rounded-xl p-3 transition-all hover:scale-105 ${isCurrentPokemon ? 'bg-primary-50 ring-2 ring-primary dark:bg-primary/10' : 'bg-white hover:ring-2 hover:ring-ink-faint/30 dark:bg-dark-surface dark:hover:ring-dark-ink-faint/30'}`}>
       <div className="text-center">
         {evoId && <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${evoId}.png`} alt={name} className="mx-auto h-24 w-24 object-contain md:h-28 md:w-28" loading="lazy" />}
-        <p className="font-semibold text-gray-900 text-sm capitalize dark:font-mono dark:text-xs dark:uppercase dark:tracking-wider dark:text-gray-200">{getPokemonName(name)}</p>
+        <p className="font-semibold text-sm text-ink capitalize dark:text-dark-ink">{getPokemonName(name)}</p>
       </div>
     </a>
   )
