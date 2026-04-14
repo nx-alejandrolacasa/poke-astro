@@ -9,7 +9,6 @@ export interface Props {
 
 const { name } = Astro.props
 
-// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
 const pokemon = await fetchPokemonByName(name)
 ---
 

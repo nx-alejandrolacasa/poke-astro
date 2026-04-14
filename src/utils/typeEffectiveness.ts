@@ -258,7 +258,11 @@ export function getEffectiveness(
 export function getAttackMatchups(
   attacker: PokemonType,
   gen1: boolean
-): { superEffective: PokemonType[]; notVeryEffective: PokemonType[]; noEffect: PokemonType[] } {
+): {
+  superEffective: PokemonType[]
+  notVeryEffective: PokemonType[]
+  noEffect: PokemonType[]
+} {
   const types = gen1 ? GEN1_TYPES : ALL_TYPES
   const superEffective: PokemonType[] = []
   const notVeryEffective: PokemonType[] = []
@@ -280,7 +284,11 @@ export function getAttackMatchups(
 export function getDefenseMatchups(
   defender: PokemonType,
   gen1: boolean
-): { weakTo: PokemonType[]; resistantTo: PokemonType[]; immuneTo: PokemonType[] } {
+): {
+  weakTo: PokemonType[]
+  resistantTo: PokemonType[]
+  immuneTo: PokemonType[]
+} {
   const types = gen1 ? GEN1_TYPES : ALL_TYPES
   const weakTo: PokemonType[] = []
   const resistantTo: PokemonType[] = []

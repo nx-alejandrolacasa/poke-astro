@@ -4,7 +4,7 @@ import Layout from '@/layouts/Layout.astro'
 import { getI18n } from '@/utils/i18n'
 
 const { locale: localeParam } = Astro.params
-const { locale, t } = getI18n(localeParam)
+const { locale } = getI18n(localeParam)
 
 const title = locale === 'es' ? 'Tabla de Tipos' : 'Type Chart'
 ---

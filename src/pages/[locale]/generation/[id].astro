@@ -24,7 +24,6 @@ const generations: Record<
 }
 
 const { locale: localeParam, id = '' } = Astro.params
-// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 const { locale, t } = getI18n(localeParam)
 
 const generationData = generations[id]
@@ -51,7 +50,6 @@ const genColors: Record<number, string> = {
   9: 'from-red-600 to-purple-600',
 }
 
-// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 const gradientClass = genColors[generation.id] || 'from-gray-400 to-gray-500'
 
 // Fetch generation data from PokéAPI
@@ -89,7 +87,6 @@ const results: Pokemon[] = resultsWithNull.filter(
 // Sort by order number
 results.sort((a, b) => a.order - b.order)
 
-// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 const initialData: PokemonList = {
   count: genData.pokemon_species.length,
   results,

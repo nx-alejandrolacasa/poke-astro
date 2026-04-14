@@ -16,10 +16,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     // HTML pages: must revalidate on every request. Cloudflare Workers
     // doesn't purge edge cache on deployment, so stale HTML would reference
     // old hashed CSS/JS filenames that no longer exist (unstyled flash).
-    response.headers.set(
-      'Cache-Control',
-      'public, no-cache'
-    )
+    response.headers.set('Cache-Control', 'public, no-cache')
   }
 
   return response

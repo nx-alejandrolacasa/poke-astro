@@ -2,15 +2,18 @@ import react from '@astrojs/react'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'astro/config'
 
-// Conditional adapter based on deployment platform
+// Adapter only needed for production builds, not local dev
 async function getAdapter() {
   if (process.env.VERCEL) {
     const vercel = (await import('@astrojs/vercel')).default
     return vercel()
   }
-  // Default to Cloudflare adapter (for Cloudflare Pages and local development)
-  const cloudflare = (await import('@astrojs/cloudflare')).default
-  return cloudflare()
+  if (process.env.CF_PAGES || process.env.CLOUDFLARE) {
+    const cloudflare = (await import('@astrojs/cloudflare')).default
+    return cloudflare()
+  }
+  // No adapter for local development
+  return undefined
 }
 
 // https://astro.build/config
@@ -27,6 +30,9 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      dedupe: ['vite'],
+    },
   },
 
   // Responsive images (stable in Astro 6, previously experimental)
@@ -38,9 +44,10 @@ export default defineConfig({
   experimental: {
     // Rust compiler: faster builds and better diagnostics (replaces Go compiler)
     // Requires @astrojs/compiler-rs native bindings — enable only when available
-    rustCompiler: await import('@astrojs/compiler-rs')
-      .then(() => true)
-      .catch(() => false),
+    // Disabled: causes @vite/env virtual module resolution failure in dev
+    // rustCompiler: await import('@astrojs/compiler-rs')
+    //   .then(() => true)
+    //   .catch(() => false),
     // Queued rendering: up to 2x faster rendering with queue-based engine
     queuedRendering: {
       enabled: true,
