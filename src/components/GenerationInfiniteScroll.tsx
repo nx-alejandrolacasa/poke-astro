@@ -3,7 +3,9 @@ import { useInView } from 'react-intersection-observer'
 import type { Locale } from '@/utils/i18n'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
 import { interpolate, translations } from '@/utils/translations'
+import { BackToTop } from './BackToTop'
 import { PokemonTile } from './PokemonTile'
+import { SkeletonCard } from './SkeletonCard'
 
 type GenerationInfiniteScrollProps = {
   initialData: PokemonList
@@ -58,38 +60,20 @@ export function GenerationInfiniteScroll({
 
   return (
     <div className="space-y-8">
-      <div className="space-y-2 pt-4 md:pt-6">
-        <a
-          href={`/${locale}`}
-          className="inline-flex items-center gap-1.5 text-ink-muted text-sm transition-colors hover:text-primary dark:text-dark-ink-muted dark:hover:text-primary"
-        >
-          <svg
-            className="h-4 w-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-          {t.pages.backToHome}
-        </a>
-        <h1 className="font-bold text-3xl text-ink tracking-tight md:text-5xl dark:text-dark-ink">
-          {generation.name}{' '}
-          <span className="text-ink-muted dark:text-dark-ink-muted">
-            {generation.region}
-          </span>
-        </h1>
-        <p className="text-ink-muted text-sm md:text-base dark:text-dark-ink-muted">
-          {interpolate(t.pages.speciesCount, { count: initialData.count })}
-        </p>
+      {/* Colored banner */}
+      <div className="rounded-2xl bg-gradient-to-br from-primary-50 to-surface-sunken p-6 md:p-8 dark:from-dark-raised dark:to-dark-surface">
+        <div className="flex items-center gap-4">
+          <div>
+            <h1 className="font-bold text-2xl text-ink tracking-tight md:text-3xl dark:text-dark-ink">
+              {generation.name}
+            </h1>
+            <p className="font-medium text-ink-muted text-sm dark:text-dark-ink-muted">
+              {generation.region} &middot; {interpolate(t.pages.speciesCount, { count: initialData.count })}
+            </p>
+          </div>
+        </div>
       </div>
-      <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-5 lg:grid-cols-5 xl:grid-cols-6">
+      <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-4 lg:grid-cols-5 xl:grid-cols-6">
         {pokemon.map((poke) => (
           <li key={poke.name} className="list-none">
             <PokemonTile pokemon={poke} locale={locale} />
@@ -97,14 +81,15 @@ export function GenerationInfiniteScroll({
         ))}
       </ul>
       {hasMore && (
-        <div ref={ref} className="my-10 flex justify-center">
+        <div ref={ref}>
           {loading ? (
-            <div className="text-center">
-              <div className="prismatic-loader mx-auto" />
-              <p className="mt-3 text-ink-muted text-xs dark:text-dark-ink-muted">
-                {t.scroll.loadingMore}
-              </p>
-            </div>
+            <ul className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-4 lg:grid-cols-5 xl:grid-cols-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <li key={`skeleton-${i.toString()}`} className="list-none">
+                  <SkeletonCard />
+                </li>
+              ))}
+            </ul>
           ) : (
             <div className="h-10" />
           )}
@@ -120,6 +105,7 @@ export function GenerationInfiniteScroll({
           </p>
         </div>
       )}
+      <BackToTop />
     </div>
   )
 }

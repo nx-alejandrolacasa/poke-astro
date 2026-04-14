@@ -1,18 +1,22 @@
 ---
-import { HeaderActions } from '@/components/HeaderActions'
-import { PokemonSearchWrapper } from '@/components/PokemonSearchWrapper'
+import { PokemonSearch } from '@/components/PokemonSearch'
 import type { Locale } from '@/utils/i18n'
+import { getAlternateLocale, localizeUrl } from '@/utils/i18n'
+import { translations } from '@/utils/translations'
 
 interface Props {
   locale: Locale
 }
 
 const { locale } = Astro.props
+const t = translations[locale]
+const altLocale = getAlternateLocale(locale)
+const currentPath = Astro.url.pathname
 ---
 
-<header class="chromatic-header-shadow sticky top-0 z-40 w-full border-b border-black/[0.06] bg-white/90 backdrop-blur-xl transition-colors dark:border-white/[0.06] dark:bg-dark-surface/90">
-  <nav class="mx-auto flex h-14 max-w-5xl items-center gap-4 px-4 sm:h-16 sm:px-6">
-    <!-- Pokemon logo home link -->
+<header class="sticky top-0 z-40 w-full border-b border-black/[0.06] bg-white/90 backdrop-blur-xl transition-colors dark:border-white/[0.06] dark:bg-dark-surface/90">
+  <nav class="mx-auto flex h-14 max-w-7xl items-center gap-3 px-4 sm:h-16 sm:gap-4 sm:px-6">
+    <!-- Logo -->
     <a
       href={`/${locale}`}
       title="Home"
@@ -25,14 +29,52 @@ const { locale } = Astro.props
       />
     </a>
 
-    <!-- Search -->
-    <div class="flex-1 flex justify-center">
+    <!-- Desktop nav links -->
+    <div class="hidden items-center gap-1 lg:flex">
+      <a
+        href={`/${locale}/pokedex`}
+        class:list={[
+          'rounded-xl px-3 py-1.5 text-sm font-medium transition-colors',
+          currentPath.startsWith(`/${locale}/pokedex`)
+            ? 'text-primary dark:text-dark-primary'
+            : 'text-ink-muted hover:text-ink dark:text-dark-ink-muted dark:hover:text-dark-ink'
+        ]}
+      >
+        {t.header.pokedex}
+      </a>
+      <a
+        href={`/${locale}/types`}
+        class:list={[
+          'rounded-xl px-3 py-1.5 text-sm font-medium transition-colors',
+          currentPath.startsWith(`/${locale}/types`) || currentPath.startsWith(`/${locale}/type/`)
+            ? 'text-primary dark:text-dark-primary'
+            : 'text-ink-muted hover:text-ink dark:text-dark-ink-muted dark:hover:text-dark-ink'
+        ]}
+      >
+        {t.header.types}
+      </a>
+    </div>
+
+    <!-- Desktop search -->
+    <div class="hidden flex-1 justify-center lg:flex">
       <div class="w-full max-w-md">
-        <PokemonSearchWrapper client:load locale={locale} />
+        <PokemonSearch client:load locale={locale} />
       </div>
     </div>
 
-    <!-- Settings -->
-    <HeaderActions client:load locale={locale} />
+    <!-- Spacer on mobile -->
+    <div class="flex-1 lg:hidden"></div>
+
+    <!-- Language switcher -->
+    <a
+      href={localizeUrl(currentPath, altLocale)}
+      class="flex-shrink-0 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-ink-muted uppercase tracking-wide transition-colors hover:bg-black/5 hover:text-ink dark:text-dark-ink-muted dark:hover:bg-white/5 dark:hover:text-dark-ink"
+      title={altLocale === 'en' ? 'Switch to English' : 'Cambiar a Espanol'}
+    >
+      {altLocale.toUpperCase()}
+    </a>
+
+    <!-- Theme toggle (custom element defined in Layout.astro) -->
+    <theme-toggle data-locale={locale} class="flex-shrink-0"></theme-toggle>
   </nav>
 </header>

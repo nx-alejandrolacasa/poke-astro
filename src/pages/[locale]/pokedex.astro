@@ -1,5 +1,5 @@
 ---
-import { PokemonInfiniteScrollWrapper } from '@/components/PokemonInfiniteScrollWrapper'
+import { PokemonInfiniteScroll } from '@/components/PokemonInfiniteScroll'
 import Layout from '@/layouts/Layout.astro'
 import { getI18n } from '@/utils/i18n'
 import { fetchPokemonPage } from '@/utils/pokemon'
@@ -14,5 +14,5 @@ const initialData = await fetchPokemonPage(1)
   <h1 class="mb-8 text-center text-3xl font-bold tracking-tight text-ink md:text-4xl dark:text-dark-ink">
     {t.header.pokedex}
   </h1>
-  <PokemonInfiniteScrollWrapper client:load initialData={initialData} locale={locale} />
+  <PokemonInfiniteScroll client:load initialData={initialData} locale={locale} />
 </Layout>

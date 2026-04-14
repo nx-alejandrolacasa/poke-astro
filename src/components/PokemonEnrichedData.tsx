@@ -1,6 +1,5 @@
 import type { EvolutionTreeNode } from '@utils/pokemon'
 import { getPokemonName } from '@utils/pokemon'
-import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 import type { Locale } from '@/utils/i18n'
 import { translations } from '@/utils/translations'
@@ -16,16 +15,24 @@ type EnrichedData = {
   }
 }
 
+type StatData = {
+  name: string
+  translatedName: string
+  baseStat: number
+}
+
 type PokemonEnrichedDataProps = {
   pokemonName: string
   locale: Locale
-  statsSection?: ReactNode
+  typeColor?: string
+  stats: StatData[]
 }
 
 export function PokemonEnrichedData({
   pokemonName,
   locale,
-  statsSection,
+  typeColor,
+  stats,
 }: PokemonEnrichedDataProps) {
   const t = translations[locale]
   const [data, setData] = useState<EnrichedData | null>(null)
@@ -51,11 +58,63 @@ export function PokemonEnrichedData({
     fetchEnrichedData()
   }, [pokemonName, locale])
 
+  const maxStat = 255
+  const totalStats = stats.reduce((sum, s) => sum + s.baseStat, 0)
+
+  const statsCell = (
+    <div className="bento-cell rounded-2xl bg-white p-4 md:col-span-1 dark:bg-dark-surface">
+      <h2 className="mb-4 font-bold text-ink text-base md:text-lg dark:text-dark-ink">
+        {t.pokemon.baseStats}
+      </h2>
+      <div className="space-y-3">
+        {stats.map(({ name, translatedName, baseStat }, index) => {
+          const percentage = (baseStat / maxStat) * 100
+          return (
+            <div
+              key={name}
+              className="grid grid-cols-[2fr_36px_3fr] items-center gap-2 text-ink dark:text-dark-ink"
+            >
+              <div className="truncate text-right text-ink-muted text-xs dark:text-dark-ink-muted">
+                {translatedName}
+              </div>
+              <div className="text-right font-bold font-mono text-xs">
+                {baseStat}
+              </div>
+              <div className="flex items-center">
+                <div className="relative h-2 w-full overflow-hidden rounded-full bg-surface-sunken dark:bg-dark-raised">
+                  <div
+                    className={`absolute top-0 left-0 h-2 rounded-full ${baseStat >= 100 ? 'bg-success' : baseStat >= 50 ? 'bg-warning' : 'bg-danger'}`}
+                    style={{
+                      width: `${percentage}%`,
+                      transition: `width 0.6s ease-out ${index * 0.08}s`,
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          )
+        })}
+        <div className="mt-3 grid grid-cols-[2fr_36px_3fr] gap-2 border-surface-sunken border-t pt-3 dark:border-dark-raised">
+          <div className="text-right font-bold text-ink text-xs uppercase dark:text-dark-ink">
+            {t.pokemon.total}
+          </div>
+          <div className="text-right font-bold font-mono text-ink text-xs dark:text-dark-ink">
+            {totalStats}
+          </div>
+          <div />
+        </div>
+      </div>
+    </div>
+  )
+
   if (loading) {
     return (
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
-        {statsSection}
-        <div className="flex items-center justify-center rounded-2xl bg-white p-8 dark:bg-dark-surface">
+      <div
+        className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4 md:gap-4"
+        style={{ '--type-color': typeColor } as React.CSSProperties}
+      >
+        {statsCell}
+        <div className="bento-cell flex items-center justify-center rounded-2xl bg-white p-8 dark:bg-dark-surface">
           <div className="prismatic-loader" />
         </div>
       </div>
@@ -64,9 +123,12 @@ export function PokemonEnrichedData({
 
   if (error || !data) {
     return (
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
-        {statsSection}
-        <div className="rounded-2xl bg-orange-50 p-4 text-center dark:bg-orange-500/10">
+      <div
+        className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4 md:gap-4"
+        style={{ '--type-color': typeColor } as React.CSSProperties}
+      >
+        {statsCell}
+        <div className="bento-cell rounded-2xl bg-orange-50 p-4 text-center dark:bg-orange-500/10">
           <p className="text-orange-700 dark:text-orange-400">
             {t.errors.loadFailed}
           </p>
@@ -78,15 +140,21 @@ export function PokemonEnrichedData({
   const hasEvolutions = data.evolutions.length > 1 && data.evolutionTree
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
-      {statsSection}
-      <div className="chromatic-shadow-c rounded-2xl bg-white p-4 transition-colors dark:bg-dark-surface">
-        <h2 className="mb-3 font-bold text-ink text-sm md:text-base dark:text-dark-ink">
+    <div
+      className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4 md:gap-4"
+      style={{ '--type-color': typeColor } as React.CSSProperties}
+    >
+      {/* ── Base Stats — 1/4 desktop, 1/2 tablet, full mobile ── */}
+      {statsCell}
+
+      {/* ── Type Effectiveness — 1/4 desktop, 1/2 tablet, full mobile ── */}
+      <div className="bento-cell rounded-2xl bg-white p-4 md:col-span-1 dark:bg-dark-surface">
+        <h2 className="mb-3 font-bold text-ink text-base md:text-lg dark:text-dark-ink">
           {t.pokemon.typeEffectiveness}
         </h2>
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-2">
+        <div className="space-y-3">
           <div>
-            <h3 className="mb-1.5 font-semibold text-[10px] text-orange-500 uppercase tracking-wider dark:text-orange-400">
+            <h3 className="mb-1.5 font-semibold text-xs text-orange-500 uppercase tracking-wider dark:text-orange-400">
               {t.pokemon.weakTo} ({data.typeEffectiveness.weaknesses.length})
             </h3>
             {data.typeEffectiveness.weaknesses.length > 0 ? (
@@ -109,7 +177,7 @@ export function PokemonEnrichedData({
             )}
           </div>
           <div>
-            <h3 className="mb-1.5 font-semibold text-[10px] text-emerald-500 uppercase tracking-wider dark:text-emerald-400">
+            <h3 className="mb-1.5 font-semibold text-xs text-emerald-500 uppercase tracking-wider dark:text-emerald-400">
               {t.pokemon.resistantTo} (
               {data.typeEffectiveness.resistances.length})
             </h3>
@@ -133,7 +201,7 @@ export function PokemonEnrichedData({
             )}
           </div>
           <div>
-            <h3 className="mb-1.5 font-semibold text-[10px] text-violet-500 uppercase tracking-wider dark:text-violet-400">
+            <h3 className="mb-1.5 font-semibold text-xs text-violet-500 uppercase tracking-wider dark:text-violet-400">
               {t.pokemon.immuneTo} ({data.typeEffectiveness.immunities.length})
             </h3>
             {data.typeEffectiveness.immunities.length > 0 ? (
@@ -155,9 +223,11 @@ export function PokemonEnrichedData({
           </div>
         </div>
       </div>
+
+      {/* ── Evolution Chain — 2/4 desktop, full tablet, full mobile ── */}
       {hasEvolutions && (
-        <div className="chromatic-shadow-b rounded-2xl bg-white p-4 transition-colors md:col-span-2 dark:bg-dark-surface">
-          <h2 className="mb-3 font-bold text-ink text-sm md:text-base dark:text-dark-ink">
+        <div className="bento-cell rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
+          <h2 className="mb-3 font-bold text-ink text-base md:text-lg dark:text-dark-ink">
             {t.pokemon.evolutionChain}
           </h2>
           <EvolutionTree
@@ -240,14 +310,14 @@ function EvolutionCard({
   return (
     <a
       href={`/${locale}/pokemon/${name}`}
-      className={`chromatic-shadow-sm rounded-xl p-3 transition-all hover:scale-105 ${isCurrentPokemon ? 'bg-primary-50 ring-2 ring-primary dark:bg-primary/10' : 'bg-white hover:ring-2 hover:ring-ink-faint/30 dark:bg-dark-surface dark:hover:ring-dark-ink-faint/30'}`}
+      className={`rounded-xl p-3 transition-all hover:scale-105 ${isCurrentPokemon ? 'bg-primary-50 ring-2 ring-primary dark:bg-primary/10' : 'bg-surface-sunken hover:ring-2 hover:ring-ink-faint/30 dark:bg-dark-raised dark:hover:ring-dark-ink-faint/30'}`}
     >
       <div className="text-center">
         {evoId && (
           <img
             src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${evoId}.png`}
             alt={name}
-            className="mx-auto h-24 w-24 object-contain md:h-28 md:w-28"
+            className="mx-auto h-20 w-20 object-contain md:h-24 md:w-24"
             loading="lazy"
           />
         )}

@@ -1,6 +1,6 @@
 ---
 import { fetchPokemonByName, getPokemonName } from '@utils/pokemon'
-import { PokemonDetailContentWrapper } from '@/components/PokemonDetailContentWrapper'
+import { PokemonDetailContent } from '@/components/PokemonDetailContent'
 import Layout from '@/layouts/Layout.astro'
 import { getI18n } from '@/utils/i18n'
 
@@ -11,5 +11,5 @@ const pokemon = await fetchPokemonByName(name)
 ---
 
 <Layout title={`Pokémon Astro - ${getPokemonName(name)}`} locale={locale}>
-  {pokemon && <PokemonDetailContentWrapper client:load pokemon={pokemon} pokemonName={name} locale={locale} />}
+  {pokemon && <PokemonDetailContent client:load pokemon={pokemon} pokemonName={name} locale={locale} />}
 </Layout>

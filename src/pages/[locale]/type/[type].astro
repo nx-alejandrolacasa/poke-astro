@@ -1,5 +1,5 @@
 ---
-import { TypeInfiniteScrollWrapper } from '@/components/TypeInfiniteScrollWrapper'
+import { TypeInfiniteScroll } from '@/components/TypeInfiniteScroll'
 import Layout from '@/layouts/Layout.astro'
 import { getI18n } from '@/utils/i18n'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
@@ -74,7 +74,7 @@ const typeName = t.types[type as keyof typeof t.types] || getPokemonName(type)
 ---
 
 <Layout title={`${typeName} - ${t.pages.typeTitle}`} locale={locale}>
-  <TypeInfiniteScrollWrapper
+  <TypeInfiniteScroll
     client:load
     initialData={initialData}
     type={type}

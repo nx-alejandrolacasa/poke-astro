@@ -1,5 +1,6 @@
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/jetbrains-mono";
+@import "@fontsource/dela-gothic-one";
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -12,6 +13,7 @@ html {
   /* ── Typography ── */
   --font-sans: "Inter Variable", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+  --font-display: "Dela Gothic One", sans-serif;
 
   /* ── Surfaces ── */
   --color-surface: #ffffff;
@@ -22,23 +24,35 @@ html {
   --color-dark-raised: #1a1a3e;
   --color-dark-border: #2a2a52;
 
-  /* ── Primary accent — Pokédex Blue ── */
-  --color-primary: #2563eb;
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-500: #2563eb;
-  --color-primary-600: #1d4ed8;
-  --color-primary-700: #1e40af;
+  /* ── Primary accent — Indigo ── */
+  --color-primary: #6366F1;
+  --color-primary-50: #eef2ff;
+  --color-primary-100: #e0e7ff;
+  --color-primary-500: #6366F1;
+  --color-primary-600: #4f46e5;
+  --color-primary-700: #4338ca;
+
+  /* ── Secondary accent — Pokemon Red ── */
+  --color-secondary: #E3350D;
+  --color-secondary-600: #c42d0b;
+
+  /* ── Semantic colors — Design System ── */
+  --color-success: #16A34A;
+  --color-warning: #D97706;
+  --color-danger: #DC2626;
 
   /* ── Text ── */
-  --color-ink: #1a1a2e;
+  --color-ink: #111827;
   --color-ink-muted: #6b7280;
   --color-ink-faint: #9ca3af;
   --color-dark-ink: #eeeef4;
   --color-dark-ink-muted: #9ca3c8;
   --color-dark-ink-faint: #6b7298;
 
-  /* ── Pokémon type palette (used for chromatic shadows) ── */
+  /* ── Dark mode primary ── */
+  --color-dark-primary: #818cf8;
+
+  /* ── Pokemon type palette ── */
   --color-type-fire: #f04030;
   --color-type-water: #3b82f6;
   --color-type-grass: #22c55e;
@@ -53,15 +67,16 @@ html {
   /* ── Animations ── */
   --animate-fade-up: fade-up 0.5s ease-out forwards;
   --animate-spin-slow: spin 1.2s linear infinite;
+  --animate-shimmer: shimmer 1.5s infinite;
 
   @keyframes fade-up {
     0% { opacity: 0; transform: translateY(12px); }
     100% { opacity: 1; transform: translateY(0); }
   }
 
-  @keyframes drift {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
   }
 
   @keyframes prismatic-shift {
@@ -84,216 +99,9 @@ html {
   .dark body {
     background: var(--color-dark-bg);
   }
-}
 
-/* ══════════════════════════════════════════
-   CHROMATIC SHADOW SYSTEM
-   The hero of the design. Multicolored offset
-   shadows at different angles, inspired by
-   Spider-Verse's prismatic color bleeds.
-   ══════════════════════════════════════════ */
-@layer utilities {
-
-  /*
-     4 directional chromatic shadows:
-       Fire (red)      → top-left
-       Water (blue)    → bottom-right
-       Grass (green)   → top-right
-       Electric (yellow) → bottom-left
-     On hover they expand outward, creating color overlaps.
-  */
-
-  /* ── Default: red↑ blue↓ green→ yellow← (staggered) ── */
-  .chromatic-shadow {
-    box-shadow:
-      -2px -5px 2px 0 rgba(240, 64, 48, 0.30),
-       3px  6px 2px 0 rgba(59, 130, 246, 0.30),
-       6px -2px 2px 0 rgba(34, 197, 94, 0.25),
-      -5px  3px 2px 0 rgba(250, 204, 21, 0.25);
-    transition: box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-                transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .chromatic-shadow:hover {
-    box-shadow:
-       -4px -16px 6px 0 rgba(240, 64, 48, 0.45),
-        6px  18px 6px 0 rgba(59, 130, 246, 0.45),
-       18px  -4px 6px 0 rgba(34, 197, 94, 0.38),
-      -16px   6px 6px 0 rgba(250, 204, 21, 0.38);
-    transform: translateY(-4px);
-  }
-  .dark .chromatic-shadow {
-    box-shadow:
-      -2px -5px 3px 0 rgba(255, 64, 64, 0.40),
-       3px  6px 3px 0 rgba(56, 189, 248, 0.40),
-       6px -2px 3px 0 rgba(74, 222, 128, 0.32),
-      -5px  3px 3px 0 rgba(253, 224, 71, 0.32);
-  }
-  .dark .chromatic-shadow:hover {
-    box-shadow:
-       -4px -16px 8px 2px rgba(255, 64, 64, 0.65),
-        6px  18px 8px 2px rgba(56, 189, 248, 0.65),
-       18px  -4px 8px 2px rgba(74, 222, 128, 0.50),
-      -16px   6px 8px 2px rgba(253, 224, 71, 0.50);
-    transform: translateY(-4px);
-  }
-
-  /* ── Palette B: blue↑ yellow↓ red→ green← ── */
-  .chromatic-shadow-b {
-    box-shadow:
-       3px -6px 2px 0 rgba(59, 130, 246, 0.30),
-      -2px  5px 2px 0 rgba(250, 204, 21, 0.28),
-       5px  3px 2px 0 rgba(240, 64, 48, 0.25),
-      -6px -2px 2px 0 rgba(34, 197, 94, 0.25);
-    transition: box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-                transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .chromatic-shadow-b:hover {
-    box-shadow:
-        6px -18px 6px 0 rgba(59, 130, 246, 0.45),
-       -4px  16px 6px 0 rgba(250, 204, 21, 0.42),
-       16px   6px 6px 0 rgba(240, 64, 48, 0.38),
-      -18px  -4px 6px 0 rgba(34, 197, 94, 0.38);
-    transform: translateY(-4px);
-  }
-  .dark .chromatic-shadow-b {
-    box-shadow:
-       3px -6px 3px 0 rgba(56, 189, 248, 0.40),
-      -2px  5px 3px 0 rgba(253, 224, 71, 0.35),
-       5px  3px 3px 0 rgba(255, 64, 64, 0.32),
-      -6px -2px 3px 0 rgba(74, 222, 128, 0.32);
-  }
-  .dark .chromatic-shadow-b:hover {
-    box-shadow:
-        6px -18px 8px 2px rgba(56, 189, 248, 0.65),
-       -4px  16px 8px 2px rgba(253, 224, 71, 0.55),
-       16px   6px 8px 2px rgba(255, 64, 64, 0.50),
-      -18px  -4px 8px 2px rgba(74, 222, 128, 0.50);
-    transform: translateY(-4px);
-  }
-
-  /* ── Palette C: green↑ red↓ yellow→ blue← ── */
-  .chromatic-shadow-c {
-    box-shadow:
-      -3px -6px 2px 0 rgba(34, 197, 94, 0.30),
-       2px  5px 2px 0 rgba(240, 64, 48, 0.28),
-       6px  2px 2px 0 rgba(250, 204, 21, 0.25),
-      -5px -3px 2px 0 rgba(59, 130, 246, 0.25);
-    transition: box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-                transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .chromatic-shadow-c:hover {
-    box-shadow:
-       -6px -18px 6px 0 rgba(34, 197, 94, 0.45),
-        4px  16px 6px 0 rgba(240, 64, 48, 0.42),
-       18px   4px 6px 0 rgba(250, 204, 21, 0.38),
-      -16px  -6px 6px 0 rgba(59, 130, 246, 0.38);
-    transform: translateY(-4px);
-  }
-  .dark .chromatic-shadow-c {
-    box-shadow:
-      -3px -6px 3px 0 rgba(74, 222, 128, 0.40),
-       2px  5px 3px 0 rgba(255, 64, 64, 0.35),
-       6px  2px 3px 0 rgba(253, 224, 71, 0.32),
-      -5px -3px 3px 0 rgba(56, 189, 248, 0.32);
-  }
-  .dark .chromatic-shadow-c:hover {
-    box-shadow:
-       -6px -18px 8px 2px rgba(74, 222, 128, 0.65),
-        4px  16px 8px 2px rgba(255, 64, 64, 0.55),
-       18px   4px 8px 2px rgba(253, 224, 71, 0.50),
-      -16px  -6px 8px 2px rgba(56, 189, 248, 0.50);
-    transform: translateY(-4px);
-  }
-
-  /* ── Small variant ── */
-  .chromatic-shadow-sm {
-    box-shadow:
-      -1px -3px 1px 0 rgba(240, 64, 48, 0.25),
-       2px  4px 1px 0 rgba(59, 130, 246, 0.25),
-       4px -1px 1px 0 rgba(34, 197, 94, 0.20),
-      -3px  2px 1px 0 rgba(250, 204, 21, 0.20);
-    transition: box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-                transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .chromatic-shadow-sm:hover {
-    box-shadow:
-       -3px -12px 4px 0 rgba(240, 64, 48, 0.40),
-        4px  13px 4px 0 rgba(59, 130, 246, 0.40),
-       13px  -3px 4px 0 rgba(34, 197, 94, 0.32),
-      -12px   4px 4px 0 rgba(250, 204, 21, 0.32);
-    transform: translateY(-3px);
-  }
-  .dark .chromatic-shadow-sm {
-    box-shadow:
-      -1px -3px 2px 0 rgba(255, 64, 64, 0.35),
-       2px  4px 2px 0 rgba(56, 189, 248, 0.35),
-       4px -1px 2px 0 rgba(74, 222, 128, 0.28),
-      -3px  2px 2px 0 rgba(253, 224, 71, 0.28);
-  }
-  .dark .chromatic-shadow-sm:hover {
-    box-shadow:
-       -3px -12px 5px 1px rgba(255, 64, 64, 0.55),
-        4px  13px 5px 1px rgba(56, 189, 248, 0.55),
-       13px  -3px 5px 1px rgba(74, 222, 128, 0.42),
-      -12px   4px 5px 1px rgba(253, 224, 71, 0.42);
-    transform: translateY(-3px);
-  }
-
-  /* ── Large variant ── */
-  .chromatic-shadow-lg {
-    box-shadow:
-      -3px -8px 4px 0 rgba(240, 64, 48, 0.35),
-       5px  9px 4px 0 rgba(59, 130, 246, 0.35),
-       9px -3px 4px 0 rgba(34, 197, 94, 0.28),
-      -8px  5px 4px 0 rgba(250, 204, 21, 0.28);
-    transition: box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-                transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .chromatic-shadow-lg:hover {
-    box-shadow:
-       -6px -22px 10px 0 rgba(240, 64, 48, 0.50),
-        8px  24px 10px 0 rgba(59, 130, 246, 0.50),
-       24px  -6px 10px 0 rgba(34, 197, 94, 0.42),
-      -22px   8px 10px 0 rgba(250, 204, 21, 0.42);
-    transform: translateY(-5px);
-  }
-  .dark .chromatic-shadow-lg {
-    box-shadow:
-      -3px -8px 5px 1px rgba(255, 64, 64, 0.48),
-       5px  9px 5px 1px rgba(56, 189, 248, 0.48),
-       9px -3px 5px 1px rgba(74, 222, 128, 0.38),
-      -8px  5px 5px 1px rgba(253, 224, 71, 0.38);
-  }
-  .dark .chromatic-shadow-lg:hover {
-    box-shadow:
-       -6px -22px 12px 3px rgba(255, 64, 64, 0.70),
-        8px  24px 12px 3px rgba(56, 189, 248, 0.70),
-       24px  -6px 12px 3px rgba(74, 222, 128, 0.55),
-      -22px   8px 12px 3px rgba(253, 224, 71, 0.55);
-    transform: translateY(-5px);
-  }
-
-  /* ── Header shadow — prismatic underline ── */
-  .chromatic-header-shadow {
-    box-shadow:
-      -6px 4px 3px 0 rgba(240, 64, 48, 0.15),
-       6px 4px 3px 0 rgba(59, 130, 246, 0.15),
-       0px 5px 3px 0 rgba(34, 197, 94, 0.12),
-       0px 3px 3px 0 rgba(250, 204, 21, 0.10),
-       0px 6px 4px rgba(0, 0, 0, 0.05);
-  }
-  .dark .chromatic-header-shadow {
-    box-shadow:
-      -6px 4px 4px 0 rgba(255, 64, 64, 0.25),
-       6px 4px 4px 0 rgba(56, 189, 248, 0.25),
-       0px 5px 4px 0 rgba(74, 222, 128, 0.18),
-       0px 3px 4px 0 rgba(253, 224, 71, 0.15),
-       0px 6px 5px rgba(0, 0, 0, 0.25);
-  }
-
-  /* ── Ethereal drift for featured elements ── */
-  .drift {
-    animation: drift 6s ease-in-out infinite;
+  h1, h2, h3 {
+    font-family: var(--font-display);
   }
 }
 
@@ -301,30 +109,57 @@ html {
    COMPONENTS
    ══════════════════════════════════════════ */
 @layer components {
-  /* Simple prismatic loader */
+  /* Display title */
+  .pokemon-title {
+    font-family: var(--font-display);
+    color: var(--color-ink);
+  }
+  .dark .pokemon-title {
+    color: var(--color-dark-ink);
+  }
+
+  /* Bento cell with inherited type color border */
+  .bento-cell {
+    border: 2px solid var(--type-color, #e5e7eb);
+  }
+
+  /* Simple loader spinner */
   .prismatic-loader {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     border: 3px solid transparent;
-    border-top-color: var(--color-type-water);
-    border-right-color: var(--color-type-electric);
-    border-bottom-color: var(--color-type-fire);
-    border-left-color: var(--color-type-grass);
+    border-top-color: var(--color-primary);
+    border-right-color: var(--color-primary-100);
+    border-bottom-color: var(--color-primary);
+    border-left-color: var(--color-primary-100);
     animation: spin 1.2s linear infinite;
   }
 
-  /* Chromatic separator line */
-  .chromatic-line {
-    height: 2px;
+  /* Skeleton shimmer for loading cards */
+  .skeleton-shimmer {
     background: linear-gradient(
-      to right,
-      transparent,
-      rgba(59, 130, 246, 0.35),
-      rgba(34, 197, 94, 0.30),
-      rgba(250, 204, 21, 0.30),
-      rgba(240, 64, 48, 0.35),
-      transparent
+      90deg,
+      var(--color-surface-sunken) 25%,
+      var(--color-surface-raised) 50%,
+      var(--color-surface-sunken) 75%
     );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
   }
+  .dark .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--color-dark-surface) 25%,
+      var(--color-dark-raised) 50%,
+      var(--color-dark-surface) 75%
+    );
+    background-size: 200% 100%;
+  }
+}
+
+/* Progress fill for carousel dots */
+@keyframes progress-fill {
+  from { width: 0; }
+  to { width: 100%; }
 }

@@ -3,7 +3,9 @@ export type Language = 'en' | 'es'
 export type Translations = {
   // Header
   header: {
+    home: string
     pokedex: string
+    types: string
     typeChart: string
     menu: string
     close: string
@@ -135,16 +137,18 @@ export type Translations = {
 export const translations: Record<Language, Translations> = {
   en: {
     header: {
+      home: 'Home',
       pokedex: 'Pokédex',
+      types: 'Types',
       typeChart: 'Type Chart',
       menu: 'Menu',
       close: 'Close',
       search: 'Search',
     },
     home: {
-      title: 'Explore the World of Pokémon',
+      title: 'Gotta Know \'Em All!',
       subtitle:
-        'Discover detailed information about all {count} Pokémon species, their stats, types, abilities, and evolutions.',
+        '{count} Pokemon and counting.',
       viewPokedex: 'View Full Pokédex →',
       byTheNumbers: 'By the Numbers',
       totalPokemon: 'Total Pokémon',
@@ -155,7 +159,7 @@ export const translations: Record<Language, Translations> = {
       pokemonGenerations: 'Pokémon generations',
       didYouKnow: '💡 Did You Know?',
       browseByCategory: 'Browse by Category',
-      pokemonTypes: 'Pokémon Types',
+      pokemonTypes: 'By Type',
       byGeneration: 'By Generation',
       region: 'Region',
       generation: 'Generation',
@@ -278,16 +282,18 @@ export const translations: Record<Language, Translations> = {
   },
   es: {
     header: {
+      home: 'Inicio',
       pokedex: 'Pokédex',
+      types: 'Tipos',
       typeChart: 'Tabla de Tipos',
       menu: 'Menú',
       close: 'Cerrar',
       search: 'Buscar',
     },
     home: {
-      title: 'Explora el Mundo de Pokémon',
+      title: '\u00a1Hazte con todos!',
       subtitle:
-        'Descubre información detallada sobre todas las {count} especies de Pokémon, sus estadísticas, tipos, habilidades y evoluciones.',
+        '{count} Pokemon y sumando.',
       viewPokedex: 'Ver Pokédex →',
       byTheNumbers: 'En Números',
       totalPokemon: 'Total de Pokémon',
@@ -298,7 +304,7 @@ export const translations: Record<Language, Translations> = {
       pokemonGenerations: 'Generaciones de Pokémon',
       didYouKnow: '💡 ¿Sabías Que?',
       browseByCategory: 'Explorar por Categoría',
-      pokemonTypes: 'Tipos de Pokémon',
+      pokemonTypes: 'Por Tipo',
       byGeneration: 'Por Generación',
       region: 'Región',
       generation: 'Generación',

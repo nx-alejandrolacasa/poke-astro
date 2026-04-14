@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { ImageZoomModal } from '@/components/ImageZoomModal'
+import { Carousel } from '@/components/Carousel'
 import { PokemonEnrichedData } from '@/components/PokemonEnrichedData'
-import { RotatingText } from '@/components/RotatingText'
+import { TypeBadge } from '@/components/TypeBadge'
 import type { Locale } from '@/utils/i18n'
 import type { Pokemon } from '@/utils/pokemon'
-import { getPokemonImage, getPokemonName } from '@/utils/pokemon'
+import { getPokemonImage, getPokemonName, getTypeColor } from '@/utils/pokemon'
 import { translations } from '@/utils/translations'
 
 type PokemonDetailContentProps = {
@@ -52,6 +52,7 @@ export function PokemonDetailContent({
   locale,
 }: PokemonDetailContentProps) {
   const t = translations[locale]
+  const typeColor = getTypeColor(pokemon)
   const [abilities, setAbilities] = useState<TranslatedAbility[]>(() =>
     pokemon.abilities.map(({ ability, is_hidden }) => ({
       name: ability.name,
@@ -74,7 +75,6 @@ export function PokemonDetailContent({
   )
   const [descriptions, setDescriptions] = useState<FlavorTextEntry[]>([])
   const [descriptionLoading, setDescriptionLoading] = useState(true)
-  const [isImageZoomed, setIsImageZoomed] = useState(false)
 
   useEffect(() => {
     const fetchEnrichedData = async () => {
@@ -123,8 +123,8 @@ export function PokemonDetailContent({
           return {
             name: stat.name,
             translatedName:
-              translation?.name ??
               t.stats[stat.name as keyof typeof t.stats] ??
+              translation?.name ??
               stat.name,
             baseStat: base_stat,
           }
@@ -191,185 +191,128 @@ export function PokemonDetailContent({
     fetchEnrichedData()
   }, [pokemon, pokemonName, locale, t.stats])
 
-  const totalStats = stats.reduce((sum, stat) => sum + stat.baseStat, 0)
-  const maxStat = 255
-
   return (
-    <div className="space-y-6 md:space-y-8">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-[200px_1fr] lg:grid-cols-[240px_1fr] lg:gap-8">
-        <div className="flex flex-col items-center justify-start">
-          <button
-            type="button"
-            onClick={() => setIsImageZoomed(true)}
-            className="chromatic-shadow-lg relative w-full max-w-[180px] cursor-zoom-in rounded-2xl bg-white p-4 transition-all duration-300 md:max-w-full dark:bg-dark-surface"
-            aria-label={`Enlarge ${pokemon.name} image`}
-          >
-            <img
-              className="aspect-square w-full drop-shadow-lg"
-              src={getPokemonImage(pokemon)}
-              alt={`${pokemon.name} official artwork`}
-            />
-            <span className="absolute top-2 right-2 rounded-lg bg-ink/70 px-2 py-0.5 font-bold font-mono text-white text-xs backdrop-blur-sm dark:bg-white/10 dark:text-dark-ink">
-              #{pokemon.order.toString().padStart(3, '0')}
-            </span>
-            <span className="absolute bottom-2 left-2 rounded-full bg-ink/40 p-1.5 text-white backdrop-blur-sm dark:bg-white/10 dark:text-dark-ink">
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
-                />
-              </svg>
-            </span>
-          </button>
-          <h1 className="mt-4 text-center font-bold text-2xl text-ink tracking-tight md:hidden dark:text-dark-ink">
-            {getPokemonName(pokemonName)}
-          </h1>
+    <div className="space-y-4">
+      {/* Back button */}
+      <button
+        type="button"
+        onClick={() => window.history.back()}
+        className="inline-flex items-center gap-1 rounded-xl px-3 py-1.5 text-ink-muted text-sm transition-colors hover:bg-surface-sunken hover:text-ink dark:text-dark-ink-muted dark:hover:bg-dark-raised dark:hover:text-dark-ink"
+      >
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+        {locale === 'es' ? 'Volver' : 'Back'}
+      </button>
+
+      {/* ── BENTO GRID ── */}
+      {/* Mobile: single column stack. Desktop: 4-col grid with spanning cells. */}
+      <div
+        className="grid grid-cols-1 gap-3 md:grid-cols-4 md:gap-4"
+        style={{ '--type-color': typeColor } as React.CSSProperties}
+      >
+
+        {/* ── Sprite card — tall, spans 2 rows on desktop ── */}
+        <div
+          className="bento-cell flex flex-col items-center justify-center rounded-2xl bg-white p-6 md:col-span-2 md:row-span-2 dark:bg-dark-surface"
+        >
+          <img
+            className="aspect-square w-full max-w-[260px] drop-shadow-lg"
+            src={getPokemonImage(pokemon)}
+            alt={`${pokemon.name} official artwork`}
+          />
         </div>
 
-        <div className="space-y-4">
-          <h1 className="hidden font-bold text-3xl text-ink tracking-tight md:block lg:text-4xl dark:text-dark-ink">
+        {/* ── Name + Number + Types ── */}
+        <div className="bento-cell flex flex-col justify-center rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
+          <span className="font-black font-mono text-ink-muted text-lg dark:text-dark-ink-muted">
+            #{pokemon.order.toString().padStart(3, '0')}
+          </span>
+          <h1 className="font-black text-3xl text-ink tracking-tight md:text-4xl dark:text-dark-ink">
             {getPokemonName(pokemonName)}
           </h1>
-
-          {(descriptionLoading || descriptions.length > 0) && (
-            <div className="chromatic-shadow-b rounded-2xl bg-white p-4 transition-colors dark:bg-dark-surface">
-              {descriptionLoading ? (
-                <div className="h-12 animate-pulse rounded-lg bg-surface-sunken dark:bg-dark-raised" />
-              ) : (
-                <>
-                  <p className="mb-1.5 font-semibold text-[10px] text-ink-faint uppercase tracking-wider dark:text-dark-ink-faint">
-                    {t.pokemon.description}
-                  </p>
-                  <RotatingText
-                    items={descriptions.map((d) => d.text)}
-                    intervalMs={5000}
-                    className="text-ink text-sm leading-relaxed md:text-base dark:text-dark-ink"
-                  />
-                </>
-              )}
-            </div>
-          )}
-
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
-            <div className="chromatic-shadow-sm rounded-2xl bg-white p-3 transition-colors dark:bg-dark-surface">
-              <h2 className="mb-1.5 font-semibold text-[10px] text-ink-faint uppercase tracking-wider dark:text-dark-ink-faint">
-                {t.pokemon.type}
-              </h2>
-              <div className="flex flex-wrap gap-1.5">
-                {types.map(({ name, translatedName }) => (
-                  <span
-                    key={name}
-                    className="rounded-lg bg-surface-sunken px-2.5 py-0.5 font-medium text-ink text-xs capitalize dark:bg-dark-raised dark:text-dark-ink"
-                  >
-                    {translatedName}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div className="chromatic-shadow-sm rounded-2xl bg-white p-3 transition-colors dark:bg-dark-surface">
-              <h2 className="mb-1.5 font-semibold text-[10px] text-ink-faint uppercase tracking-wider dark:text-dark-ink-faint">
-                {t.pokemon.height}
-              </h2>
-              <p className="font-mono font-semibold text-ink text-lg dark:text-dark-ink">
-                {(pokemon.height / 10).toLocaleString(locale, {
-                  minimumFractionDigits: 1,
-                  maximumFractionDigits: 1,
-                })}{' '}
-                m
-              </p>
-            </div>
-            <div className="chromatic-shadow-sm rounded-2xl bg-white p-3 transition-colors dark:bg-dark-surface">
-              <h2 className="mb-1.5 font-semibold text-[10px] text-ink-faint uppercase tracking-wider dark:text-dark-ink-faint">
-                {t.pokemon.weight}
-              </h2>
-              <p className="font-mono font-semibold text-ink text-lg dark:text-dark-ink">
-                {(pokemon.weight / 10).toLocaleString(locale, {
-                  minimumFractionDigits: 1,
-                  maximumFractionDigits: 1,
-                })}{' '}
-                kg
-              </p>
-            </div>
-            <div className="chromatic-shadow-sm rounded-2xl bg-white p-3 transition-colors dark:bg-dark-surface">
-              <h2 className="mb-1.5 font-semibold text-[10px] text-ink-faint uppercase tracking-wider dark:text-dark-ink-faint">
-                {t.pokemon.abilities}
-              </h2>
-              <div className="flex flex-wrap gap-1.5">
-                {abilities.map(({ name, translatedName, isHidden }) => (
-                  <span
-                    key={name}
-                    className={`rounded-lg px-2.5 py-0.5 font-medium text-xs ${isHidden ? 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400' : 'bg-surface-sunken text-ink dark:bg-dark-raised dark:text-dark-ink'}`}
-                    title={isHidden ? t.pokemon.hidden : undefined}
-                  >
-                    {translatedName}
-                  </span>
-                ))}
-              </div>
-            </div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {types.map(({ name, translatedName }) => (
+              <TypeBadge
+                key={name}
+                type={name}
+                label={translatedName}
+                size="md"
+                href={`/${locale}/type/${name}`}
+              />
+            ))}
           </div>
         </div>
+
+        {/* ── Height + Weight ── */}
+        <div className="grid grid-cols-2 gap-3 md:col-span-2 md:gap-4">
+          <div className="bento-cell rounded-2xl bg-white p-4 dark:bg-dark-surface">
+            <p className="mb-1 font-semibold text-xs text-ink-faint uppercase tracking-wider dark:text-dark-ink-faint">
+              {t.pokemon.height}
+            </p>
+            <p className="font-mono font-bold text-ink text-2xl dark:text-dark-ink">
+              {(pokemon.height / 10).toLocaleString(locale, {
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 1,
+              })}{' '}
+              <span className="text-base text-ink-muted dark:text-dark-ink-muted">m</span>
+            </p>
+          </div>
+          <div className="bento-cell rounded-2xl bg-white p-4 dark:bg-dark-surface">
+            <p className="mb-1 font-semibold text-xs text-ink-faint uppercase tracking-wider dark:text-dark-ink-faint">
+              {t.pokemon.weight}
+            </p>
+            <p className="font-mono font-bold text-ink text-2xl dark:text-dark-ink">
+              {(pokemon.weight / 10).toLocaleString(locale, {
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 1,
+              })}{' '}
+              <span className="text-base text-ink-muted dark:text-dark-ink-muted">kg</span>
+            </p>
+          </div>
+        </div>
+
+        {/* ── Descriptions carousel ── */}
+        {(descriptionLoading || descriptions.length > 0) && (
+          <div className="bento-cell rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
+            {descriptionLoading ? (
+              <div className="h-16 animate-pulse rounded-lg bg-surface-sunken dark:bg-dark-raised" />
+            ) : (
+              <Carousel
+                items={descriptions.map((d) => d.text)}
+                label={t.pokemon.description}
+                autoPlayMs={8000}
+              />
+            )}
+          </div>
+        )}
+
+        {/* ── Abilities ── */}
+        <div className="bento-cell rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
+          <p className="mb-2 font-semibold text-xs text-ink-faint uppercase tracking-wider dark:text-dark-ink-faint">
+            {t.pokemon.abilities}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {abilities.map(({ name, translatedName, isHidden }) => (
+              <span
+                key={name}
+                className={`rounded-full px-3 py-1 font-medium text-xs capitalize ${isHidden ? 'bg-amber-100 text-amber-800 dark:bg-amber-500/10 dark:text-amber-400' : 'bg-surface-sunken text-ink dark:bg-dark-raised dark:text-dark-ink'}`}
+                title={isHidden ? t.pokemon.hidden : undefined}
+              >
+                {translatedName}
+              </span>
+            ))}
+          </div>
+        </div>
+
       </div>
 
+      {/* ── Enriched data (type effectiveness + evolution chain) ── */}
       <PokemonEnrichedData
         pokemonName={pokemonName}
         locale={locale}
-        statsSection={
-          <div className="chromatic-shadow rounded-2xl bg-white p-4 transition-colors dark:bg-dark-surface">
-            <h2 className="mb-3 font-bold text-ink text-sm md:text-base dark:text-dark-ink">
-              {t.pokemon.baseStats}
-            </h2>
-            <div className="space-y-2">
-              {stats.map(({ name, translatedName, baseStat }) => {
-                const percentage = (baseStat / maxStat) * 100
-                return (
-                  <div
-                    key={name}
-                    className="grid grid-cols-[90px_40px_1fr] gap-2 text-ink dark:text-dark-ink"
-                  >
-                    <div className="truncate text-right text-ink-muted text-xs dark:text-dark-ink-muted">
-                      {translatedName}
-                    </div>
-                    <div className="text-right font-bold font-mono text-xs">
-                      {baseStat}
-                    </div>
-                    <div className="flex items-center">
-                      <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-surface-sunken dark:bg-dark-raised">
-                        <div
-                          className={`absolute top-0 left-0 h-2.5 rounded-full transition-all ${baseStat >= 100 ? 'bg-emerald-400 dark:bg-emerald-500' : baseStat >= 60 ? 'bg-amber-400 dark:bg-amber-500' : 'bg-orange-400 dark:bg-orange-500'}`}
-                          style={{ width: `${percentage}%` }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
-              <div className="mt-3 grid grid-cols-[90px_40px_1fr] gap-2 border-surface-sunken border-t pt-3 dark:border-dark-raised">
-                <div className="text-right font-bold text-ink text-xs uppercase dark:text-dark-ink">
-                  {t.pokemon.total}
-                </div>
-                <div className="text-right font-bold font-mono text-ink text-xs dark:text-dark-ink">
-                  {totalStats}
-                </div>
-                <div />
-              </div>
-            </div>
-          </div>
-        }
-      />
-
-      <ImageZoomModal
-        src={getPokemonImage(pokemon)}
-        alt={`${pokemon.name} official artwork`}
-        isOpen={isImageZoomed}
-        onClose={() => setIsImageZoomed(false)}
+        typeColor={typeColor}
+        stats={stats}
       />
     </div>
   )

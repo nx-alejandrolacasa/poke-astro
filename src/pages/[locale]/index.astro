@@ -1,5 +1,5 @@
 ---
-import { HomeContentWrapper } from '@/components/HomeContentWrapper'
+import { HomeContent } from '@/components/HomeContent'
 import Layout from '@/layouts/Layout.astro'
 import { getI18n } from '@/utils/i18n'
 import { fetchPokemonCount } from '@/utils/pokemon'
@@ -11,5 +11,5 @@ const totalPokemon = await fetchPokemonCount()
 ---
 
 <Layout title={t.home.title} locale={locale}>
-  <HomeContentWrapper client:load totalPokemon={totalPokemon} locale={locale} />
+  <HomeContent client:load totalPokemon={totalPokemon} locale={locale} />
 </Layout>
