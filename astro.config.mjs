@@ -2,18 +2,19 @@ import react from '@astrojs/react'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'astro/config'
 
-// Adapter only needed for production builds, not local dev
+// Adapter: Vercel when VERCEL is set, skip in dev mode, default to Cloudflare
 async function getAdapter() {
   if (process.env.VERCEL) {
     const vercel = (await import('@astrojs/vercel')).default
     return vercel()
   }
-  if (process.env.CF_PAGES || process.env.CLOUDFLARE) {
-    const cloudflare = (await import('@astrojs/cloudflare')).default
-    return cloudflare()
+  // Skip adapter in dev mode for clean local DX
+  if (process.argv.includes('dev')) {
+    return undefined
   }
-  // No adapter for local development
-  return undefined
+  // Default to Cloudflare for production builds
+  const cloudflare = (await import('@astrojs/cloudflare')).default
+  return cloudflare()
 }
 
 // https://astro.build/config
