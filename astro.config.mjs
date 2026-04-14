@@ -4,7 +4,7 @@ import { defineConfig } from 'astro/config'
 
 // https://astro.build/config
 // Using function form to access the `command` parameter ("dev" | "build" | "preview")
-export default defineConfig(({ command }) => {
+export default defineConfig(async ({ command }) => {
   // Adapter: Vercel when VERCEL is set, skip in dev for clean local DX, default to Cloudflare
   async function getAdapter() {
     if (process.env.VERCEL) {
