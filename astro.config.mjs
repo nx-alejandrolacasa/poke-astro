@@ -5,14 +5,15 @@ import { defineConfig } from 'astro/config'
 // https://astro.build/config
 // Using function form to access the `command` parameter ("dev" | "build" | "preview")
 export default defineConfig(async ({ command }) => {
-  // Adapter: Vercel when VERCEL is set, skip in dev for clean local DX, default to Cloudflare
+  // Adapter: Vercel when VERCEL is set, Node for dev, default to Cloudflare for builds
   async function getAdapter() {
     if (process.env.VERCEL) {
       const vercel = (await import('@astrojs/vercel')).default
       return vercel()
     }
     if (command === 'dev') {
-      return undefined
+      const node = (await import('@astrojs/node')).default
+      return node({ mode: 'standalone' })
     }
     const cloudflare = (await import('@astrojs/cloudflare')).default
     return cloudflare()
