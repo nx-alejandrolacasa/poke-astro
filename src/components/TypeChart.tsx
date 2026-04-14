@@ -65,8 +65,8 @@ function TypeBadge({
       onClick={onClick}
       className={`inline-flex items-center gap-1.5 rounded-xl font-semibold capitalize transition-all duration-200 ${sizeClasses[size]} ${
         selected
-          ? 'scale-105 shadow-lg ring-2 ring-white ring-offset-2 ring-offset-ink'
-          : 'hover:scale-105 hover:shadow-md'
+          ? 'scale-105 ring-2 ring-white ring-offset-2 ring-offset-ink'
+          : 'hover:scale-105'
       } ${onClick ? 'cursor-pointer' : 'cursor-default'}`}
       style={{
         backgroundColor: color,
@@ -139,7 +139,7 @@ function DetailPanel({
 
   return (
     <div
-      className="shadow-lg overflow-hidden rounded-2xl transition-all duration-300"
+      className="overflow-hidden rounded-2xl transition-all duration-300"
       style={{
         border: `2px solid ${color}${isDark ? '40' : '30'}`,
         background: isDark
@@ -309,13 +309,13 @@ export function TypeChart({ locale }: TypeChartProps) {
       </section>
 
       <div className="flex justify-center">
-        <div className="shadow-md inline-flex rounded-xl bg-white p-1 dark:bg-dark-surface">
+        <div className="inline-flex rounded-xl border border-black/[0.06] bg-white p-1 dark:border-white/[0.06] dark:bg-dark-surface">
           <button
             type="button"
             onClick={() => setGen1(false)}
             className={`rounded-lg px-4 py-2 font-semibold text-xs transition-all duration-200 ${
               !gen1
-                ? 'bg-surface-sunken text-primary shadow-sm dark:bg-dark-raised dark:text-primary'
+                ? 'bg-surface-sunken text-primary dark:bg-dark-raised dark:text-primary'
                 : 'text-ink-muted hover:text-ink dark:text-dark-ink-muted dark:hover:text-dark-ink'
             }`}
           >
@@ -327,7 +327,7 @@ export function TypeChart({ locale }: TypeChartProps) {
             onClick={() => setGen1(true)}
             className={`rounded-lg px-4 py-2 font-semibold text-xs transition-all duration-200 ${
               gen1
-                ? 'bg-surface-sunken text-primary shadow-sm dark:bg-dark-raised dark:text-primary'
+                ? 'bg-surface-sunken text-primary dark:bg-dark-raised dark:text-primary'
                 : 'text-ink-muted hover:text-ink dark:text-dark-ink-muted dark:hover:text-dark-ink'
             }`}
           >

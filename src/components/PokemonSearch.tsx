@@ -140,7 +140,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
         <div
           ref={dropdownRef}
           id="search-suggestions"
-          className="shadow-md absolute z-50 mt-2 w-full overflow-hidden rounded-xl bg-white dark:bg-dark-surface"
+          className="absolute z-50 mt-2 w-full overflow-hidden rounded-xl border border-black/[0.06] bg-white dark:border-white/[0.06] dark:bg-dark-surface"
           role="listbox"
         >
           {suggestions.map((name, index) => (
@@ -167,7 +167,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
       {isOpen && query && suggestions.length === 0 && (
         <div
           ref={dropdownRef}
-          className="shadow-md absolute z-50 mt-2 w-full rounded-xl bg-white px-4 py-3 text-ink-muted text-sm dark:bg-dark-surface dark:text-dark-ink-muted"
+          className="absolute z-50 mt-2 w-full rounded-xl border border-black/[0.06] bg-white px-4 py-3 text-ink-muted text-sm dark:border-white/[0.06] dark:bg-dark-surface dark:text-dark-ink-muted"
         >
           {t.search.noResults}
         </div>

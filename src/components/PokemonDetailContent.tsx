@@ -217,7 +217,7 @@ export function PokemonDetailContent({
           className="bento-cell flex flex-col items-center justify-center rounded-2xl bg-white p-6 md:col-span-2 md:row-span-2 dark:bg-dark-surface"
         >
           <img
-            className="aspect-square w-full max-w-[260px] drop-shadow-lg"
+            className="aspect-square w-full max-w-[260px]"
             src={getPokemonImage(pokemon)}
             alt={`${pokemon.name} official artwork`}
           />

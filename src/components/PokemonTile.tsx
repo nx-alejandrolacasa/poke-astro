@@ -20,7 +20,7 @@ export function PokemonTile({
 
   return (
     <div
-      className="shadow-md overflow-hidden rounded-2xl bg-white p-4 text-center transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] dark:bg-dark-surface"
+      className="overflow-hidden rounded-2xl bg-white p-4 text-center transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] dark:bg-dark-surface"
       style={{ border: `2px solid ${typeColor}` }}
     >
       <a href={`/${locale}/pokemon/${pokemon.name}`} title={pokemon.name}>
@@ -29,7 +29,7 @@ export function PokemonTile({
             #{pokemon.order.toString().padStart(3, '0')}
           </span>
           <img
-            className="relative z-10 aspect-square w-full drop-shadow-sm"
+            className="relative z-10 aspect-square w-full"
             src={loading ? '/loading.svg' : getPokemonImage(pokemon)}
             alt={`${pokemon.name} official artwork`}
           />
