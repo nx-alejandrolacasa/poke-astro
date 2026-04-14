@@ -7,35 +7,32 @@ interface Props {
   locale: Locale
 }
 
-// biome-ignore lint/correctness/noUnusedVariables: used in Astro template
 const { locale } = Astro.props
 ---
 
-<div class="sticky top-0 z-40 px-4 pt-4 sm:px-6 sm:pt-5">
-  <header class="chromatic-shadow mx-auto max-w-5xl rounded-2xl bg-white/90 backdrop-blur-xl transition-colors dark:bg-dark-surface/90">
-    <nav class="flex h-14 items-center gap-4 px-5 sm:h-16 sm:px-7">
-      <!-- Pokemon logo home link -->
-      <a
-        href={`/${locale}`}
-        title="Home"
-        class="flex-shrink-0 transition-transform active:scale-95 hover:scale-105"
-      >
-        <img
-          src="/pokemon-logo.svg"
-          alt="Pokemon"
-          class="h-6 w-auto sm:h-7"
-        />
-      </a>
+<header class="chromatic-header-shadow sticky top-0 z-40 w-full border-b border-black/[0.06] bg-white/90 backdrop-blur-xl transition-colors dark:border-white/[0.06] dark:bg-dark-surface/90">
+  <nav class="mx-auto flex h-14 max-w-5xl items-center gap-4 px-4 sm:h-16 sm:px-6">
+    <!-- Pokemon logo home link -->
+    <a
+      href={`/${locale}`}
+      title="Home"
+      class="flex-shrink-0 transition-transform active:scale-95 hover:scale-105"
+    >
+      <img
+        src="/pokemon-logo.svg"
+        alt="Pokemon"
+        class="h-6 w-auto sm:h-7"
+      />
+    </a>
 
-      <!-- Search -->
-      <div class="flex-1 flex justify-center">
-        <div class="w-full max-w-md">
-          <PokemonSearchWrapper client:load locale={locale} />
-        </div>
+    <!-- Search -->
+    <div class="flex-1 flex justify-center">
+      <div class="w-full max-w-md">
+        <PokemonSearchWrapper client:load locale={locale} />
       </div>
+    </div>
 
-      <!-- Settings -->
-      <HeaderActions client:load locale={locale} />
-    </nav>
-  </header>
-</div>
+    <!-- Settings -->
+    <HeaderActions client:load locale={locale} />
+  </nav>
+</header>

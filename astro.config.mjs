@@ -1,23 +1,30 @@
+import { fileURLToPath } from 'node:url'
 import react from '@astrojs/react'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'astro/config'
 
-// Conditional adapter based on deployment platform
-async function getAdapter() {
+// Detect dev mode via npm script name (set by npm to "dev", "build", "preview", etc.)
+const isDev = process.env.npm_lifecycle_event === 'dev' || process.env.npm_lifecycle_event === 'start'
+
+// Adapter: Vercel when VERCEL is set, Node for dev, default to Cloudflare for builds
+const adapter = await (async () => {
   if (process.env.VERCEL) {
     const vercel = (await import('@astrojs/vercel')).default
     return vercel()
   }
-  // Default to Cloudflare adapter (for Cloudflare Pages and local development)
+  if (isDev) {
+    const node = (await import('@astrojs/node')).default
+    return node({ mode: 'standalone' })
+  }
   const cloudflare = (await import('@astrojs/cloudflare')).default
   return cloudflare()
-}
+})()
 
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
   integrations: [react()],
-  adapter: await getAdapter(),
+  adapter,
   i18n: {
     defaultLocale: 'es',
     locales: ['en', 'es'],
@@ -26,7 +33,20 @@ export default defineConfig({
     },
   },
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [
+      tailwindcss(),
+      // Workaround: Vite 7 Environment API processes client.mjs through
+      // EnvironmentPluginContainer where @vite/env virtual module can't resolve.
+      // Map it to the actual file on disk.
+      {
+        name: 'resolve-vite-env',
+        resolveId(id) {
+          if (id === '@vite/env') {
+            return fileURLToPath(new URL('node_modules/vite/dist/client/env.mjs', import.meta.url))
+          }
+        },
+      },
+    ],
   },
 
   // Responsive images (stable in Astro 6, previously experimental)
@@ -36,11 +56,6 @@ export default defineConfig({
 
   // Experimental features
   experimental: {
-    // Rust compiler: faster builds and better diagnostics (replaces Go compiler)
-    // Requires @astrojs/compiler-rs native bindings — enable only when available
-    rustCompiler: await import('@astrojs/compiler-rs')
-      .then(() => true)
-      .catch(() => false),
     // Queued rendering: up to 2x faster rendering with queue-based engine
     queuedRendering: {
       enabled: true,

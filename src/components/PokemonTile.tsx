@@ -19,7 +19,11 @@ function getShadowClass(pokemonOrder: number): string {
   return shadowPalettes[pokemonOrder % shadowPalettes.length]
 }
 
-export function PokemonTile({ loading = false, pokemon, locale }: PokemonTileProps) {
+export function PokemonTile({
+  loading = false,
+  pokemon,
+  locale,
+}: PokemonTileProps) {
   const typeColor = getTypeColor(pokemon)
   const t = translations[locale]
   const shadowClass = getShadowClass(pokemon.order)
@@ -30,7 +34,7 @@ export function PokemonTile({ loading = false, pokemon, locale }: PokemonTilePro
     >
       <a href={`/${locale}/pokemon/${pokemon.name}`} title={pokemon.name}>
         <div className="relative aspect-square w-full">
-          <div className="pointer-events-none absolute right-0.5 bottom-0.5 z-0 select-none font-mono font-black text-2xl text-ink/[0.06] md:text-4xl dark:text-dark-ink/[0.08]">
+          <div className="pointer-events-none absolute right-0.5 bottom-0.5 z-0 select-none font-black font-mono text-2xl text-ink/[0.06] md:text-4xl dark:text-dark-ink/[0.08]">
             #{pokemon.order.toString().padStart(3, '0')}
           </div>
           <img
@@ -44,10 +48,15 @@ export function PokemonTile({ loading = false, pokemon, locale }: PokemonTilePro
             {pokemon.name.replaceAll('-', ' ')}
           </span>
           <span
-            className="mt-0.5 block text-xs font-medium capitalize opacity-70"
+            className="mt-0.5 block font-medium text-xs capitalize opacity-70"
             style={{ color: typeColor }}
           >
-            {pokemon.types.map(pt => t.types[pt.type.name as keyof typeof t.types] ?? pt.type.name).join(' / ')}
+            {pokemon.types
+              .map(
+                (pt) =>
+                  t.types[pt.type.name as keyof typeof t.types] ?? pt.type.name
+              )
+              .join(' / ')}
           </span>
         </div>
       </a>

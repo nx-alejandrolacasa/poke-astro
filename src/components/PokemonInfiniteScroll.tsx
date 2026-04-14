@@ -11,7 +11,11 @@ type PokemonInfiniteScrollProps = {
   locale: Locale
 }
 
-export function PokemonInfiniteScroll({ initialData, initialPage = 1, locale }: PokemonInfiniteScrollProps) {
+export function PokemonInfiniteScroll({
+  initialData,
+  initialPage = 1,
+  locale,
+}: PokemonInfiniteScrollProps) {
   const t = translations[locale]
   const [pokemon, setPokemon] = useState<Pokemon[]>(initialData.results)
   const [page, setPage] = useState(initialPage)
@@ -50,7 +54,9 @@ export function PokemonInfiniteScroll({ initialData, initialPage = 1, locale }: 
     <div>
       <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-5 lg:grid-cols-5 xl:grid-cols-6">
         {pokemon.map((poke) => (
-          <li key={poke.name} className="list-none"><PokemonTile pokemon={poke} locale={locale} /></li>
+          <li key={poke.name} className="list-none">
+            <PokemonTile pokemon={poke} locale={locale} />
+          </li>
         ))}
       </ul>
       {hasMore && (
@@ -58,15 +64,23 @@ export function PokemonInfiniteScroll({ initialData, initialPage = 1, locale }: 
           {loading ? (
             <div className="text-center">
               <div className="prismatic-loader mx-auto" />
-              <p className="mt-3 text-xs text-ink-muted dark:text-dark-ink-muted">{t.scroll.loadingMore}</p>
+              <p className="mt-3 text-ink-muted text-xs dark:text-dark-ink-muted">
+                {t.scroll.loadingMore}
+              </p>
             </div>
-          ) : <div className="h-10" />}
+          ) : (
+            <div className="h-10" />
+          )}
         </div>
       )}
       {!hasMore && pokemon.length > 0 && (
         <div className="my-10 text-center">
-          <p className="text-sm text-ink-muted dark:text-dark-ink-muted">{t.scroll.caughtAll}</p>
-          <p className="mt-1 text-xs text-ink-faint dark:text-dark-ink-faint">{interpolate(t.scroll.showingAll, { count: pokemon.length })}</p>
+          <p className="text-ink-muted text-sm dark:text-dark-ink-muted">
+            {t.scroll.caughtAll}
+          </p>
+          <p className="mt-1 text-ink-faint text-xs dark:text-dark-ink-faint">
+            {interpolate(t.scroll.showingAll, { count: pokemon.length })}
+          </p>
         </div>
       )}
     </div>

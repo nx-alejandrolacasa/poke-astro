@@ -22,13 +22,13 @@ html {
   --color-dark-raised: #1a1a3e;
   --color-dark-border: #2a2a52;
 
-  /* ── Primary accent — Pokédex Red ── */
-  --color-primary: #E3350D;
-  --color-primary-50: #fef2f0;
-  --color-primary-100: #fde3de;
-  --color-primary-500: #E3350D;
-  --color-primary-600: #c42d0b;
-  --color-primary-700: #a3250a;
+  /* ── Primary accent — Pokédex Blue ── */
+  --color-primary: #2563eb;
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-500: #2563eb;
+  --color-primary-600: #1d4ed8;
+  --color-primary-700: #1e40af;
 
   /* ── Text ── */
   --color-ink: #1a1a2e;
@@ -39,18 +39,16 @@ html {
   --color-dark-ink-faint: #6b7298;
 
   /* ── Pokémon type palette (used for chromatic shadows) ── */
-  --color-type-fire: #f08030;
-  --color-type-water: #6890f0;
-  --color-type-grass: #78c850;
-  --color-type-electric: #f8d030;
-  --color-type-psychic: #f85888;
-  --color-type-poison: #a040a0;
-  --color-type-dragon: #7038f8;
-  --color-type-fairy: #ee99ac;
-  --color-type-ice: #98d8d8;
-  --color-type-flying: #a890f0;
-  --color-type-ghost: #705898;
-  --color-type-fighting: #c03028;
+  --color-type-fire: #f04030;
+  --color-type-water: #3b82f6;
+  --color-type-grass: #22c55e;
+  --color-type-electric: #facc15;
+
+  /* ── Neon variants (dark mode shadows) ── */
+  --color-neon-fire: #ff4040;
+  --color-neon-water: #38bdf8;
+  --color-neon-grass: #4ade80;
+  --color-neon-electric: #fde047;
 
   /* ── Animations ── */
   --animate-fade-up: fade-up 0.5s ease-out forwards;
@@ -96,199 +94,201 @@ html {
    ══════════════════════════════════════════ */
 @layer utilities {
 
-  /* ── Palette A: Water / Fire / Poison / Grass ── */
+  /*
+     4 directional chromatic shadows:
+       Fire (red)      → top-left
+       Water (blue)    → bottom-right
+       Grass (green)   → top-right
+       Electric (yellow) → bottom-left
+     On hover they expand outward, creating color overlaps.
+  */
+
+  /* ── Default: red↑ blue↓ green→ yellow← (staggered) ── */
   .chromatic-shadow {
     box-shadow:
-      -6px -4px 5px 0 rgba(104, 144, 240, 0.25),
-       6px  5px 5px 0 rgba(240, 128, 48, 0.22),
-       0px -6px 5px 0 rgba(160, 64, 160, 0.18),
-       5px  0px 5px 0 rgba(120, 200, 80, 0.18);
+      -2px -5px 2px 0 rgba(240, 64, 48, 0.30),
+       3px  6px 2px 0 rgba(59, 130, 246, 0.30),
+       6px -2px 2px 0 rgba(34, 197, 94, 0.25),
+      -5px  3px 2px 0 rgba(250, 204, 21, 0.25);
     transition: box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
                 transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .chromatic-shadow:hover {
     box-shadow:
-      -12px -9px 14px 0 rgba(104, 144, 240, 0.38),
-       12px 10px 14px 0 rgba(240, 128, 48, 0.32),
-        0px -12px 14px 0 rgba(160, 64, 160, 0.28),
-       10px   0px 14px 0 rgba(120, 200, 80, 0.28);
+       -4px -16px 6px 0 rgba(240, 64, 48, 0.45),
+        6px  18px 6px 0 rgba(59, 130, 246, 0.45),
+       18px  -4px 6px 0 rgba(34, 197, 94, 0.38),
+      -16px   6px 6px 0 rgba(250, 204, 21, 0.38);
     transform: translateY(-4px);
   }
-
   .dark .chromatic-shadow {
     box-shadow:
-      -6px -4px 6px 0 rgba(104, 144, 240, 0.32),
-       6px  5px 6px 0 rgba(240, 128, 48, 0.28),
-       0px -6px 6px 0 rgba(160, 64, 160, 0.22),
-       5px  0px 6px 0 rgba(120, 200, 80, 0.22);
+      -2px -5px 3px 0 rgba(255, 64, 64, 0.40),
+       3px  6px 3px 0 rgba(56, 189, 248, 0.40),
+       6px -2px 3px 0 rgba(74, 222, 128, 0.32),
+      -5px  3px 3px 0 rgba(253, 224, 71, 0.32);
   }
   .dark .chromatic-shadow:hover {
     box-shadow:
-      -12px -9px 16px 0 rgba(104, 144, 240, 0.50),
-       12px 10px 16px 0 rgba(240, 128, 48, 0.44),
-        0px -12px 16px 0 rgba(160, 64, 160, 0.36),
-       10px   0px 16px 0 rgba(120, 200, 80, 0.36);
+       -4px -16px 8px 2px rgba(255, 64, 64, 0.65),
+        6px  18px 8px 2px rgba(56, 189, 248, 0.65),
+       18px  -4px 8px 2px rgba(74, 222, 128, 0.50),
+      -16px   6px 8px 2px rgba(253, 224, 71, 0.50);
     transform: translateY(-4px);
   }
 
-  /* ── Palette B: Psychic / Dragon / Electric / Ice ── */
+  /* ── Palette B: blue↑ yellow↓ red→ green← ── */
   .chromatic-shadow-b {
     box-shadow:
-      -6px -5px 5px 0 rgba(248, 88, 136, 0.25),
-       5px  6px 5px 0 rgba(112, 56, 248, 0.22),
-       6px -3px 5px 0 rgba(248, 208, 48, 0.18),
-      -4px  5px 5px 0 rgba(152, 216, 216, 0.20);
+       3px -6px 2px 0 rgba(59, 130, 246, 0.30),
+      -2px  5px 2px 0 rgba(250, 204, 21, 0.28),
+       5px  3px 2px 0 rgba(240, 64, 48, 0.25),
+      -6px -2px 2px 0 rgba(34, 197, 94, 0.25);
     transition: box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
                 transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .chromatic-shadow-b:hover {
     box-shadow:
-      -12px -10px 14px 0 rgba(248, 88, 136, 0.38),
-       10px  12px 14px 0 rgba(112, 56, 248, 0.32),
-       12px  -5px 14px 0 rgba(248, 208, 48, 0.28),
-       -8px  10px 14px 0 rgba(152, 216, 216, 0.30);
+        6px -18px 6px 0 rgba(59, 130, 246, 0.45),
+       -4px  16px 6px 0 rgba(250, 204, 21, 0.42),
+       16px   6px 6px 0 rgba(240, 64, 48, 0.38),
+      -18px  -4px 6px 0 rgba(34, 197, 94, 0.38);
     transform: translateY(-4px);
   }
-
   .dark .chromatic-shadow-b {
     box-shadow:
-      -6px -5px 6px 0 rgba(248, 88, 136, 0.32),
-       5px  6px 6px 0 rgba(112, 56, 248, 0.28),
-       6px -3px 6px 0 rgba(248, 208, 48, 0.22),
-      -4px  5px 6px 0 rgba(152, 216, 216, 0.25);
+       3px -6px 3px 0 rgba(56, 189, 248, 0.40),
+      -2px  5px 3px 0 rgba(253, 224, 71, 0.35),
+       5px  3px 3px 0 rgba(255, 64, 64, 0.32),
+      -6px -2px 3px 0 rgba(74, 222, 128, 0.32);
   }
   .dark .chromatic-shadow-b:hover {
     box-shadow:
-      -12px -10px 16px 0 rgba(248, 88, 136, 0.50),
-       10px  12px 16px 0 rgba(112, 56, 248, 0.44),
-       12px  -5px 16px 0 rgba(248, 208, 48, 0.36),
-       -8px  10px 16px 0 rgba(152, 216, 216, 0.38);
+        6px -18px 8px 2px rgba(56, 189, 248, 0.65),
+       -4px  16px 8px 2px rgba(253, 224, 71, 0.55),
+       16px   6px 8px 2px rgba(255, 64, 64, 0.50),
+      -18px  -4px 8px 2px rgba(74, 222, 128, 0.50);
     transform: translateY(-4px);
   }
 
-  /* ── Palette C: Fairy / Ghost / Flying / Fighting ── */
+  /* ── Palette C: green↑ red↓ yellow→ blue← ── */
   .chromatic-shadow-c {
     box-shadow:
-      -5px -6px 5px 0 rgba(238, 153, 172, 0.25),
-       6px  4px 5px 0 rgba(112, 88, 152, 0.22),
-       4px -5px 5px 0 rgba(168, 144, 240, 0.20),
-      -6px  4px 5px 0 rgba(192, 48, 40, 0.14);
+      -3px -6px 2px 0 rgba(34, 197, 94, 0.30),
+       2px  5px 2px 0 rgba(240, 64, 48, 0.28),
+       6px  2px 2px 0 rgba(250, 204, 21, 0.25),
+      -5px -3px 2px 0 rgba(59, 130, 246, 0.25);
     transition: box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
                 transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .chromatic-shadow-c:hover {
     box-shadow:
-      -10px -12px 14px 0 rgba(238, 153, 172, 0.38),
-       12px   8px 14px 0 rgba(112, 88, 152, 0.32),
-        8px -10px 14px 0 rgba(168, 144, 240, 0.30),
-      -12px   8px 14px 0 rgba(192, 48, 40, 0.24);
+       -6px -18px 6px 0 rgba(34, 197, 94, 0.45),
+        4px  16px 6px 0 rgba(240, 64, 48, 0.42),
+       18px   4px 6px 0 rgba(250, 204, 21, 0.38),
+      -16px  -6px 6px 0 rgba(59, 130, 246, 0.38);
     transform: translateY(-4px);
   }
-
   .dark .chromatic-shadow-c {
     box-shadow:
-      -5px -6px 6px 0 rgba(238, 153, 172, 0.32),
-       6px  4px 6px 0 rgba(112, 88, 152, 0.28),
-       4px -5px 6px 0 rgba(168, 144, 240, 0.25),
-      -6px  4px 6px 0 rgba(192, 48, 40, 0.20);
+      -3px -6px 3px 0 rgba(74, 222, 128, 0.40),
+       2px  5px 3px 0 rgba(255, 64, 64, 0.35),
+       6px  2px 3px 0 rgba(253, 224, 71, 0.32),
+      -5px -3px 3px 0 rgba(56, 189, 248, 0.32);
   }
   .dark .chromatic-shadow-c:hover {
     box-shadow:
-      -10px -12px 16px 0 rgba(238, 153, 172, 0.50),
-       12px   8px 16px 0 rgba(112, 88, 152, 0.44),
-        8px -10px 16px 0 rgba(168, 144, 240, 0.38),
-      -12px   8px 16px 0 rgba(192, 48, 40, 0.30);
+       -6px -18px 8px 2px rgba(74, 222, 128, 0.65),
+        4px  16px 8px 2px rgba(255, 64, 64, 0.55),
+       18px   4px 8px 2px rgba(253, 224, 71, 0.50),
+      -16px  -6px 8px 2px rgba(56, 189, 248, 0.50);
     transform: translateY(-4px);
   }
 
-  /* ── Small variant — for compact cards and badges ── */
+  /* ── Small variant ── */
   .chromatic-shadow-sm {
     box-shadow:
-      -4px -3px 3px 0 rgba(104, 144, 240, 0.20),
-       4px  3px 3px 0 rgba(240, 128, 48, 0.16),
-       0px -4px 3px 0 rgba(160, 64, 160, 0.14),
-       3px  0px 3px 0 rgba(120, 200, 80, 0.14);
+      -1px -3px 1px 0 rgba(240, 64, 48, 0.25),
+       2px  4px 1px 0 rgba(59, 130, 246, 0.25),
+       4px -1px 1px 0 rgba(34, 197, 94, 0.20),
+      -3px  2px 1px 0 rgba(250, 204, 21, 0.20);
     transition: box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
                 transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .chromatic-shadow-sm:hover {
     box-shadow:
-      -8px -5px 10px 0 rgba(104, 144, 240, 0.30),
-       8px  5px 10px 0 rgba(240, 128, 48, 0.26),
-       0px -8px 10px 0 rgba(160, 64, 160, 0.22),
-       5px  0px 10px 0 rgba(120, 200, 80, 0.22);
+       -3px -12px 4px 0 rgba(240, 64, 48, 0.40),
+        4px  13px 4px 0 rgba(59, 130, 246, 0.40),
+       13px  -3px 4px 0 rgba(34, 197, 94, 0.32),
+      -12px   4px 4px 0 rgba(250, 204, 21, 0.32);
     transform: translateY(-3px);
   }
-
   .dark .chromatic-shadow-sm {
     box-shadow:
-      -4px -3px 4px 0 rgba(104, 144, 240, 0.28),
-       4px  3px 4px 0 rgba(240, 128, 48, 0.24),
-       0px -4px 4px 0 rgba(160, 64, 160, 0.20),
-       3px  0px 4px 0 rgba(120, 200, 80, 0.20);
+      -1px -3px 2px 0 rgba(255, 64, 64, 0.35),
+       2px  4px 2px 0 rgba(56, 189, 248, 0.35),
+       4px -1px 2px 0 rgba(74, 222, 128, 0.28),
+      -3px  2px 2px 0 rgba(253, 224, 71, 0.28);
   }
   .dark .chromatic-shadow-sm:hover {
     box-shadow:
-      -8px -5px 12px 0 rgba(104, 144, 240, 0.42),
-       8px  5px 12px 0 rgba(240, 128, 48, 0.36),
-       0px -8px 12px 0 rgba(160, 64, 160, 0.30),
-       5px  0px 12px 0 rgba(120, 200, 80, 0.30);
+       -3px -12px 5px 1px rgba(255, 64, 64, 0.55),
+        4px  13px 5px 1px rgba(56, 189, 248, 0.55),
+       13px  -3px 5px 1px rgba(74, 222, 128, 0.42),
+      -12px   4px 5px 1px rgba(253, 224, 71, 0.42);
     transform: translateY(-3px);
   }
 
-  /* ── Large variant — for hero cards and featured elements ── */
+  /* ── Large variant ── */
   .chromatic-shadow-lg {
     box-shadow:
-      -10px  -8px 8px 0 rgba(104, 144, 240, 0.28),
-       10px   8px 8px 0 rgba(240, 128, 48, 0.24),
-        0px -10px 8px 0 rgba(160, 64, 160, 0.20),
-        8px   0px 8px 0 rgba(120, 200, 80, 0.20),
-       -6px   9px 8px 0 rgba(248, 88, 136, 0.16);
+      -3px -8px 4px 0 rgba(240, 64, 48, 0.35),
+       5px  9px 4px 0 rgba(59, 130, 246, 0.35),
+       9px -3px 4px 0 rgba(34, 197, 94, 0.28),
+      -8px  5px 4px 0 rgba(250, 204, 21, 0.28);
     transition: box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
                 transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .chromatic-shadow-lg:hover {
     box-shadow:
-      -18px -14px 18px 0 rgba(104, 144, 240, 0.42),
-       18px  14px 18px 0 rgba(240, 128, 48, 0.36),
-        0px -18px 18px 0 rgba(160, 64, 160, 0.32),
-       14px   0px 18px 0 rgba(120, 200, 80, 0.32),
-      -10px  16px 18px 0 rgba(248, 88, 136, 0.25);
+       -6px -22px 10px 0 rgba(240, 64, 48, 0.50),
+        8px  24px 10px 0 rgba(59, 130, 246, 0.50),
+       24px  -6px 10px 0 rgba(34, 197, 94, 0.42),
+      -22px   8px 10px 0 rgba(250, 204, 21, 0.42);
     transform: translateY(-5px);
   }
-
   .dark .chromatic-shadow-lg {
     box-shadow:
-      -10px  -8px 10px 0 rgba(104, 144, 240, 0.36),
-       10px   8px 10px 0 rgba(240, 128, 48, 0.32),
-        0px -10px 10px 0 rgba(160, 64, 160, 0.26),
-        8px   0px 10px 0 rgba(120, 200, 80, 0.26),
-       -6px   9px 10px 0 rgba(248, 88, 136, 0.22);
+      -3px -8px 5px 1px rgba(255, 64, 64, 0.48),
+       5px  9px 5px 1px rgba(56, 189, 248, 0.48),
+       9px -3px 5px 1px rgba(74, 222, 128, 0.38),
+      -8px  5px 5px 1px rgba(253, 224, 71, 0.38);
   }
   .dark .chromatic-shadow-lg:hover {
     box-shadow:
-      -18px -14px 20px 0 rgba(104, 144, 240, 0.55),
-       18px  14px 20px 0 rgba(240, 128, 48, 0.48),
-        0px -18px 20px 0 rgba(160, 64, 160, 0.40),
-       14px   0px 20px 0 rgba(120, 200, 80, 0.40),
-      -10px  16px 20px 0 rgba(248, 88, 136, 0.32);
+       -6px -22px 12px 3px rgba(255, 64, 64, 0.70),
+        8px  24px 12px 3px rgba(56, 189, 248, 0.70),
+       24px  -6px 12px 3px rgba(74, 222, 128, 0.55),
+      -22px   8px 12px 3px rgba(253, 224, 71, 0.55);
     transform: translateY(-5px);
   }
 
-  /* ── Header shadow — subtle prismatic underline ── */
+  /* ── Header shadow — prismatic underline ── */
   .chromatic-header-shadow {
     box-shadow:
-      -5px 4px 10px 0 rgba(104, 144, 240, 0.12),
-       5px 4px 10px 0 rgba(240, 128, 48, 0.10),
-       0px 4px 10px 0 rgba(160, 64, 160, 0.10),
-       0px 6px 16px rgba(0, 0, 0, 0.05);
+      -6px 4px 3px 0 rgba(240, 64, 48, 0.15),
+       6px 4px 3px 0 rgba(59, 130, 246, 0.15),
+       0px 5px 3px 0 rgba(34, 197, 94, 0.12),
+       0px 3px 3px 0 rgba(250, 204, 21, 0.10),
+       0px 6px 4px rgba(0, 0, 0, 0.05);
   }
   .dark .chromatic-header-shadow {
     box-shadow:
-      -5px 4px 12px 0 rgba(104, 144, 240, 0.20),
-       5px 4px 12px 0 rgba(240, 128, 48, 0.16),
-       0px 4px 12px 0 rgba(160, 64, 160, 0.16),
-       0px 6px 20px rgba(0, 0, 0, 0.25);
+      -6px 4px 4px 0 rgba(255, 64, 64, 0.25),
+       6px 4px 4px 0 rgba(56, 189, 248, 0.25),
+       0px 5px 4px 0 rgba(74, 222, 128, 0.18),
+       0px 3px 4px 0 rgba(253, 224, 71, 0.15),
+       0px 6px 5px rgba(0, 0, 0, 0.25);
   }
 
   /* ── Ethereal drift for featured elements ── */
@@ -308,7 +308,7 @@ html {
     border-radius: 50%;
     border: 3px solid transparent;
     border-top-color: var(--color-type-water);
-    border-right-color: var(--color-type-psychic);
+    border-right-color: var(--color-type-electric);
     border-bottom-color: var(--color-type-fire);
     border-left-color: var(--color-type-grass);
     animation: spin 1.2s linear infinite;
@@ -320,10 +320,10 @@ html {
     background: linear-gradient(
       to right,
       transparent,
-      rgba(104, 144, 240, 0.3),
-      rgba(160, 64, 160, 0.3),
-      rgba(240, 128, 48, 0.3),
-      rgba(120, 200, 80, 0.3),
+      rgba(59, 130, 246, 0.35),
+      rgba(34, 197, 94, 0.30),
+      rgba(250, 204, 21, 0.30),
+      rgba(240, 64, 48, 0.35),
       transparent
     );
   }

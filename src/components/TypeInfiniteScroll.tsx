@@ -12,12 +12,19 @@ type TypeInfiniteScrollProps = {
   locale: Locale
 }
 
-export function TypeInfiniteScroll({ initialData, type, typeColor, locale }: TypeInfiniteScrollProps) {
+export function TypeInfiniteScroll({
+  initialData,
+  type,
+  typeColor,
+  locale,
+}: TypeInfiniteScrollProps) {
   const t = translations[locale]
   const [pokemon, setPokemon] = useState<Pokemon[]>(initialData.results)
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(false)
-  const [hasMore, setHasMore] = useState(initialData.count > initialData.results.length)
+  const [hasMore, setHasMore] = useState(
+    initialData.count > initialData.results.length
+  )
 
   const { ref, inView } = useInView({ threshold: 0, rootMargin: '500px' })
 
@@ -33,7 +40,8 @@ export function TypeInfiniteScroll({ initialData, type, typeColor, locale }: Typ
       } else {
         setPokemon((prev) => [...prev, ...data.results])
         setPage(nextPage)
-        if (pokemon.length + data.results.length >= data.count) setHasMore(false)
+        if (pokemon.length + data.results.length >= data.count)
+          setHasMore(false)
       }
     } catch (error) {
       console.error('Failed to load more Pokemon:', error)
@@ -49,27 +57,65 @@ export function TypeInfiniteScroll({ initialData, type, typeColor, locale }: Typ
   return (
     <div className="space-y-8">
       <div className="space-y-2 pt-4 md:pt-6">
-        <a href={`/${locale}`} className="inline-flex items-center gap-1.5 text-sm text-ink-muted transition-colors hover:text-primary dark:text-dark-ink-muted dark:hover:text-primary">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
+        <a
+          href={`/${locale}`}
+          className="inline-flex items-center gap-1.5 text-ink-muted text-sm transition-colors hover:text-primary dark:text-dark-ink-muted dark:hover:text-primary"
+        >
+          <svg
+            className="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
           {t.pages.backToHome}
         </a>
-        <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-ink dark:text-dark-ink">
-          {t.pages.typeTitle} <span style={{ color: typeColor }}>{t.types[type as keyof typeof t.types]}</span>
+        <h1 className="font-bold text-3xl text-ink tracking-tight md:text-5xl dark:text-dark-ink">
+          {t.pages.typeTitle}{' '}
+          <span style={{ color: typeColor }}>
+            {t.types[type as keyof typeof t.types]}
+          </span>
         </h1>
-        <p className="text-sm text-ink-muted md:text-base dark:text-dark-ink-muted">{interpolate(t.pages.speciesCount, { count: initialData.count })}</p>
+        <p className="text-ink-muted text-sm md:text-base dark:text-dark-ink-muted">
+          {interpolate(t.pages.speciesCount, { count: initialData.count })}
+        </p>
       </div>
       <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-5 lg:grid-cols-5 xl:grid-cols-6">
-        {pokemon.map((poke) => (<li key={poke.name} className="list-none"><PokemonTile pokemon={poke} locale={locale} /></li>))}
+        {pokemon.map((poke) => (
+          <li key={poke.name} className="list-none">
+            <PokemonTile pokemon={poke} locale={locale} />
+          </li>
+        ))}
       </ul>
       {hasMore && (
         <div ref={ref} className="my-10 flex justify-center">
-          {loading ? (<div className="text-center"><div className="prismatic-loader mx-auto" /><p className="mt-3 text-xs text-ink-muted dark:text-dark-ink-muted">{t.scroll.loadingMore}</p></div>) : <div className="h-10" />}
+          {loading ? (
+            <div className="text-center">
+              <div className="prismatic-loader mx-auto" />
+              <p className="mt-3 text-ink-muted text-xs dark:text-dark-ink-muted">
+                {t.scroll.loadingMore}
+              </p>
+            </div>
+          ) : (
+            <div className="h-10" />
+          )}
         </div>
       )}
       {!hasMore && pokemon.length > 0 && (
         <div className="my-10 text-center">
-          <p className="text-sm text-ink-muted dark:text-dark-ink-muted">{t.scroll.caughtAll}</p>
-          <p className="mt-1 text-xs text-ink-faint dark:text-dark-ink-faint">{interpolate(t.scroll.showingAll, { count: pokemon.length })}</p>
+          <p className="text-ink-muted text-sm dark:text-dark-ink-muted">
+            {t.scroll.caughtAll}
+          </p>
+          <p className="mt-1 text-ink-faint text-xs dark:text-dark-ink-faint">
+            {interpolate(t.scroll.showingAll, { count: pokemon.length })}
+          </p>
         </div>
       )}
     </div>

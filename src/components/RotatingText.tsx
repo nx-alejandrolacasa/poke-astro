@@ -24,7 +24,9 @@ export function RotatingText({
   const [contentHeight, setContentHeight] = useState<number | null>(null)
   const contentRef = useRef<HTMLParagraphElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const rotationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const rotationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
+    null
+  )
   const touchStartX = useRef<number | null>(null)
 
   useEffect(() => {
@@ -33,22 +35,25 @@ export function RotatingText({
     }
   }, [animationPhase])
 
-  const goTo = useCallback((index: number, dir: Direction) => {
-    if (index === currentIndex || animationPhase !== 'idle') return
-    setDirection(dir)
-    setAnimationPhase('exiting')
+  const goTo = useCallback(
+    (index: number, dir: Direction) => {
+      if (index === currentIndex || animationPhase !== 'idle') return
+      setDirection(dir)
+      setAnimationPhase('exiting')
 
-    setTimeout(() => {
-      setCurrentIndex(index)
-      setAnimationPhase('entering')
+      setTimeout(() => {
+        setCurrentIndex(index)
+        setAnimationPhase('entering')
 
-      requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          setAnimationPhase('idle')
+          requestAnimationFrame(() => {
+            setAnimationPhase('idle')
+          })
         })
-      })
-    }, 250)
-  }, [currentIndex, animationPhase])
+      }, 250)
+    },
+    [currentIndex, animationPhase]
+  )
 
   const advanceToNext = useCallback(() => {
     if (items.length <= 1 || animationPhase !== 'idle') return
@@ -145,10 +150,26 @@ export function RotatingText({
         <p
           ref={contentRef}
           onClick={items.length > 1 ? handleClick : undefined}
-          onKeyDown={items.length > 1 ? (e) => {
-            if (e.key === 'ArrowRight' || e.key === 'Enter' || e.key === ' ') { e.preventDefault(); advanceToNext(); resetInterval() }
-            if (e.key === 'ArrowLeft') { e.preventDefault(); advanceToPrev(); resetInterval() }
-          } : undefined}
+          onKeyDown={
+            items.length > 1
+              ? (e) => {
+                  if (
+                    e.key === 'ArrowRight' ||
+                    e.key === 'Enter' ||
+                    e.key === ' '
+                  ) {
+                    e.preventDefault()
+                    advanceToNext()
+                    resetInterval()
+                  }
+                  if (e.key === 'ArrowLeft') {
+                    e.preventDefault()
+                    advanceToPrev()
+                    resetInterval()
+                  }
+                }
+              : undefined
+          }
           role={items.length > 1 ? 'button' : undefined}
           tabIndex={items.length > 1 ? 0 : undefined}
           className={`${getAnimationClasses()} ${items.length > 1 ? 'cursor-pointer select-none' : ''}`}

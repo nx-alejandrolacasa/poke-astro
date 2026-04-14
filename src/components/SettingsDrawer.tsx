@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type { Locale } from '@/utils/i18n'
 import { locales, localizeUrl } from '@/utils/i18n'
@@ -21,7 +21,11 @@ declare global {
   }
 }
 
-export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps) {
+export function SettingsDrawer({
+  locale,
+  isOpen,
+  onClose,
+}: SettingsDrawerProps) {
   const t = translations[locale]
   const [mounted, setMounted] = useState(false)
   const [themeMode, setThemeMode] = useState<ThemeMode>('auto')
@@ -90,44 +94,55 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
       )}
 
       <div
-        className={`fixed inset-y-0 right-0 z-[100] flex w-80 max-w-[85vw] transform flex-col shadow-2xl transition-transform duration-300 ease-in-out bg-white dark:bg-dark-surface border-l border-black/[0.06] dark:border-white/[0.06] ${
+        className={`fixed inset-y-0 right-0 z-[100] flex w-80 max-w-[85vw] transform flex-col border-black/[0.06] border-l bg-white shadow-2xl transition-transform duration-300 ease-in-out dark:border-white/[0.06] dark:bg-dark-surface ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         role="dialog"
         aria-modal="true"
         aria-label={t.settings.title}
       >
-        <div className="flex shrink-0 items-center justify-between p-5 border-b border-surface-sunken dark:border-dark-border">
-          <h2 className="font-bold text-sm text-ink dark:text-dark-ink">
+        <div className="flex shrink-0 items-center justify-between border-surface-sunken border-b p-5 dark:border-dark-border">
+          <h2 className="font-bold text-ink text-sm dark:text-dark-ink">
             {t.settings.title}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl p-2 text-ink-muted transition-all duration-150 active:scale-90 hover:bg-black/5 dark:text-dark-ink-muted dark:hover:bg-white/5"
+            className="rounded-xl p-2 text-ink-muted transition-all duration-150 hover:bg-black/5 active:scale-90 dark:text-dark-ink-muted dark:hover:bg-white/5"
             aria-label={t.header.close}
           >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
 
         <div className="flex flex-1 flex-col gap-8 p-5">
           <div className="rounded-2xl bg-surface-sunken p-4 dark:bg-dark-raised">
-            <label className="mb-3 block text-[10px] font-semibold uppercase tracking-wider text-ink-faint dark:text-dark-ink-faint">
+            <span className="mb-3 block font-semibold text-[10px] text-ink-faint uppercase tracking-wider dark:text-dark-ink-faint">
               {t.settings.theme}
-            </label>
+            </span>
             <div className="flex gap-2">
               {themeModes.map(({ key, label }) => (
                 <button
                   key={key}
                   type="button"
                   onClick={() => applyTheme(key)}
-                  className={`flex-1 rounded-xl px-3 py-2 text-xs font-medium transition-all ${
+                  className={`flex-1 rounded-xl px-3 py-2 font-medium text-xs transition-all ${
                     themeMode === key
                       ? 'bg-white text-primary shadow-sm dark:bg-dark-surface dark:text-primary'
-                      : 'text-ink-muted hover:text-ink hover:bg-white/50 dark:text-dark-ink-muted dark:hover:text-dark-ink dark:hover:bg-dark-surface/50'
+                      : 'text-ink-muted hover:bg-white/50 hover:text-ink dark:text-dark-ink-muted dark:hover:bg-dark-surface/50 dark:hover:text-dark-ink'
                   }`}
                 >
                   {label}
@@ -137,19 +152,19 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
           </div>
 
           <div className="rounded-2xl bg-surface-sunken p-4 dark:bg-dark-raised">
-            <label className="mb-3 block text-[10px] font-semibold uppercase tracking-wider text-ink-faint dark:text-dark-ink-faint">
+            <span className="mb-3 block font-semibold text-[10px] text-ink-faint uppercase tracking-wider dark:text-dark-ink-faint">
               {t.settings.language}
-            </label>
+            </span>
             <div className="flex gap-2">
               {locales.map((lang) => (
                 <button
                   key={lang}
                   type="button"
                   onClick={() => switchToLocale(lang)}
-                  className={`flex-1 rounded-xl px-3 py-2 text-xs font-medium transition-all ${
+                  className={`flex-1 rounded-xl px-3 py-2 font-medium text-xs transition-all ${
                     locale === lang
                       ? 'bg-white text-primary shadow-sm dark:bg-dark-surface dark:text-primary'
-                      : 'text-ink-muted hover:text-ink hover:bg-white/50 dark:text-dark-ink-muted dark:hover:text-dark-ink dark:hover:bg-dark-surface/50'
+                      : 'text-ink-muted hover:bg-white/50 hover:text-ink dark:text-dark-ink-muted dark:hover:bg-dark-surface/50 dark:hover:text-dark-ink'
                   }`}
                 >
                   {getLocaleDisplayName(lang)}
@@ -159,8 +174,8 @@ export function SettingsDrawer({ locale, isOpen, onClose }: SettingsDrawerProps)
           </div>
         </div>
 
-        <div className="border-t border-surface-sunken p-4 dark:border-dark-border">
-          <p className="text-[10px] text-center text-ink-faint uppercase tracking-widest dark:text-dark-ink-faint">
+        <div className="border-surface-sunken border-t p-4 dark:border-dark-border">
+          <p className="text-center text-[10px] text-ink-faint uppercase tracking-widest dark:text-dark-ink-faint">
             Pokedex v2.0
           </p>
         </div>
