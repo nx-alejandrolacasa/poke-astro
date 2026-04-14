@@ -1,18 +1,22 @@
 ---
-import { HeaderActions } from '@/components/HeaderActions'
-import { PokemonSearchWrapper } from '@/components/PokemonSearchWrapper'
+import { PokemonSearch } from '@/components/PokemonSearch'
 import type { Locale } from '@/utils/i18n'
+import { getAlternateLocale, localizeUrl } from '@/utils/i18n'
+import { translations } from '@/utils/translations'
 
 interface Props {
   locale: Locale
 }
 
 const { locale } = Astro.props
+const t = translations[locale]
+const altLocale = getAlternateLocale(locale)
+const currentPath = Astro.url.pathname
 ---
 
-<header class="chromatic-header-shadow sticky top-0 z-40 w-full border-b border-black/[0.06] bg-white/90 backdrop-blur-xl transition-colors dark:border-white/[0.06] dark:bg-dark-surface/90">
-  <nav class="mx-auto flex h-14 max-w-5xl items-center gap-4 px-4 sm:h-16 sm:px-6">
-    <!-- Pokemon logo home link -->
+<header class="sticky top-0 z-40 w-full border-b border-black/[0.06] bg-white/90 backdrop-blur-xl transition-colors dark:border-white/[0.06] dark:bg-dark-surface/90">
+  <nav class="mx-auto flex h-14 max-w-7xl items-center gap-3 px-4 sm:h-16 sm:gap-4 sm:px-6">
+    <!-- Logo -->
     <a
       href={`/${locale}`}
       title="Home"
@@ -21,18 +25,71 @@ const { locale } = Astro.props
       <img
         src="/pokemon-logo.svg"
         alt="Pokemon"
-        class="h-6 w-auto sm:h-7"
+        class="h-6 w-auto sm:h-7 lg:h-9"
       />
     </a>
 
-    <!-- Search -->
-    <div class="flex-1 flex justify-center">
+    <!-- Desktop nav links (icon + label stacked, like bottom nav) -->
+    <div class="hidden items-center gap-2 lg:flex ml-4">
+      <a
+        href={`/${locale}/pokedex`}
+        class:list={[
+          'flex flex-col items-center gap-0.5 rounded-xl px-4 py-1 transition-colors',
+          currentPath.startsWith(`/${locale}/pokedex`)
+            ? 'text-primary dark:text-dark-primary'
+            : 'text-ink-muted hover:text-ink dark:text-dark-ink-muted dark:hover:text-dark-ink'
+        ]}
+      >
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="2" y1="12" x2="8.5" y2="12" />
+          <line x1="15.5" y1="12" x2="22" y2="12" />
+          <circle cx="12" cy="12" r="3.5" />
+        </svg>
+        <span class="text-xs font-semibold">{t.header.pokedex}</span>
+      </a>
+      <a
+        href={`/${locale}/types`}
+        class:list={[
+          'flex flex-col items-center gap-0.5 rounded-xl px-4 py-1 transition-colors',
+          currentPath.startsWith(`/${locale}/types`) || currentPath.startsWith(`/${locale}/type/`)
+            ? 'text-primary dark:text-dark-primary'
+            : 'text-ink-muted hover:text-ink dark:text-dark-ink-muted dark:hover:text-dark-ink'
+        ]}
+      >
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="6" width="14" height="16" rx="2" />
+          <path d="M8 2h10a2 2 0 012 2v14" />
+        </svg>
+        <span class="text-xs font-semibold">{t.header.types}</span>
+      </a>
+    </div>
+
+    <!-- Desktop search -->
+    <div class="hidden flex-1 justify-center lg:flex">
       <div class="w-full max-w-md">
-        <PokemonSearchWrapper client:load locale={locale} />
+        <PokemonSearch client:load locale={locale} />
       </div>
     </div>
 
-    <!-- Settings -->
-    <HeaderActions client:load locale={locale} />
+    <!-- Spacer on mobile -->
+    <div class="flex-1 lg:hidden"></div>
+
+    <!-- Language switcher -->
+    <a
+      href={localizeUrl(currentPath, altLocale)}
+      class="flex flex-shrink-0 items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-medium text-ink-muted transition-all hover:bg-black/5 dark:text-dark-ink-muted dark:hover:bg-white/5"
+      title={altLocale === 'en' ? 'Switch to English' : 'Cambiar a Espanol'}
+    >
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M3.6 9h16.8M3.6 15h16.8" />
+        <path d="M12 3c2 2.5 3 5.5 3 9s-1 6.5-3 9c-2-2.5-3-5.5-3-9s1-6.5 3-9z" />
+      </svg>
+      <span>{locale.toUpperCase()}</span>
+    </a>
+
+    <!-- Theme toggle (custom element defined in Layout.astro) -->
+    <theme-toggle data-locale={locale} class="flex-shrink-0"></theme-toggle>
   </nav>
 </header>

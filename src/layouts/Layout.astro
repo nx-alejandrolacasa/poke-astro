@@ -1,5 +1,6 @@
 ---
 import '@/styles/global.css'
+import { BottomTabNav } from '@/components/BottomTabNav'
 import Footer from '@/components/Footer.astro'
 import Header from '@/components/Header.astro'
 import type { Locale } from '@/utils/i18n'
@@ -137,6 +138,9 @@ const { title, locale } = Astro.props
       <slot />
     </main>
     <Footer locale={locale} />
+    <!-- Bottom padding for mobile tab bar -->
+    <div class="h-16 lg:hidden" aria-hidden="true"></div>
+    <BottomTabNav client:load locale={locale} currentPath={Astro.url.pathname} />
     <script is:inline>
       // Register service worker for PWA
       if ('serviceWorker' in navigator) {

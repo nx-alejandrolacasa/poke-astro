@@ -3,7 +3,9 @@ import { useInView } from 'react-intersection-observer'
 import type { Locale } from '@/utils/i18n'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
 import { interpolate, translations } from '@/utils/translations'
+import { BackToTop } from './BackToTop'
 import { PokemonTile } from './PokemonTile'
+import { SkeletonCard } from './SkeletonCard'
 
 type PokemonInfiniteScrollProps = {
   initialData: PokemonList
@@ -52,7 +54,7 @@ export function PokemonInfiniteScroll({
 
   return (
     <div>
-      <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-5 lg:grid-cols-5 xl:grid-cols-6">
+      <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-4 lg:grid-cols-5 xl:grid-cols-6">
         {pokemon.map((poke) => (
           <li key={poke.name} className="list-none">
             <PokemonTile pokemon={poke} locale={locale} />
@@ -60,14 +62,15 @@ export function PokemonInfiniteScroll({
         ))}
       </ul>
       {hasMore && (
-        <div ref={ref} className="my-10 flex justify-center">
+        <div ref={ref}>
           {loading ? (
-            <div className="text-center">
-              <div className="prismatic-loader mx-auto" />
-              <p className="mt-3 text-ink-muted text-xs dark:text-dark-ink-muted">
-                {t.scroll.loadingMore}
-              </p>
-            </div>
+            <ul className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-4 lg:grid-cols-5 xl:grid-cols-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <li key={`skeleton-${i.toString()}`} className="list-none">
+                  <SkeletonCard />
+                </li>
+              ))}
+            </ul>
           ) : (
             <div className="h-10" />
           )}
@@ -83,6 +86,7 @@ export function PokemonInfiniteScroll({
           </p>
         </div>
       )}
+      <BackToTop />
     </div>
   )
 }

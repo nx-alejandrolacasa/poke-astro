@@ -1,5 +1,5 @@
 ---
-import { TypeChartWrapper } from '@/components/TypeChartWrapper'
+import { TypeChart } from '@/components/TypeChart'
 import Layout from '@/layouts/Layout.astro'
 import { getI18n } from '@/utils/i18n'
 
@@ -10,5 +10,5 @@ const title = locale === 'es' ? 'Tabla de Tipos' : 'Type Chart'
 ---
 
 <Layout title={title} locale={locale}>
-  <TypeChartWrapper client:load locale={locale} />
+  <TypeChart client:load locale={locale} />
 </Layout>

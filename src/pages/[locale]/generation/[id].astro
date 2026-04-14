@@ -1,5 +1,5 @@
 ---
-import { GenerationInfiniteScrollWrapper } from '@/components/GenerationInfiniteScrollWrapper'
+import { GenerationInfiniteScroll } from '@/components/GenerationInfiniteScroll'
 import Layout from '@/layouts/Layout.astro'
 import { getI18n } from '@/utils/i18n'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
@@ -94,7 +94,7 @@ const initialData: PokemonList = {
 ---
 
 <Layout title={`${generation.name} - ${generation.region} ${t.pages.region}`} locale={locale}>
-  <GenerationInfiniteScrollWrapper
+  <GenerationInfiniteScroll
     client:load
     initialData={initialData}
     generation={generation}

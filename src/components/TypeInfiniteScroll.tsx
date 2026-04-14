@@ -1,9 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { BackToTop } from '@/components/BackToTop'
+import { TypeBadge } from '@/components/TypeBadge'
 import type { Locale } from '@/utils/i18n'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
+import { typeColors } from '@/utils/pokemon'
 import { interpolate, translations } from '@/utils/translations'
 import { PokemonTile } from './PokemonTile'
+import { SkeletonCard } from './SkeletonCard'
 
 type TypeInfiniteScrollProps = {
   initialData: PokemonList
@@ -56,38 +60,19 @@ export function TypeInfiniteScroll({
 
   return (
     <div className="space-y-8">
-      <div className="space-y-2 pt-4 md:pt-6">
-        <a
-          href={`/${locale}`}
-          className="inline-flex items-center gap-1.5 text-ink-muted text-sm transition-colors hover:text-primary dark:text-dark-ink-muted dark:hover:text-primary"
-        >
-          <svg
-            className="h-4 w-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-          {t.pages.backToHome}
-        </a>
-        <h1 className="font-bold text-3xl text-ink tracking-tight md:text-5xl dark:text-dark-ink">
-          {t.pages.typeTitle}{' '}
-          <span style={{ color: typeColor }}>
-            {t.types[type as keyof typeof t.types]}
-          </span>
+      {/* Colored banner */}
+      <div
+        className="rounded-2xl p-6 md:p-8"
+        style={{ backgroundColor: `${typeColors[type] ?? '#a8a878'}18` }}
+      >
+        <h1 className="font-bold text-2xl text-ink tracking-tight md:text-3xl dark:text-dark-ink">
+          {t.types[type as keyof typeof t.types]}
         </h1>
-        <p className="text-ink-muted text-sm md:text-base dark:text-dark-ink-muted">
+        <p className="text-ink-muted text-sm dark:text-dark-ink-muted">
           {interpolate(t.pages.speciesCount, { count: initialData.count })}
         </p>
       </div>
-      <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-5 lg:grid-cols-5 xl:grid-cols-6">
+      <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-4 lg:grid-cols-5 xl:grid-cols-6">
         {pokemon.map((poke) => (
           <li key={poke.name} className="list-none">
             <PokemonTile pokemon={poke} locale={locale} />
@@ -95,14 +80,15 @@ export function TypeInfiniteScroll({
         ))}
       </ul>
       {hasMore && (
-        <div ref={ref} className="my-10 flex justify-center">
+        <div ref={ref}>
           {loading ? (
-            <div className="text-center">
-              <div className="prismatic-loader mx-auto" />
-              <p className="mt-3 text-ink-muted text-xs dark:text-dark-ink-muted">
-                {t.scroll.loadingMore}
-              </p>
-            </div>
+            <ul className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-4 lg:grid-cols-5 xl:grid-cols-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <li key={`skeleton-${i.toString()}`} className="list-none">
+                  <SkeletonCard />
+                </li>
+              ))}
+            </ul>
           ) : (
             <div className="h-10" />
           )}
@@ -118,6 +104,7 @@ export function TypeInfiniteScroll({
           </p>
         </div>
       )}
+      <BackToTop />
     </div>
   )
 }
