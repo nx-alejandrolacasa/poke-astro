@@ -182,9 +182,7 @@ export type Translations = {
   }
   // Footer
   footer: {
-    disclaimer: string
-    trademarks: string
-    fairUse: string
+    legal: string
     dataBy: string
     builtWith: string
   }
@@ -488,13 +486,8 @@ export const translations: Record<Language, Translations> = {
       dark: 'Dark',
     },
     footer: {
-      disclaimer:
-        'This website is fan-made with no affiliation, sponsorship, or official relationship with Nintendo, Game Freak, Creatures Inc., or The Pokémon Company.',
-      trademarks:
-        'All names, images, and trademarks related to Pokémon are the property of their respective owners.',
-      fairUse:
-        'This site uses such elements under fair use principles for educational and informational purposes.',
-      dataBy: 'Data provided by',
+      legal: 'Fan-made project — not affiliated with Nintendo, Game Freak, or The Pokémon Company. All Pokémon trademarks belong to their respective owners.',
+      dataBy: 'Data by',
       builtWith: 'Built with',
     },
   },
@@ -795,14 +788,9 @@ export const translations: Record<Language, Translations> = {
       dark: 'Oscuro',
     },
     footer: {
-      disclaimer:
-        'Este sitio web está creado por fans, sin ningún tipo de afiliación, patrocinio ni relación oficial con Nintendo, Game Freak, Creatures Inc. o The Pokémon Company.',
-      trademarks:
-        'Todos los nombres, imágenes y marcas relacionadas con Pokémon son propiedad de sus respectivos dueños.',
-      fairUse:
-        'Este sitio hace uso de dichos elementos bajo los principios de fair use (uso legítimo), con fines educativos e informativos.',
-      dataBy: 'Datos proporcionados por',
-      builtWith: 'Construido con',
+      legal: 'Proyecto fan — sin afiliación con Nintendo, Game Freak ni The Pokémon Company. Todas las marcas de Pokémon pertenecen a sus respectivos dueños.',
+      dataBy: 'Datos de',
+      builtWith: 'Hecho con',
     },
   },
 }
