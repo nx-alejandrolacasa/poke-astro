@@ -1,6 +1,9 @@
 export type Pokemon = {
   abilities: { ability: { name: string }; is_hidden: boolean }[]
   height: number
+  /** National Pokédex number. Use this for display — `order` is a family-grouped
+   * sort index that skips slots (Mega/regional variants), so it leaves gaps. */
+  id: number
   name: string
   order: number
   species: { name: string; url: string }
@@ -130,8 +133,8 @@ export async function fetchPokemonPage(
     res.results.map(({ name }) => fetchPokemonByName(name))
   )
 
-  // Sort by Pokédex number
-  results.sort((a, b) => a.order - b.order)
+  // Sort by National Pokédex number
+  results.sort((a, b) => a.id - b.id)
 
   return {
     count: res.count,
@@ -190,6 +193,29 @@ export const typeColors: Record<string, string> = {
 export function getTypeColor(pokemon: Pokemon): string {
   const primaryType = pokemon.types[0]?.type.name ?? 'normal'
   return typeColors[primaryType] ?? typeColors.normal
+}
+
+/** Representative Pokémon (by National Dex ID) for each type — used to pick a
+ * sprite for the type cards shown on the homepage and the Type Chart page. */
+export const typeRepresentativePokemon: Record<string, number> = {
+  normal: 143, // Snorlax
+  fire: 6, // Charizard
+  water: 9, // Blastoise
+  electric: 172, // Pichu
+  grass: 3, // Venusaur
+  ice: 131, // Lapras
+  fighting: 68, // Machamp
+  poison: 109, // Koffing
+  ground: 51, // Dugtrio
+  flying: 18, // Pidgeot
+  psychic: 150, // Mewtwo
+  bug: 12, // Butterfree
+  rock: 95, // Onix
+  ghost: 94, // Gengar
+  dragon: 149, // Dragonite
+  dark: 197, // Umbreon
+  steel: 208, // Steelix
+  fairy: 35, // Clefairy
 }
 
 export function getPokemonName(name: string) {

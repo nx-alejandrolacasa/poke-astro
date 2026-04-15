@@ -42,8 +42,8 @@ export const GET: APIRoute = async ({ params }) => {
 
     const results: Pokemon[] = await Promise.all(pokemonPromises)
 
-    // Sort by order number
-    results.sort((a, b) => a.order - b.order)
+    // Sort by National Pokédex number
+    results.sort((a, b) => a.id - b.id)
 
     const response: PokemonList = {
       count: allPokemonRefs.length,

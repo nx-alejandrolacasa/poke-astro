@@ -5,6 +5,7 @@ import { TypeBadge } from '@/components/TypeBadge'
 import type { Locale } from '@/utils/i18n'
 import type { Pokemon } from '@/utils/pokemon'
 import { getPokemonImage, getPokemonName, getTypeColor } from '@/utils/pokemon'
+import type { Translations } from '@/utils/translations'
 import { translations } from '@/utils/translations'
 
 type PokemonDetailContentProps = {
@@ -46,6 +47,28 @@ type PokeApiFlavorTextEntry = {
   version?: { name: string }
 }
 
+// PokéAPI returns stat names in kebab-case (e.g. `special-attack`), but our
+// translation keys are camelCase (`specialAttack`). Map between them so the
+// shortened labels (e.g. "Sp. Atk") actually render.
+const STAT_KEY_MAP: Record<string, keyof Translations['stats']> = {
+  hp: 'hp',
+  attack: 'attack',
+  defense: 'defense',
+  'special-attack': 'specialAttack',
+  'special-defense': 'specialDefense',
+  speed: 'speed',
+}
+
+function getStatLabel(
+  apiName: string,
+  t: Translations,
+  fallback?: string
+): string {
+  const key = STAT_KEY_MAP[apiName]
+  if (key) return t.stats[key]
+  return fallback ?? apiName
+}
+
 export function PokemonDetailContent({
   pokemon,
   pokemonName,
@@ -69,7 +92,7 @@ export function PokemonDetailContent({
   const [stats, setStats] = useState<TranslatedStat[]>(() =>
     pokemon.stats.map(({ stat, base_stat }) => ({
       name: stat.name,
-      translatedName: t.stats[stat.name as keyof typeof t.stats] ?? stat.name,
+      translatedName: getStatLabel(stat.name, t),
       baseStat: base_stat,
     }))
   )
@@ -122,10 +145,7 @@ export function PokemonDetailContent({
           )
           return {
             name: stat.name,
-            translatedName:
-              t.stats[stat.name as keyof typeof t.stats] ??
-              translation?.name ??
-              stat.name,
+            translatedName: getStatLabel(stat.name, t, translation?.name),
             baseStat: base_stat,
           }
         })
@@ -226,7 +246,7 @@ export function PokemonDetailContent({
         {/* ── Name + Number + Types ── */}
         <div className="bento-cell flex flex-col justify-center rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
           <span className="font-black font-mono text-ink-muted text-lg dark:text-dark-ink-muted">
-            #{pokemon.order.toString().padStart(3, '0')}
+            #{pokemon.id.toString().padStart(3, '0')}
           </span>
           <h1 className="font-black text-3xl text-ink tracking-tight md:text-4xl dark:text-dark-ink">
             {getPokemonName(pokemonName)}
@@ -247,7 +267,7 @@ export function PokemonDetailContent({
         {/* ── Height + Weight ── */}
         <div className="grid grid-cols-2 gap-3 md:col-span-2 md:gap-4">
           <div className="bento-cell rounded-2xl bg-white p-4 dark:bg-dark-surface">
-            <p className="mb-1 font-semibold text-xs text-ink-faint uppercase tracking-wider dark:text-dark-ink-faint">
+            <p className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
               {t.pokemon.height}
             </p>
             <p className="font-mono font-bold text-ink text-2xl dark:text-dark-ink">
@@ -259,7 +279,7 @@ export function PokemonDetailContent({
             </p>
           </div>
           <div className="bento-cell rounded-2xl bg-white p-4 dark:bg-dark-surface">
-            <p className="mb-1 font-semibold text-xs text-ink-faint uppercase tracking-wider dark:text-dark-ink-faint">
+            <p className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
               {t.pokemon.weight}
             </p>
             <p className="font-mono font-bold text-ink text-2xl dark:text-dark-ink">
@@ -282,6 +302,7 @@ export function PokemonDetailContent({
                 items={descriptions.map((d) => d.text)}
                 label={t.pokemon.description}
                 autoPlayMs={8000}
+                textClassName="text-ink text-sm leading-relaxed dark:text-dark-ink"
               />
             )}
           </div>
@@ -289,7 +310,7 @@ export function PokemonDetailContent({
 
         {/* ── Abilities ── */}
         <div className="bento-cell rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
-          <p className="mb-2 font-semibold text-xs text-ink-faint uppercase tracking-wider dark:text-dark-ink-faint">
+          <p className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
             {t.pokemon.abilities}
           </p>
           <div className="flex flex-wrap gap-2">

@@ -58,17 +58,27 @@ export function PokemonEnrichedData({
     fetchEnrichedData()
   }, [pokemonName, locale])
 
-  const maxStat = 255
+  // Highest base stat ever recorded per stat category — used to scale each
+  // bar so the visual fill reflects how strong the Pokémon is for that stat.
+  const maxStatByName: Record<string, number> = {
+    hp: 255, // Blissey
+    attack: 190, // Mega Mewtwo X / Mega Rayquaza
+    defense: 230, // Shuckle
+    'special-attack': 194, // Mega Mewtwo Y
+    'special-defense': 230, // Shuckle
+    speed: 200, // Regieleki
+  }
   const totalStats = stats.reduce((sum, s) => sum + s.baseStat, 0)
 
   const statsCell = (
     <div className="bento-cell rounded-2xl bg-white p-4 md:col-span-1 dark:bg-dark-surface">
-      <h2 className="mb-4 font-bold text-ink text-base md:text-lg dark:text-dark-ink">
+      <h2 className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
         {t.pokemon.baseStats}
       </h2>
       <div className="space-y-3">
         {stats.map(({ name, translatedName, baseStat }, index) => {
-          const percentage = (baseStat / maxStat) * 100
+          const maxStat = maxStatByName[name] ?? 255
+          const percentage = Math.min(100, (baseStat / maxStat) * 100)
           return (
             <div
               key={name}
@@ -149,7 +159,7 @@ export function PokemonEnrichedData({
 
       {/* ── Type Effectiveness — 1/4 desktop, 1/2 tablet, full mobile ── */}
       <div className="bento-cell rounded-2xl bg-white p-4 md:col-span-1 dark:bg-dark-surface">
-        <h2 className="mb-3 font-bold text-ink text-base md:text-lg dark:text-dark-ink">
+        <h2 className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
           {t.pokemon.typeEffectiveness}
         </h2>
         <div className="space-y-3">
@@ -227,7 +237,7 @@ export function PokemonEnrichedData({
       {/* ── Evolution Chain — 2/4 desktop, full tablet, full mobile ── */}
       {hasEvolutions && (
         <div className="bento-cell rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
-          <h2 className="mb-3 font-bold text-ink text-base md:text-lg dark:text-dark-ink">
+          <h2 className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
             {t.pokemon.evolutionChain}
           </h2>
           <EvolutionTree

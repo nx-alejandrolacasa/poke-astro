@@ -62,8 +62,8 @@ const pokemonPromises = pokemonSlice.map(
 
 const results: Pokemon[] = await Promise.all(pokemonPromises)
 
-// Sort by order number
-results.sort((a, b) => a.order - b.order)
+// Sort by National Pokédex number
+results.sort((a, b) => a.id - b.id)
 
 const initialData: PokemonList = {
   count: typeData.pokemon.length,

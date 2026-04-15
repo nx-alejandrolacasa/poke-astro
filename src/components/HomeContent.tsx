@@ -1,6 +1,6 @@
 import { Carousel } from '@/components/Carousel'
 import type { Locale } from '@/utils/i18n'
-import { typeColors } from '@/utils/pokemon'
+import { typeColors, typeRepresentativePokemon } from '@/utils/pokemon'
 import { translations } from '@/utils/translations'
 
 type HomeContentProps = {
@@ -21,27 +21,6 @@ const POKEMON_TYPES = [
   'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug',
   'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy',
 ] as const
-
-const TYPE_POKEMON: Record<string, number> = {
-  normal: 143,    // Snorlax
-  fire: 6,        // Charizard
-  water: 9,       // Blastoise
-  electric: 172,  // Pichu
-  grass: 3,       // Venusaur
-  ice: 131,       // Lapras
-  fighting: 68,   // Machamp
-  poison: 94,     // Gengar
-  ground: 51,     // Dugtrio
-  flying: 18,     // Pidgeot
-  psychic: 150,   // Mewtwo
-  bug: 12,        // Butterfree
-  rock: 95,       // Onix
-  ghost: 94,      // Gengar
-  dragon: 149,    // Dragonite
-  dark: 197,      // Umbreon
-  steel: 208,     // Steelix
-  fairy: 35,      // Clefairy
-}
 
 const GENERATIONS = [
   { region: 'Kanto', mascot: 25, type: 'electric' },    // Pikachu
@@ -86,7 +65,7 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
         <div className="grid grid-cols-3 gap-3 sm:grid-cols-6 md:grid-cols-9">
           {POKEMON_TYPES.map((type) => {
             const color = typeColors[type] ?? '#a8a878'
-            const pokeId = TYPE_POKEMON[type]
+            const pokeId = typeRepresentativePokemon[type]
             return (
               <a
                 key={type}

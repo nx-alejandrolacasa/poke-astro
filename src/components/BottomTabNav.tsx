@@ -108,7 +108,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
       match: (path: string) => path.startsWith(`/${locale}/pokedex`),
     },
     {
-      label: t.header.types,
+      label: t.header.typeChart,
       href: `/${locale}/types`,
       icon: (
         <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
