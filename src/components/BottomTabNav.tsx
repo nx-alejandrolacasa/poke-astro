@@ -17,7 +17,6 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const [isLoading, setIsLoading] = useState(true)
   const inputRef = useRef<HTMLInputElement>(null)
-  const panelRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     fetch('/api/pokemon/names')
@@ -122,31 +121,18 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
 
   return (
     <>
-      {/* Backdrop */}
+      {/* Search overlay — full screen above the bottom nav. Search input stays
+          pinned at the top so it remains visible when the keyboard opens; only
+          the suggestions list scrolls. */}
       <div
-        className={`fixed inset-0 z-40 bg-black/30 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
+        className={`fixed inset-x-0 top-0 bottom-14 z-40 flex flex-col border-black/[0.06] border-b bg-white/95 backdrop-blur-xl transition-opacity duration-200 lg:hidden dark:border-white/[0.06] dark:bg-dark-surface/95 ${
           searchOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
-        onClick={() => { setSearchOpen(false); setQuery('') }}
-        aria-hidden="true"
-      />
-
-      {/* Search panel — slides up from bottom tab bar, fixed height */}
-      <div
-        ref={panelRef}
-        className={`fixed right-0 left-0 z-50 overflow-hidden border-black/[0.06] border-t bg-white/95 backdrop-blur-xl lg:hidden dark:border-white/[0.06] dark:bg-dark-surface/95 ${
-          searchOpen
-            ? 'bottom-14 opacity-100'
-            : 'pointer-events-none bottom-14 opacity-0'
-        }`}
-        style={{
-          height: searchOpen ? 348 : 0,
-          transition: 'height 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.25s ease',
-        }}
+        aria-hidden={!searchOpen}
       >
-        <div className="flex h-full flex-col p-3">
-          {/* Input */}
-          <div className="relative flex-shrink-0">
+        {/* Input — pinned at top */}
+        <div className="flex-shrink-0 border-black/[0.06] border-b p-3 dark:border-white/[0.06]">
+          <div className="relative">
             <input
               ref={inputRef}
               type="text"
@@ -171,40 +157,40 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
+        </div>
 
-          {/* Results area — fixed height, always reserved */}
-          <div className="mt-1 flex-1 overflow-y-auto rounded-xl" role="listbox">
-            {suggestions.length > 0
-              ? suggestions.map((name, index) => (
-                  <button
-                    type="button"
-                    key={name}
-                    onClick={() => navigateTo(name)}
-                    className={`block w-full px-4 py-3 text-left text-base transition-colors ${
-                      index === selectedIndex
-                        ? 'bg-primary-50 text-primary-700 dark:bg-primary/10 dark:text-primary'
-                        : 'text-ink hover:bg-surface-sunken dark:text-dark-ink dark:hover:bg-dark-raised'
-                    }`}
-                    role="option"
-                    aria-selected={index === selectedIndex}
-                  >
-                    <span className="font-medium">{getPokemonName(name)}</span>
-                    <span className="ml-2 text-xs opacity-40">#{name}</span>
-                  </button>
-                ))
-              : query && !isLoading
-                ? (
-                    <p className="px-4 py-3 text-ink-muted text-sm dark:text-dark-ink-muted">
-                      {t.search.noResults}
-                    </p>
-                  )
-                : (
-                    <p className="px-4 py-6 text-center text-ink-faint text-sm dark:text-dark-ink-faint">
-                      {locale === 'es' ? 'Escribe para buscar...' : 'Type to search...'}
-                    </p>
-                  )
-            }
-          </div>
+        {/* Scrollable results */}
+        <div className="flex-1 overflow-y-auto p-2" role="listbox">
+          {suggestions.length > 0
+            ? suggestions.map((name, index) => (
+                <button
+                  type="button"
+                  key={name}
+                  onClick={() => navigateTo(name)}
+                  className={`block w-full rounded-xl px-4 py-3 text-left text-base transition-colors ${
+                    index === selectedIndex
+                      ? 'bg-primary-50 text-primary-700 dark:bg-primary/10 dark:text-primary'
+                      : 'text-ink hover:bg-surface-sunken dark:text-dark-ink dark:hover:bg-dark-raised'
+                  }`}
+                  role="option"
+                  aria-selected={index === selectedIndex}
+                >
+                  <span className="font-medium">{getPokemonName(name)}</span>
+                  <span className="ml-2 text-xs opacity-40">#{name}</span>
+                </button>
+              ))
+            : query && !isLoading
+              ? (
+                  <p className="px-4 py-3 text-ink-muted text-sm dark:text-dark-ink-muted">
+                    {t.search.noResults}
+                  </p>
+                )
+              : (
+                  <p className="px-4 py-6 text-center text-ink-faint text-sm dark:text-dark-ink-faint">
+                    {locale === 'es' ? 'Escribe para buscar...' : 'Type to search...'}
+                  </p>
+                )
+          }
         </div>
       </div>
 
@@ -230,16 +216,17 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
             )
           })}
 
-          {/* Search tab */}
+          {/* Search tab — doubles as a close button when the overlay is open */}
           <button
             type="button"
             onClick={() => { setSearchOpen((prev) => !prev); if (searchOpen) setQuery('') }}
-            className={`flex flex-col items-center gap-0.5 px-4 py-1 transition-colors ${
+            className={`flex flex-col items-center gap-0.5 rounded-xl px-4 py-1 transition-colors ${
               searchOpen
-                ? 'text-primary dark:text-dark-primary'
+                ? 'bg-primary/10 text-primary dark:bg-dark-primary/15 dark:text-dark-primary'
                 : 'text-ink-muted dark:text-dark-ink-muted'
             }`}
             aria-label={t.header.search}
+            aria-expanded={searchOpen}
           >
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />

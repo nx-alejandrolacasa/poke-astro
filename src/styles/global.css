@@ -116,6 +116,26 @@ html {
       radial-gradient(1300px circle at 100% 90%,  rgba( 56, 189, 248, 0.30), transparent 70%);  /* BR — Blue   */
   }
 
+  /* Tone the aurora down on mobile — smaller viewports make each blob cover
+     proportionally more screen, so desktop intensities read as intrusive. */
+  @media (max-width: 767px) {
+    body {
+      background-image:
+        radial-gradient(800px circle at 0% 0%,    rgba(227,  53,  13, 0.06), transparent 65%),  /* TL — Red    */
+        radial-gradient(800px circle at 100% 0%,  rgba(234, 179,   8, 0.09), transparent 65%),  /* TR — Yellow */
+        radial-gradient(800px circle at 0% 90%,   rgba( 22, 163,  74, 0.07), transparent 65%),  /* BL — Green  */
+        radial-gradient(800px circle at 100% 90%, rgba( 29,  78, 216, 0.13), transparent 65%);  /* BR — Blue   */
+    }
+
+    .dark body {
+      background-image:
+        radial-gradient(800px circle at 0% 0%,    rgba(248, 113, 113, 0.10), transparent 65%),  /* TL — Red    */
+        radial-gradient(800px circle at 100% 0%,  rgba(253, 224,  71, 0.12), transparent 65%),  /* TR — Yellow */
+        radial-gradient(800px circle at 0% 90%,   rgba(110, 231, 183, 0.12), transparent 65%),  /* BL — Green  */
+        radial-gradient(800px circle at 100% 90%, rgba( 56, 189, 248, 0.18), transparent 65%);  /* BR — Blue   */
+    }
+  }
+
   h1, h2, h3 {
     font-family: var(--font-display);
   }
