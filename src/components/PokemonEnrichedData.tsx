@@ -236,15 +236,19 @@ export function PokemonEnrichedData({
 
       {/* ── Evolution Chain — 2/4 desktop, full tablet, full mobile ── */}
       {hasEvolutions && (
-        <div className="bento-cell rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
+        <div className="bento-cell flex flex-col rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
           <h2 className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
             {t.pokemon.evolutionChain}
           </h2>
-          <EvolutionTree
-            tree={data.evolutionTree as NonNullable<typeof data.evolutionTree>}
-            currentPokemon={pokemonName}
-            locale={locale}
-          />
+          <div className="flex flex-1 items-center justify-center">
+            <EvolutionTree
+              tree={
+                data.evolutionTree as NonNullable<typeof data.evolutionTree>
+              }
+              currentPokemon={pokemonName}
+              locale={locale}
+            />
+          </div>
         </div>
       )}
     </div>
@@ -262,41 +266,55 @@ function EvolutionTree({ tree, currentPokemon, locale }: EvolutionTreeProps) {
   const hasBranching = stages.some((stage) => stage.length > 1)
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4 md:flex-row md:flex-wrap">
+    <div
+      className={`flex flex-col items-center justify-center gap-4 ${!hasBranching ? 'md:flex-row' : ''}`}
+    >
       {stages.map((stage, stageIndex) => (
         <div
           key={`stage-${stageIndex.toString()}`}
-          className="flex flex-col items-center gap-4 md:flex-row"
+          className={`flex flex-col items-center gap-4 ${!hasBranching ? 'md:flex-row' : ''}`}
         >
           {stageIndex > 0 && (
             <>
-              <div className="font-bold text-2xl text-ink-faint md:hidden dark:text-dark-ink-faint">
+              <div
+                className={`font-bold text-2xl text-ink-faint dark:text-dark-ink-faint ${!hasBranching ? 'md:hidden' : ''}`}
+              >
                 &darr;
               </div>
-              <div className="hidden font-bold text-2xl text-ink-faint md:block dark:text-dark-ink-faint">
-                &rarr;
-              </div>
+              {!hasBranching && (
+                <div className="hidden font-bold text-2xl text-ink-faint md:block dark:text-dark-ink-faint">
+                  &rarr;
+                </div>
+              )}
             </>
           )}
-          <div
-            className={`flex flex-col items-center gap-2 md:flex-row ${hasBranching && stage.length > 1 ? 'rounded-xl border-2 border-ink-faint/30 border-dashed p-2 dark:border-dark-ink-faint/30' : ''}`}
-          >
-            {stage.map((pokemon, pokemonIndex) => (
-              <div key={pokemon.name} className="flex items-center">
-                {pokemonIndex > 0 && stage.length > 1 && (
-                  <span className="mx-2 hidden font-bold text-ink-faint text-lg md:inline dark:text-dark-ink-faint">
-                    /
-                  </span>
-                )}
+          {hasBranching && stage.length > 1 ? (
+            <div className="rounded-xl border-2 border-ink-faint/30 border-dashed p-2 dark:border-dark-ink-faint/30">
+              <div className="grid grid-cols-3 gap-2 md:grid-cols-4">
+                {stage.map((pokemon) => (
+                  <EvolutionCard
+                    key={pokemon.name}
+                    name={pokemon.name}
+                    speciesUrl={pokemon.speciesUrl}
+                    isCurrentPokemon={pokemon.name === currentPokemon}
+                    locale={locale}
+                  />
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-2 md:flex-row">
+              {stage.map((pokemon) => (
                 <EvolutionCard
+                  key={pokemon.name}
                   name={pokemon.name}
                   speciesUrl={pokemon.speciesUrl}
                   isCurrentPokemon={pokemon.name === currentPokemon}
                   locale={locale}
                 />
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       ))}
     </div>
