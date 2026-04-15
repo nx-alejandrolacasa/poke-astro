@@ -113,7 +113,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
           onFocus={() => query && suggestions.length > 0 && setIsOpen(true)}
           placeholder={isLoading ? t.search.loading : t.search.placeholder}
           disabled={isLoading}
-          className="w-full rounded-xl border border-black/[0.06] bg-surface-sunken px-4 py-2 pr-10 text-ink text-sm placeholder-ink-faint transition-all focus:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/10 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/[0.06] dark:bg-dark-raised dark:text-dark-ink dark:placeholder-dark-ink-faint dark:focus:border-primary/30 dark:focus:ring-primary/10"
+          className="w-full rounded-full border border-black/[0.06] bg-surface-sunken px-4 py-2 pr-10 text-ink text-sm placeholder-ink-faint transition-all focus:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/10 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/[0.06] dark:bg-dark-raised dark:text-dark-ink dark:placeholder-dark-ink-faint dark:focus:border-primary/30 dark:focus:ring-primary/10"
           role="combobox"
           aria-label="Search Pokemon"
           aria-autocomplete="list"
@@ -140,7 +140,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
         <div
           ref={dropdownRef}
           id="search-suggestions"
-          className="absolute z-50 mt-2 w-full overflow-hidden rounded-xl border border-black/[0.06] bg-white dark:border-white/[0.06] dark:bg-dark-surface"
+          className="absolute z-50 mt-2 w-full overflow-hidden rounded-2xl border border-black/[0.06] bg-white/80 shadow-lg shadow-black/[0.04] backdrop-blur-2xl dark:border-white/[0.08] dark:bg-dark-surface/80 dark:shadow-black/20"
           role="listbox"
         >
           {suggestions.map((name, index) => (
@@ -167,7 +167,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
       {isOpen && query && suggestions.length === 0 && (
         <div
           ref={dropdownRef}
-          className="absolute z-50 mt-2 w-full rounded-xl border border-black/[0.06] bg-white px-4 py-3 text-ink-muted text-sm dark:border-white/[0.06] dark:bg-dark-surface dark:text-dark-ink-muted"
+          className="absolute z-50 mt-2 w-full rounded-2xl border border-black/[0.06] bg-white/80 px-4 py-3 text-ink-muted text-sm shadow-lg shadow-black/[0.04] backdrop-blur-2xl dark:border-white/[0.08] dark:bg-dark-surface/80 dark:text-dark-ink-muted dark:shadow-black/20"
         >
           {t.search.noResults}
         </div>

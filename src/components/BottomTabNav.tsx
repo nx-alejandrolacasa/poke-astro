@@ -87,7 +87,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
       label: t.header.home,
       href: `/${locale}`,
       icon: (
-        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
         </svg>
       ),
@@ -97,7 +97,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
       label: t.header.pokedex,
       href: `/${locale}/pokedex`,
       icon: (
-        <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden="true">
+        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden="true">
           <circle cx="12" cy="12" r="10" />
           <line x1="2" y1="12" x2="8.5" y2="12" />
           <line x1="15.5" y1="12" x2="22" y2="12" />
@@ -110,7 +110,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
       label: t.header.typeChart,
       href: `/${locale}/types`,
       icon: (
-        <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <rect x="2" y="6" width="14" height="16" rx="2" />
           <path d="M8 2h10a2 2 0 012 2v14" />
         </svg>
@@ -143,7 +143,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
                 onKeyDown={handleKeyDown}
                 placeholder={isLoading ? t.search.loading : t.search.placeholder}
                 disabled={isLoading}
-                className="w-full rounded-xl border border-black/[0.06] bg-surface-sunken px-4 py-3 pr-10 text-ink text-base placeholder-ink-faint transition-all focus:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/10 disabled:opacity-50 dark:border-white/[0.06] dark:bg-dark-raised dark:text-dark-ink dark:placeholder-dark-ink-faint"
+                className="w-full rounded-full border border-black/[0.06] bg-surface-sunken px-4 py-3 pr-10 text-ink text-base placeholder-ink-faint transition-all focus:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/10 disabled:opacity-50 dark:border-white/[0.06] dark:bg-dark-raised dark:text-dark-ink dark:placeholder-dark-ink-faint"
                 role="combobox"
                 aria-label="Search Pokemon"
                 aria-autocomplete="list"
@@ -207,24 +207,24 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
         </div>
       </div>
 
-      {/* Tab bar — below the search overlay (z-40) so the overlay fully covers it while open */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 border-black/[0.06] border-t bg-white/95 backdrop-blur-xl lg:hidden dark:border-white/[0.06] dark:bg-dark-surface/95" aria-label="Main navigation">
-        <div className="mx-auto flex h-14 max-w-lg items-center justify-around">
+      {/* Tab bar — floating pill, iOS 26 style */}
+      <nav className="fixed bottom-3 left-0 right-0 z-40 flex justify-center px-4 lg:hidden" aria-label="Main navigation">
+        <div className="flex h-14 items-center gap-1 rounded-full border border-white/60 bg-white/70 px-2 shadow-lg shadow-black/[0.08] backdrop-blur-2xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:shadow-black/30">
           {tabs.map((tab) => {
             const isActive = tab.match(currentPath)
             return (
               <a
                 key={tab.href}
                 href={tab.href}
-                className={`flex flex-col items-center gap-0.5 px-4 py-1 transition-colors ${
+                className={`flex items-center gap-1.5 rounded-full px-4 py-2 transition-all ${
                   isActive
-                    ? 'text-primary dark:text-dark-primary'
-                    : 'text-ink-muted dark:text-dark-ink-muted'
+                    ? 'bg-primary/12 text-primary dark:bg-dark-primary/15 dark:text-dark-primary'
+                    : 'text-ink-muted active:scale-95 dark:text-dark-ink-muted'
                 }`}
                 aria-current={isActive ? 'page' : undefined}
               >
                 {tab.icon}
-                <span className="text-xs font-semibold">{tab.label}</span>
+                {isActive && <span className="text-xs font-semibold">{tab.label}</span>}
               </a>
             )
           })}
@@ -233,18 +233,18 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
           <button
             type="button"
             onClick={() => { setSearchOpen((prev) => !prev); if (searchOpen) setQuery('') }}
-            className={`flex flex-col items-center gap-0.5 rounded-xl px-4 py-1 transition-colors ${
+            className={`flex items-center gap-1.5 rounded-full px-4 py-2 transition-all ${
               searchOpen
-                ? 'bg-primary/10 text-primary dark:bg-dark-primary/15 dark:text-dark-primary'
-                : 'text-ink-muted dark:text-dark-ink-muted'
+                ? 'bg-primary/12 text-primary dark:bg-dark-primary/15 dark:text-dark-primary'
+                : 'text-ink-muted active:scale-95 dark:text-dark-ink-muted'
             }`}
             aria-label={t.header.search}
             aria-expanded={searchOpen}
           >
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-            <span className="text-xs font-semibold">{t.header.search}</span>
+            {searchOpen && <span className="text-xs font-semibold">{t.header.search}</span>}
           </button>
         </div>
       </nav>

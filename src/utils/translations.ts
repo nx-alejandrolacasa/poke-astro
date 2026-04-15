@@ -47,7 +47,63 @@ export type Translations = {
     immuneTo: string
     none: string
     evolutionChain: string
+    // Phase 1 additions
+    category: string
+    cry: string
+    playCry: string
+    latestCry: string
+    legacyCry: string
+    breeding: string
+    eggGroups: string
+    genderRatio: string
+    hatchSteps: string
+    baseHappiness: string
+    training: string
+    captureRate: string
+    baseExperience: string
+    growthRate: string
+    habitat: string
+    shape: string
+    generation: string
+    baby: string
+    legendary: string
+    mythical: string
+    // Evolution conditions
+    evolveLevel: string
+    evolveItem: string
+    evolveTrade: string
+    evolveHappiness: string
+    evolveAffection: string
+    evolveHeldItem: string
+    evolveKnownMove: string
+    evolveKnownMoveType: string
+    evolveLocation: string
+    evolveTimeOfDay: string
+    evolveTradeWith: string
+    evolveRain: string
+    evolveUpsideDown: string
+    evolvePartySpecies: string
+    evolvePartyType: string
+    evolveGenderMale: string
+    evolveGenderFemale: string
+    evolveBeauty: string
+    evolvePhysicalStatsHigher: string
+    evolvePhysicalStatsEqual: string
+    evolvePhysicalStatsLower: string
+    heldItems: string
+    heldItemRarity: string
+    genderless: string
+    previousSprite: string
+    nextSprite: string
   }
+  // Pokémon species metadata lookups
+  eggGroups: Record<string, string>
+  habitats: Record<string, string>
+  shapes: Record<string, string>
+  growthRates: Record<string, string>
+  timeOfDay: Record<string, string>
+  evolutionItems: Record<string, string>
+  spriteLabels: Record<string, string>
   // Modal
   modal: {
     close: string
@@ -126,9 +182,7 @@ export type Translations = {
   }
   // Footer
   footer: {
-    disclaimer: string
-    trademarks: string
-    fairUse: string
+    legal: string
     dataBy: string
     builtWith: string
   }
@@ -180,6 +234,168 @@ export const translations: Record<Language, Translations> = {
       immuneTo: 'Immune To',
       none: 'None',
       evolutionChain: 'Evolution Chain',
+      category: 'Category',
+      cry: 'Cry',
+      playCry: 'Play Cry',
+      latestCry: 'Latest',
+      legacyCry: 'Classic',
+      breeding: 'Breeding',
+      eggGroups: 'Egg Groups',
+      genderRatio: 'Gender Ratio',
+      hatchSteps: 'Hatch Steps',
+      baseHappiness: 'Base Happiness',
+      training: 'Training',
+      captureRate: 'Catch Rate',
+      baseExperience: 'Base EXP',
+      growthRate: 'Growth Rate',
+      habitat: 'Habitat',
+      shape: 'Shape',
+      generation: 'Generation',
+      baby: 'Baby',
+      legendary: 'Legendary',
+      mythical: 'Mythical',
+      evolveLevel: 'Lv. {level}',
+      evolveItem: '{item}',
+      evolveTrade: 'Trade',
+      evolveHappiness: 'Happiness ≥ {value}',
+      evolveAffection: 'Affection ≥ {value}',
+      evolveHeldItem: 'Hold {item}',
+      evolveKnownMove: 'Know {move}',
+      evolveKnownMoveType: 'Know {type}-type move',
+      evolveLocation: 'At {location}',
+      evolveTimeOfDay: '{time}',
+      evolveTradeWith: 'Trade for {species}',
+      evolveRain: 'During rain',
+      evolveUpsideDown: 'Upside down',
+      evolvePartySpecies: '{species} in party',
+      evolvePartyType: '{type}-type in party',
+      evolveGenderMale: '♂ Male only',
+      evolveGenderFemale: '♀ Female only',
+      evolveBeauty: 'Beauty ≥ {value}',
+      evolvePhysicalStatsHigher: 'Atk > Def',
+      evolvePhysicalStatsEqual: 'Atk = Def',
+      evolvePhysicalStatsLower: 'Atk < Def',
+      heldItems: 'Held Items',
+      heldItemRarity: '{rarity}% chance',
+      genderless: 'Genderless',
+      previousSprite: 'Previous sprite',
+      nextSprite: 'Next sprite',
+    },
+    eggGroups: {
+      monster: 'Monster',
+      water1: 'Water 1',
+      water2: 'Water 2',
+      water3: 'Water 3',
+      bug: 'Bug',
+      flying: 'Flying',
+      ground: 'Field',
+      fairy: 'Fairy',
+      plant: 'Grass',
+      humanshape: 'Human-Like',
+      mineral: 'Mineral',
+      amorphous: 'Amorphous',
+      ditto: 'Ditto',
+      dragon: 'Dragon',
+      'no-eggs': 'No Eggs',
+      undiscovered: 'Undiscovered',
+      indeterminate: 'Amorphous',
+    },
+    habitats: {
+      cave: 'Cave',
+      forest: 'Forest',
+      grassland: 'Grassland',
+      mountain: 'Mountain',
+      rare: 'Rare',
+      'rough-terrain': 'Rough Terrain',
+      sea: 'Sea',
+      urban: 'Urban',
+      'waters-edge': "Water's Edge",
+    },
+    shapes: {
+      ball: 'Ball',
+      squiggle: 'Squiggle',
+      fish: 'Fish',
+      arms: 'Arms',
+      blob: 'Blob',
+      upright: 'Upright',
+      legs: 'Legs',
+      quadruped: 'Quadruped',
+      wings: 'Wings',
+      tentacles: 'Tentacles',
+      heads: 'Multiple Bodies',
+      humanoid: 'Humanoid',
+      'bug-wings': 'Bug Wings',
+      armor: 'Armor',
+    },
+    growthRates: {
+      slow: 'Slow',
+      medium: 'Medium',
+      fast: 'Fast',
+      'medium-slow': 'Medium Slow',
+      'slow-then-very-fast': 'Erratic',
+      'fast-then-very-slow': 'Fluctuating',
+    },
+    timeOfDay: {
+      day: 'Daytime',
+      night: 'Nighttime',
+      '': '',
+    },
+    evolutionItems: {
+      'water-stone': 'Water Stone',
+      'thunder-stone': 'Thunder Stone',
+      'fire-stone': 'Fire Stone',
+      'leaf-stone': 'Leaf Stone',
+      'moon-stone': 'Moon Stone',
+      'sun-stone': 'Sun Stone',
+      'shiny-stone': 'Shiny Stone',
+      'dusk-stone': 'Dusk Stone',
+      'dawn-stone': 'Dawn Stone',
+      'ice-stone': 'Ice Stone',
+      'linking-cord': 'Linking Cord',
+      'razor-claw': 'Razor Claw',
+      'razor-fang': 'Razor Fang',
+      'electirizer': 'Electirizer',
+      'magmarizer': 'Magmarizer',
+      'protector': 'Protector',
+      'reaper-cloth': 'Reaper Cloth',
+      'dubious-disc': 'Dubious Disc',
+      'upgrade': 'Upgrade',
+      'prism-scale': 'Prism Scale',
+      'oval-stone': 'Oval Stone',
+      'kings-rock': "King's Rock",
+      'metal-coat': 'Metal Coat',
+      'dragon-scale': 'Dragon Scale',
+      'deep-sea-tooth': 'Deep Sea Tooth',
+      'deep-sea-scale': 'Deep Sea Scale',
+      'sachet': 'Sachet',
+      'whipped-dream': 'Whipped Dream',
+      'black-augurite': 'Black Augurite',
+      'peat-block': 'Peat Block',
+      'auspicious-armor': 'Auspicious Armor',
+      'malicious-armor': 'Malicious Armor',
+      'chipped-pot': 'Chipped Pot',
+      'cracked-pot': 'Cracked Pot',
+      'galarica-cuff': 'Galarica Cuff',
+      'galarica-wreath': 'Galarica Wreath',
+      'sweet-apple': 'Sweet Apple',
+      'tart-apple': 'Tart Apple',
+      'scroll-of-darkness': 'Scroll of Darkness',
+      'scroll-of-waters': 'Scroll of Waters',
+      'syrupy-apple': 'Syrupy Apple',
+      'unremarkable-teacup': 'Unremarkable Teacup',
+      'masterpiece-teacup': 'Masterpiece Teacup',
+      'metal-alloy': 'Metal Alloy',
+    },
+    spriteLabels: {
+      officialArtwork: 'Official Artwork',
+      officialShiny: 'Official Shiny',
+      home: 'Pokémon HOME',
+      homeShiny: 'HOME Shiny',
+      dreamWorld: 'Dream World',
+      showdown: 'Showdown',
+      showdownShiny: 'Showdown Shiny',
+      default: 'Default',
+      defaultShiny: 'Shiny',
     },
     modal: {
       close: 'Close',
@@ -270,13 +486,8 @@ export const translations: Record<Language, Translations> = {
       dark: 'Dark',
     },
     footer: {
-      disclaimer:
-        'This website is fan-made with no affiliation, sponsorship, or official relationship with Nintendo, Game Freak, Creatures Inc., or The Pokémon Company.',
-      trademarks:
-        'All names, images, and trademarks related to Pokémon are the property of their respective owners.',
-      fairUse:
-        'This site uses such elements under fair use principles for educational and informational purposes.',
-      dataBy: 'Data provided by',
+      legal: 'Fan-made project — not affiliated with Nintendo, Game Freak, or The Pokémon Company. All Pokémon trademarks belong to their respective owners.',
+      dataBy: 'Data by',
       builtWith: 'Built with',
     },
   },
@@ -325,6 +536,168 @@ export const translations: Record<Language, Translations> = {
       immuneTo: 'Inmune A',
       none: 'Ninguno',
       evolutionChain: 'Evoluciones',
+      category: 'Categoría',
+      cry: 'Grito',
+      playCry: 'Reproducir Grito',
+      latestCry: 'Actual',
+      legacyCry: 'Clásico',
+      breeding: 'Crianza',
+      eggGroups: 'Grupo Huevo',
+      genderRatio: 'Ratio de Género',
+      hatchSteps: 'Pasos para Eclosión',
+      baseHappiness: 'Felicidad Base',
+      training: 'Entrenamiento',
+      captureRate: 'Ratio de Captura',
+      baseExperience: 'EXP Base',
+      growthRate: 'Crecimiento',
+      habitat: 'Hábitat',
+      shape: 'Forma',
+      generation: 'Generación',
+      baby: 'Bebé',
+      legendary: 'Legendario',
+      mythical: 'Mítico',
+      evolveLevel: 'Nv. {level}',
+      evolveItem: '{item}',
+      evolveTrade: 'Intercambio',
+      evolveHappiness: 'Felicidad ≥ {value}',
+      evolveAffection: 'Afecto ≥ {value}',
+      evolveHeldItem: 'Equipar {item}',
+      evolveKnownMove: 'Conocer {move}',
+      evolveKnownMoveType: 'Conocer movimiento tipo {type}',
+      evolveLocation: 'En {location}',
+      evolveTimeOfDay: '{time}',
+      evolveTradeWith: 'Intercambio por {species}',
+      evolveRain: 'Bajo lluvia',
+      evolveUpsideDown: 'Boca abajo',
+      evolvePartySpecies: '{species} en equipo',
+      evolvePartyType: 'Tipo {type} en equipo',
+      evolveGenderMale: '♂ Solo macho',
+      evolveGenderFemale: '♀ Solo hembra',
+      evolveBeauty: 'Belleza ≥ {value}',
+      evolvePhysicalStatsHigher: 'Ataque > Defensa',
+      evolvePhysicalStatsEqual: 'Ataque = Defensa',
+      evolvePhysicalStatsLower: 'Ataque < Defensa',
+      heldItems: 'Objetos Equipados',
+      heldItemRarity: '{rarity}% probabilidad',
+      genderless: 'Sin género',
+      previousSprite: 'Imagen anterior',
+      nextSprite: 'Imagen siguiente',
+    },
+    eggGroups: {
+      monster: 'Monstruo',
+      water1: 'Agua 1',
+      water2: 'Agua 2',
+      water3: 'Agua 3',
+      bug: 'Bicho',
+      flying: 'Volador',
+      ground: 'Campo',
+      fairy: 'Hada',
+      plant: 'Planta',
+      humanshape: 'Humanoide',
+      mineral: 'Mineral',
+      amorphous: 'Amorfo',
+      ditto: 'Ditto',
+      dragon: 'Dragón',
+      'no-eggs': 'Sin Huevos',
+      undiscovered: 'Desconocido',
+      indeterminate: 'Amorfo',
+    },
+    habitats: {
+      cave: 'Cueva',
+      forest: 'Bosque',
+      grassland: 'Pradera',
+      mountain: 'Montaña',
+      rare: 'Raro',
+      'rough-terrain': 'Terreno Agreste',
+      sea: 'Mar',
+      urban: 'Urbano',
+      'waters-edge': 'Orilla del Agua',
+    },
+    shapes: {
+      ball: 'Esfera',
+      squiggle: 'Alargado',
+      fish: 'Pez',
+      arms: 'Brazos',
+      blob: 'Masa',
+      upright: 'Bípedo',
+      legs: 'Cuadrúpedo',
+      quadruped: 'Cuadrúpedo',
+      wings: 'Alas',
+      tentacles: 'Tentáculos',
+      heads: 'Múltiples Cuerpos',
+      humanoid: 'Humanoide',
+      'bug-wings': 'Alas de Insecto',
+      armor: 'Armadura',
+    },
+    growthRates: {
+      slow: 'Lento',
+      medium: 'Medio',
+      fast: 'Rápido',
+      'medium-slow': 'Medio Lento',
+      'slow-then-very-fast': 'Errático',
+      'fast-then-very-slow': 'Fluctuante',
+    },
+    timeOfDay: {
+      day: 'De día',
+      night: 'De noche',
+      '': '',
+    },
+    evolutionItems: {
+      'water-stone': 'Piedra Agua',
+      'thunder-stone': 'Piedra Trueno',
+      'fire-stone': 'Piedra Fuego',
+      'leaf-stone': 'Piedra Hoja',
+      'moon-stone': 'Piedra Lunar',
+      'sun-stone': 'Piedra Solar',
+      'shiny-stone': 'Piedra Día',
+      'dusk-stone': 'Piedra Noche',
+      'dawn-stone': 'Piedra Alba',
+      'ice-stone': 'Piedra Hielo',
+      'linking-cord': 'Cordón Unión',
+      'razor-claw': 'Garra Afilada',
+      'razor-fang': 'Colmillo Agudo',
+      'electirizer': 'Electrizador',
+      'magmarizer': 'Magmatizador',
+      'protector': 'Protector',
+      'reaper-cloth': 'Tela Terrible',
+      'dubious-disc': 'Disco Extraño',
+      'upgrade': 'Mejora',
+      'prism-scale': 'Escama Bella',
+      'oval-stone': 'Piedra Oval',
+      'kings-rock': 'Roca del Rey',
+      'metal-coat': 'Revestimiento Met.',
+      'dragon-scale': 'Escama Dragón',
+      'deep-sea-tooth': 'Diente Marino',
+      'deep-sea-scale': 'Escama Marina',
+      'sachet': 'Saquito Fragante',
+      'whipped-dream': 'Dulce de Nata',
+      'black-augurite': 'Mineral Negro',
+      'peat-block': 'Bloque de Turba',
+      'auspicious-armor': 'Armadura Auspiciosa',
+      'malicious-armor': 'Armadura Maligna',
+      'chipped-pot': 'Tetera Agrietada',
+      'cracked-pot': 'Tetera Rota',
+      'galarica-cuff': 'Brazal Galanuez',
+      'galarica-wreath': 'Corona Galanuez',
+      'sweet-apple': 'Manzana Dulce',
+      'tart-apple': 'Manzana Ácida',
+      'scroll-of-darkness': 'Manuscrito Oscuro',
+      'scroll-of-waters': 'Manuscrito Acuático',
+      'syrupy-apple': 'Manzana Melosa',
+      'unremarkable-teacup': 'Cuenco Mediocre',
+      'masterpiece-teacup': 'Cuenco Exquisito',
+      'metal-alloy': 'Aleación Metálica',
+    },
+    spriteLabels: {
+      officialArtwork: 'Arte Oficial',
+      officialShiny: 'Arte Oficial Shiny',
+      home: 'Pokémon HOME',
+      homeShiny: 'HOME Shiny',
+      dreamWorld: 'Dream World',
+      showdown: 'Showdown',
+      showdownShiny: 'Showdown Shiny',
+      default: 'Predeterminado',
+      defaultShiny: 'Shiny',
     },
     modal: {
       close: 'Cerrar',
@@ -415,14 +788,9 @@ export const translations: Record<Language, Translations> = {
       dark: 'Oscuro',
     },
     footer: {
-      disclaimer:
-        'Este sitio web está creado por fans, sin ningún tipo de afiliación, patrocinio ni relación oficial con Nintendo, Game Freak, Creatures Inc. o The Pokémon Company.',
-      trademarks:
-        'Todos los nombres, imágenes y marcas relacionadas con Pokémon son propiedad de sus respectivos dueños.',
-      fairUse:
-        'Este sitio hace uso de dichos elementos bajo los principios de fair use (uso legítimo), con fines educativos e informativos.',
-      dataBy: 'Datos proporcionados por',
-      builtWith: 'Construido con',
+      legal: 'Proyecto fan — sin afiliación con Nintendo, Game Freak ni The Pokémon Company. Todas las marcas de Pokémon pertenecen a sus respectivos dueños.',
+      dataBy: 'Datos de',
+      builtWith: 'Hecho con',
     },
   },
 }

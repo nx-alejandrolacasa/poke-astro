@@ -89,6 +89,29 @@ export const GET: APIRoute = async ({ params, url }) => {
       ),
     }
 
+    // Build species info for the detail page
+    const speciesInfo = species
+      ? {
+          baseHappiness: species.base_happiness,
+          captureRate: species.capture_rate,
+          color: species.color?.name ?? null,
+          eggGroups: species.egg_groups.map((g) => g.name),
+          genderRate: species.gender_rate,
+          genera: species.genera,
+          generation: species.generation?.name ?? null,
+          growthRate: species.growth_rate?.name ?? null,
+          habitat: species.habitat?.name ?? null,
+          hatchCounter: species.hatch_counter,
+          isBaby: species.is_baby,
+          isLegendary: species.is_legendary,
+          isMythical: species.is_mythical,
+          shape: species.shape?.name ?? null,
+          varieties: species.varieties
+            .filter((v) => !v.is_default)
+            .map((v) => v.pokemon.name),
+        }
+      : null
+
     return new Response(
       JSON.stringify({
         flavorText,
@@ -96,6 +119,7 @@ export const GET: APIRoute = async ({ params, url }) => {
         evolutionChainData,
         evolutionTree,
         typeEffectiveness: translatedTypeEffectiveness,
+        speciesInfo,
       }),
       {
         status: 200,

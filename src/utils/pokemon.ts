@@ -1,6 +1,18 @@
 export type Pokemon = {
   abilities: { ability: { name: string }; is_hidden: boolean }[]
+  base_experience: number | null
+  cries: {
+    latest: string | null
+    legacy: string | null
+  }
   height: number
+  held_items: {
+    item: { name: string; url: string }
+    version_details: {
+      rarity: number
+      version: { name: string; url: string }
+    }[]
+  }[]
   /** National Pokédex number. Use this for display — `order` is a family-grouped
    * sort index that skips slots (Mega/regional variants), so it leaves gaps. */
   id: number
@@ -8,9 +20,28 @@ export type Pokemon = {
   order: number
   species: { name: string; url: string }
   sprites: {
+    front_default: string | null
+    front_shiny: string | null
+    front_female: string | null
+    front_shiny_female: string | null
     other: {
+      dream_world: {
+        front_default: string | null
+        front_female: string | null
+      }
+      home: {
+        front_default: string | null
+        front_female: string | null
+        front_shiny: string | null
+        front_shiny_female: string | null
+      }
       'official-artwork': {
-        front_default: string
+        front_default: string | null
+        front_shiny: string | null
+      }
+      showdown: {
+        front_default: string | null
+        front_shiny: string | null
       }
     }
   }
@@ -20,10 +51,31 @@ export type Pokemon = {
 }
 
 export type PokemonSpecies = {
+  base_happiness: number | null
+  capture_rate: number
+  color: { name: string } | null
+  egg_groups: { name: string; url: string }[]
   evolution_chain: { url: string }
-  flavor_text_entries: { flavor_text: string; language: { name: string } }[]
+  flavor_text_entries: {
+    flavor_text: string
+    language: { name: string }
+    version?: { name: string }
+  }[]
+  gender_rate: number
   genera: { genus: string; language: { name: string } }[]
+  generation: { name: string; url: string }
+  growth_rate: { name: string; url: string }
+  habitat: { name: string } | null
+  hatch_counter: number | null
+  is_baby: boolean
+  is_legendary: boolean
+  is_mythical: boolean
   name: string
+  shape: { name: string } | null
+  varieties: {
+    is_default: boolean
+    pokemon: { name: string; url: string }
+  }[]
 }
 
 export type EvolutionChain = {
@@ -31,18 +83,38 @@ export type EvolutionChain = {
   id: number
 }
 
+export type EvolutionDetail = {
+  gender: number | null
+  held_item: { name: string } | null
+  item: { name: string } | null
+  known_move: { name: string } | null
+  known_move_type: { name: string } | null
+  location: { name: string } | null
+  min_affection: number | null
+  min_beauty: number | null
+  min_happiness: number | null
+  min_level: number | null
+  needs_overworld_rain: boolean
+  party_species: { name: string } | null
+  party_type: { name: string } | null
+  relative_physical_stats: number | null
+  time_of_day: string
+  trade_species: { name: string } | null
+  trigger: { name: string }
+  turn_upside_down: boolean
+}
+
 export type EvolutionNode = {
-  evolution_details: {
-    min_level?: number
-    trigger: { name: string }
-  }[]
+  evolution_details: EvolutionDetail[]
   evolves_to: EvolutionNode[]
+  is_baby: boolean
   species: { name: string; url: string }
 }
 
 export type EvolutionTreeNode = {
   name: string
   speciesUrl: string
+  evolutionDetails: EvolutionDetail[]
   evolvesTo: EvolutionTreeNode[]
 }
 
@@ -356,6 +428,7 @@ export function parseEvolutionTree(chain: EvolutionNode): EvolutionTreeNode {
   return {
     name: chain.species.name,
     speciesUrl: chain.species.url,
+    evolutionDetails: chain.evolution_details ?? [],
     evolvesTo: chain.evolves_to.map((evo) => parseEvolutionTree(evo)),
   }
 }

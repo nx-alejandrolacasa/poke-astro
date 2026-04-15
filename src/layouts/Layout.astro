@@ -124,7 +124,7 @@ const { title, locale } = Astro.props
             var locale = this.getAttribute('data-locale') || 'es'
             var t = labels[locale] || labels.es
             var d = iconPaths[current]
-            this.innerHTML = '<button type="button" class="flex items-center gap-1.5 rounded-xl px-3 py-1.5 font-medium text-sm text-ink-muted transition-all hover:bg-black/5 dark:text-dark-ink-muted dark:hover:bg-white/5" title="' + t.label + ': ' + t[current] + '" aria-label="' + t.label + ': ' + t[current] + '"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="' + d + '" /></svg><span>' + t[current] + '</span></button>'
+            this.innerHTML = '<button type="button" class="flex items-center gap-1 rounded-full px-2.5 py-1 font-medium text-sm text-ink-muted transition-all hover:bg-black/5 dark:text-dark-ink-muted dark:hover:bg-white/8" title="' + t.label + ': ' + t[current] + '" aria-label="' + t.label + ': ' + t[current] + '"><svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="' + d + '" /></svg><span>' + t[current] + '</span></button>'
             // Re-attach click handler after innerHTML
             if (this._cycle) this.querySelector('button').addEventListener('click', this._cycle)
           }
@@ -138,8 +138,8 @@ const { title, locale } = Astro.props
       <slot />
     </main>
     <Footer locale={locale} />
-    <!-- Bottom padding for mobile tab bar -->
-    <div class="h-16 lg:hidden" aria-hidden="true"></div>
+    <!-- Bottom padding for floating mobile tab bar -->
+    <div class="h-20 lg:hidden" aria-hidden="true"></div>
     <BottomTabNav client:load locale={locale} currentPath={Astro.url.pathname} />
     <script is:inline>
       // Register service worker for PWA
