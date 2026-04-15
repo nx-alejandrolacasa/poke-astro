@@ -146,7 +146,7 @@ export const translations: Record<Language, Translations> = {
       search: 'Search',
     },
     home: {
-      title: 'Gotta Know \'Em All!',
+      title: 'Gotta catch \'em all!',
       subtitle:
         '{count} Pokemon and counting.',
       viewPokedex: 'View Full Pokédex →',

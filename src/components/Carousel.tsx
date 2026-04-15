@@ -5,13 +5,19 @@ type CarouselProps = {
   label?: string
   autoPlayMs?: number
   className?: string
+  /** Override the body-text classes (color, size, leading). */
+  textClassName?: string
 }
+
+const DEFAULT_TEXT_CLASS =
+  'text-ink text-base leading-relaxed md:text-lg dark:text-dark-ink'
 
 export function Carousel({
   items,
   label,
   autoPlayMs = 0,
   className = '',
+  textClassName = DEFAULT_TEXT_CLASS,
 }: CarouselProps) {
   const [current, setCurrent] = useState(0)
   const [progressKey, setProgressKey] = useState(0)
@@ -63,9 +69,7 @@ export function Carousel({
             {label}
           </p>
         )}
-        <p className="text-ink text-base leading-relaxed md:text-lg dark:text-dark-ink">
-          {items[0]}
-        </p>
+        <p className={textClassName}>{items[0]}</p>
       </div>
     )
   }
@@ -78,7 +82,7 @@ export function Carousel({
       onTouchEnd={handleTouchEnd}
     >
       {label && (
-        <p className="mb-2 font-bold text-sm text-primary uppercase tracking-wider dark:text-dark-primary">
+        <p className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
           {label}
         </p>
       )}
@@ -86,7 +90,7 @@ export function Carousel({
         {items.map((item, i) => (
           <p
             key={`item-${i.toString()}`}
-            className={`text-ink text-base leading-relaxed transition-all duration-300 md:text-lg dark:text-dark-ink ${
+            className={`${textClassName} transition-all duration-300 ${
               i === current
                 ? 'relative opacity-100'
                 : 'pointer-events-none absolute inset-0 opacity-0'

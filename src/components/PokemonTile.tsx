@@ -26,7 +26,7 @@ export function PokemonTile({
       <a href={`/${locale}/pokemon/${pokemon.name}`} title={pokemon.name}>
         <div className="relative aspect-square w-full">
           <span className="absolute top-0 right-0 z-0 font-black font-mono text-sm text-ink/20 md:text-base dark:text-dark-ink/20">
-            #{pokemon.order.toString().padStart(3, '0')}
+            #{pokemon.id.toString().padStart(3, '0')}
           </span>
           <img
             className="relative z-10 aspect-square w-full"

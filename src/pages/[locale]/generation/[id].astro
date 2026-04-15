@@ -84,8 +84,8 @@ const results: Pokemon[] = resultsWithNull.filter(
   (p): p is Pokemon => p !== null
 )
 
-// Sort by order number
-results.sort((a, b) => a.order - b.order)
+// Sort by National Pokédex number
+results.sort((a, b) => a.id - b.id)
 
 const initialData: PokemonList = {
   count: genData.pokemon_species.length,

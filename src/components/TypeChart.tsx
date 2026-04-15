@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { Locale } from '@/utils/i18n'
+import { typeRepresentativePokemon } from '@/utils/pokemon'
 import { translations } from '@/utils/translations'
 import type { PokemonType } from '@/utils/typeEffectiveness'
 import {
@@ -143,7 +144,7 @@ function DetailPanel({
       style={{
         border: `2px solid ${color}${isDark ? '40' : '30'}`,
         background: isDark
-          ? `linear-gradient(135deg, ${shadeColor(color, 0.85)} 0%, #12122a 100%)`
+          ? `linear-gradient(135deg, ${shadeColor(color, 0.85)} 0%, #293143 100%)`
           : `linear-gradient(135deg, ${tintColor(color, 0.92)} 0%, white 100%)`,
       }}
     >
@@ -254,14 +255,14 @@ function MatchupGroup({
 
   return (
     <div>
-      <div className="mb-1 flex items-center gap-1.5">
+      <div className="mb-1.5 flex items-center gap-2">
         <span
-          className="inline-flex h-5 items-center justify-center rounded-lg px-1.5 font-bold font-mono text-xs text-white"
+          className="inline-flex h-6 items-center justify-center rounded-lg px-2 font-bold font-mono text-sm text-white"
           style={{ backgroundColor: accentColor }}
         >
           {multiplier}
         </span>
-        <span className="font-medium text-xs" style={{ color: accentColor }}>
+        <span className="font-semibold text-sm" style={{ color: accentColor }}>
           {label} ({types.length})
         </span>
       </div>
@@ -281,6 +282,7 @@ function MatchupGroup({
 }
 
 export function TypeChart({ locale }: TypeChartProps) {
+  const t = translations[locale]
   const [gen1, setGen1] = useState(false)
   const [selectedType, setSelectedType] = useState<PokemonType>('fire')
 
@@ -299,7 +301,7 @@ export function TypeChart({ locale }: TypeChartProps) {
     <div className="space-y-8 pb-8 md:space-y-10 md:pb-12">
       <section className="space-y-4 pt-6 text-center md:pt-8">
         <h1 className="font-bold text-3xl text-ink tracking-tight md:text-4xl dark:text-dark-ink">
-          {locale === 'es' ? 'Tipos Pokemon' : 'Pokemon Types'}
+          {t.header.typeChart}
         </h1>
         <p className="mx-auto max-w-xl text-ink-muted text-sm md:text-base dark:text-dark-ink-muted">
           {locale === 'es'
@@ -337,17 +339,44 @@ export function TypeChart({ locale }: TypeChartProps) {
       </div>
 
       <section>
-        <div className="flex flex-wrap justify-center gap-2">
-          {types.map((type) => (
-            <TypeBadge
-              key={type}
-              type={type}
-              size="md"
-              selected={effectiveSelected === type}
-              onClick={() => handleTypeClick(type)}
-              locale={locale}
-            />
-          ))}
+        <div className="grid grid-cols-3 gap-3 sm:grid-cols-6 md:grid-cols-9">
+          {types.map((type) => {
+            const color = TYPE_COLORS[type]
+            const pokeId = typeRepresentativePokemon[type]
+            const isSelected = effectiveSelected === type
+            return (
+              <button
+                key={type}
+                type="button"
+                onClick={() => handleTypeClick(type)}
+                aria-pressed={isSelected}
+                className="group flex flex-col items-center gap-1 rounded-xl p-2 transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
+                style={{
+                  backgroundColor: `${color}${isSelected ? '33' : '15'}`,
+                  border: `2px solid ${color}`,
+                  transform: isSelected ? 'translateY(-2px)' : undefined,
+                  boxShadow: isSelected
+                    ? `0 8px 16px -6px ${color}66, 0 0 0 3px ${color}40`
+                    : undefined,
+                }}
+              >
+                {pokeId !== undefined && (
+                  <img
+                    src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokeId}.png`}
+                    alt={type}
+                    className="h-12 w-12 object-contain md:h-14 md:w-14"
+                    loading="lazy"
+                  />
+                )}
+                <span
+                  className="w-full rounded-lg py-0.5 text-center font-semibold text-xs capitalize"
+                  style={{ backgroundColor: color, color: getContrastColor(color) }}
+                >
+                  {t.types[type]}
+                </span>
+              </button>
+            )
+          })}
         </div>
       </section>
 

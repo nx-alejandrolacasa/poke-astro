@@ -19,18 +19,18 @@ html {
   --color-surface: #ffffff;
   --color-surface-raised: #fafafa;
   --color-surface-sunken: #f5f5f7;
-  --color-dark-bg: #0c0c18;
-  --color-dark-surface: #12122a;
-  --color-dark-raised: #1a1a3e;
-  --color-dark-border: #2a2a52;
+  --color-dark-bg: #1e2636;
+  --color-dark-surface: #293143;
+  --color-dark-raised: #353e52;
+  --color-dark-border: #454e64;
 
-  /* ── Primary accent — Indigo ── */
-  --color-primary: #6366F1;
-  --color-primary-50: #eef2ff;
-  --color-primary-100: #e0e7ff;
-  --color-primary-500: #6366F1;
-  --color-primary-600: #4f46e5;
-  --color-primary-700: #4338ca;
+  /* ── Primary accent — Ghost Purple ── */
+  --color-primary: #705898;
+  --color-primary-50: #F2EFF7;
+  --color-primary-100: #E3DDEF;
+  --color-primary-500: #705898;
+  --color-primary-600: #58457A;
+  --color-primary-700: #443462;
 
   /* ── Secondary accent — Pokemon Red ── */
   --color-secondary: #E3350D;
@@ -50,7 +50,7 @@ html {
   --color-dark-ink-faint: #6b7298;
 
   /* ── Dark mode primary ── */
-  --color-dark-primary: #818cf8;
+  --color-dark-primary: #A18CC5;
 
   /* ── Pokemon type palette ── */
   --color-type-fire: #f04030;
@@ -90,14 +90,50 @@ html {
    ══════════════════════════════════════════ */
 @layer base {
   body {
-    background: #fefefe;
+    /* Fixed four-corner aurora — one radial blob per Game Boy cartridge color
+       (Red, Blue, Green, Yellow), arranged so similar hues (green/yellow and
+       red/blue) sit on opposite diagonals rather than adjacent sides. */
+    background-color: #fefefe;
+    background-image:
+      radial-gradient(1300px circle at 0% 0%,     rgba(227,  53,  13, 0.10), transparent 70%),  /* TL — Red    */
+      radial-gradient(1300px circle at 100% 0%,   rgba(234, 179,   8, 0.16), transparent 70%),  /* TR — Yellow */
+      radial-gradient(1300px circle at 0% 90%,    rgba( 22, 163,  74, 0.13), transparent 70%),  /* BL — Green  */
+      radial-gradient(1300px circle at 100% 90%,  rgba( 29,  78, 216, 0.24), transparent 70%);  /* BR — Blue   */
+    background-attachment: fixed;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   .dark body {
-    background: var(--color-dark-bg);
+    /* Same diagonal arrangement, using brighter shades so the glows show
+       against the neutral slate base. */
+    background-color: var(--color-dark-bg);
+    background-image:
+      radial-gradient(1300px circle at 0% 0%,     rgba(248, 113, 113, 0.18), transparent 70%),  /* TL — Red    */
+      radial-gradient(1300px circle at 100% 0%,   rgba(253, 224,  71, 0.20), transparent 70%),  /* TR — Yellow */
+      radial-gradient(1300px circle at 0% 90%,    rgba(110, 231, 183, 0.20), transparent 70%),  /* BL — Green  */
+      radial-gradient(1300px circle at 100% 90%,  rgba( 56, 189, 248, 0.30), transparent 70%);  /* BR — Blue   */
+  }
+
+  /* Tone the aurora down on mobile — smaller viewports make each blob cover
+     proportionally more screen, so desktop intensities read as intrusive. */
+  @media (max-width: 767px) {
+    body {
+      background-image:
+        radial-gradient(800px circle at 0% 0%,    rgba(227,  53,  13, 0.06), transparent 65%),  /* TL — Red    */
+        radial-gradient(800px circle at 100% 0%,  rgba(234, 179,   8, 0.09), transparent 65%),  /* TR — Yellow */
+        radial-gradient(800px circle at 0% 90%,   rgba( 22, 163,  74, 0.07), transparent 65%),  /* BL — Green  */
+        radial-gradient(800px circle at 100% 90%, rgba( 29,  78, 216, 0.13), transparent 65%);  /* BR — Blue   */
+    }
+
+    .dark body {
+      background-image:
+        radial-gradient(800px circle at 0% 0%,    rgba(248, 113, 113, 0.10), transparent 65%),  /* TL — Red    */
+        radial-gradient(800px circle at 100% 0%,  rgba(253, 224,  71, 0.12), transparent 65%),  /* TR — Yellow */
+        radial-gradient(800px circle at 0% 90%,   rgba(110, 231, 183, 0.12), transparent 65%),  /* BL — Green  */
+        radial-gradient(800px circle at 100% 90%, rgba( 56, 189, 248, 0.18), transparent 65%);  /* BR — Blue   */
+    }
   }
 
   h1, h2, h3 {
