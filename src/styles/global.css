@@ -192,10 +192,88 @@ html {
     );
     background-size: 200% 100%;
   }
+
+  /* ── Shiny burst rays ── */
+  .shiny-rays {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: repeating-conic-gradient(
+      from 0deg,
+      color-mix(in srgb, var(--ray-color) 65%, white) 0deg 5deg,
+      transparent 5deg 18deg
+    );
+    mask-image: radial-gradient(circle, transparent 15%, white 32%, transparent 60%);
+    -webkit-mask-image: radial-gradient(circle, transparent 15%, white 32%, transparent 60%);
+    animation: shiny-burst 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  /* ── Shiny soft glow ── */
+  .shiny-glow {
+    position: absolute;
+    inset: 15%;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--ray-color) 45%, white) 0%,
+      transparent 70%
+    );
+    filter: blur(18px);
+    animation: shiny-glow-pulse 1.6s ease-out forwards;
+  }
+
+  /* ── Shiny sparkle particles ── */
+  .shiny-sparkle {
+    position: absolute;
+    pointer-events: none;
+    animation: shiny-sparkle-pop 0.7s ease-out forwards;
+    opacity: 0;
+  }
+  .shiny-sparkle::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: color-mix(in srgb, var(--ray-color) 55%, white);
+    clip-path: polygon(
+      50% 0%, 62% 32%, 100% 50%, 62% 68%,
+      50% 100%, 38% 68%, 0% 50%, 38% 32%
+    );
+  }
 }
 
 /* Progress fill for carousel dots */
 @keyframes progress-fill {
   from { width: 0; }
   to { width: 100%; }
+}
+
+/* ══════════════════════════════════════════
+   SHINY TRANSFORMATION — type-colored burst
+   ══════════════════════════════════════════ */
+@keyframes shiny-burst {
+  /* rotate & scale are individual CSS properties so the browser
+     interpolates rotation smoothly across the full duration while
+     scale pulses independently. */
+  0%  { scale: 0.15; rotate: 0deg;  opacity: 0;    }
+  12% { scale: 0.7;                  opacity: 0.9;  }
+  25% { scale: 1.1;                                  }
+  40% { scale: 0.97;                 opacity: 0.7;  }
+  60% { scale: 1.12;                 opacity: 0.45; }
+  80% { scale: 1.05;                 opacity: 0.2;  }
+  100%{ scale: 1.2;  rotate: 72deg;  opacity: 0;    }
+}
+
+@keyframes shiny-glow-pulse {
+  0%  { scale: 0.3;  opacity: 0;    }
+  25% { scale: 1;    opacity: 0.55; }
+  70% {              opacity: 0.35; }
+  100%{              opacity: 0;    }
+}
+
+@keyframes shiny-sparkle-pop {
+  0%  { transform: translate(-50%, -50%) scale(0)   rotate(0deg);   opacity: 0; }
+  25% { transform: translate(-50%, -50%) scale(1.4)  rotate(60deg);  opacity: 1; }
+  55% { transform: translate(-50%, -50%) scale(0.85) rotate(120deg); opacity: 0.8; }
+  100%{ transform: translate(-50%, -50%) scale(0)    rotate(200deg); opacity: 0; }
 }

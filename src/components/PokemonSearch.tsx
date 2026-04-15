@@ -1,10 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import type { Locale } from '@/utils/i18n'
 import { getPokemonName } from '@/utils/pokemon'
 import { translations } from '@/utils/translations'
 
 type PokemonSearchProps = {
   locale: Locale
+}
+
+type DropdownPos = {
+  top: number
+  left: number
+  width: number
 }
 
 export function PokemonSearch({ locale }: PokemonSearchProps) {
@@ -15,6 +22,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const [isLoading, setIsLoading] = useState(true)
+  const [dropdownPos, setDropdownPos] = useState<DropdownPos>({ top: 0, left: 0, width: 0 })
   const inputRef = useRef<HTMLInputElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
@@ -49,6 +57,29 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
     setIsOpen(filtered.length > 0)
     setSelectedIndex(-1)
   }, [query, allPokemonNames])
+
+  // Position the portal dropdown beneath the input
+  useEffect(() => {
+    if (!isOpen || !inputRef.current) return
+
+    const updatePosition = () => {
+      if (!inputRef.current) return
+      const rect = inputRef.current.getBoundingClientRect()
+      setDropdownPos({
+        top: rect.bottom + 8,
+        left: rect.left,
+        width: rect.width,
+      })
+    }
+
+    updatePosition()
+    window.addEventListener('scroll', updatePosition, true)
+    window.addEventListener('resize', updatePosition)
+    return () => {
+      window.removeEventListener('scroll', updatePosition, true)
+      window.removeEventListener('resize', updatePosition)
+    }
+  }, [isOpen])
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -101,6 +132,13 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
     setIsOpen(false)
   }
 
+  const dropdownStyle: React.CSSProperties = {
+    position: 'fixed',
+    top: dropdownPos.top,
+    left: dropdownPos.left,
+    width: dropdownPos.width,
+  }
+
   return (
     <div className="relative w-full max-w-md">
       <div className="relative">
@@ -136,11 +174,12 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
         </svg>
       </div>
 
-      {isOpen && suggestions.length > 0 && (
+      {isOpen && suggestions.length > 0 && createPortal(
         <div
           ref={dropdownRef}
           id="search-suggestions"
-          className="absolute z-50 mt-2 w-full overflow-hidden rounded-2xl border border-black/[0.06] bg-white/80 shadow-lg shadow-black/[0.04] backdrop-blur-2xl dark:border-white/[0.08] dark:bg-dark-surface/80 dark:shadow-black/20"
+          style={dropdownStyle}
+          className="z-50 overflow-hidden rounded-2xl border border-white/60 bg-white/70 shadow-lg shadow-black/[0.04] backdrop-blur-2xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:shadow-black/20"
           role="listbox"
         >
           {suggestions.map((name, index) => (
@@ -161,16 +200,19 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
               <span className="ml-2 text-xs opacity-40">#{name}</span>
             </button>
           ))}
-        </div>
+        </div>,
+        document.body
       )}
 
-      {isOpen && query && suggestions.length === 0 && (
+      {isOpen && query && suggestions.length === 0 && createPortal(
         <div
           ref={dropdownRef}
-          className="absolute z-50 mt-2 w-full rounded-2xl border border-black/[0.06] bg-white/80 px-4 py-3 text-ink-muted text-sm shadow-lg shadow-black/[0.04] backdrop-blur-2xl dark:border-white/[0.08] dark:bg-dark-surface/80 dark:text-dark-ink-muted dark:shadow-black/20"
+          style={dropdownStyle}
+          className="z-50 rounded-2xl border border-white/60 bg-white/70 px-4 py-3 text-ink-muted text-sm shadow-lg shadow-black/[0.04] backdrop-blur-2xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:text-dark-ink-muted dark:shadow-black/20"
         >
           {t.search.noResults}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )
