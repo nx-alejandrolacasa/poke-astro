@@ -126,6 +126,8 @@ export function PokemonDetailContent({
   const latestCryRef = useRef<HTMLAudioElement | null>(null)
   const legacyCryRef = useRef<HTMLAudioElement | null>(null)
   const [showShiny, setShowShiny] = useState(false)
+  const [shinyAnimating, setShinyAnimating] = useState(false)
+  const [shinyAnimKey, setShinyAnimKey] = useState(0)
   const shinyUrl = pokemon.sprites?.other?.['official-artwork']?.front_shiny
   const defaultUrl = getPokemonImage(pokemon)
 
@@ -338,7 +340,15 @@ export function PokemonDetailContent({
           {shinyUrl && (
             <button
               type="button"
-              onClick={() => setShowShiny((s) => !s)}
+              onClick={() => {
+                setShowShiny((s) => {
+                  if (!s) {
+                    setShinyAnimKey((k) => k + 1)
+                    setShinyAnimating(true)
+                  }
+                  return !s
+                })
+              }}
               className={`absolute top-3 right-3 z-10 rounded-full p-2 transition-all ${showShiny ? 'shadow-lg shadow-amber-300/40 dark:shadow-amber-500/30' : 'bg-surface-sunken opacity-60 hover:opacity-100 dark:bg-dark-raised'}`}
               aria-label="Shiny"
               title="Shiny"
@@ -365,16 +375,52 @@ export function PokemonDetailContent({
             </button>
           )}
 
-          {/* Sprite image with crossfade */}
+          {/* Sprite image with crossfade + shiny burst animation */}
           <div className="relative aspect-square w-full max-w-[260px]">
+            {/* Shiny transformation rays / glow / sparkles */}
+            {shinyAnimating && (
+              <div
+                key={shinyAnimKey}
+                className="pointer-events-none absolute inset-[-20%]"
+                style={{ '--ray-color': typeColor } as React.CSSProperties}
+              >
+                <div className="shiny-glow" />
+                <div
+                  className="shiny-rays"
+                  onAnimationEnd={() => setShinyAnimating(false)}
+                />
+                {[
+                  { top: '5%',  left: '48%', delay: '0.05s', size: 14 },
+                  { top: '18%', left: '87%', delay: '0.20s', size: 10 },
+                  { top: '62%', left: '93%', delay: '0.12s', size: 12 },
+                  { top: '90%', left: '55%', delay: '0.28s', size: 9  },
+                  { top: '75%', left: '7%',  delay: '0.18s', size: 11 },
+                  { top: '15%', left: '10%', delay: '0.32s', size: 10 },
+                  { top: '42%', left: '3%',  delay: '0.08s', size: 8  },
+                  { top: '38%', left: '97%', delay: '0.38s', size: 8  },
+                ].map((s, i) => (
+                  <div
+                    key={i}
+                    className="shiny-sparkle"
+                    style={{
+                      top: s.top,
+                      left: s.left,
+                      width: s.size,
+                      height: s.size,
+                      animationDelay: s.delay,
+                    }}
+                  />
+                ))}
+              </div>
+            )}
             <img
-              className={`absolute inset-0 h-full w-full object-contain transition-opacity duration-300 ${showShiny ? 'opacity-0' : 'opacity-100'}`}
+              className={`absolute inset-0 z-10 h-full w-full object-contain transition-opacity duration-300 ${showShiny ? 'opacity-0' : 'opacity-100'}`}
               src={defaultUrl}
               alt={`${pokemon.name} official artwork`}
             />
             {shinyUrl && (
               <img
-                className={`absolute inset-0 h-full w-full object-contain transition-opacity duration-300 ${showShiny ? 'opacity-100' : 'opacity-0'}`}
+                className={`absolute inset-0 z-10 h-full w-full object-contain transition-opacity duration-300 ${showShiny ? 'opacity-100' : 'opacity-0'}`}
                 src={shinyUrl}
                 alt={`${pokemon.name} shiny artwork`}
                 loading="lazy"
