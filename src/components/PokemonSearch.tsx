@@ -22,9 +22,12 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const [isLoading, setIsLoading] = useState(true)
+  const [isClient, setIsClient] = useState(false)
   const [dropdownPos, setDropdownPos] = useState<DropdownPos>({ top: 0, left: 0, width: 0 })
   const inputRef = useRef<HTMLInputElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => { setIsClient(true) }, [])
 
   useEffect(() => {
     async function loadPokemonNames() {
@@ -174,7 +177,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
         </svg>
       </div>
 
-      {isOpen && suggestions.length > 0 && createPortal(
+      {isClient && isOpen && suggestions.length > 0 && createPortal(
         <div
           ref={dropdownRef}
           id="search-suggestions"
@@ -204,7 +207,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
         document.body
       )}
 
-      {isOpen && query && suggestions.length === 0 && createPortal(
+      {isClient && isOpen && query && suggestions.length === 0 && createPortal(
         <div
           ref={dropdownRef}
           style={dropdownStyle}

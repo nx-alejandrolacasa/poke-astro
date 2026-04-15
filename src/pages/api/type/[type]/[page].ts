@@ -36,11 +36,12 @@ export const GET: APIRoute = async ({ params }) => {
     const pokemonPromises = pokemonSlice.map(
       async (p: { pokemon: { url: string } }) => {
         const res = await fetch(p.pokemon.url)
+        if (!res.ok) return null
         return res.json()
       }
     )
 
-    const results: Pokemon[] = await Promise.all(pokemonPromises)
+    const results: Pokemon[] = (await Promise.all(pokemonPromises)).filter(Boolean) as Pokemon[]
 
     // Sort by National Pokédex number
     results.sort((a, b) => a.id - b.id)
