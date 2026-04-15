@@ -47,6 +47,52 @@ export type Translations = {
     immuneTo: string
     none: string
     evolutionChain: string
+    // Phase 1 additions
+    category: string
+    cry: string
+    playCry: string
+    latestCry: string
+    legacyCry: string
+    breeding: string
+    eggGroups: string
+    genderRatio: string
+    hatchSteps: string
+    baseHappiness: string
+    training: string
+    captureRate: string
+    baseExperience: string
+    growthRate: string
+    habitat: string
+    shape: string
+    generation: string
+    baby: string
+    legendary: string
+    mythical: string
+    // Evolution conditions
+    evolveLevel: string
+    evolveItem: string
+    evolveTrade: string
+    evolveHappiness: string
+    evolveAffection: string
+    evolveHeldItem: string
+    evolveKnownMove: string
+    evolveKnownMoveType: string
+    evolveLocation: string
+    evolveTimeOfDay: string
+    evolveTradeWith: string
+    evolveRain: string
+    evolveUpsideDown: string
+    evolvePartySpecies: string
+    evolvePartyType: string
+    evolveGenderMale: string
+    evolveGenderFemale: string
+    evolveBeauty: string
+    evolvePhysicalStatsHigher: string
+    evolvePhysicalStatsEqual: string
+    evolvePhysicalStatsLower: string
+    heldItems: string
+    heldItemRarity: string
+    genderless: string
   }
   // Modal
   modal: {
@@ -180,6 +226,50 @@ export const translations: Record<Language, Translations> = {
       immuneTo: 'Immune To',
       none: 'None',
       evolutionChain: 'Evolution Chain',
+      category: 'Category',
+      cry: 'Cry',
+      playCry: 'Play Cry',
+      latestCry: 'Latest',
+      legacyCry: 'Classic',
+      breeding: 'Breeding',
+      eggGroups: 'Egg Groups',
+      genderRatio: 'Gender Ratio',
+      hatchSteps: 'Hatch Steps',
+      baseHappiness: 'Base Happiness',
+      training: 'Training',
+      captureRate: 'Catch Rate',
+      baseExperience: 'Base EXP',
+      growthRate: 'Growth Rate',
+      habitat: 'Habitat',
+      shape: 'Shape',
+      generation: 'Generation',
+      baby: 'Baby',
+      legendary: 'Legendary',
+      mythical: 'Mythical',
+      evolveLevel: 'Lv. {level}',
+      evolveItem: '{item}',
+      evolveTrade: 'Trade',
+      evolveHappiness: 'Happiness ≥ {value}',
+      evolveAffection: 'Affection ≥ {value}',
+      evolveHeldItem: 'Hold {item}',
+      evolveKnownMove: 'Know {move}',
+      evolveKnownMoveType: 'Know {type}-type move',
+      evolveLocation: 'At {location}',
+      evolveTimeOfDay: '{time}',
+      evolveTradeWith: 'Trade for {species}',
+      evolveRain: 'During rain',
+      evolveUpsideDown: 'Upside down',
+      evolvePartySpecies: '{species} in party',
+      evolvePartyType: '{type}-type in party',
+      evolveGenderMale: '♂ Male only',
+      evolveGenderFemale: '♀ Female only',
+      evolveBeauty: 'Beauty ≥ {value}',
+      evolvePhysicalStatsHigher: 'Atk > Def',
+      evolvePhysicalStatsEqual: 'Atk = Def',
+      evolvePhysicalStatsLower: 'Atk < Def',
+      heldItems: 'Held Items',
+      heldItemRarity: '{rarity}% chance',
+      genderless: 'Genderless',
     },
     modal: {
       close: 'Close',
@@ -325,6 +415,50 @@ export const translations: Record<Language, Translations> = {
       immuneTo: 'Inmune A',
       none: 'Ninguno',
       evolutionChain: 'Evoluciones',
+      category: 'Categoría',
+      cry: 'Grito',
+      playCry: 'Reproducir Grito',
+      latestCry: 'Actual',
+      legacyCry: 'Clásico',
+      breeding: 'Crianza',
+      eggGroups: 'Grupo Huevo',
+      genderRatio: 'Ratio de Género',
+      hatchSteps: 'Pasos para Eclosión',
+      baseHappiness: 'Felicidad Base',
+      training: 'Entrenamiento',
+      captureRate: 'Ratio de Captura',
+      baseExperience: 'EXP Base',
+      growthRate: 'Crecimiento',
+      habitat: 'Hábitat',
+      shape: 'Forma',
+      generation: 'Generación',
+      baby: 'Bebé',
+      legendary: 'Legendario',
+      mythical: 'Mítico',
+      evolveLevel: 'Nv. {level}',
+      evolveItem: '{item}',
+      evolveTrade: 'Intercambio',
+      evolveHappiness: 'Felicidad ≥ {value}',
+      evolveAffection: 'Afecto ≥ {value}',
+      evolveHeldItem: 'Equipar {item}',
+      evolveKnownMove: 'Conocer {move}',
+      evolveKnownMoveType: 'Conocer movimiento tipo {type}',
+      evolveLocation: 'En {location}',
+      evolveTimeOfDay: '{time}',
+      evolveTradeWith: 'Intercambio por {species}',
+      evolveRain: 'Bajo lluvia',
+      evolveUpsideDown: 'Boca abajo',
+      evolvePartySpecies: '{species} en equipo',
+      evolvePartyType: 'Tipo {type} en equipo',
+      evolveGenderMale: '♂ Solo macho',
+      evolveGenderFemale: '♀ Solo hembra',
+      evolveBeauty: 'Belleza ≥ {value}',
+      evolvePhysicalStatsHigher: 'Ataque > Defensa',
+      evolvePhysicalStatsEqual: 'Ataque = Defensa',
+      evolvePhysicalStatsLower: 'Ataque < Defensa',
+      heldItems: 'Objetos Equipados',
+      heldItemRarity: '{rarity}% probabilidad',
+      genderless: 'Sin género',
     },
     modal: {
       close: 'Cerrar',

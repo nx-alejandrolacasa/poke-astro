@@ -1,12 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Carousel } from '@/components/Carousel'
 import { PokemonEnrichedData } from '@/components/PokemonEnrichedData'
 import { TypeBadge } from '@/components/TypeBadge'
 import type { Locale } from '@/utils/i18n'
 import type { Pokemon } from '@/utils/pokemon'
-import { getPokemonImage, getPokemonName, getTypeColor } from '@/utils/pokemon'
+import {
+  getPokemonImage,
+  getPokemonName,
+  getTypeColor,
+} from '@/utils/pokemon'
 import type { Translations } from '@/utils/translations'
-import { translations } from '@/utils/translations'
+import { interpolate, translations } from '@/utils/translations'
 
 type PokemonDetailContentProps = {
   pokemon: Pokemon
@@ -45,6 +49,24 @@ type PokeApiFlavorTextEntry = {
   flavor_text: string
   language: { name: string }
   version?: { name: string }
+}
+
+type SpeciesInfo = {
+  baseHappiness: number | null
+  captureRate: number
+  color: string | null
+  eggGroups: string[]
+  genderRate: number
+  genera: { genus: string; language: { name: string } }[]
+  generation: string | null
+  growthRate: string | null
+  habitat: string | null
+  hatchCounter: number | null
+  isBaby: boolean
+  isLegendary: boolean
+  isMythical: boolean
+  shape: string | null
+  varieties: string[]
 }
 
 // PokéAPI returns stat names in kebab-case (e.g. `special-attack`), but our
@@ -98,6 +120,11 @@ export function PokemonDetailContent({
   )
   const [descriptions, setDescriptions] = useState<FlavorTextEntry[]>([])
   const [descriptionLoading, setDescriptionLoading] = useState(true)
+  const [speciesInfo, setSpeciesInfo] = useState<SpeciesInfo | null>(null)
+  const [genus, setGenus] = useState<string | null>(null)
+  const [playingCry, setPlayingCry] = useState<'latest' | 'legacy' | null>(null)
+  const latestCryRef = useRef<HTMLAudioElement | null>(null)
+  const legacyCryRef = useRef<HTMLAudioElement | null>(null)
 
   useEffect(() => {
     const fetchEnrichedData = async () => {
@@ -155,6 +182,16 @@ export function PokemonDetailContent({
         )
           .then((res) => res.json())
           .then((data) => {
+            // Extract genus in the user's locale
+            const genusEntry = data.genera?.find(
+              (g: { genus: string; language: { name: string } }) =>
+                g.language.name === locale
+            ) ?? data.genera?.find(
+              (g: { genus: string; language: { name: string } }) =>
+                g.language.name === 'en'
+            )
+            if (genusEntry) setGenus(genusEntry.genus)
+
             const entries =
               data.flavor_text_entries?.filter(
                 (entry: PokeApiFlavorTextEntry) =>
@@ -184,22 +221,33 @@ export function PokemonDetailContent({
           })
           .catch(() => [] as FlavorTextEntry[])
 
+        // Fetch species info from enriched endpoint
+        const enrichedSpeciesPromise = fetch(
+          `/api/pokemon/${pokemonName}/enriched?lang=${locale}`
+        )
+          .then((res) => res.json())
+          .then((data) => data.speciesInfo as SpeciesInfo | null)
+          .catch(() => null)
+
         const [
           translatedTypes,
           translatedAbilities,
           translatedStats,
           flavorTexts,
+          enrichedSpecies,
         ] = await Promise.all([
           Promise.all(typesPromises),
           Promise.all(abilitiesPromises),
           Promise.all(statsPromises),
           speciesPromise,
+          enrichedSpeciesPromise,
         ])
 
         setTypes(translatedTypes)
         setAbilities(translatedAbilities)
         setStats(translatedStats)
         setDescriptions(flavorTexts)
+        setSpeciesInfo(enrichedSpecies)
       } catch (error) {
         console.error('Failed to fetch enriched data:', error)
         setDescriptions([])
@@ -211,8 +259,55 @@ export function PokemonDetailContent({
     fetchEnrichedData()
   }, [pokemon, pokemonName, locale, t.stats])
 
+  const handlePlayCry = (variant: 'latest' | 'legacy') => {
+    const ref = variant === 'latest' ? latestCryRef : legacyCryRef
+    const otherRef = variant === 'latest' ? legacyCryRef : latestCryRef
+
+    // Stop the other one if playing
+    if (otherRef.current) {
+      otherRef.current.pause()
+      otherRef.current.currentTime = 0
+    }
+
+    if (ref.current) {
+      if (playingCry === variant) {
+        ref.current.pause()
+        ref.current.currentTime = 0
+        setPlayingCry(null)
+      } else {
+        ref.current.currentTime = 0
+        ref.current.play()
+        setPlayingCry(variant)
+      }
+    }
+  }
+
+  const genderBar = speciesInfo && speciesInfo.genderRate >= 0 ? (() => {
+    const femalePercent = (speciesInfo.genderRate / 8) * 100
+    const malePercent = 100 - femalePercent
+    return { malePercent, femalePercent }
+  })() : null
+
   return (
     <div className="space-y-4">
+      {/* Hidden audio elements for cries */}
+      {pokemon.cries?.latest && (
+        <audio
+          ref={latestCryRef}
+          src={pokemon.cries.latest}
+          preload="none"
+          onEnded={() => setPlayingCry(null)}
+        />
+      )}
+      {pokemon.cries?.legacy && (
+        <audio
+          ref={legacyCryRef}
+          src={pokemon.cries.legacy}
+          preload="none"
+          onEnded={() => setPlayingCry(null)}
+        />
+      )}
+
       {/* Back button */}
       <button
         type="button"
@@ -243,14 +338,36 @@ export function PokemonDetailContent({
           />
         </div>
 
-        {/* ── Name + Number + Types ── */}
+        {/* ── Name + Number + Types + Badges ── */}
         <div className="bento-cell flex flex-col justify-center rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
-          <span className="font-black font-mono text-ink-muted text-lg dark:text-dark-ink-muted">
-            #{pokemon.id.toString().padStart(3, '0')}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="font-black font-mono text-ink-muted text-lg dark:text-dark-ink-muted">
+              #{pokemon.id.toString().padStart(3, '0')}
+            </span>
+            {speciesInfo?.isBaby && (
+              <span className="rounded-full bg-pink-100 px-2 py-0.5 font-semibold text-pink-700 text-xs dark:bg-pink-500/10 dark:text-pink-400">
+                {t.pokemon.baby}
+              </span>
+            )}
+            {speciesInfo?.isLegendary && (
+              <span className="rounded-full bg-amber-100 px-2 py-0.5 font-semibold text-amber-700 text-xs dark:bg-amber-500/10 dark:text-amber-400">
+                {t.pokemon.legendary}
+              </span>
+            )}
+            {speciesInfo?.isMythical && (
+              <span className="rounded-full bg-violet-100 px-2 py-0.5 font-semibold text-violet-700 text-xs dark:bg-violet-500/10 dark:text-violet-400">
+                {t.pokemon.mythical}
+              </span>
+            )}
+          </div>
           <h1 className="font-black text-3xl text-ink tracking-tight md:text-4xl dark:text-dark-ink">
             {getPokemonName(pokemonName)}
           </h1>
+          {genus && (
+            <p className="mt-0.5 text-ink-muted text-sm italic dark:text-dark-ink-muted">
+              {genus}
+            </p>
+          )}
           <div className="mt-3 flex flex-wrap gap-2">
             {types.map(({ name, translatedName }) => (
               <TypeBadge
@@ -325,6 +442,222 @@ export function PokemonDetailContent({
             ))}
           </div>
         </div>
+
+        {/* ── Cry ── */}
+        {(pokemon.cries?.latest || pokemon.cries?.legacy) && (
+          <div className="bento-cell rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
+            <p className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
+              {t.pokemon.cry}
+            </p>
+            <div className="flex gap-2">
+              {pokemon.cries?.latest && (
+                <button
+                  type="button"
+                  onClick={() => handlePlayCry('latest')}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-medium text-xs transition-all ${playingCry === 'latest' ? 'bg-primary text-white dark:bg-dark-primary' : 'bg-surface-sunken text-ink hover:bg-primary/10 dark:bg-dark-raised dark:text-dark-ink dark:hover:bg-dark-primary/10'}`}
+                >
+                  <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    {playingCry === 'latest' ? (
+                      <path d="M5.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75A.75.75 0 007.25 3h-1.5zm7 0a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75a.75.75 0 00-.75-.75h-1.5z" />
+                    ) : (
+                      <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                    )}
+                  </svg>
+                  {t.pokemon.latestCry}
+                </button>
+              )}
+              {pokemon.cries?.legacy && (
+                <button
+                  type="button"
+                  onClick={() => handlePlayCry('legacy')}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-medium text-xs transition-all ${playingCry === 'legacy' ? 'bg-primary text-white dark:bg-dark-primary' : 'bg-surface-sunken text-ink hover:bg-primary/10 dark:bg-dark-raised dark:text-dark-ink dark:hover:bg-dark-primary/10'}`}
+                >
+                  <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    {playingCry === 'legacy' ? (
+                      <path d="M5.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75A.75.75 0 007.25 3h-1.5zm7 0a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75a.75.75 0 00-.75-.75h-1.5z" />
+                    ) : (
+                      <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                    )}
+                  </svg>
+                  {t.pokemon.legacyCry}
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ── Breeding Info ── */}
+        {speciesInfo && (
+          <div className="bento-cell rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
+            <p className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
+              {t.pokemon.breeding}
+            </p>
+            <div className="space-y-3">
+              {/* Egg Groups */}
+              <div className="flex items-start justify-between gap-2">
+                <span className="text-ink-muted text-xs dark:text-dark-ink-muted">
+                  {t.pokemon.eggGroups}
+                </span>
+                <div className="flex flex-wrap justify-end gap-1">
+                  {speciesInfo.eggGroups.map((group) => (
+                    <span
+                      key={group}
+                      className="rounded-full bg-surface-sunken px-2 py-0.5 text-ink text-xs capitalize dark:bg-dark-raised dark:text-dark-ink"
+                    >
+                      {getPokemonName(group)}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              {/* Gender Ratio */}
+              <div className="flex flex-col gap-1.5">
+                <span className="text-ink-muted text-xs dark:text-dark-ink-muted">
+                  {t.pokemon.genderRatio}
+                </span>
+                {genderBar ? (
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-blue-500 text-xs">♂ {genderBar.malePercent.toFixed(1)}%</span>
+                    <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-surface-sunken dark:bg-dark-raised">
+                      <div
+                        className="absolute top-0 left-0 h-full rounded-full bg-blue-400"
+                        style={{ width: `${genderBar.malePercent}%` }}
+                      />
+                      <div
+                        className="absolute top-0 right-0 h-full rounded-full bg-pink-400"
+                        style={{ width: `${genderBar.femalePercent}%` }}
+                      />
+                    </div>
+                    <span className="font-medium text-pink-500 text-xs">♀ {genderBar.femalePercent.toFixed(1)}%</span>
+                  </div>
+                ) : (
+                  <span className="text-ink-faint text-xs italic dark:text-dark-ink-faint">
+                    {t.pokemon.genderless}
+                  </span>
+                )}
+              </div>
+              {/* Hatch Steps */}
+              {speciesInfo.hatchCounter !== null && (
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-ink-muted text-xs dark:text-dark-ink-muted">
+                    {t.pokemon.hatchSteps}
+                  </span>
+                  <span className="font-mono text-ink text-xs dark:text-dark-ink">
+                    {(speciesInfo.hatchCounter * 256).toLocaleString(locale)}
+                  </span>
+                </div>
+              )}
+              {/* Base Happiness */}
+              {speciesInfo.baseHappiness !== null && (
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-ink-muted text-xs dark:text-dark-ink-muted">
+                    {t.pokemon.baseHappiness}
+                  </span>
+                  <span className="font-mono text-ink text-xs dark:text-dark-ink">
+                    {speciesInfo.baseHappiness}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ── Training Info ── */}
+        {speciesInfo && (
+          <div className="bento-cell rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
+            <p className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
+              {t.pokemon.training}
+            </p>
+            <div className="space-y-3">
+              {/* Capture Rate */}
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-ink-muted text-xs dark:text-dark-ink-muted">
+                  {t.pokemon.captureRate}
+                </span>
+                <div className="flex items-center gap-2">
+                  <div className="relative h-2 w-20 overflow-hidden rounded-full bg-surface-sunken dark:bg-dark-raised">
+                    <div
+                      className={`absolute top-0 left-0 h-full rounded-full ${speciesInfo.captureRate > 150 ? 'bg-success' : speciesInfo.captureRate > 60 ? 'bg-warning' : 'bg-danger'}`}
+                      style={{ width: `${Math.min(100, (speciesInfo.captureRate / 255) * 100)}%` }}
+                    />
+                  </div>
+                  <span className="font-mono text-ink text-xs dark:text-dark-ink">
+                    {speciesInfo.captureRate}
+                  </span>
+                </div>
+              </div>
+              {/* Base Experience */}
+              {pokemon.base_experience !== null && (
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-ink-muted text-xs dark:text-dark-ink-muted">
+                    {t.pokemon.baseExperience}
+                  </span>
+                  <span className="font-mono text-ink text-xs dark:text-dark-ink">
+                    {pokemon.base_experience}
+                  </span>
+                </div>
+              )}
+              {/* Growth Rate */}
+              {speciesInfo.growthRate && (
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-ink-muted text-xs dark:text-dark-ink-muted">
+                    {t.pokemon.growthRate}
+                  </span>
+                  <span className="text-ink text-xs capitalize dark:text-dark-ink">
+                    {getPokemonName(speciesInfo.growthRate)}
+                  </span>
+                </div>
+              )}
+              {/* Habitat */}
+              {speciesInfo.habitat && (
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-ink-muted text-xs dark:text-dark-ink-muted">
+                    {t.pokemon.habitat}
+                  </span>
+                  <span className="text-ink text-xs capitalize dark:text-dark-ink">
+                    {getPokemonName(speciesInfo.habitat)}
+                  </span>
+                </div>
+              )}
+              {/* Shape */}
+              {speciesInfo.shape && (
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-ink-muted text-xs dark:text-dark-ink-muted">
+                    {t.pokemon.shape}
+                  </span>
+                  <span className="text-ink text-xs capitalize dark:text-dark-ink">
+                    {getPokemonName(speciesInfo.shape)}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ── Held Items ── */}
+        {pokemon.held_items && pokemon.held_items.length > 0 && (
+          <div className="bento-cell rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
+            <p className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
+              {t.pokemon.heldItems}
+            </p>
+            <div className="space-y-2">
+              {pokemon.held_items.map(({ item, version_details }) => {
+                const latestVersion = version_details[version_details.length - 1]
+                return (
+                  <div key={item.name} className="flex items-center justify-between gap-2">
+                    <span className="text-ink text-xs capitalize dark:text-dark-ink">
+                      {getPokemonName(item.name)}
+                    </span>
+                    {latestVersion && (
+                      <span className="text-ink-muted text-xs dark:text-dark-ink-muted">
+                        {interpolate(t.pokemon.heldItemRarity, { rarity: latestVersion.rarity })}
+                      </span>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
       </div>
 
