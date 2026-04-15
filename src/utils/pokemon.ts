@@ -20,9 +20,28 @@ export type Pokemon = {
   order: number
   species: { name: string; url: string }
   sprites: {
+    front_default: string | null
+    front_shiny: string | null
+    front_female: string | null
+    front_shiny_female: string | null
     other: {
+      dream_world: {
+        front_default: string | null
+        front_female: string | null
+      }
+      home: {
+        front_default: string | null
+        front_female: string | null
+        front_shiny: string | null
+        front_shiny_female: string | null
+      }
       'official-artwork': {
-        front_default: string
+        front_default: string | null
+        front_shiny: string | null
+      }
+      showdown: {
+        front_default: string | null
+        front_shiny: string | null
       }
     }
   }
