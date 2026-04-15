@@ -144,7 +144,7 @@ function DetailPanel({
       style={{
         border: `2px solid ${color}${isDark ? '40' : '30'}`,
         background: isDark
-          ? `linear-gradient(135deg, ${shadeColor(color, 0.85)} 0%, #372b4b 100%)`
+          ? `linear-gradient(135deg, ${shadeColor(color, 0.85)} 0%, #293143 100%)`
           : `linear-gradient(135deg, ${tintColor(color, 0.92)} 0%, white 100%)`,
       }}
     >
