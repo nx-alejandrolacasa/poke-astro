@@ -104,18 +104,21 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
           <circle cx="12" cy="12" r="3.5" />
         </svg>
       ),
-      match: (path: string) => path.startsWith(`/${locale}/pokedex`),
+      match: (path: string) =>
+        path.startsWith(`/${locale}/pokedex`)
+        || path.startsWith(`/${locale}/pokemon/`)
+        || path.startsWith(`/${locale}/type/`)
+        || path.startsWith(`/${locale}/generation/`),
     },
     {
       label: t.header.typeChart,
       href: `/${locale}/types`,
       icon: (
         <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <rect x="2" y="6" width="14" height="16" rx="2" />
-          <path d="M8 2h10a2 2 0 012 2v14" />
+          <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" />
         </svg>
       ),
-      match: (path: string) => path.startsWith(`/${locale}/types`) || path.startsWith(`/${locale}/type/`),
+      match: (path: string) => path.startsWith(`/${locale}/types`),
     },
   ]
 
@@ -207,9 +210,9 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
         </div>
       </div>
 
-      {/* Tab bar — floating pill, iOS 26 style */}
-      <nav className="fixed bottom-3 left-0 right-0 z-40 flex justify-center px-4 lg:hidden" aria-label="Main navigation">
-        <div className="flex h-14 items-center gap-1 rounded-full border border-white/60 bg-white/70 px-2 shadow-lg shadow-black/[0.08] backdrop-blur-2xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:shadow-black/30">
+      {/* Tab bar — floating pill + standalone search circle, iOS 26 style */}
+      <nav className="fixed bottom-3 left-0 right-0 z-40 flex items-center gap-2 px-3 sm:px-4 lg:hidden" aria-label="Main navigation">
+        <div className="flex h-14 flex-1 items-center justify-between gap-1 rounded-full border border-white/60 bg-white/70 px-2.5 shadow-lg shadow-black/[0.08] backdrop-blur-2xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:shadow-black/30">
           {tabs.map((tab) => {
             const isActive = tab.match(currentPath)
             return (
@@ -228,25 +231,19 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
               </a>
             )
           })}
-
-          {/* Search tab — doubles as a close button when the overlay is open */}
-          <button
-            type="button"
-            onClick={() => { setSearchOpen((prev) => !prev); if (searchOpen) setQuery('') }}
-            className={`flex items-center gap-1.5 rounded-full px-4 py-2 transition-all ${
-              searchOpen
-                ? 'bg-primary/12 text-primary dark:bg-dark-primary/15 dark:text-dark-primary'
-                : 'text-ink-muted active:scale-95 dark:text-dark-ink-muted'
-            }`}
-            aria-label={t.header.search}
-            aria-expanded={searchOpen}
-          >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            {searchOpen && <span className="text-xs font-semibold">{t.header.search}</span>}
-          </button>
         </div>
+
+        <button
+          type="button"
+          onClick={() => { setSearchOpen((prev) => !prev); if (searchOpen) setQuery('') }}
+          className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full border border-white/60 bg-white/70 text-ink-muted shadow-lg shadow-black/[0.08] backdrop-blur-2xl transition-transform active:scale-95 dark:border-white/[0.08] dark:bg-dark-surface/70 dark:text-dark-ink-muted dark:shadow-black/30"
+          aria-label={t.header.search}
+          aria-expanded={searchOpen}
+        >
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </button>
       </nav>
     </>
   )
