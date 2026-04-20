@@ -56,7 +56,9 @@ const pokemonSlice = typeData.pokemon.slice(0, pageSize)
 const pokemonPromises = pokemonSlice.map(
   async (p: { pokemon: { url: string } }) => {
     const res = await fetch(p.pokemon.url)
-    if (!res.ok) return null
+    if (!res.ok) {
+      return null  
+    }
     return res.json()
   }
 )
