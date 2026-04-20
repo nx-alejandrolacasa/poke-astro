@@ -129,13 +129,13 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
           open, with a dedicated close (X) since the nav is hidden behind the
           on-screen keyboard anyway. */}
       <div
-        className={`fixed inset-0 z-50 flex flex-col bg-white/95 backdrop-blur-xl transition-opacity duration-200 lg:hidden dark:bg-dark-surface/95 ${
+        className={`fixed inset-0 z-50 flex flex-col bg-white/95 px-5 pt-[calc(env(safe-area-inset-top)+0.75rem)] backdrop-blur-xl transition-opacity duration-200 sm:px-6 sm:pt-[calc(env(safe-area-inset-top)+1rem)] lg:hidden dark:bg-dark-surface/95 ${
           searchOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
         aria-hidden={!searchOpen}
       >
         {/* Input + close — pinned at top */}
-        <div className="flex-shrink-0 border-black/[0.06] border-b p-3 dark:border-white/[0.06]">
+        <div className="flex-shrink-0 border-black/[0.06] border-b pb-3 dark:border-white/[0.06]">
           <div className="flex items-center gap-2">
             <div className="relative flex-1">
               <input
