@@ -52,8 +52,9 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
       return
     }
 
+    const normalizedQuery = query.toLowerCase().replaceAll(' ', '-')
     const filtered = allPokemonNames
-      .filter((name) => name.toLowerCase().includes(query.toLowerCase()))
+      .filter((name) => name.toLowerCase().includes(normalizedQuery))
       .slice(0, 5)
 
     setSuggestions(filtered)
