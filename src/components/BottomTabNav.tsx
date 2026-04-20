@@ -211,7 +211,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
       </div>
 
       {/* Tab bar — floating pill + standalone search circle, iOS 26 style */}
-      <nav className="fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom))] left-0 right-0 z-40 flex items-center gap-2 px-3 sm:px-4 lg:hidden" aria-label="Main navigation">
+      <nav className="fixed bottom-[calc(0.25rem+env(safe-area-inset-bottom))] left-0 right-0 z-40 flex items-center gap-2 px-3 sm:px-4 lg:hidden" aria-label="Main navigation">
         <div className="flex h-14 flex-1 items-center justify-between gap-1 rounded-full border border-white/60 bg-white/70 px-2.5 shadow-lg shadow-black/[0.08] backdrop-blur-2xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:shadow-black/30">
           {tabs.map((tab) => {
             const isActive = tab.match(currentPath)
