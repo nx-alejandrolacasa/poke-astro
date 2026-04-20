@@ -140,8 +140,8 @@ const { title, locale } = Astro.props
       <slot />
     </main>
     <Footer locale={locale} />
-    <!-- Bottom padding for floating mobile tab bar -->
-    <div class="h-20 lg:hidden" aria-hidden="true"></div>
+    <!-- Bottom padding for floating mobile tab bar (nav height + safe-area inset) -->
+    <div class="h-[calc(5rem+env(safe-area-inset-bottom))] lg:hidden" aria-hidden="true"></div>
     <BottomTabNav client:load locale={locale} currentPath={Astro.url.pathname} />
     <script is:inline>
       // Register service worker for PWA
