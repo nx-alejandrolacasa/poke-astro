@@ -32,8 +32,7 @@ const { title, locale } = Astro.props
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Pokedex" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" media="(prefers-color-scheme: light)" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon-dark.png" media="(prefers-color-scheme: dark)" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     {/* Inlined to avoid FOUC. Provides window.theme global. */}
     <script is:inline>
       window.theme ??= (() => {
