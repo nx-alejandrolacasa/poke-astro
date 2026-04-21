@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import type { Locale } from '@/utils/i18n'
 
 async function fetchPokemonByName(name: string): Promise<Pokemon | null> {
-  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
+  const res = await fetch(`/api/pokemon/${name}`)
 
   if (res.ok) {
     return res.json()
