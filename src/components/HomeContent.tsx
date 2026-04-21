@@ -67,7 +67,7 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
         <h2 className="text-center font-bold text-ink text-xl md:text-2xl dark:text-dark-ink">
           {t.home.pokemonTypes}
         </h2>
-        <div className="grid grid-cols-3 gap-3 sm:grid-cols-6 md:grid-cols-9">
+        <div className="grid grid-cols-3 gap-3 md:grid-cols-6 lg:grid-cols-9">
           {POKEMON_TYPES.map((type) => {
             const color = typeColors[type] ?? '#a8a878'
             const pokeId = typeRepresentativePokemon[type]
@@ -101,7 +101,7 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
         <h2 className="text-center font-bold text-ink text-xl md:text-2xl dark:text-dark-ink">
           {t.home.byGeneration}
         </h2>
-        <div className="grid grid-cols-3 gap-3 md:grid-cols-5 lg:grid-cols-9">
+        <div className="grid grid-cols-3 gap-3 md:grid-cols-6 lg:grid-cols-9">
           {GENERATIONS.map((gen, index) => {
             const color = typeColors[gen.type] ?? '#a8a878'
             return (

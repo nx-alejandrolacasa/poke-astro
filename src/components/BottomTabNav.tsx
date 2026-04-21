@@ -288,7 +288,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
                 aria-current={isActive ? 'page' : undefined}
               >
                 <span className="flex-shrink-0">{tab.icon}</span>
-                {isActive && <span className="truncate text-xs font-semibold">{tab.label}</span>}
+                <span className={`truncate text-xs font-semibold ${isActive ? '' : 'hidden md:inline'}`}>{tab.label}</span>
               </a>
             )
           })}
