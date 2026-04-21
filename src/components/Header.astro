@@ -14,7 +14,10 @@ const altLocale = getAlternateLocale(locale)
 const currentPath = Astro.url.pathname
 ---
 
-<header class="sticky top-0 z-40 w-full px-5 pt-[calc(env(safe-area-inset-top)+0.75rem)] sm:px-6 sm:pt-[calc(env(safe-area-inset-top)+1rem)]">
+<header
+  data-site-header
+  class="sticky top-0 z-40 w-full px-5 pt-[calc(env(safe-area-inset-top)+0.75rem)] transition-transform duration-300 ease-out will-change-transform sm:px-6 sm:pt-[calc(env(safe-area-inset-top)+1rem)]"
+>
   <nav class="mx-auto flex h-12 max-w-4xl items-center gap-2 rounded-full border border-white/60 bg-white/70 px-4 shadow-lg shadow-black/[0.04] backdrop-blur-2xl transition-colors sm:h-14 sm:gap-3 sm:px-5 dark:border-white/[0.08] dark:bg-dark-surface/70 dark:shadow-black/20">
     <!-- Logo -->
     <a
@@ -95,3 +98,53 @@ const currentPath = Astro.url.pathname
     <theme-toggle data-locale={locale} class="flex-shrink-0"></theme-toggle>
   </nav>
 </header>
+
+<script is:inline>
+  (() => {
+    const header = document.querySelector('[data-site-header]')
+    if (!header) return
+
+    const SAFE_ZONE = 90
+    const HIDDEN_CLASS = '-translate-y-full'
+    const mobile = window.matchMedia('(max-width: 1023px)')
+
+    function clampedScrollY() {
+      const doc = document.documentElement
+      const max = Math.max(0, (doc.scrollHeight || document.body.scrollHeight) - window.innerHeight)
+      return Math.max(0, Math.min(window.scrollY, max))
+    }
+
+    let lastY = clampedScrollY()
+    let ticking = false
+
+    function update() {
+      ticking = false
+      if (!mobile.matches) {
+        header.classList.remove(HIDDEN_CLASS)
+        lastY = clampedScrollY()
+        return
+      }
+      const y = clampedScrollY()
+      if (y <= SAFE_ZONE) {
+        header.classList.remove(HIDDEN_CLASS)
+      } else if (y > lastY) {
+        header.classList.add(HIDDEN_CLASS)
+      } else if (y < lastY) {
+        header.classList.remove(HIDDEN_CLASS)
+      }
+      lastY = y
+    }
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          requestAnimationFrame(update)
+          ticking = true
+        }
+      },
+      { passive: true },
+    )
+    mobile.addEventListener('change', update)
+  })()
+</script>
