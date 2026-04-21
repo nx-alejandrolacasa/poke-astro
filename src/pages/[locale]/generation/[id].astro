@@ -3,6 +3,7 @@ import { GenerationInfiniteScroll } from '@/components/GenerationInfiniteScroll'
 import Layout from '@/layouts/Layout.astro'
 import { getI18n } from '@/utils/i18n'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
+import { fetchGenerationData, fetchPokemonByNames } from '@/utils/pokemon'
 
 const generations: Record<
   string,
@@ -52,14 +53,13 @@ const genColors: Record<number, string> = {
 
 const gradientClass = genColors[generation.id] || 'from-gray-400 to-gray-500'
 
-// Fetch generation data from PokéAPI
-const genRes = await fetch(
-  `https://pokeapi.co/api/v2/generation/${generation.id}`
-)
-if (!genRes.ok) {
+// Fetch generation data using pokedex-promise-v2
+let genData
+try {
+  genData = await fetchGenerationData(generation.id)
+} catch {
   return Astro.redirect(`/${locale}/404`)
 }
-const genData = await genRes.json()
 
 // Sort all species references by ID (extracted from URL) before pagination
 genData.pokemon_species.sort((a: { url: string }, b: { url: string }) => {
@@ -72,20 +72,11 @@ genData.pokemon_species.sort((a: { url: string }, b: { url: string }) => {
 const pageSize = 30
 const speciesSlice = genData.pokemon_species.slice(0, pageSize)
 
-// Fetch full details for first page
-const pokemonPromises = speciesSlice.map(async (species: { name: string }) => {
-  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${species.name}`)
-  if (!res.ok) return null
-  return res.json()
-})
-
-const resultsWithNull = await Promise.all(pokemonPromises)
-const results: Pokemon[] = resultsWithNull.filter(
-  (p): p is Pokemon => p !== null
+// Fetch full details for first page using pokedex-promise-v2
+const speciesNames = speciesSlice.map((species: { name: string }) => species.name)
+const results: Pokemon[] = (await fetchPokemonByNames(speciesNames)).sort(
+  (a, b) => a.id - b.id
 )
-
-// Sort by National Pokédex number
-results.sort((a, b) => a.id - b.id)
 
 const initialData: PokemonList = {
   count: genData.pokemon_species.length,

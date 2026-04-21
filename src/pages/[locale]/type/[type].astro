@@ -3,7 +3,7 @@ import { TypeInfiniteScroll } from '@/components/TypeInfiniteScroll'
 import Layout from '@/layouts/Layout.astro'
 import { getI18n } from '@/utils/i18n'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
-import { getPokemonName } from '@/utils/pokemon'
+import { fetchPokemonByNames, fetchTypeData, getPokemonName } from '@/utils/pokemon'
 
 const { locale: localeParam, type = '' } = Astro.params
 const { locale, t } = getI18n(localeParam)
@@ -32,12 +32,13 @@ const typeColors: Record<string, string> = {
 
 const gradientClass = typeColors[type] || 'from-gray-400 to-gray-500'
 
-// Fetch type data from PokéAPI
-const typeRes = await fetch(`https://pokeapi.co/api/v2/type/${type}`)
-if (!typeRes.ok) {
+// Fetch type data using pokedex-promise-v2
+let typeData
+try {
+  typeData = await fetchTypeData(type)
+} catch {
   return Astro.redirect(`/${locale}/404`)
 }
-const typeData = await typeRes.json()
 
 // Sort all pokemon references by ID (extracted from URL) before pagination
 typeData.pokemon.sort(
@@ -52,21 +53,11 @@ typeData.pokemon.sort(
 const pageSize = 30
 const pokemonSlice = typeData.pokemon.slice(0, pageSize)
 
-// Fetch full details for first page
-const pokemonPromises = pokemonSlice.map(
-  async (p: { pokemon: { url: string } }) => {
-    const res = await fetch(p.pokemon.url)
-    if (!res.ok) {
-      return null  
-    }
-    return res.json()
-  }
+// Fetch full details for first page using pokedex-promise-v2
+const pokemonNames = pokemonSlice.map((p: { pokemon: { name: string } }) => p.pokemon.name)
+const results: Pokemon[] = (await fetchPokemonByNames(pokemonNames)).sort(
+  (a, b) => a.id - b.id
 )
-
-const results: Pokemon[] = (await Promise.all(pokemonPromises)).filter(Boolean) as Pokemon[]
-
-// Sort by National Pokédex number
-results.sort((a, b) => a.id - b.id)
 
 const initialData: PokemonList = {
   count: typeData.pokemon.length,

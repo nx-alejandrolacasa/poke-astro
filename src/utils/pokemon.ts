@@ -1,3 +1,6 @@
+import type PokeAPITypes from 'pokedex-promise-v2'
+import { pokeapi } from './pokeapi'
+
 export type Pokemon = {
   abilities: { ability: { name: string }; is_hidden: boolean }[]
   base_experience: number | null
@@ -156,19 +159,15 @@ export type PokemonNamesList = {
 }
 
 export async function fetchPokemonByName(name: string): Promise<Pokemon> {
-  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
-  if (!res.ok) {
-    throw new Error(`Failed to fetch Pokemon: ${name} (${res.status})`)
-  }
-  return res.json()
+  const data = await pokeapi.getPokemonByName(name)
+  return data as unknown as Pokemon
 }
 
 /**
  * Fetch the total count of Pokémon without fetching all data
  */
 export async function fetchPokemonCount(): Promise<number> {
-  const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1&offset=0')
-  const data = await res.json()
+  const data = await pokeapi.getPokemonsList({ limit: 1, offset: 0 })
   return data.count
 }
 
@@ -177,11 +176,11 @@ export async function fetchPokemonCount(): Promise<number> {
  * Useful for generating static paths
  */
 export async function fetchAllPokemonNames(): Promise<string[]> {
-  const res: PokemonNamesList = await fetch(
-    'https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0'
-  ).then((res) => res.json())
-
-  return res.results.map(({ name }) => name)
+  const data = await pokeapi.getPokemonsList({
+    limit: 100000,
+    offset: 0,
+  })
+  return data.results.map(({ name }) => name)
 }
 
 /**
@@ -196,20 +195,22 @@ export async function fetchPokemonPage(
   const offset = (page - 1) * pageSize
 
   // First, get the list of Pokémon names for this page
-  const res: PokemonNamesList = await fetch(
-    `https://pokeapi.co/api/v2/pokemon?limit=${pageSize}&offset=${offset}`
-  ).then((res) => res.json())
+  const list = await pokeapi.getPokemonsList({
+    limit: pageSize,
+    offset,
+  })
 
-  // Then fetch full details for only these Pokémon
-  const results = await Promise.all(
-    res.results.map(({ name }) => fetchPokemonByName(name))
-  )
+  // Then fetch full details for only these Pokémon (library batches internally)
+  const names = list.results.map(({ name }) => name)
+  const pokemonData = (await pokeapi.getPokemonByName(
+    names
+  )) as unknown as Pokemon[]
 
   // Sort by National Pokédex number
-  results.sort((a, b) => a.id - b.id)
+  const results = [...pokemonData].sort((a, b) => a.id - b.id)
 
   return {
-    count: res.count,
+    count: list.count,
     results,
   }
 }
@@ -219,16 +220,18 @@ export async function fetchPokemonPage(
  * Fetch all Pokémon (WARNING: Very slow, fetches thousands of API requests)
  */
 export async function fetchAllPokemon(): Promise<PokemonList> {
-  const res: PokemonNamesList = await fetch(
-    'https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0'
-  ).then((res) => res.json())
+  const list = await pokeapi.getPokemonsList({
+    limit: 100000,
+    offset: 0,
+  })
 
-  const results = await Promise.all(
-    res.results.map(({ name }) => fetchPokemonByName(name))
-  )
+  const names = list.results.map(({ name }) => name)
+  const results = (await pokeapi.getPokemonByName(
+    names
+  )) as unknown as Pokemon[]
 
   return {
-    ...res,
+    count: list.count,
     results,
   }
 }
@@ -304,26 +307,34 @@ export function getPokemonName(name: string) {
 export async function fetchPokemonSpecies(
   name: string
 ): Promise<PokemonSpecies | null> {
-  const res = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${name}`)
-  if (!res.ok) {
-    console.warn(`Failed to fetch species for ${name}: ${res.status}`)
+  try {
+    const data = await pokeapi.getPokemonSpeciesByName(name)
+    return data as unknown as PokemonSpecies
+  } catch (error) {
+    console.warn(`Failed to fetch species for ${name}:`, error)
     return null
   }
-  return res.json()
 }
 
 /**
- * Fetch evolution chain data
+ * Fetch evolution chain data by URL or numeric ID.
+ * Accepts the full URL (`https://pokeapi.co/api/v2/evolution-chain/1/`)
+ * or just the numeric ID.
  */
 export async function fetchEvolutionChain(
-  url: string
+  urlOrId: string | number
 ): Promise<EvolutionChain | null> {
-  const res = await fetch(url)
-  if (!res.ok) {
-    console.warn(`Failed to fetch evolution chain: ${res.status}`)
+  try {
+    const id =
+      typeof urlOrId === 'number'
+        ? urlOrId
+        : Number(String(urlOrId).split('/').filter(Boolean).pop())
+    const data = await pokeapi.getEvolutionChainById(id)
+    return data as unknown as EvolutionChain
+  } catch (error) {
+    console.warn('Failed to fetch evolution chain:', error)
     return null
   }
-  return res.json()
 }
 
 /**
@@ -332,12 +343,13 @@ export async function fetchEvolutionChain(
 export async function fetchTypeDetails(
   typeName: string
 ): Promise<TypeDetails | null> {
-  const res = await fetch(`https://pokeapi.co/api/v2/type/${typeName}`)
-  if (!res.ok) {
-    console.warn(`Failed to fetch type details for ${typeName}: ${res.status}`)
+  try {
+    const data = await pokeapi.getTypeByName(typeName)
+    return data as unknown as TypeDetails
+  } catch (error) {
+    console.warn(`Failed to fetch type details for ${typeName}:`, error)
     return null
   }
-  return res.json()
 }
 
 /**
@@ -454,14 +466,16 @@ export function getTranslatedName(
 export async function fetchAbilityDetails(
   abilityName: string
 ): Promise<AbilityDetails | null> {
-  const res = await fetch(`https://pokeapi.co/api/v2/ability/${abilityName}`)
-  if (!res.ok) {
+  try {
+    const data = await pokeapi.getAbilityByName(abilityName)
+    return data as unknown as AbilityDetails
+  } catch (error) {
     console.warn(
-      `Failed to fetch ability details for ${abilityName}: ${res.status}`
+      `Failed to fetch ability details for ${abilityName}:`,
+      error
     )
     return null
   }
-  return res.json()
 }
 
 /**
@@ -470,12 +484,13 @@ export async function fetchAbilityDetails(
 export async function fetchStatDetails(
   statName: string
 ): Promise<StatDetails | null> {
-  const res = await fetch(`https://pokeapi.co/api/v2/stat/${statName}`)
-  if (!res.ok) {
-    console.warn(`Failed to fetch stat details for ${statName}: ${res.status}`)
+  try {
+    const data = await pokeapi.getStatByName(statName)
+    return data as unknown as StatDetails
+  } catch (error) {
+    console.warn(`Failed to fetch stat details for ${statName}:`, error)
     return null
   }
-  return res.json()
 }
 
 /**
@@ -496,3 +511,38 @@ export function getFlavorText(
     .replace(/\s+/g, ' ')
     .trim()
 }
+
+/**
+ * Fetch type data from PokéAPI including its Pokémon list.
+ * Returns the full PokeAPI Type object.
+ */
+export async function fetchTypeData(
+  typeName: string
+): Promise<PokeAPITypes.Type> {
+  return pokeapi.getTypeByName(typeName)
+}
+
+/**
+ * Fetch generation data from PokéAPI including its species list.
+ * Accepts a numeric ID or the generation name (e.g., "generation-i").
+ */
+export async function fetchGenerationData(
+  idOrName: number | string
+): Promise<PokeAPITypes.Generation> {
+  return pokeapi.getGenerationByName(idOrName)
+}
+
+/**
+ * Fetch multiple Pokémon by name in a single batched call.
+ * Returns only successfully fetched Pokémon (filters out failures).
+ */
+export async function fetchPokemonByNames(
+  names: string[]
+): Promise<Pokemon[]> {
+  if (names.length === 0) return []
+  const data = (await pokeapi.getPokemonByName(
+    names
+  )) as unknown as Pokemon[]
+  return data
+}
+

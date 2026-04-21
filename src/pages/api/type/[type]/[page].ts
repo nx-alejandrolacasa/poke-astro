@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
+import { fetchPokemonByNames, fetchTypeData } from '@/utils/pokemon'
 
 export const GET: APIRoute = async ({ params }) => {
   const { type, page: pageParam } = params
@@ -7,16 +8,8 @@ export const GET: APIRoute = async ({ params }) => {
   const pageSize = 30
 
   try {
-    // Fetch type data from PokéAPI
-    const typeRes = await fetch(`https://pokeapi.co/api/v2/type/${type}`)
-    if (!typeRes.ok) {
-      return new Response(JSON.stringify({ error: 'Type not found' }), {
-        status: 404,
-        headers: { 'Content-Type': 'application/json' },
-      })
-    }
-
-    const typeData = await typeRes.json()
+    // Fetch type data using pokedex-promise-v2
+    const typeData = await fetchTypeData(type!)
 
     // Sort all pokemon references by ID (extracted from URL) before pagination
     const allPokemonRefs = typeData.pokemon.sort(
@@ -32,19 +25,13 @@ export const GET: APIRoute = async ({ params }) => {
     const endIndex = startIndex + pageSize
     const pokemonSlice = allPokemonRefs.slice(startIndex, endIndex)
 
-    // Fetch full details for this page
-    const pokemonPromises = pokemonSlice.map(
-      async (p: { pokemon: { url: string } }) => {
-        const res = await fetch(p.pokemon.url)
-        if (!res.ok) return null
-        return res.json()
-      }
+    // Fetch full details for this page using pokedex-promise-v2
+    const pokemonNames = pokemonSlice.map(
+      (p: { pokemon: { name: string } }) => p.pokemon.name
     )
-
-    const results: Pokemon[] = (await Promise.all(pokemonPromises)).filter(Boolean) as Pokemon[]
-
-    // Sort by National Pokédex number
-    results.sort((a, b) => a.id - b.id)
+    const results: Pokemon[] = (await fetchPokemonByNames(pokemonNames)).sort(
+      (a, b) => a.id - b.id
+    )
 
     const response: PokemonList = {
       count: allPokemonRefs.length,
