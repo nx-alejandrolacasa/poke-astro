@@ -22,7 +22,6 @@ export const GET: APIRoute = async ({ params, url }) => {
   }
 
   try {
-    // Fetch Pokemon data and enriched information
     const pokemon = await fetchPokemonByName(name)
     const species = await fetchPokemonSpecies(name)
     const evolutionChainData = species
@@ -36,10 +35,8 @@ export const GET: APIRoute = async ({ params, url }) => {
       : null
     const typeEffectiveness = await calculateTypeEffectiveness(pokemon)
 
-    // Get translated flavor text
     const flavorText = species ? getFlavorText(species, language) : null
 
-    // Fetch type translations for type effectiveness
     const typeTranslationsPromises = [
       ...typeEffectiveness.weaknesses.map(({ type }) =>
         fetchTypeDetails(type).then((details) => ({
@@ -72,7 +69,6 @@ export const GET: APIRoute = async ({ params, url }) => {
       typeTranslations.map((t) => [t.original, t.translated])
     )
 
-    // Apply translations to type effectiveness
     const translatedTypeEffectiveness = {
       weaknesses: typeEffectiveness.weaknesses.map(({ type, multiplier }) => ({
         type: translationMap.get(type) ?? type,
@@ -89,7 +85,6 @@ export const GET: APIRoute = async ({ params, url }) => {
       ),
     }
 
-    // Build species info for the detail page
     const speciesInfo = species
       ? {
           baseHappiness: species.base_happiness,
@@ -125,8 +120,7 @@ export const GET: APIRoute = async ({ params, url }) => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'Cache-Control':
-            'public, s-maxage=86400, stale-while-revalidate=604800', // Cache for 1 day, revalidate for 1 week
+          'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800',
         },
       }
     )

@@ -38,7 +38,6 @@ const generation = {
   region: generationData.region,
 }
 
-// Generation color mapping
 const genColors: Record<number, string> = {
   1: 'from-red-600 to-blue-600',
   2: 'from-yellow-500 to-purple-600',
@@ -53,7 +52,6 @@ const genColors: Record<number, string> = {
 
 const gradientClass = genColors[generation.id] || 'from-gray-400 to-gray-500'
 
-// Fetch generation data using pokedex-promise-v2
 let genData
 try {
   genData = await fetchGenerationData(generation.id)
@@ -61,18 +59,15 @@ try {
   return Astro.redirect(`/${locale}/404`)
 }
 
-// Sort all species references by ID (extracted from URL) before pagination
 genData.pokemon_species.sort((a: { url: string }, b: { url: string }) => {
   const idA = Number(a.url.split('/').filter(Boolean).pop())
   const idB = Number(b.url.split('/').filter(Boolean).pop())
   return idA - idB
 })
 
-// Get first page of pokemon (30 items)
 const pageSize = 30
 const speciesSlice = genData.pokemon_species.slice(0, pageSize)
 
-// Fetch full details for first page using pokedex-promise-v2
 const speciesNames = speciesSlice.map((species: { name: string }) => species.name)
 const results: Pokemon[] = (await fetchPokemonByNames(speciesNames)).sort(
   (a, b) => a.id - b.id

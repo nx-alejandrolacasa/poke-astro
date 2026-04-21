@@ -8,7 +8,6 @@ import { fetchPokemonByNames, fetchTypeData, getPokemonName } from '@/utils/poke
 const { locale: localeParam, type = '' } = Astro.params
 const { locale, t } = getI18n(localeParam)
 
-// Type color mapping
 const typeColors: Record<string, string> = {
   normal: 'from-gray-400 to-gray-500',
   fire: 'from-orange-500 to-red-600',
@@ -32,7 +31,6 @@ const typeColors: Record<string, string> = {
 
 const gradientClass = typeColors[type] || 'from-gray-400 to-gray-500'
 
-// Fetch type data using pokedex-promise-v2
 let typeData
 try {
   typeData = await fetchTypeData(type)
@@ -40,7 +38,6 @@ try {
   return Astro.redirect(`/${locale}/404`)
 }
 
-// Sort all pokemon references by ID (extracted from URL) before pagination
 typeData.pokemon.sort(
   (a: { pokemon: { url: string } }, b: { pokemon: { url: string } }) => {
     const idA = Number(a.pokemon.url.split('/').filter(Boolean).pop())
@@ -49,11 +46,9 @@ typeData.pokemon.sort(
   }
 )
 
-// Get first page of pokemon (30 items)
 const pageSize = 30
 const pokemonSlice = typeData.pokemon.slice(0, pageSize)
 
-// Fetch full details for first page using pokedex-promise-v2
 const pokemonNames = pokemonSlice.map((p: { pokemon: { name: string } }) => p.pokemon.name)
 const results: Pokemon[] = (await fetchPokemonByNames(pokemonNames)).sort(
   (a, b) => a.id - b.id

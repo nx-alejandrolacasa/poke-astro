@@ -8,10 +8,8 @@ export const GET: APIRoute = async ({ params }) => {
   const pageSize = 30
 
   try {
-    // Fetch type data using pokedex-promise-v2
     const typeData = await fetchTypeData(type!)
 
-    // Sort all pokemon references by ID (extracted from URL) before pagination
     const allPokemonRefs = typeData.pokemon.sort(
       (a: { pokemon: { url: string } }, b: { pokemon: { url: string } }) => {
         const idA = Number(a.pokemon.url.split('/').filter(Boolean).pop())
@@ -20,12 +18,10 @@ export const GET: APIRoute = async ({ params }) => {
       }
     )
 
-    // Calculate pagination
     const startIndex = (page - 1) * pageSize
     const endIndex = startIndex + pageSize
     const pokemonSlice = allPokemonRefs.slice(startIndex, endIndex)
 
-    // Fetch full details for this page using pokedex-promise-v2
     const pokemonNames = pokemonSlice.map(
       (p: { pokemon: { name: string } }) => p.pokemon.name
     )

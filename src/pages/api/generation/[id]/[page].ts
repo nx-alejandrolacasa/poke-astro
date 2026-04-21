@@ -16,10 +16,8 @@ export const GET: APIRoute = async ({ params }) => {
       )
     }
 
-    // Fetch generation data using pokedex-promise-v2
     const genData = await fetchGenerationData(generationId)
 
-    // Sort all species references by ID (extracted from URL) before pagination
     const allSpecies = genData.pokemon_species.sort(
       (a: { url: string }, b: { url: string }) => {
         const idA = Number(a.url.split('/').filter(Boolean).pop())
@@ -28,12 +26,10 @@ export const GET: APIRoute = async ({ params }) => {
       }
     )
 
-    // Calculate pagination
     const startIndex = (page - 1) * pageSize
     const endIndex = startIndex + pageSize
     const speciesSlice = allSpecies.slice(startIndex, endIndex)
 
-    // Fetch full details for this page using pokedex-promise-v2
     const speciesNames = speciesSlice.map(
       (species: { name: string }) => species.name
     )

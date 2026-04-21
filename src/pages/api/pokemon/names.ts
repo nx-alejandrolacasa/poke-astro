@@ -14,7 +14,6 @@ export const GET: APIRoute = async () => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          // Cache for 1 hour (Pokemon names don't change often)
           'Cache-Control': 'public, max-age=3600',
         },
       }
