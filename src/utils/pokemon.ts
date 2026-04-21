@@ -160,6 +160,8 @@ export type PokemonNamesList = {
 
 export async function fetchPokemonByName(name: string): Promise<Pokemon> {
   const data = await pokeapi.getPokemonByName(name)
+  // The library returns the same JSON shape from the PokeAPI — our local
+  // types are narrow subsets, so the cast is structurally safe.
   return data as unknown as Pokemon
 }
 
@@ -325,11 +327,20 @@ export async function fetchEvolutionChain(
   urlOrId: string | number
 ): Promise<EvolutionChain | null> {
   try {
-    const id =
-      typeof urlOrId === 'number'
-        ? urlOrId
-        : Number(String(urlOrId).split('/').filter(Boolean).pop())
+    let id: number
+    if (typeof urlOrId === 'number') {
+      id = urlOrId
+    } else {
+      const match = urlOrId.match(/\/evolution-chain\/(\d+)/)
+      if (!match) {
+        console.warn(`Invalid evolution chain URL: ${urlOrId}`)
+        return null
+      }
+      id = Number(match[1])
+    }
     const data = await pokeapi.getEvolutionChainById(id)
+    // The library returns the same JSON shape from the PokeAPI — our local
+    // types are narrow subsets, so the cast is structurally safe.
     return data as unknown as EvolutionChain
   } catch (error) {
     console.warn('Failed to fetch evolution chain:', error)
@@ -540,9 +551,17 @@ export async function fetchPokemonByNames(
   names: string[]
 ): Promise<Pokemon[]> {
   if (names.length === 0) return []
-  const data = (await pokeapi.getPokemonByName(
-    names
-  )) as unknown as Pokemon[]
-  return data
+  // Fetch individually so a single 404 doesn't reject the whole batch.
+  const settled = await Promise.allSettled(
+    names.map((name) => pokeapi.getPokemonByName(name))
+  )
+  // The library returns the same JSON shape from the PokeAPI — our local
+  // types are narrow subsets, so the cast is structurally safe.
+  return settled
+    .filter(
+      (r): r is PromiseFulfilledResult<PokeAPITypes.Pokemon> =>
+        r.status === 'fulfilled'
+    )
+    .map((r) => r.value as unknown as Pokemon)
 }
 

@@ -8,8 +8,16 @@ export const GET: APIRoute = async ({ params }) => {
   const pageSize = 30
 
   try {
+    const generationId = Number(id)
+    if (!Number.isInteger(generationId) || generationId < 1) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid generation ID' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      )
+    }
+
     // Fetch generation data using pokedex-promise-v2
-    const genData = await fetchGenerationData(Number(id))
+    const genData = await fetchGenerationData(generationId)
 
     // Sort all species references by ID (extracted from URL) before pagination
     const allSpecies = genData.pokemon_species.sort(
