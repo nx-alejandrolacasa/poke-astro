@@ -41,7 +41,12 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
     <div className="space-y-8 pb-8 md:space-y-12 md:pb-12">
       {/* Hero */}
       <section className="pt-6 text-center md:pt-10">
-        <h1 className="pokemon-title text-5xl md:text-7xl lg:text-8xl">
+        <img
+          src="/pokemon-logo.svg"
+          alt="Pokemon"
+          className="mx-auto mb-5 h-9 w-auto md:h-12 lg:h-14"
+        />
+        <h1 className="pokemon-title text-3xl md:text-5xl lg:text-6xl">
           {t.home.title}
         </h1>
       </section>

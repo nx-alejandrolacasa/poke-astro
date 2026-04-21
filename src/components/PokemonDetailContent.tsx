@@ -313,11 +313,11 @@ export function PokemonDetailContent({
         />
       )}
 
-      {/* Back button */}
+      {/* Back button — floating glassy pill, matches bottom-nav aesthetic */}
       <button
         type="button"
         onClick={() => window.history.back()}
-        className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-ink-muted text-sm transition-colors hover:bg-surface-sunken hover:text-ink dark:text-dark-ink-muted dark:hover:bg-dark-raised dark:hover:text-dark-ink"
+        className="inline-flex items-center gap-1.5 rounded-full border border-white/60 bg-white/70 px-4 py-2 font-semibold text-red-500 text-sm shadow-lg shadow-black/[0.08] backdrop-blur-xl transition-all hover:bg-red-500/10 active:scale-95 dark:border-white/[0.08] dark:bg-dark-surface/70 dark:text-red-300 dark:shadow-black/30 dark:hover:bg-red-500/15"
       >
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />

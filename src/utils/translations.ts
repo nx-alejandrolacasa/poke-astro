@@ -193,7 +193,7 @@ export const translations: Record<Language, Translations> = {
     header: {
       home: 'Home',
       pokedex: 'Pokédex',
-      types: 'Types',
+      types: 'Matchups',
       typeChart: 'Type Chart',
       menu: 'Menu',
       close: 'Close',
@@ -495,7 +495,7 @@ export const translations: Record<Language, Translations> = {
     header: {
       home: 'Inicio',
       pokedex: 'Pokédex',
-      types: 'Tipos',
+      types: 'Duelos',
       typeChart: 'Tabla de Tipos',
       menu: 'Menú',
       close: 'Cerrar',

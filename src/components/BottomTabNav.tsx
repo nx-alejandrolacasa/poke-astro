@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { SettingsMenuContent } from '@/components/SettingsMenuContent'
 import type { Locale } from '@/utils/i18n'
 import { getPokemonName } from '@/utils/pokemon'
 import { translations } from '@/utils/translations'
@@ -8,15 +9,46 @@ type BottomTabNavProps = {
   currentPath: string
 }
 
+type Tint = 'purple' | 'red' | 'yellow' | 'gray'
+
+const TAB_TINTS: Record<Tint, { base: string; active: string }> = {
+  purple: {
+    base: 'text-primary dark:text-dark-primary',
+    active: 'bg-primary/12 dark:bg-dark-primary/15',
+  },
+  red: {
+    base: 'text-red-500 dark:text-red-300',
+    active: 'bg-red-500/12 dark:bg-red-500/15',
+  },
+  yellow: {
+    base: 'text-yellow-600 dark:text-yellow-400',
+    active: 'bg-yellow-500/15 dark:bg-yellow-500/20',
+  },
+  gray: {
+    base: 'text-ink-muted dark:text-dark-ink-muted',
+    active: 'bg-black/5 dark:bg-white/8',
+  },
+}
+
 export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
   const t = translations[locale]
   const [searchOpen, setSearchOpen] = useState(false)
+  const [configOpen, setConfigOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [suggestions, setSuggestions] = useState<string[]>([])
   const [allNames, setAllNames] = useState<string[]>([])
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const [isLoading, setIsLoading] = useState(true)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (!configOpen) return
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setConfigOpen(false)
+    }
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [configOpen])
 
   useEffect(() => {
     fetch('/api/pokemon/names')
@@ -86,6 +118,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
     {
       label: t.header.home,
       href: `/${locale}`,
+      tint: 'purple' as Tint,
       icon: (
         <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -96,6 +129,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
     {
       label: t.header.pokedex,
       href: `/${locale}/pokedex`,
+      tint: 'red' as Tint,
       icon: (
         <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden="true">
           <circle cx="12" cy="12" r="10" />
@@ -111,8 +145,9 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
         || path.startsWith(`/${locale}/generation/`),
     },
     {
-      label: t.header.typeChart,
+      label: t.header.types,
       href: `/${locale}/types`,
+      tint: 'yellow' as Tint,
       icon: (
         <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" />
@@ -210,33 +245,74 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
         </div>
       </div>
 
+      {/* Config sheet — language + theme, above the nav */}
+      {configOpen && (
+        <button
+          type="button"
+          aria-label={t.modal.close}
+          onClick={() => setConfigOpen(false)}
+          className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm lg:hidden"
+        />
+      )}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={t.settings.title}
+        aria-hidden={!configOpen}
+        className={`fixed right-5 left-5 z-50 rounded-2xl border border-white/60 bg-white/90 p-4 shadow-xl shadow-black/[0.12] backdrop-blur-xl transition-all duration-200 sm:left-auto sm:w-72 sm:right-6 lg:hidden dark:border-white/[0.08] dark:bg-dark-surface/90 dark:shadow-black/40 bottom-[calc(env(safe-area-inset-bottom)+5.25rem)] ${
+          configOpen
+            ? 'translate-y-0 opacity-100'
+            : 'pointer-events-none translate-y-2 opacity-0'
+        }`}
+      >
+        <SettingsMenuContent
+          locale={locale}
+          currentPath={currentPath}
+          onClose={() => setConfigOpen(false)}
+        />
+      </div>
+
       {/* Tab bar — floating pill + standalone search circle, iOS 26 style */}
       <nav className="fixed bottom-4 left-0 right-0 z-40 flex items-center gap-2 px-5 sm:px-6 lg:hidden [@media(display-mode:standalone)]:bottom-[max(env(safe-area-inset-bottom),1rem)]" aria-label="Main navigation">
-        <div className="flex h-14 flex-1 items-center justify-between gap-1 rounded-full border border-white/60 bg-white/70 px-2.5 shadow-lg shadow-black/[0.08] backdrop-blur-2xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:shadow-black/30">
+        <div className="flex h-14 flex-1 items-center justify-between gap-1 rounded-full border border-white/60 bg-white/70 px-2.5 shadow-lg shadow-black/[0.08] backdrop-blur-xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:shadow-black/30">
           {tabs.map((tab) => {
             const isActive = tab.match(currentPath)
+            const tint = TAB_TINTS[tab.tint]
             return (
               <a
                 key={tab.href}
                 href={tab.href}
-                className={`flex items-center gap-1.5 rounded-full px-4 py-2 transition-all ${
-                  isActive
-                    ? 'bg-primary/12 text-primary dark:bg-dark-primary/15 dark:text-dark-primary'
-                    : 'text-ink-muted active:scale-95 dark:text-dark-ink-muted'
+                className={`flex min-w-0 items-center gap-1.5 rounded-full px-4 py-2 transition-all ${tint.base} ${
+                  isActive ? tint.active : 'active:scale-95'
                 }`}
                 aria-current={isActive ? 'page' : undefined}
               >
-                {tab.icon}
-                {isActive && <span className="text-xs font-semibold">{tab.label}</span>}
+                <span className="flex-shrink-0">{tab.icon}</span>
+                {isActive && <span className="truncate text-xs font-semibold">{tab.label}</span>}
               </a>
             )
           })}
+
+          <button
+            type="button"
+            onClick={() => setConfigOpen((prev) => !prev)}
+            className={`flex items-center gap-1.5 rounded-full px-4 py-2 transition-all ${TAB_TINTS.gray.base} ${
+              configOpen ? TAB_TINTS.gray.active : 'active:scale-95'
+            }`}
+            aria-label={t.settings.title}
+            aria-expanded={configOpen}
+          >
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+            </svg>
+          </button>
         </div>
 
         <button
           type="button"
           onClick={() => { setSearchOpen((prev) => !prev); if (searchOpen) setQuery('') }}
-          className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full border border-white/60 bg-white/70 text-ink-muted shadow-lg shadow-black/[0.08] backdrop-blur-2xl transition-transform active:scale-95 dark:border-white/[0.08] dark:bg-dark-surface/70 dark:text-dark-ink-muted dark:shadow-black/30"
+          className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full border border-white/60 bg-white/70 text-blue-500 shadow-lg shadow-black/[0.08] backdrop-blur-xl transition-transform active:scale-95 dark:border-white/[0.08] dark:bg-dark-surface/70 dark:text-blue-300 dark:shadow-black/30"
           aria-label={t.header.search}
           aria-expanded={searchOpen}
         >

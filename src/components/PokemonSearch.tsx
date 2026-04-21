@@ -183,7 +183,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
           ref={dropdownRef}
           id="search-suggestions"
           style={dropdownStyle}
-          className="z-50 overflow-hidden rounded-2xl border border-white/60 bg-white/70 shadow-lg shadow-black/[0.04] backdrop-blur-2xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:shadow-black/20"
+          className="z-50 overflow-hidden rounded-2xl border border-white/60 bg-white/70 shadow-lg shadow-black/[0.04] backdrop-blur-xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:shadow-black/20"
           role="listbox"
         >
           {suggestions.map((name, index) => (
@@ -212,7 +212,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
         <div
           ref={dropdownRef}
           style={dropdownStyle}
-          className="z-50 rounded-2xl border border-white/60 bg-white/70 px-4 py-3 text-ink-muted text-sm shadow-lg shadow-black/[0.04] backdrop-blur-2xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:text-dark-ink-muted dark:shadow-black/20"
+          className="z-50 rounded-2xl border border-white/60 bg-white/70 px-4 py-3 text-ink-muted text-sm shadow-lg shadow-black/[0.04] backdrop-blur-xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:text-dark-ink-muted dark:shadow-black/20"
         >
           {t.search.noResults}
         </div>,
