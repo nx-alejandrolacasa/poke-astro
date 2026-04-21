@@ -202,11 +202,18 @@ export async function fetchPokemonPage(
     offset,
   })
 
-  // Then fetch full details for only these Pokémon (library batches internally)
+  // Then fetch full details for only these Pokémon
+  // Use allSettled so a single 404 doesn't reject the whole batch
   const names = list.results.map(({ name }) => name)
-  const pokemonData = (await pokeapi.getPokemonByName(
-    names
-  )) as unknown as Pokemon[]
+  const settled = await Promise.allSettled(
+    names.map((name) => pokeapi.getPokemonByName(name))
+  )
+  const pokemonData = settled
+    .filter(
+      (r): r is PromiseFulfilledResult<PokeAPITypes.Pokemon> =>
+        r.status === 'fulfilled'
+    )
+    .map((r) => r.value as unknown as Pokemon)
 
   // Sort by National Pokédex number
   const results = [...pokemonData].sort((a, b) => a.id - b.id)
@@ -228,9 +235,15 @@ export async function fetchAllPokemon(): Promise<PokemonList> {
   })
 
   const names = list.results.map(({ name }) => name)
-  const results = (await pokeapi.getPokemonByName(
-    names
-  )) as unknown as Pokemon[]
+  const settled = await Promise.allSettled(
+    names.map((name) => pokeapi.getPokemonByName(name))
+  )
+  const results = settled
+    .filter(
+      (r): r is PromiseFulfilledResult<PokeAPITypes.Pokemon> =>
+        r.status === 'fulfilled'
+    )
+    .map((r) => r.value as unknown as Pokemon)
 
   return {
     count: list.count,
@@ -331,7 +344,7 @@ export async function fetchEvolutionChain(
     if (typeof urlOrId === 'number') {
       id = urlOrId
     } else {
-      const match = urlOrId.match(/\/evolution-chain\/(\d+)/)
+      const match = urlOrId.match(/evolution-chain\/(\d+)\/?$/)
       if (!match) {
         console.warn(`Invalid evolution chain URL: ${urlOrId}`)
         return null
