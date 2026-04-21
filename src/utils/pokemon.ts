@@ -167,16 +167,20 @@ export async function fetchPokemonByName(name: string): Promise<Pokemon> {
 
 export async function fetchPokemonCount(): Promise<number> {
   const res = await fetch(`${POKEAPI}/pokemon?limit=1&offset=0`)
+  if (!res.ok) {
+    throw new Error(`Failed to fetch Pokemon count (${res.status})`)
+  }
   const data = await res.json()
   return data.count
 }
 
 export async function fetchAllPokemonNames(): Promise<string[]> {
-  const res: PokemonNamesList = await fetch(
-    `${POKEAPI}/pokemon?limit=100000&offset=0`
-  ).then((r) => r.json())
-
-  return res.results.map(({ name }) => name)
+  const res = await fetch(`${POKEAPI}/pokemon?limit=100000&offset=0`)
+  if (!res.ok) {
+    throw new Error(`Failed to fetch Pokemon names (${res.status})`)
+  }
+  const data: PokemonNamesList = await res.json()
+  return data.results.map(({ name }) => name)
 }
 
 export async function fetchPokemonPage(
@@ -185,9 +189,13 @@ export async function fetchPokemonPage(
 ): Promise<PokemonList> {
   const offset = (page - 1) * pageSize
 
-  const list: PokemonNamesList = await fetch(
+  const res = await fetch(
     `${POKEAPI}/pokemon?limit=${pageSize}&offset=${offset}`
-  ).then((r) => r.json())
+  )
+  if (!res.ok) {
+    throw new Error(`Failed to fetch Pokemon page ${page} (${res.status})`)
+  }
+  const list: PokemonNamesList = await res.json()
 
   const results = await Promise.all(
     list.results.map(({ name }) => fetchPokemonByName(name))
@@ -203,9 +211,11 @@ export async function fetchPokemonPage(
 
 /** @deprecated Use fetchPokemonPage for better performance */
 export async function fetchAllPokemon(): Promise<PokemonList> {
-  const list: PokemonNamesList = await fetch(
-    `${POKEAPI}/pokemon?limit=100000&offset=0`
-  ).then((r) => r.json())
+  const res = await fetch(`${POKEAPI}/pokemon?limit=100000&offset=0`)
+  if (!res.ok) {
+    throw new Error(`Failed to fetch all Pokemon (${res.status})`)
+  }
+  const list: PokemonNamesList = await res.json()
 
   const results = await Promise.all(
     list.results.map(({ name }) => fetchPokemonByName(name))
