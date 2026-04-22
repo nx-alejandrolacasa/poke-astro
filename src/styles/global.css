@@ -248,6 +248,19 @@ html {
   to { width: 100%; }
 }
 
+/* Registered so the scroll-fade mask endpoints can be transitioned between
+   opaque (no fade) and transparent (fade visible) smoothly. */
+@property --scroll-fade-left {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 1;
+}
+@property --scroll-fade-right {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 1;
+}
+
 /* ══════════════════════════════════════════
    SHINY TRANSFORMATION — type-colored burst
    ══════════════════════════════════════════ */

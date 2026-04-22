@@ -42,12 +42,16 @@ export function Carousel({
   }, [items.length])
 
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
-    if ((e.target as HTMLElement).closest('button, a')) return
     pointerStartX.current = e.clientX
     pointerDeltaX.current = 0
     isDragging.current = true
     setIsPaused(true)
-    e.currentTarget.setPointerCapture(e.pointerId)
+    // Capture so we still get pointerup if the user releases outside the
+    // carousel. We intentionally don't capture when the press starts on an
+    // interactive child (arrow / dot), otherwise their `click` event never
+    // fires on some browsers once capture is redirected.
+    const onInteractive = !!(e.target as HTMLElement).closest('button, a')
+    if (!onInteractive) e.currentTarget.setPointerCapture(e.pointerId)
   }, [])
 
   const handlePointerMove = useCallback((e: React.PointerEvent) => {
@@ -97,7 +101,7 @@ export function Carousel({
         <button
           type="button"
           onClick={() => goTo(current - 1)}
-          className="hidden h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-primary transition-colors hover:bg-primary/10 lg:flex dark:text-dark-primary dark:hover:bg-dark-primary/15"
+          className="hidden h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-primary transition-colors hover:bg-primary/10 dark:text-dark-primary dark:hover:bg-dark-primary/15 [@media(pointer:fine)]:flex"
           aria-label="Previous"
         >
           <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -121,7 +125,7 @@ export function Carousel({
         <button
           type="button"
           onClick={advance}
-          className="hidden h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-primary transition-colors hover:bg-primary/10 lg:flex dark:text-dark-primary dark:hover:bg-dark-primary/15"
+          className="hidden h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-primary transition-colors hover:bg-primary/10 dark:text-dark-primary dark:hover:bg-dark-primary/15 [@media(pointer:fine)]:flex"
           aria-label="Next"
         >
           <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

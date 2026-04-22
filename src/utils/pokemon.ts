@@ -267,6 +267,7 @@ export function getTypeColor(pokemon: Pokemon): string {
   return typeColors[primaryType] ?? typeColors.normal
 }
 
+
 /** Representative Pokémon (by National Dex ID) for each type — used to pick a
  * sprite for the type cards shown on the homepage and the Type Chart page. */
 export const typeRepresentativePokemon: Record<string, number> = {

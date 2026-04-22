@@ -95,6 +95,7 @@ export type Translations = {
     genderless: string
     previousSprite: string
     nextSprite: string
+    recent: string
   }
   // Pokémon species metadata lookups
   eggGroups: Record<string, string>
@@ -280,6 +281,7 @@ export const translations: Record<Language, Translations> = {
       genderless: 'Genderless',
       previousSprite: 'Previous sprite',
       nextSprite: 'Next sprite',
+      recent: 'Recent',
     },
     eggGroups: {
       monster: 'Monster',
@@ -582,6 +584,7 @@ export const translations: Record<Language, Translations> = {
       genderless: 'Sin género',
       previousSprite: 'Imagen anterior',
       nextSprite: 'Imagen siguiente',
+      recent: 'Recientes',
     },
     eggGroups: {
       monster: 'Monstruo',

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Carousel } from '@/components/Carousel'
 import { PokemonEnrichedData } from '@/components/PokemonEnrichedData'
+import { RecentlyVisited } from '@/components/RecentlyVisited'
 import { TypeBadge } from '@/components/TypeBadge'
 import type { Locale } from '@/utils/i18n'
 import type { Pokemon } from '@/utils/pokemon'
@@ -313,17 +314,29 @@ export function PokemonDetailContent({
         />
       )}
 
-      {/* Back button — floating glassy pill, matches bottom-nav aesthetic */}
-      <button
-        type="button"
-        onClick={() => window.history.back()}
-        className="inline-flex items-center gap-1.5 rounded-full border border-white/60 bg-white/70 px-4 py-2 font-semibold text-red-500 text-sm shadow-lg shadow-black/[0.08] backdrop-blur-xl transition-all hover:bg-red-500/10 active:scale-95 dark:border-white/[0.08] dark:bg-dark-surface/70 dark:text-red-300 dark:shadow-black/30 dark:hover:bg-red-500/15"
-      >
-        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-        {locale === 'es' ? 'Volver' : 'Back'}
-      </button>
+      {/* Back button + recently visited pills */}
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => window.history.back()}
+          aria-label={locale === 'es' ? 'Volver' : 'Back'}
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/60 bg-white/70 px-2.5 py-2.5 font-semibold text-red-500 text-sm shadow-lg shadow-black/[0.08] backdrop-blur-xl transition-all hover:bg-red-500/10 active:scale-95 md:px-4 md:py-2 dark:border-white/[0.08] dark:bg-dark-surface/70 dark:text-red-300 dark:shadow-black/30 dark:hover:bg-red-500/15"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          <span className="hidden md:inline">
+            {locale === 'es' ? 'Volver' : 'Back'}
+          </span>
+        </button>
+        <RecentlyVisited
+          currentName={pokemonName}
+          currentId={pokemon.id}
+          currentTypeColor={typeColor}
+          currentTypes={pokemon.types.map((t) => t.type.name)}
+          locale={locale}
+        />
+      </div>
 
       {/* ── BENTO GRID ── */}
       {/* Mobile: single column stack. Desktop: 4-col grid with spanning cells. */}
