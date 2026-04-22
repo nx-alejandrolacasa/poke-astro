@@ -474,10 +474,19 @@ export function PokemonDetailContent({
 
         {/* ── Name + Number + Types + Badges ── */}
         <div className="bento-cell flex flex-col justify-center rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="font-black font-mono text-ink-muted text-lg dark:text-dark-ink-muted">
               #{pokemon.id.toString().padStart(3, '0')}
             </span>
+            {types.map(({ name, translatedName }) => (
+              <TypeBadge
+                key={name}
+                type={name}
+                label={translatedName}
+                size="sm"
+                href={`/${locale}/type/${name}`}
+              />
+            ))}
             {speciesInfo?.isBaby && (
               <span className="rounded-full bg-pink-100 px-2 py-0.5 font-semibold text-pink-700 text-xs dark:bg-pink-500/10 dark:text-pink-400">
                 {t.pokemon.baby}
@@ -502,17 +511,6 @@ export function PokemonDetailContent({
               {genus}
             </p>
           )}
-          <div className="mt-3 flex flex-wrap gap-2">
-            {types.map(({ name, translatedName }) => (
-              <TypeBadge
-                key={name}
-                type={name}
-                label={translatedName}
-                size="md"
-                href={`/${locale}/type/${name}`}
-              />
-            ))}
-          </div>
         </div>
 
         {/* ── Height + Weight ── */}
