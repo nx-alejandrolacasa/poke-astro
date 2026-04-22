@@ -1,3 +1,4 @@
+import { navigate } from 'astro:transitions/client'
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type { Locale } from '@/utils/i18n'
@@ -131,7 +132,7 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
   }
 
   const navigateToPokemon = (name: string) => {
-    window.location.href = `/${locale}/pokemon/${name}`
+    navigate(`/${locale}/pokemon/${name}`)
     setQuery('')
     setIsOpen(false)
   }
