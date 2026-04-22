@@ -18,13 +18,13 @@
     "lint:fix": "biome check --write ."
   },
   "dependencies": {
-    "@astrojs/cloudflare": "13.1.9",
-    "@astrojs/compiler-rs": "0.1.6",
-    "@astrojs/node": "^10.0.4",
+    "@astrojs/cloudflare": "13.1.10",
+    "@astrojs/compiler-rs": "0.1.8",
+    "@astrojs/node": "10.0.5",
     "@astrojs/react": "5.0.3",
     "@astrojs/vercel": "10.0.4",
-    "@fontsource/dela-gothic-one": "^5.2.7",
-    "astro": "^6.1.6",
+    "@fontsource/dela-gothic-one": "5.2.7",
+    "astro": "6.1.8",
     "react": "19.2.5",
     "react-dom": "19.2.5",
     "react-intersection-observer": "10.0.3"
@@ -33,15 +33,15 @@
     "vite": "$vite"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.11",
-    "@fontsource-variable/inter": "^5.2.8",
+    "@biomejs/biome": "2.4.12",
+    "@fontsource-variable/inter": "5.2.8",
     "@fontsource-variable/jetbrains-mono": "5.2.8",
     "@fontsource/orbitron": "5.2.8",
-    "@tailwindcss/vite": "4.2.2",
+    "@tailwindcss/vite": "4.2.4",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
-    "tailwindcss": "4.2.2",
-    "typescript": "6.0.2",
-    "vite": "7.3.1"
+    "tailwindcss": "4.2.4",
+    "typescript": "6.0.3",
+    "vite": "7.3.2"
   }
 }
