@@ -1,5 +1,10 @@
 ---
-import { fetchPokemonByName, getPokemonName } from '@utils/pokemon'
+import {
+  fetchAbilityDetails,
+  fetchPokemonByName,
+  getPokemonName,
+  getTranslatedName,
+} from '@utils/pokemon'
 import { PokemonDetailContent } from '@/components/PokemonDetailContent'
 import Layout from '@/layouts/Layout.astro'
 import { getI18n } from '@/utils/i18n'
@@ -8,8 +13,27 @@ const { locale: localeParam, name = '' } = Astro.params
 const { locale } = getI18n(localeParam)
 
 const pokemon = await fetchPokemonByName(name)
+
+// Pre-translate ability names on the server so the first paint on a
+// Spanish page doesn't show English fallbacks (the React component used
+// to fetch these client-side, causing a visible en → es flash).
+const initialAbilities = pokemon
+  ? await Promise.all(
+      pokemon.abilities.map(async ({ ability, is_hidden }) => {
+        const fallback = ability.name.replaceAll('-', ' ')
+        const details = await fetchAbilityDetails(ability.name)
+        return {
+          name: ability.name,
+          translatedName: details
+            ? getTranslatedName(details.names, locale, fallback)
+            : fallback,
+          isHidden: is_hidden,
+        }
+      })
+    )
+  : []
 ---
 
 <Layout title={`Pokémon Astro - ${getPokemonName(name)}`} locale={locale}>
-  {pokemon && <PokemonDetailContent client:load pokemon={pokemon} pokemonName={name} locale={locale} />}
+  {pokemon && <PokemonDetailContent client:load pokemon={pokemon} pokemonName={name} locale={locale} initialAbilities={initialAbilities} />}
 </Layout>

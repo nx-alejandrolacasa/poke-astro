@@ -13,16 +13,17 @@ import {
 import type { Translations } from '@/utils/translations'
 import { interpolate, translations } from '@/utils/translations'
 
-type PokemonDetailContentProps = {
-  pokemon: Pokemon
-  pokemonName: string
-  locale: Locale
-}
-
 type TranslatedAbility = {
   name: string
   translatedName: string
   isHidden: boolean
+}
+
+type PokemonDetailContentProps = {
+  pokemon: Pokemon
+  pokemonName: string
+  locale: Locale
+  initialAbilities: TranslatedAbility[]
 }
 
 type TranslatedType = {
@@ -39,11 +40,6 @@ type TranslatedStat = {
 type FlavorTextEntry = {
   text: string
   version: string
-}
-
-type PokeApiNameEntry = {
-  language: { name: string }
-  name: string
 }
 
 type PokeApiFlavorTextEntry = {
@@ -96,29 +92,21 @@ export function PokemonDetailContent({
   pokemon,
   pokemonName,
   locale,
+  initialAbilities,
 }: PokemonDetailContentProps) {
   const t = translations[locale]
   const typeColor = getTypeColor(pokemon)
-  const [abilities, setAbilities] = useState<TranslatedAbility[]>(() =>
-    pokemon.abilities.map(({ ability, is_hidden }) => ({
-      name: ability.name,
-      translatedName: ability.name.replaceAll('-', ' '),
-      isHidden: is_hidden,
-    }))
-  )
-  const [types, setTypes] = useState<TranslatedType[]>(() =>
-    pokemon.types.map(({ type }) => ({
-      name: type.name,
-      translatedName: type.name,
-    }))
-  )
-  const [stats, setStats] = useState<TranslatedStat[]>(() =>
-    pokemon.stats.map(({ stat, base_stat }) => ({
-      name: stat.name,
-      translatedName: getStatLabel(stat.name, t),
-      baseStat: base_stat,
-    }))
-  )
+  const abilities = initialAbilities
+  const types: TranslatedType[] = pokemon.types.map(({ type }) => ({
+    name: type.name,
+    translatedName:
+      (t.types as Record<string, string>)[type.name] ?? type.name,
+  }))
+  const stats: TranslatedStat[] = pokemon.stats.map(({ stat, base_stat }) => ({
+    name: stat.name,
+    translatedName: getStatLabel(stat.name, t),
+    baseStat: base_stat,
+  }))
   const [descriptions, setDescriptions] = useState<FlavorTextEntry[]>([])
   const [descriptionLoading, setDescriptionLoading] = useState(true)
   const [speciesInfo, setSpeciesInfo] = useState<SpeciesInfo | null>(null)
@@ -136,53 +124,6 @@ export function PokemonDetailContent({
     const fetchEnrichedData = async () => {
       setDescriptionLoading(true)
       try {
-        const typesPromises = pokemon.types.map(async ({ type }) => {
-          const response = await fetch(
-            `https://pokeapi.co/api/v2/type/${type.name}`
-          )
-          const data = await response.json()
-          const translation = data.names.find(
-            (n: PokeApiNameEntry) => n.language.name === locale
-          )
-          return {
-            name: type.name,
-            translatedName: translation?.name ?? type.name,
-          }
-        })
-
-        const abilitiesPromises = pokemon.abilities.map(
-          async ({ ability, is_hidden }) => {
-            const response = await fetch(
-              `https://pokeapi.co/api/v2/ability/${ability.name}`
-            )
-            const data = await response.json()
-            const translation = data.names.find(
-              (n: PokeApiNameEntry) => n.language.name === locale
-            )
-            return {
-              name: ability.name,
-              translatedName:
-                translation?.name ?? ability.name.replaceAll('-', ' '),
-              isHidden: is_hidden,
-            }
-          }
-        )
-
-        const statsPromises = pokemon.stats.map(async ({ stat, base_stat }) => {
-          const response = await fetch(
-            `https://pokeapi.co/api/v2/stat/${stat.name}`
-          )
-          const data = await response.json()
-          const translation = data.names.find(
-            (n: PokeApiNameEntry) => n.language.name === locale
-          )
-          return {
-            name: stat.name,
-            translatedName: getStatLabel(stat.name, t, translation?.name),
-            baseStat: base_stat,
-          }
-        })
-
         const speciesPromise = fetch(
           `https://pokeapi.co/api/v2/pokemon-species/${pokemonName}`
         )
@@ -235,23 +176,11 @@ export function PokemonDetailContent({
           .then((data) => data.speciesInfo as SpeciesInfo | null)
           .catch(() => null)
 
-        const [
-          translatedTypes,
-          translatedAbilities,
-          translatedStats,
-          flavorTexts,
-          enrichedSpecies,
-        ] = await Promise.all([
-          Promise.all(typesPromises),
-          Promise.all(abilitiesPromises),
-          Promise.all(statsPromises),
+        const [flavorTexts, enrichedSpecies] = await Promise.all([
           speciesPromise,
           enrichedSpeciesPromise,
         ])
 
-        setTypes(translatedTypes)
-        setAbilities(translatedAbilities)
-        setStats(translatedStats)
         setDescriptions(flavorTexts)
         setSpeciesInfo(enrichedSpecies)
       } catch (error) {
@@ -263,7 +192,7 @@ export function PokemonDetailContent({
     }
 
     fetchEnrichedData()
-  }, [pokemon, pokemonName, locale, t.stats])
+  }, [pokemonName, locale])
 
   const handlePlayCry = (variant: 'latest' | 'legacy') => {
     const ref = variant === 'latest' ? latestCryRef : legacyCryRef

@@ -49,8 +49,7 @@ poke-astro/
 ├── astro.config.mjs         # Astro configuration
 ├── tailwind.config.js       # Tailwind CSS configuration
 ├── tsconfig.json            # TypeScript configuration
-├── prettier.config.js       # Prettier configuration
-└── .eslintrc.mjs            # ESLint configuration
+└── biome.json               # Biome (lint + format) configuration
 ```
 
 ---
@@ -161,7 +160,7 @@ TypeScript path aliases are configured in `tsconfig.json`:
 ### Tailwind CSS
 - **Utility-first** approach - use Tailwind classes directly in JSX/Astro
 - **No separate CSS files** - all styling is inline with Tailwind utilities
-- **Prettier plugin** automatically sorts Tailwind classes
+- **Biome** handles class formatting; Tailwind class sorting is not automated
 
 **Common patterns:**
 ```astro
@@ -263,14 +262,10 @@ npm run astro --help  # Astro CLI help
 
 ### Code Quality Tools
 
-**ESLint:**
-- Config: `.eslintrc.mjs`
-- Plugins: `astro`, `tailwindcss`
-- Parser: `astro-eslint-parser` for `.astro` files
-
-**Prettier:**
-- Config: `prettier.config.js`
-- Plugin: `prettier-plugin-tailwindcss` (auto-sorts classes)
+**Biome** (linter + formatter, replaces ESLint + Prettier):
+- Config: `biome.json`
+- Scripts: `npm run check`, `npm run format`, `npm run lint`, `npm run lint:fix`
+- Note: Biome does not currently parse `.astro` files — those are effectively not linted or formatted
 
 **TypeScript:**
 - Config: `tsconfig.json`
@@ -387,7 +382,7 @@ import { InteractiveComponent } from '@components/InteractiveComponent'
 1. Use Tailwind utility classes
 2. Check responsive variants: `md:`, `xl:`, etc.
 3. Use hover states: `hover:border-slate-500`
-4. Prettier will auto-sort classes
+4. Run `npm run format` to apply Biome formatting
 
 ### API Integration
 1. Add types in `src/utils/*.ts`
@@ -548,7 +543,7 @@ This project was upgraded from legacy versions to the latest stable releases:
 
 **Dependencies:**
 - All dependencies use fixed versions (no semver ranges) for security
-- ESLint and Prettier updated to latest stable versions
+- ESLint and Prettier later replaced by Biome (see `biome.json`)
 
 **Performance Optimizations:**
 - Replaced pagination with infinite scroll for better UX and faster builds
