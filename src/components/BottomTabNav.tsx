@@ -31,9 +31,8 @@ const TAB_TINTS: Record<Tint, { base: string; active: string }> = {
   },
 }
 
-export function BottomTabNav({ locale, currentPath: initialPath }: BottomTabNavProps) {
+export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
   const t = translations[locale]
-  const [currentPath, setCurrentPath] = useState(initialPath)
   const [searchOpen, setSearchOpen] = useState(false)
   const [configOpen, setConfigOpen] = useState(false)
   const [query, setQuery] = useState('')
@@ -42,12 +41,6 @@ export function BottomTabNav({ locale, currentPath: initialPath }: BottomTabNavP
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const [isLoading, setIsLoading] = useState(true)
   const inputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    const handleAfterSwap = () => setCurrentPath(window.location.pathname)
-    document.addEventListener('astro:after-swap', handleAfterSwap)
-    return () => document.removeEventListener('astro:after-swap', handleAfterSwap)
-  }, [])
 
   useEffect(() => {
     if (!configOpen) return
