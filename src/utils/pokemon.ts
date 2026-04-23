@@ -240,6 +240,31 @@ export function getPokemonImage(pokemon: Pokemon) {
   )
 }
 
+/** Canonical Pokémon types, used for generating type-listing routes and
+ * rendering the type grid on the home page. */
+export const POKEMON_TYPES = [
+  'normal',
+  'fire',
+  'water',
+  'electric',
+  'grass',
+  'ice',
+  'fighting',
+  'poison',
+  'ground',
+  'flying',
+  'psychic',
+  'bug',
+  'rock',
+  'ghost',
+  'dragon',
+  'dark',
+  'steel',
+  'fairy',
+] as const
+
+export type PokemonType = (typeof POKEMON_TYPES)[number]
+
 /** Solid color for a Pokémon type — used for card accents, borders, badges */
 export const typeColors: Record<string, string> = {
   normal: '#a8a878',
@@ -266,7 +291,6 @@ export function getTypeColor(pokemon: Pokemon): string {
   const primaryType = pokemon.types[0]?.type.name ?? 'normal'
   return typeColors[primaryType] ?? typeColors.normal
 }
-
 
 /** Representative Pokémon (by National Dex ID) for each type — used to pick a
  * sprite for the type cards shown on the homepage and the Type Chart page. */

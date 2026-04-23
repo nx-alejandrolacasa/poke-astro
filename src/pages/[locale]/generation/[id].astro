@@ -1,7 +1,9 @@
 ---
+export const prerender = true
+
 import { GenerationInfiniteScroll } from '@/components/GenerationInfiniteScroll'
 import Layout from '@/layouts/Layout.astro'
-import { getI18n } from '@/utils/i18n'
+import { getI18n, locales } from '@/utils/i18n'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
 
 const generations: Record<
@@ -21,6 +23,13 @@ const generations: Record<
     region: 'Galar',
   },
   '9': { nameEn: 'Generation IX', nameEs: 'Generación IX', region: 'Paldea' },
+}
+
+export function getStaticPaths() {
+  const ids = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+  return locales.flatMap((locale) =>
+    ids.map((id) => ({ params: { locale, id } }))
+  )
 }
 
 const { locale: localeParam, id = '' } = Astro.params

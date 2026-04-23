@@ -1,6 +1,10 @@
 import { Carousel } from '@/components/Carousel'
 import type { Locale } from '@/utils/i18n'
-import { typeColors, typeRepresentativePokemon } from '@/utils/pokemon'
+import {
+  POKEMON_TYPES,
+  typeColors,
+  typeRepresentativePokemon,
+} from '@/utils/pokemon'
 import { translations } from '@/utils/translations'
 
 type HomeContentProps = {
@@ -16,21 +20,15 @@ function getContrastColor(hex: string): string {
   return luminance > 0.55 ? '#1a1a2e' : '#ffffff'
 }
 
-const POKEMON_TYPES = [
-  'normal', 'fire', 'water', 'electric', 'grass', 'ice',
-  'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug',
-  'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy',
-] as const
-
 const GENERATIONS = [
-  { region: 'Kanto', mascot: 25, type: 'electric' },    // Pikachu
-  { region: 'Johto', mascot: 249, type: 'psychic' },    // Lugia
-  { region: 'Hoenn', mascot: 384, type: 'dragon' },     // Rayquaza
-  { region: 'Sinnoh', mascot: 493, type: 'normal' },    // Arceus
-  { region: 'Unova', mascot: 644, type: 'dark' },       // Zekrom (Dragon/Electric taken, black-themed)
-  { region: 'Kalos', mascot: 716, type: 'fairy' },      // Xerneas
-  { region: 'Alola', mascot: 791, type: 'steel' },      // Solgaleo (Psychic taken)
-  { region: 'Galar', mascot: 888, type: 'water' },      // Zacian (Fairy taken, blue-themed box)
+  { region: 'Kanto', mascot: 25, type: 'electric' }, // Pikachu
+  { region: 'Johto', mascot: 249, type: 'psychic' }, // Lugia
+  { region: 'Hoenn', mascot: 384, type: 'dragon' }, // Rayquaza
+  { region: 'Sinnoh', mascot: 493, type: 'normal' }, // Arceus
+  { region: 'Unova', mascot: 644, type: 'dark' }, // Zekrom (Dragon/Electric taken, black-themed)
+  { region: 'Kalos', mascot: 716, type: 'fairy' }, // Xerneas
+  { region: 'Alola', mascot: 791, type: 'steel' }, // Solgaleo (Psychic taken)
+  { region: 'Galar', mascot: 888, type: 'water' }, // Zacian (Fairy taken, blue-themed box)
   { region: 'Paldea', mascot: 1007, type: 'fighting' }, // Koraidon
 ]
 
@@ -76,7 +74,10 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
                 key={type}
                 href={`/${locale}/type/${type}`}
                 className="group flex flex-col items-center gap-1 rounded-xl p-2 transition-all duration-200 hover:-translate-y-0.5 hover:border-opacity-80 active:scale-95"
-                style={{ backgroundColor: `${color}15`, border: `2px solid ${color}` }}
+                style={{
+                  backgroundColor: `${color}15`,
+                  border: `2px solid ${color}`,
+                }}
               >
                 <img
                   src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokeId}.png`}
@@ -86,7 +87,10 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
                 />
                 <span
                   className="w-full rounded-lg py-0.5 text-center font-semibold text-xs capitalize"
-                  style={{ backgroundColor: color, color: getContrastColor(color) }}
+                  style={{
+                    backgroundColor: color,
+                    color: getContrastColor(color),
+                  }}
                 >
                   {t.types[type as keyof typeof t.types]}
                 </span>
@@ -109,7 +113,10 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
                 key={gen.region}
                 href={`/${locale}/generation/${index + 1}`}
                 className="group flex flex-col items-center gap-1 rounded-xl p-2 text-center transition-all duration-200 hover:-translate-y-0.5 active:scale-95 md:p-3"
-                style={{ backgroundColor: `${color}15`, border: `2px solid ${color}` }}
+                style={{
+                  backgroundColor: `${color}15`,
+                  border: `2px solid ${color}`,
+                }}
               >
                 <img
                   src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${gen.mascot}.png`}
@@ -119,7 +126,10 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
                 />
                 <span
                   className="w-full rounded-lg py-0.5 text-center font-semibold text-xs"
-                  style={{ backgroundColor: color, color: getContrastColor(color) }}
+                  style={{
+                    backgroundColor: color,
+                    color: getContrastColor(color),
+                  }}
                 >
                   {gen.region}
                 </span>
