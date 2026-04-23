@@ -90,7 +90,15 @@ const { title, locale } = Astro.props
           if (e.persisted) applyTheme(getStoredTheme())
         })
 
-        // Re-apply theme after Astro view-transition page swaps (ClientRouter)
+        // Pre-apply theme to incoming document before the swap so the
+        // crossfade animation never shows the wrong theme (eliminates flicker)
+        document.addEventListener('astro:before-swap', function(event) {
+          var isDark = document.documentElement.classList.contains('dark')
+          event.newDocument.documentElement.classList.toggle('dark', isDark)
+          event.newDocument.documentElement.style.colorScheme = document.documentElement.style.colorScheme
+        })
+
+        // Re-apply theme after swap as a safety net (handles edge cases)
         document.addEventListener('astro:after-swap', function() {
           applyTheme(getStoredTheme())
         })
@@ -143,7 +151,7 @@ const { title, locale } = Astro.props
   </head>
   <body class="text-ink transition-colors dark:text-dark-ink">
     <Header locale={locale} transition:persist />
-    <main class="mx-auto max-w-7xl px-4 pb-4 pt-[calc(env(safe-area-inset-top)+0.75rem)] md:px-6 md:pb-6 lg:pt-6">
+    <main transition:name="main-content" transition:animate="fade" class="mx-auto max-w-7xl px-4 pb-4 pt-[calc(env(safe-area-inset-top)+0.75rem)] md:px-6 md:pb-6 lg:pt-6">
       <slot />
     </main>
     <Footer locale={locale} />
