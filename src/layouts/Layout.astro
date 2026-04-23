@@ -151,7 +151,7 @@ const { title, locale } = Astro.props
   </head>
   <body class="text-ink transition-colors dark:text-dark-ink">
     <Header locale={locale} transition:persist />
-    <main class="mx-auto max-w-7xl px-4 pb-4 pt-[calc(env(safe-area-inset-top)+0.75rem)] md:px-6 md:pb-6 lg:pt-6">
+    <main class="mx-auto max-w-7xl px-4 pb-[calc(env(safe-area-inset-bottom)+5.5rem)] pt-[calc(env(safe-area-inset-top)+0.75rem)] md:px-6 lg:pb-6 lg:pt-6">
       <slot />
     </main>
     <Footer locale={locale} />
