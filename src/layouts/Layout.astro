@@ -90,6 +90,11 @@ const { title, locale } = Astro.props
           if (e.persisted) applyTheme(getStoredTheme())
         })
 
+        // Re-apply theme after Astro view-transition page swaps (ClientRouter)
+        document.addEventListener('astro:after-swap', function() {
+          applyTheme(getStoredTheme())
+        })
+
         return { setTheme: setTheme, getTheme: getTheme }
       })()
 
