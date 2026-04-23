@@ -242,6 +242,15 @@ html {
   }
 }
 
+/* Disable all view-transition animations to prevent flickering/fading of
+   fixed elements (header, bottom nav) during navigation. Theme is pre-applied
+   via astro:before-swap so there is no flash even without a crossfade. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
 @keyframes progress-fill {
   from { width: 0; }
   to { width: 100%; }
