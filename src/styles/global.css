@@ -244,12 +244,14 @@ html {
 
 /* Disable ALL view-transition animations — both the root group and any
    auto-named groups Astro assigns to transition:persist elements.
-   Without this, Astro's default astroFadeIn/Out keyframes (applied via
-   ::view-transition-*(*)) still fade the persisted header/bottom-nav.
+   !important is required because <ClientRouter /> injects its own named
+   animation rules (astroFadeIn/astroFadeOut) into a <style> tag AFTER our
+   stylesheet in the <head>, so without !important those rules win the cascade
+   and the header/bottom-nav still fades during navigation.
    Theme is pre-applied via astro:before-swap so there is no flash. */
 ::view-transition-old(*),
 ::view-transition-new(*) {
-  animation: none;
+  animation: none !important;
   mix-blend-mode: normal;
 }
 
