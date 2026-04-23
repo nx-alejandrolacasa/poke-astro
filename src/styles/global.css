@@ -242,32 +242,6 @@ html {
   }
 }
 
-/* On mobile/tablet (<lg) ensure page content can be scrolled fully above the
-   floating bottom tab bar.  The nav pill sits at bottom-4 (16 px) and is
-   h-14 (56 px) tall → its top edge is 72 px above the viewport bottom.
-   In PWA standalone mode the pill is pushed up by env(safe-area-inset-bottom)
-   (≈ 34 px on modern iPhones), so 5.5 rem (88 px) base + safe-area covers
-   the worst case.  Written as plain CSS so it is always in the output
-   regardless of Tailwind's static-scan pass. */
-@media (max-width: 1023px) {
-  main {
-    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5.5rem);
-  }
-}
-
-/* Disable ALL view-transition animations — both the root group and any
-   auto-named groups Astro assigns to transition:persist elements.
-   !important is required because <ClientRouter /> injects its own named
-   animation rules (astroFadeIn/astroFadeOut) into a <style> tag AFTER our
-   stylesheet in the <head>, so without !important those rules win the cascade
-   and the header/bottom-nav still fades during navigation.
-   Theme is pre-applied via astro:before-swap so there is no flash. */
-::view-transition-old(*),
-::view-transition-new(*) {
-  animation: none !important;
-  mix-blend-mode: normal;
-}
-
 @keyframes progress-fill {
   from { width: 0; }
   to { width: 100%; }
