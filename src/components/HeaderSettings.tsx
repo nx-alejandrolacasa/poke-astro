@@ -9,11 +9,18 @@ type HeaderSettingsProps = {
   currentPath: string
 }
 
-export function HeaderSettings({ locale, currentPath }: HeaderSettingsProps) {
+export function HeaderSettings({ locale, currentPath: initialPath }: HeaderSettingsProps) {
   const t = translations[locale]
   const [open, setOpen] = useState(false)
+  const [currentPath, setCurrentPath] = useState(initialPath)
   const [coords, setCoords] = useState<{ top: number; right: number } | null>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    const handleAfterSwap = () => setCurrentPath(window.location.pathname)
+    document.addEventListener('astro:after-swap', handleAfterSwap)
+    return () => document.removeEventListener('astro:after-swap', handleAfterSwap)
+  }, [])
 
   useLayoutEffect(() => {
     if (!open) return
