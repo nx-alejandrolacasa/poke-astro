@@ -93,7 +93,7 @@ const { title, locale } = Astro.props
         // Pre-apply theme to incoming document before the swap so the
         // crossfade animation never shows the wrong theme (eliminates flicker)
         document.addEventListener('astro:before-swap', function(event) {
-          var isDark = document.documentElement.classList.contains('dark')
+          const isDark = document.documentElement.classList.contains('dark')
           event.newDocument.documentElement.classList.toggle('dark', isDark)
           event.newDocument.documentElement.style.colorScheme = document.documentElement.style.colorScheme
         })
