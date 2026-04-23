@@ -242,15 +242,6 @@ html {
   }
 }
 
-/* Disable root-level view-transition to prevent background flash during
-   navigation. Only named layers (e.g. main-content) will animate. */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-
-
 @keyframes progress-fill {
   from { width: 0; }
   to { width: 100%; }
