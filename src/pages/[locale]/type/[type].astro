@@ -1,9 +1,17 @@
 ---
+export const prerender = true
+
 import { TypeInfiniteScroll } from '@/components/TypeInfiniteScroll'
 import Layout from '@/layouts/Layout.astro'
-import { getI18n } from '@/utils/i18n'
+import { getI18n, locales } from '@/utils/i18n'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
-import { getPokemonName } from '@/utils/pokemon'
+import { POKEMON_TYPES, getPokemonName } from '@/utils/pokemon'
+
+export function getStaticPaths() {
+  return locales.flatMap((locale) =>
+    POKEMON_TYPES.map((type) => ({ params: { locale, type } }))
+  )
+}
 
 const { locale: localeParam, type = '' } = Astro.params
 const { locale, t } = getI18n(localeParam)

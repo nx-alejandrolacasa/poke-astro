@@ -1,8 +1,14 @@
 ---
+export const prerender = true
+
 import { PokemonInfiniteScroll } from '@/components/PokemonInfiniteScroll'
 import Layout from '@/layouts/Layout.astro'
-import { getI18n } from '@/utils/i18n'
+import { getI18n, getLocalePaths } from '@/utils/i18n'
 import { fetchPokemonPage } from '@/utils/pokemon'
+
+export function getStaticPaths() {
+  return getLocalePaths()
+}
 
 const { locale: localeParam } = Astro.params
 const { locale, t } = getI18n(localeParam)
