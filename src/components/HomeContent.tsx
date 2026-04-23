@@ -60,6 +60,45 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
         </div>
       </section>
 
+      {/* Browse by Generation */}
+      <section className="space-y-4">
+        <h2 className="text-center font-bold text-ink text-xl md:text-2xl dark:text-dark-ink">
+          {t.home.byGeneration}
+        </h2>
+        <div className="grid grid-cols-3 gap-3 md:grid-cols-6 lg:grid-cols-9">
+          {GENERATIONS.map((gen, index) => {
+            const color = typeColors[gen.type] ?? '#a8a878'
+            return (
+              <a
+                key={gen.region}
+                href={`/${locale}/generation/${index + 1}`}
+                className="group flex flex-col items-center gap-1 rounded-xl p-2 text-center transition-all duration-200 hover:-translate-y-0.5 active:scale-95 md:p-3"
+                style={{
+                  backgroundColor: `${color}15`,
+                  border: `2px solid ${color}`,
+                }}
+              >
+                <img
+                  src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${gen.mascot}.png`}
+                  alt={gen.region}
+                  className="h-12 w-12 object-contain md:h-14 md:w-14"
+                  loading="lazy"
+                />
+                <span
+                  className="w-full rounded-lg py-0.5 text-center font-semibold text-xs"
+                  style={{
+                    backgroundColor: color,
+                    color: getContrastColor(color),
+                  }}
+                >
+                  {gen.region}
+                </span>
+              </a>
+            )
+          })}
+        </div>
+      </section>
+
       {/* Browse by Type */}
       <section className="space-y-4">
         <h2 className="text-center font-bold text-ink text-xl md:text-2xl dark:text-dark-ink">
@@ -93,45 +132,6 @@ export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
                   }}
                 >
                   {t.types[type as keyof typeof t.types]}
-                </span>
-              </a>
-            )
-          })}
-        </div>
-      </section>
-
-      {/* Browse by Generation */}
-      <section className="space-y-4">
-        <h2 className="text-center font-bold text-ink text-xl md:text-2xl dark:text-dark-ink">
-          {t.home.byGeneration}
-        </h2>
-        <div className="grid grid-cols-3 gap-3 md:grid-cols-6 lg:grid-cols-9">
-          {GENERATIONS.map((gen, index) => {
-            const color = typeColors[gen.type] ?? '#a8a878'
-            return (
-              <a
-                key={gen.region}
-                href={`/${locale}/generation/${index + 1}`}
-                className="group flex flex-col items-center gap-1 rounded-xl p-2 text-center transition-all duration-200 hover:-translate-y-0.5 active:scale-95 md:p-3"
-                style={{
-                  backgroundColor: `${color}15`,
-                  border: `2px solid ${color}`,
-                }}
-              >
-                <img
-                  src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${gen.mascot}.png`}
-                  alt={gen.region}
-                  className="h-12 w-12 object-contain md:h-14 md:w-14"
-                  loading="lazy"
-                />
-                <span
-                  className="w-full rounded-lg py-0.5 text-center font-semibold text-xs"
-                  style={{
-                    backgroundColor: color,
-                    color: getContrastColor(color),
-                  }}
-                >
-                  {gen.region}
                 </span>
               </a>
             )
