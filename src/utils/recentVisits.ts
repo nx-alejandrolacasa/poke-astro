@@ -9,7 +9,8 @@ export type RecentVisit = {
 
 const DB_NAME = 'poke-astro'
 const STORE_NAME = 'recent-visits'
-const DB_VERSION = 1
+// Shared with pokemonPagesCache — bump in lockstep when adding stores.
+const DB_VERSION = 2
 // Store 6 so that when the current pokemon lands at the top, we still have
 // 5 others to render as pills.
 const MAX_VISITS = 6
@@ -25,6 +26,9 @@ function openDb(): Promise<IDBDatabase> {
       const db = req.result
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         db.createObjectStore(STORE_NAME, { keyPath: 'name' })
+      }
+      if (!db.objectStoreNames.contains('pokemon-pages')) {
+        db.createObjectStore('pokemon-pages', { keyPath: 'key' })
       }
     }
     req.onsuccess = () => resolve(req.result)

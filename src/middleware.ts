@@ -6,11 +6,12 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const contentType = response.headers.get('content-type') || ''
 
   if (pathname.startsWith('/api/')) {
-    // API responses (JSON): cache aggressively at the edge. Pokemon data
-    // rarely changes, so 1h edge cache + 1d stale-while-revalidate is safe.
+    // API responses (JSON): Pokémon data is effectively immutable, so cache
+    // hard at the edge. Browsers still revalidate hourly, but the edge serves
+    // 1-week-old bytes instantly and SWR refreshes for up to 30 days.
     response.headers.set(
       'Cache-Control',
-      'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400'
+      'public, max-age=3600, s-maxage=604800, stale-while-revalidate=2592000'
     )
   } else if (contentType.includes('text/html')) {
     // HTML pages: must revalidate on every request. Cloudflare Workers
