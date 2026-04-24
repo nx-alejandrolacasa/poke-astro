@@ -31,7 +31,7 @@ const TAB_TINTS: Record<Tint, { base: string; active: string }> = {
   },
 }
 
-export function BottomTabNav({ locale, currentPath: initialPath }: BottomTabNavProps) {
+export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
   const t = translations[locale]
   const [searchOpen, setSearchOpen] = useState(false)
   const [configOpen, setConfigOpen] = useState(false)
@@ -40,22 +40,19 @@ export function BottomTabNav({ locale, currentPath: initialPath }: BottomTabNavP
   const [allNames, setAllNames] = useState<string[]>([])
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const [isLoading, setIsLoading] = useState(true)
-  // Component is persisted across view transitions, so the server-rendered
-  // `currentPath` prop goes stale after the first navigation. Track the live
-  // path in state and refresh it whenever Astro finishes swapping pages.
-  const [currentPath, setCurrentPath] = useState(initialPath)
   const inputRef = useRef<HTMLInputElement>(null)
 
+  // Island is persisted across navigations (DOM kept, props refreshed by
+  // Astro by default), so local UI state survives the page swap. Dismiss any
+  // open overlay/query when the next page settles in.
   useEffect(() => {
-    const sync = () => {
-      setCurrentPath(window.location.pathname)
-      // Dismiss any open overlays after a cross-page navigation
+    const reset = () => {
       setSearchOpen(false)
       setConfigOpen(false)
       setQuery('')
     }
-    document.addEventListener('astro:page-load', sync)
-    return () => document.removeEventListener('astro:page-load', sync)
+    document.addEventListener('astro:page-load', reset)
+    return () => document.removeEventListener('astro:page-load', reset)
   }, [])
 
   useEffect(() => {

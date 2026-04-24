@@ -7,6 +7,10 @@
 
 html {
   color-scheme: light dark;
+  /* Safe-area top lives on <html> — the only element Astro's view-transition
+     swap never replaces — so the inset can't go stale to 0 mid-transition on
+     iOS Safari (which was pushing content under the translucent address bar). */
+  padding-top: env(safe-area-inset-top);
 }
 
 @theme {
@@ -251,20 +255,25 @@ html {
 /* ══════════════════════════════════════════
    VIEW TRANSITIONS — scoped page cross-fade
    ══════════════════════════════════════════
-   Only <main> gets a dedicated animation (see Layout.astro); the sticky
-   header and persisted bottom tab bar stay out of the snapshot entirely.
-   Tighten the default root timing so the transition feels snappy rather
-   than laggy. */
+   Only <main> animates; the bottom tab bar has its own named snapshot with
+   animate="none" so it stays visually static while the page content fades.
+   Tighten the default root timing so the transition feels snappy. */
 ::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 180ms;
+::view-transition-new(root),
+::view-transition-old(main-content),
+::view-transition-new(main-content) {
+  animation-duration: 200ms;
   animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
 }
 
-::view-transition-old(main-content),
-::view-transition-new(main-content) {
-  animation-duration: 220ms;
-  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+/* While Astro's transition is in flight, iOS Safari paints stale
+   backdrop-filter output inside the captured bitmap, making the nav look
+   ghosted. Drop the blur for the transition frame and let the solid
+   background carry through; it restores as soon as astro:page-load fires. */
+html[data-astro-transition] nav[aria-label="Main navigation"] > div,
+html[data-astro-transition-fallback] nav[aria-label="Main navigation"] > div {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
