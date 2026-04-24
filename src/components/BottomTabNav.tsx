@@ -288,9 +288,9 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
 
       {/* Tab bar — floating pill + standalone search circle, iOS 26 style.
           Stays mounted across SPA navigations via `transition:persist` on
-          the island in Layout.astro, so the element never unmounts, never
-          flickers, and never hits the browser's view-transition snapshot
-          layer (which we disable globally in global.css). */}
+          the island in Layout.astro, so the element never unmounts and
+          local UI state (search query, settings sheet) survives page
+          swaps. */}
       <nav
         className="fixed bottom-4 left-0 right-0 z-40 mx-auto flex max-w-md items-center gap-2 px-5 sm:px-6 lg:hidden [@media(display-mode:standalone)]:bottom-[max(env(safe-area-inset-bottom),1rem)]"
         aria-label="Main navigation"
