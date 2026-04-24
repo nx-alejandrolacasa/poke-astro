@@ -1,4 +1,3 @@
-import { navigate } from 'astro:transitions/client'
 import { useEffect, useRef, useState } from 'react'
 import { SettingsMenuContent } from '@/components/SettingsMenuContent'
 import type { Locale } from '@/utils/i18n'
@@ -91,7 +90,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
   }, [searchOpen])
 
   const navigateTo = (name: string) => {
-    navigate(`/${locale}/pokemon/${name}`)
+    window.location.href = `/${locale}/pokemon/${name}`
     setSearchOpen(false)
     setQuery('')
   }
