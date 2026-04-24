@@ -138,7 +138,7 @@ const { title, locale } = Astro.props
   </head>
   <body class="text-ink transition-colors dark:text-dark-ink">
     <Header locale={locale} />
-    <main class="mx-auto max-w-7xl px-4 pt-3 pb-4 md:px-6 md:pb-6 lg:pt-6" transition:name="main-content" transition:animate="fade">
+    <main class="mx-auto max-w-7xl px-4 pt-3 pb-4 md:px-6 md:pb-6 lg:pt-6">
       <slot />
     </main>
     <Footer locale={locale} />
@@ -153,6 +153,21 @@ const { title, locale } = Astro.props
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js').catch(() => {})
       }
+
+      // Page-content fade on SPA navigation. We opt out of the browser's
+      // View Transitions snapshot layer (see global.css) because the
+      // snapshots tripped over iOS Safari quirks (safe-area, backdrop-
+      // filter, fixed positioning). Instead, play a lightweight WAAPI
+      // fade on the new <main> after Astro finishes swapping the DOM.
+      document.addEventListener('astro:after-swap', function () {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+        var main = document.querySelector('main')
+        if (!main || !main.animate) return
+        main.animate(
+          [{ opacity: 0 }, { opacity: 1 }],
+          { duration: 180, easing: 'cubic-bezier(0.2, 0, 0, 1)', fill: 'backwards' }
+        )
+      })
     </script>
   </body>
 </html>
