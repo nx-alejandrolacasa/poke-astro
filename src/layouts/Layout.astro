@@ -142,8 +142,6 @@ const { title, locale } = Astro.props
       <slot />
     </main>
     <Footer locale={locale} />
-    <!-- Bottom padding for floating mobile tab bar -->
-    <div class="h-20 lg:hidden" aria-hidden="true"></div>
     <BottomTabNav
       client:load
       locale={locale}

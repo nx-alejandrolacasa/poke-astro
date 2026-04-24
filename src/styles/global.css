@@ -7,10 +7,18 @@
 
 html {
   color-scheme: light dark;
-  /* Safe-area top lives on <html> — the only element Astro's view-transition
-     swap never replaces — so the inset can't go stale to 0 mid-transition on
-     iOS Safari (which was pushing content under the translucent address bar). */
+  /* Safe-area insets live on <html> — the only element Astro's view-transition
+     swap never replaces — so they can't go stale to 0 mid-transition on iOS
+     Safari. Top clears the notch/address bar; bottom reserves space for the
+     floating mobile tab bar so content can scroll past it. */
   padding-top: env(safe-area-inset-top);
+}
+
+/* Mobile only — desktop has no floating bottom nav, so no bottom padding. */
+@media (max-width: 1023px) {
+  html {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+  }
 }
 
 @theme {
@@ -273,16 +281,6 @@ html {
 ::view-transition-old(bottom-nav),
 ::view-transition-new(bottom-nav) {
   animation: none !important;
-}
-
-/* While Astro's transition is in flight, iOS Safari paints stale
-   backdrop-filter output inside the captured bitmap, making the nav look
-   ghosted. Drop the blur for the transition frame and let the solid
-   background carry through; it restores as soon as astro:page-load fires. */
-html[data-astro-transition] nav[aria-label="Main navigation"] > div,
-html[data-astro-transition-fallback] nav[aria-label="Main navigation"] > div {
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
