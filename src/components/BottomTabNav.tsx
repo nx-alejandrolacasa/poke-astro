@@ -286,8 +286,16 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
         />
       </div>
 
-      {/* Tab bar — floating pill + standalone search circle, iOS 26 style */}
-      <nav className="fixed bottom-4 left-0 right-0 z-40 mx-auto flex max-w-md items-center gap-2 px-5 sm:px-6 lg:hidden [@media(display-mode:standalone)]:bottom-[max(env(safe-area-inset-bottom),1rem)]" aria-label="Main navigation">
+      {/* Tab bar — floating pill + standalone search circle, iOS 26 style.
+          `view-transition-name` must live here, not on the <astro-island>
+          wrapper: Astro styles islands with `display: contents`, which has
+          no layout box, so `view-transition-name` on the island is a no-op
+          and the nav gets pulled into the root snapshot (= visible fade). */}
+      <nav
+        className="fixed bottom-4 left-0 right-0 z-40 mx-auto flex max-w-md items-center gap-2 px-5 sm:px-6 lg:hidden [@media(display-mode:standalone)]:bottom-[max(env(safe-area-inset-bottom),1rem)]"
+        style={{ viewTransitionName: 'bottom-nav' }}
+        aria-label="Main navigation"
+      >
         <div className="flex h-14 flex-1 items-center justify-between gap-1 rounded-full border border-white/60 bg-white/70 px-2.5 shadow-lg shadow-black/[0.08] backdrop-blur-xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:shadow-black/30">
           {tabs.map((tab) => {
             const isActive = tab.match(currentPath)

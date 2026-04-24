@@ -266,6 +266,15 @@ html {
   animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
 }
 
+/* Hard-pin the bottom tab bar to its own static snapshot pair. Without
+   these rules, the browser cross-fades old and new snapshots by default
+   and the nav visibly flickers/ghosts during navigation. */
+::view-transition-group(bottom-nav),
+::view-transition-old(bottom-nav),
+::view-transition-new(bottom-nav) {
+  animation: none !important;
+}
+
 /* While Astro's transition is in flight, iOS Safari paints stale
    backdrop-filter output inside the captured bitmap, making the nav look
    ghosted. Drop the blur for the transition frame and let the solid
