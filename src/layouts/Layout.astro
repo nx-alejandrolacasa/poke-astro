@@ -24,6 +24,30 @@ const { title, locale } = Astro.props
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+    <script is:inline>
+      // Opt out of the browser's View Transitions snapshot layer entirely.
+      // Astro's ClientRouter wraps every DOM swap in
+      // `document.startViewTransition`, which on iOS Safari produces two
+      // visible artefacts: the persisted tab bar shows twice (live DOM +
+      // snapshot) mid-transition, and `backdrop-filter` doesn't re-render
+      // inside the snapshot so the nav looks transparent. Making
+      // startViewTransition run the callback synchronously gives us
+      // instant client-side swaps with none of the snapshot quirks. The
+      // content fade-in is driven by a WAAPI animation on astro:after-swap
+      // (see below). Must run before ClientRouter registers its nav
+      // handlers, so it lives at the top of <head>.
+      if (typeof document !== 'undefined' && document.startViewTransition) {
+        document.startViewTransition = function (cb) {
+          var finished = Promise.resolve(typeof cb === 'function' ? cb() : undefined)
+          return {
+            ready: finished,
+            finished: finished,
+            updateCallbackDone: finished,
+            skipTransition: function () {},
+          }
+        }
+      }
+    </script>
     <ClientRouter />
 
     <!-- PWA Meta Tags -->

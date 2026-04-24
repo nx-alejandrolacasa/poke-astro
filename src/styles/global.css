@@ -260,22 +260,6 @@ html {
   to { width: 100%; }
 }
 
-/* ══════════════════════════════════════════
-   VIEW TRANSITIONS — disabled
-   ══════════════════════════════════════════
-   Astro's ClientRouter wraps every SPA swap in `document.startViewTransition`,
-   but the browser's snapshot layer hits too many iOS Safari quirks for a
-   PWA — stale `env(safe-area-inset-*)`, baked-in `backdrop-filter`, fixed
-   positioning jumps. Kill every animation on the pseudo-element tree so
-   the swap is effectively instant. Content fade-in is handled in JS
-   (astro:after-swap → WAAPI) on the new <main> only, avoiding snapshots
-   entirely. */
-::view-transition-group(*),
-::view-transition-old(*),
-::view-transition-new(*) {
-  animation: none !important;
-}
-
 /* Registered so the scroll-fade mask endpoints can be transitioned between
    opaque (no fade) and transparent (fade visible) smoothly. */
 @property --scroll-fade-left {
