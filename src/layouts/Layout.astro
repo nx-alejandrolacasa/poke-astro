@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from 'astro:transitions'
 import '@/styles/global.css'
 import { BottomTabNav } from '@/components/BottomTabNav'
 import Footer from '@/components/Footer.astro'
@@ -23,6 +24,41 @@ const { title, locale } = Astro.props
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+    {/* SPA navigation plumbing — keep everything about our transition
+        strategy in one place.
+
+        Problem: ClientRouter wraps each swap in `document.startViewTransition`,
+        and the browser's snapshot layer hits iOS Safari quirks that make
+        the PWA look broken — stale `env(safe-area-*)`, baked-in
+        `backdrop-filter`, and persisted fixed elements drawn twice
+        mid-swap (live DOM + snapshot).
+
+        Solution: replace `startViewTransition` with a synchronous
+        pass-through so the swap runs with no snapshot machinery, and
+        reintroduce a simple WAAPI opacity fade on the new <main> for
+        visual continuity. The patch must be in place before ClientRouter
+        handles its first navigation, so this script sits above
+        <ClientRouter /> in document order. */}
+    <script is:inline>
+      document.startViewTransition = (cb) => {
+        const done = Promise.resolve(cb?.())
+        return {
+          ready: done,
+          finished: done,
+          updateCallbackDone: done,
+          skipTransition: () => {},
+        }
+      }
+
+      document.addEventListener('astro:after-swap', () => {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+        document.querySelector('main')?.animate(
+          [{ opacity: 0 }, { opacity: 1 }],
+          { duration: 180, easing: 'cubic-bezier(0.2, 0, 0, 1)', fill: 'backwards' },
+        )
+      })
+    </script>
+    <ClientRouter />
 
     <!-- PWA Meta Tags -->
     <link rel="manifest" href="/manifest.json" />
@@ -53,10 +89,14 @@ const { title, locale } = Astro.props
           return prefersDarkQuery.matches ? 'dark' : 'light'
         }
 
-        function applyTheme(setting) {
+        // root defaults to the current document, but astro:before-swap
+        // passes the incoming document so we can paint the new page in
+        // the right mode before it's inserted.
+        function applyTheme(setting, root) {
           var resolved = (setting === 'dark' || setting === 'light') ? setting : getPreferredTheme()
-          document.documentElement.classList.toggle('dark', resolved === 'dark')
-          document.documentElement.style.colorScheme = resolved
+          var el = (root || document).documentElement
+          el.classList.toggle('dark', resolved === 'dark')
+          el.style.colorScheme = resolved
         }
 
         function setTheme(setting) {
@@ -83,9 +123,16 @@ const { title, locale } = Astro.props
           if (!getStoredTheme()) applyTheme(null)
         })
 
-        // Handle bfcache restore
+        // Preserve theme across document re-entry:
+        //   pageshow (persisted) — restored from bfcache
+        //   astro:before-swap    — SPA swap replaces every <html> attribute,
+        //                          so write the class onto the incoming
+        //                          document before it's inserted (no flash)
         window.addEventListener('pageshow', function(e) {
           if (e.persisted) applyTheme(getStoredTheme())
+        })
+        document.addEventListener('astro:before-swap', function(e) {
+          applyTheme(getStoredTheme(), e.newDocument)
         })
 
         return { setTheme: setTheme, getTheme: getTheme }
@@ -136,13 +183,16 @@ const { title, locale } = Astro.props
   </head>
   <body class="text-ink transition-colors dark:text-dark-ink">
     <Header locale={locale} />
-    <main class="mx-auto max-w-7xl px-4 pb-4 pt-[calc(env(safe-area-inset-top)+0.75rem)] md:px-6 md:pb-6 lg:pt-6">
+    <main class="mx-auto max-w-7xl px-4 pt-3 pb-4 md:px-6 md:pb-6 lg:pt-6">
       <slot />
     </main>
     <Footer locale={locale} />
-    <!-- Bottom padding for floating mobile tab bar -->
-    <div class="h-20 lg:hidden" aria-hidden="true"></div>
-    <BottomTabNav client:load locale={locale} currentPath={Astro.url.pathname} />
+    <BottomTabNav
+      client:load
+      locale={locale}
+      currentPath={Astro.url.pathname}
+      transition:persist="bottom-nav"
+    />
     <script is:inline>
       // Register service worker for PWA
       if ('serviceWorker' in navigator) {

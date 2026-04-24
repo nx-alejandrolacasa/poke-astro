@@ -1,3 +1,4 @@
+import { navigate } from 'astro:transitions/client'
 import { useEffect, useRef, useState } from 'react'
 import { SettingsMenuContent } from '@/components/SettingsMenuContent'
 import type { Locale } from '@/utils/i18n'
@@ -40,6 +41,19 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const [isLoading, setIsLoading] = useState(true)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  // Island is persisted across navigations (DOM kept, props refreshed by
+  // Astro by default), so local UI state survives the page swap. Dismiss any
+  // open overlay/query when the next page settles in.
+  useEffect(() => {
+    const reset = () => {
+      setSearchOpen(false)
+      setConfigOpen(false)
+      setQuery('')
+    }
+    document.addEventListener('astro:page-load', reset)
+    return () => document.removeEventListener('astro:page-load', reset)
+  }, [])
 
   useEffect(() => {
     if (!configOpen) return
@@ -90,7 +104,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
   }, [searchOpen])
 
   const navigateTo = (name: string) => {
-    window.location.href = `/${locale}/pokemon/${name}`
+    navigate(`/${locale}/pokemon/${name}`)
     setSearchOpen(false)
     setQuery('')
   }
@@ -272,8 +286,15 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
         />
       </div>
 
-      {/* Tab bar — floating pill + standalone search circle, iOS 26 style */}
-      <nav className="fixed bottom-4 left-0 right-0 z-40 mx-auto flex max-w-md items-center gap-2 px-5 sm:px-6 lg:hidden [@media(display-mode:standalone)]:bottom-[max(env(safe-area-inset-bottom),1rem)]" aria-label="Main navigation">
+      {/* Tab bar — floating pill + standalone search circle, iOS 26 style.
+          Stays mounted across SPA navigations via `transition:persist` on
+          the island in Layout.astro, so the element never unmounts and
+          local UI state (search query, settings sheet) survives page
+          swaps. */}
+      <nav
+        className="fixed bottom-4 left-0 right-0 z-40 mx-auto flex max-w-md items-center gap-2 px-5 sm:px-6 lg:hidden [@media(display-mode:standalone)]:bottom-[max(env(safe-area-inset-bottom),1rem)]"
+        aria-label="Main navigation"
+      >
         <div className="flex h-14 flex-1 items-center justify-between gap-1 rounded-full border border-white/60 bg-white/70 px-2.5 shadow-lg shadow-black/[0.08] backdrop-blur-xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:shadow-black/30">
           {tabs.map((tab) => {
             const isActive = tab.match(currentPath)

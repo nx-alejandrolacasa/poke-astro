@@ -7,6 +7,21 @@
 
 html {
   color-scheme: light dark;
+  /* Safe-area insets anchored on <html>. SPA navigation swaps <body> but
+     never <html>, so these values can't be re-evaluated to 0 mid-swap on
+     iOS Safari. Top clears the notch / translucent address bar; bottom
+     reserves space for the floating mobile tab bar. */
+  padding-top: env(safe-area-inset-top);
+}
+
+/* Below Tailwind's `lg` breakpoint (1024px) the floating tab bar is
+   visible, so reserve room beneath the content. 5.5rem = 3.5rem pill
+   height (h-14) + 1rem viewport margin + ~1rem breathing room so the
+   last scroll position clears the nav cleanly. */
+@media (max-width: 1023px) {
+  html {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+  }
 }
 
 @theme {
