@@ -248,6 +248,34 @@ html {
   to { width: 100%; }
 }
 
+/* ══════════════════════════════════════════
+   VIEW TRANSITIONS — scoped page cross-fade
+   ══════════════════════════════════════════
+   Only <main> gets a dedicated animation (see Layout.astro); the sticky
+   header and persisted bottom tab bar stay out of the snapshot entirely.
+   Tighten the default root timing so the transition feels snappy rather
+   than laggy. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 180ms;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+::view-transition-old(main-content),
+::view-transition-new(main-content) {
+  animation-duration: 220ms;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-old(main-content),
+  ::view-transition-new(main-content) {
+    animation: none !important;
+  }
+}
+
 /* Registered so the scroll-fade mask endpoints can be transitioned between
    opaque (no fade) and transparent (fade visible) smoothly. */
 @property --scroll-fade-left {
