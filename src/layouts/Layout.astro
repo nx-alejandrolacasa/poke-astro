@@ -114,6 +114,18 @@ const { title, locale } = Astro.props
           if (e.persisted) applyTheme(getStoredTheme())
         })
 
+        // Astro's ClientRouter replaces every attribute on <html> on each
+        // SPA navigation (swapRootAttributes), which strips the `.dark`
+        // class. Re-apply the theme onto the *incoming* document before
+        // the swap so the new page renders in the right mode on first
+        // paint — no flash.
+        document.addEventListener('astro:before-swap', function(e) {
+          var stored = getStoredTheme()
+          var resolved = (stored === 'dark' || stored === 'light') ? stored : getPreferredTheme()
+          e.newDocument.documentElement.classList.toggle('dark', resolved === 'dark')
+          e.newDocument.documentElement.style.colorScheme = resolved
+        })
+
         return { setTheme: setTheme, getTheme: getTheme }
       })()
 
