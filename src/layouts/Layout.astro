@@ -1,5 +1,6 @@
 ---
 import { ClientRouter } from 'astro:transitions'
+import Analytics from '@vercel/analytics/astro'
 import '@/styles/global.css'
 import { BottomTabNav } from '@/components/BottomTabNav'
 import Footer from '@/components/Footer.astro'
@@ -12,6 +13,7 @@ export interface Props {
 }
 
 const { title, locale } = Astro.props
+const isVercel = !!process.env.VERCEL
 ---
 
 <!DOCTYPE html>
@@ -199,6 +201,7 @@ const { title, locale } = Astro.props
         navigator.serviceWorker.register('/sw.js').catch(() => {})
       }
     </script>
+    {isVercel && <Analytics />}
   </body>
 </html>
 <style is:global>
