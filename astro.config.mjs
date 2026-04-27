@@ -6,14 +6,20 @@ import { defineConfig } from 'astro/config'
 // Detect dev mode via npm script name (set by npm to "dev", "build", "preview", etc.)
 const isDev = process.env.npm_lifecycle_event === 'dev' || process.env.npm_lifecycle_event === 'start'
 
-// Adapter: Node for dev, Cloudflare when CF_PAGES (or DEPLOY_TARGET=cloudflare) is set,
-// default to Vercel for builds.
+// Adapter: Node for dev; Cloudflare when running on Cloudflare Pages
+// (CF_PAGES) or Workers Builds (WORKERS_CI_BUILD_UUID), or when explicitly
+// requested via DEPLOY_TARGET=cloudflare. Defaults to Vercel for builds.
+const isCloudflareCI =
+  !!process.env.CF_PAGES ||
+  !!process.env.WORKERS_CI_BUILD_UUID ||
+  process.env.DEPLOY_TARGET === 'cloudflare'
+
 const adapter = await (async () => {
   if (isDev) {
     const node = (await import('@astrojs/node')).default
     return node({ mode: 'standalone' })
   }
-  if (process.env.CF_PAGES || process.env.DEPLOY_TARGET === 'cloudflare') {
+  if (isCloudflareCI) {
     const cloudflare = (await import('@astrojs/cloudflare')).default
     return cloudflare()
   }

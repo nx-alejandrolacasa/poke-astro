@@ -580,7 +580,7 @@ This project was upgraded from legacy versions to the latest stable releases:
 - Selected by default in `astro.config.mjs`; `process.env.VERCEL` (set automatically by Vercel) also gates the `<Analytics />` component in `Layout.astro` so it only ships on Vercel deployments
 
 **Cloudflare Adapter v13 (Optional / secondary):**
-- Opt in by setting `DEPLOY_TARGET=cloudflare` (or running on Cloudflare Pages, which sets `CF_PAGES=1` automatically)
+- Auto-selected when running on Cloudflare Pages (`CF_PAGES`) or Cloudflare Workers Builds (`WORKERS_CI_BUILD_UUID`); also opt-in via `DEPLOY_TARGET=cloudflare`
 - Dev server and prerendering use the real `workerd` runtime instead of Node.js
 - Updated `wrangler.jsonc` entrypoint to `@astrojs/cloudflare/entrypoints/server`
 - Updated `compatibility_date` to `2026-03-10`
