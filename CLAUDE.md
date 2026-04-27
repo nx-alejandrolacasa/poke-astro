@@ -574,16 +574,18 @@ This project was upgraded from legacy versions to the latest stable releases:
 - Zod upgraded to v4 (used internally by Astro)
 - Shiki upgraded to v4 for syntax highlighting
 
-**Cloudflare Adapter v13 (Primary deployment):**
-- Dev server and prerendering now use real `workerd` runtime instead of Node.js
+**Vercel Adapter v10 (Primary deployment):**
+- Updated to use new Adapter API with Vite 7 Environment API
+- Deprecated `@astrojs/vercel/serverless` and `@astrojs/vercel/static` exports fully removed
+- Selected by default in `astro.config.mjs`; `process.env.VERCEL` (set automatically by Vercel) also gates the `<Analytics />` component in `Layout.astro` so it only ships on Vercel deployments
+
+**Cloudflare Adapter v13 (Optional / secondary):**
+- Auto-selected when running on Cloudflare Pages (`CF_PAGES`) or Cloudflare Workers Builds (`WORKERS_CI_BUILD_UUID`); also opt-in via `DEPLOY_TARGET=cloudflare`
+- Dev server and prerendering use the real `workerd` runtime instead of Node.js
 - Updated `wrangler.jsonc` entrypoint to `@astrojs/cloudflare/entrypoints/server`
 - Updated `compatibility_date` to `2026-03-10`
 - `Astro.locals.runtime` removed in favor of direct Cloudflare Workers APIs
 - `cloudflareModules` option removed (no longer needed)
-
-**Vercel Adapter v10:**
-- Updated to use new Adapter API with Vite 7 Environment API
-- Deprecated `@astrojs/vercel/serverless` and `@astrojs/vercel/static` exports fully removed
 
 **Bug Fixes:**
 - Added missing `export const prerender = true` to redirect pages (`pokemon/[name]`, `type/[type]`, `generation/[id]`)
