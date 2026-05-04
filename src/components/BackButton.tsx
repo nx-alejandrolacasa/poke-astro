@@ -14,6 +14,20 @@ export function BackButton({ locale }: BackButtonProps) {
   const [enabled, setEnabled] = useState(true)
 
   useEffect(() => {
+    // Modern Navigation API exposes canGoBack directly (PWA-friendly)
+    const nav = (window as Window & { navigation?: { canGoBack?: boolean } })
+      .navigation
+    if (nav?.canGoBack != null) {
+      setEnabled(nav.canGoBack)
+      return
+    }
+    // Fallback: history.length > 1 means there is at least one prior entry
+    // (covers PWA standalone mode where document.referrer is empty)
+    if (window.history.length > 1) {
+      setEnabled(true)
+      return
+    }
+    // No history entries and no referrer — disable
     if (!document.referrer) {
       setEnabled(false)
       return
