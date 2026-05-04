@@ -122,6 +122,7 @@ export type Translations = {
     speciesCount: string
     backToHome: string
     region: string
+    back: string
   }
   // Errors
   errors: {
@@ -413,6 +414,7 @@ export const translations: Record<Language, Translations> = {
       speciesCount: '{count} Pokémon species',
       backToHome: 'Back to Home',
       region: 'Region',
+      back: 'Back',
     },
     errors: {
       loadFailed:
@@ -716,6 +718,7 @@ export const translations: Record<Language, Translations> = {
       speciesCount: '{count} especies de Pokémon',
       backToHome: 'Volver al Inicio',
       region: 'Región',
+      back: 'Volver',
     },
     errors: {
       loadFailed:

@@ -9,10 +9,10 @@ import {
 import { translations } from '@/utils/translations'
 
 type RecentlyVisitedProps = {
-  currentName: string
-  currentId: number
-  currentTypeColor: string
-  currentTypes: string[]
+  currentName?: string
+  currentId?: number
+  currentTypeColor?: string
+  currentTypes?: string[]
   locale: Locale
 }
 
@@ -33,14 +33,19 @@ export function RecentlyVisited({
     ;(async () => {
       const existing = await getRecentVisits()
       if (cancelled) return
-      setVisits(existing.filter((v) => v.name !== currentName).slice(0, 5))
-      await addRecentVisit({
-        name: currentName,
-        displayName: getPokemonName(currentName),
-        id: currentId,
-        typeColor: currentTypeColor,
-        types: currentTypes,
-      })
+      const filtered = currentName
+        ? existing.filter((v) => v.name !== currentName)
+        : existing
+      setVisits(filtered.slice(0, 6))
+      if (currentName && currentId && currentTypeColor && currentTypes) {
+        await addRecentVisit({
+          name: currentName,
+          displayName: getPokemonName(currentName),
+          id: currentId,
+          typeColor: currentTypeColor,
+          types: currentTypes,
+        })
+      }
     })()
     return () => {
       cancelled = true

@@ -147,11 +147,11 @@ TypeScript path aliases are configured in `tsconfig.json`:
 ```
 
 **Usage:**
-- `@components/Header.astro` → `src/components/Header.astro`
-- `@layouts/Layout.astro` → `src/layouts/Layout.astro`
-- `@utils/pokemon` → `src/utils/pokemon.ts`
+- `@/components/Header.astro` → `src/components/Header.astro`
+- `@/layouts/Layout.astro` → `src/layouts/Layout.astro`
+- `@/utils/pokemon` → `src/utils/pokemon.ts`
 
-**Always use aliases** for cleaner imports across the codebase.
+**Always use the `@/` alias for every intra-project import — never relative paths like `./Foo` or `../utils/bar`, even for files in the same directory.** This applies to `.ts`, `.tsx`, and `.astro` files. Mixing styles makes refactors and greps harder.
 
 ---
 

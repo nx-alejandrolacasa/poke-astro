@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { BackButton } from '@/components/BackButton'
 import { Carousel } from '@/components/Carousel'
 import { PokemonEnrichedData } from '@/components/PokemonEnrichedData'
 import { RecentlyVisited } from '@/components/RecentlyVisited'
@@ -245,19 +246,7 @@ export function PokemonDetailContent({
 
       {/* Back button + recently visited pills */}
       <div className="flex items-center gap-2">
-        <button
-          type="button"
-          onClick={() => window.history.back()}
-          aria-label={locale === 'es' ? 'Volver' : 'Back'}
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/60 bg-white/70 px-2.5 py-2.5 font-semibold text-red-500 text-sm shadow-lg shadow-black/[0.08] backdrop-blur-xl transition-all hover:bg-red-500/10 active:scale-95 md:px-4 md:py-2 dark:border-white/[0.08] dark:bg-dark-surface/70 dark:text-red-300 dark:shadow-black/30 dark:hover:bg-red-500/15"
-        >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          <span className="hidden md:inline">
-            {locale === 'es' ? 'Volver' : 'Back'}
-          </span>
-        </button>
+        <BackButton locale={locale} />
         <RecentlyVisited
           currentName={pokemonName}
           currentId={pokemon.id}
@@ -430,17 +419,17 @@ export function PokemonDetailContent({
               />
             ))}
             {speciesInfo?.isBaby && (
-              <span className="rounded-full bg-pink-100 px-2 py-0.5 font-semibold text-pink-700 text-xs dark:bg-pink-500/10 dark:text-pink-400">
+              <span className="inline-flex items-center rounded-full bg-pink-100 px-3 py-1 font-semibold text-pink-700 text-xs dark:bg-pink-500/10 dark:text-pink-400">
                 {t.pokemon.baby}
               </span>
             )}
             {speciesInfo?.isLegendary && (
-              <span className="rounded-full bg-amber-100 px-2 py-0.5 font-semibold text-amber-700 text-xs dark:bg-amber-500/10 dark:text-amber-400">
+              <span className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 font-semibold text-amber-700 text-xs dark:bg-amber-500/10 dark:text-amber-400">
                 {t.pokemon.legendary}
               </span>
             )}
             {speciesInfo?.isMythical && (
-              <span className="rounded-full bg-violet-100 px-2 py-0.5 font-semibold text-violet-700 text-xs dark:bg-violet-500/10 dark:text-violet-400">
+              <span className="inline-flex items-center rounded-full bg-violet-100 px-3 py-1 font-semibold text-violet-700 text-xs dark:bg-violet-500/10 dark:text-violet-400">
                 {t.pokemon.mythical}
               </span>
             )}

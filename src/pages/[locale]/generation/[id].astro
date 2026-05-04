@@ -104,7 +104,7 @@ const initialData: PokemonList = {
 
 <Layout title={`${generation.name} - ${generation.region} ${t.pages.region}`} locale={locale}>
   <GenerationInfiniteScroll
-    client:load
+    client:only="react"
     initialData={initialData}
     generation={generation}
     generationColor={gradientClass}

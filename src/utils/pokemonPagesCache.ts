@@ -1,4 +1,4 @@
-import type { Pokemon } from './pokemon'
+import type { Pokemon } from '@/utils/pokemon'
 
 const DB_NAME = 'poke-astro'
 const STORE_NAME = 'pokemon-pages'
@@ -37,11 +37,12 @@ function openDb(): Promise<IDBDatabase> {
   })
 }
 
-function pageKey(page: number, pageSize: number) {
-  return `page:${pageSize}:${page}`
+function pageKey(namespace: string, page: number, pageSize: number) {
+  return `${namespace}:${pageSize}:${page}`
 }
 
 export async function getCachedPage(
+  namespace: string,
   page: number,
   pageSize: number
 ): Promise<CachedPage | null> {
@@ -49,7 +50,9 @@ export async function getCachedPage(
     const db = await openDb()
     return await new Promise((resolve) => {
       const tx = db.transaction(STORE_NAME, 'readonly')
-      const req = tx.objectStore(STORE_NAME).get(pageKey(page, pageSize))
+      const req = tx
+        .objectStore(STORE_NAME)
+        .get(pageKey(namespace, page, pageSize))
       req.onsuccess = () => {
         const record = req.result as (CachedPage & { key: string }) | undefined
         if (!record) return resolve(null)
@@ -64,6 +67,7 @@ export async function getCachedPage(
 }
 
 export async function getCachedPagesFrom(
+  namespace: string,
   startPage: number,
   pageSize: number
 ): Promise<CachedPage[]> {
@@ -73,9 +77,14 @@ export async function getCachedPagesFrom(
       const tx = db.transaction(STORE_NAME, 'readonly')
       const req = tx.objectStore(STORE_NAME).getAll()
       req.onsuccess = () => {
-        const all = (req.result as (CachedPage & { key: string })[]) ?? []
+        const all =
+          (req.result as (CachedPage & {
+            key: string
+            namespace?: string
+          })[]) ?? []
         const fresh = all.filter(
           (entry) =>
+            entry.namespace === namespace &&
             entry.pageSize === pageSize &&
             entry.page >= startPage &&
             Date.now() - entry.cachedAt <= MAX_AGE_MS
@@ -100,6 +109,7 @@ export async function getCachedPagesFrom(
 }
 
 export async function putCachedPage(
+  namespace: string,
   page: number,
   pageSize: number,
   data: { count: number; results: Pokemon[] }
@@ -107,7 +117,8 @@ export async function putCachedPage(
   try {
     const db = await openDb()
     const record = {
-      key: pageKey(page, pageSize),
+      key: pageKey(namespace, page, pageSize),
+      namespace,
       page,
       pageSize,
       count: data.count,

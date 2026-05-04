@@ -1,5 +1,5 @@
-import type { Language, Translations } from './translations'
-import { translations } from './translations'
+import type { Language, Translations } from '@/utils/translations'
+import { translations } from '@/utils/translations'
 
 export const locales = ['en', 'es'] as const
 export type Locale = (typeof locales)[number]
