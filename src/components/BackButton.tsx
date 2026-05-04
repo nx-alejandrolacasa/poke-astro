@@ -15,8 +15,10 @@ export function BackButton({ locale }: BackButtonProps) {
 
   useEffect(() => {
     // Modern Navigation API exposes canGoBack directly (PWA-friendly)
-    if ('navigation' in window && (window as any).navigation?.canGoBack != null) {
-      setEnabled((window as any).navigation.canGoBack)
+    const nav = (window as Window & { navigation?: { canGoBack?: boolean } })
+      .navigation
+    if (nav?.canGoBack != null) {
+      setEnabled(nav.canGoBack)
       return
     }
     // Fallback: history.length > 1 means there is at least one prior entry
