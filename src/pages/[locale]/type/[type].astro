@@ -1,6 +1,7 @@
 ---
 export const prerender = true
 
+import ListerSkeleton from '@/components/ListerSkeleton.astro'
 import { TypeInfiniteScroll } from '@/components/TypeInfiniteScroll'
 import Layout from '@/layouts/Layout.astro'
 import { getI18n, locales } from '@/utils/i18n'
@@ -91,5 +92,7 @@ const typeName = t.types[type as keyof typeof t.types] || getPokemonName(type)
     type={type}
     typeColor={gradientClass}
     locale={locale}
-  />
+  >
+    <ListerSkeleton slot="fallback" banner="type" />
+  </TypeInfiniteScroll>
 </Layout>

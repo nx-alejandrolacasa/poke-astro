@@ -3,6 +3,7 @@ export const prerender = true
 
 import { GenerationInfiniteScroll } from '@/components/GenerationInfiniteScroll'
 import Layout from '@/layouts/Layout.astro'
+import ListerSkeleton from '@/components/ListerSkeleton.astro'
 import { getI18n, locales } from '@/utils/i18n'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
 
@@ -109,5 +110,7 @@ const initialData: PokemonList = {
     generation={generation}
     generationColor={gradientClass}
     locale={locale}
-  />
+  >
+    <ListerSkeleton slot="fallback" banner="generation" />
+  </GenerationInfiniteScroll>
 </Layout>

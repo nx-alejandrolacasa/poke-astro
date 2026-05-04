@@ -369,44 +369,23 @@ function EvolutionTree({ tree, currentPokemon, locale }: EvolutionTreeProps) {
           className={`flex flex-col items-center gap-2 ${!hasBranching ? 'md:flex-row md:gap-1' : ''}`}
         >
           {stageIndex > 0 && (
-            <>
-              {/* Mobile: vertical arrow + conditions */}
-              <div className={`flex flex-col items-center gap-0.5 ${!hasBranching ? 'md:hidden' : ''}`}>
-                {stage.length === 1 && stage[0].evolutionDetails.length > 0 && (
-                  <div className="flex flex-wrap justify-center gap-1">
-                    {getEvolutionConditionLabels(stage[0].evolutionDetails, t).map((label) => (
-                      <span key={label} className="rounded-full bg-primary/10 px-2 py-0.5 text-primary text-[10px] dark:bg-dark-primary/10 dark:text-dark-primary">
-                        {label}
-                      </span>
-                    ))}
-                  </div>
-                )}
-                <div className="font-bold text-xl text-ink-faint dark:text-dark-ink-faint">
-                  &darr;
-                </div>
-              </div>
-              {/* Desktop: horizontal arrow + conditions */}
-              {!hasBranching && (
-                <div className="hidden flex-col items-center gap-0.5 md:flex">
-                  {stage.length === 1 && stage[0].evolutionDetails.length > 0 && (
-                    <div className="flex flex-wrap justify-center gap-1">
-                      {getEvolutionConditionLabels(stage[0].evolutionDetails, t).map((label) => (
-                        <span key={label} className="rounded-full bg-primary/10 px-2 py-0.5 text-primary text-[10px] dark:bg-dark-primary/10 dark:text-dark-primary">
-                          {label}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                  <div className="font-bold text-xl text-ink-faint dark:text-dark-ink-faint">
-                    &rarr;
-                  </div>
-                </div>
+            <div
+              className="font-bold text-xl text-ink-faint dark:text-dark-ink-faint"
+              aria-hidden="true"
+            >
+              {hasBranching ? (
+                '↓'
+              ) : (
+                <>
+                  <span className="md:hidden">↓</span>
+                  <span className="hidden md:inline">→</span>
+                </>
               )}
-            </>
+            </div>
           )}
           {hasBranching && stage.length > 1 ? (
             <div className="rounded-xl border-2 border-ink-faint/30 border-dashed p-2 dark:border-dark-ink-faint/30">
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+              <div className="flex flex-wrap justify-center gap-2">
                 {stage.map((pokemon) => (
                   <EvolutionCard
                     key={pokemon.name}
@@ -428,6 +407,7 @@ function EvolutionTree({ tree, currentPokemon, locale }: EvolutionTreeProps) {
                   speciesUrl={pokemon.speciesUrl}
                   isCurrentPokemon={pokemon.name === currentPokemon}
                   locale={locale}
+                  conditionLabels={getEvolutionConditionLabels(pokemon.evolutionDetails, t)}
                 />
               ))}
             </div>

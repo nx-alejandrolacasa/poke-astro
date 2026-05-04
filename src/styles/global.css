@@ -98,6 +98,30 @@ html {
     0%, 100% { filter: hue-rotate(0deg); }
     50% { filter: hue-rotate(15deg); }
   }
+
+  /* Zoom overlay enter/exit. Used by ImageZoom — keyframes run on element
+     insertion so we don't need a two-state React dance to trigger them. */
+  --animate-zoom-overlay-in: zoom-overlay-in 220ms ease-out backwards;
+  --animate-zoom-overlay-out: zoom-overlay-out 220ms ease-out forwards;
+  --animate-zoom-image-in: zoom-image-in 260ms cubic-bezier(0.2, 0.9, 0.3, 1.1) backwards;
+  --animate-zoom-image-out: zoom-image-out 200ms ease-in forwards;
+
+  @keyframes zoom-overlay-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes zoom-overlay-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+  }
+  @keyframes zoom-image-in {
+    from { opacity: 0; transform: scale(0.85); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes zoom-image-out {
+    from { opacity: 1; transform: scale(1); }
+    to   { opacity: 0; transform: scale(0.92); }
+  }
 }
 
 /* ══════════════════════════════════════════

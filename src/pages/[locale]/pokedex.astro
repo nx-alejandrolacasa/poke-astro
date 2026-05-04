@@ -1,6 +1,7 @@
 ---
 export const prerender = true
 
+import ListerSkeleton from '@/components/ListerSkeleton.astro'
 import { PokemonInfiniteScroll } from '@/components/PokemonInfiniteScroll'
 import Layout from '@/layouts/Layout.astro'
 import { getI18n, getLocalePaths } from '@/utils/i18n'
@@ -17,5 +18,7 @@ const initialData = await fetchPokemonPage(1)
 ---
 
 <Layout title={t.header.pokedex} locale={locale}>
-  <PokemonInfiniteScroll client:only="react" initialData={initialData} locale={locale} />
+  <PokemonInfiniteScroll client:only="react" initialData={initialData} locale={locale}>
+    <ListerSkeleton slot="fallback" />
+  </PokemonInfiniteScroll>
 </Layout>

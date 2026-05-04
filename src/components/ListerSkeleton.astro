@@ -1,0 +1,57 @@
+---
+// SSR fallback for the lister pages while the client:only React grid mounts.
+// Mirrors VirtualPokemonGrid's outer layout so the swap from skeleton to live
+// component is visually quiet.
+
+export interface Props {
+  banner?: 'type' | 'generation'
+}
+
+const { banner } = Astro.props
+
+const cellCount = 18
+---
+
+<div>
+  {/* Back button + recents row placeholder. The recents pills are
+      client-only (they read IndexedDB), so we just leave space for the back
+      button — recents will pop in once the React component hydrates. */}
+  <div class="mb-4 flex items-center gap-2">
+    <div class="h-10 w-10 shrink-0 rounded-full bg-white/60 shadow-lg shadow-black/[0.08] backdrop-blur-xl md:w-24 dark:bg-dark-surface/60 dark:shadow-black/30"></div>
+  </div>
+
+  {banner === 'type' && (
+    <div class="mb-8 rounded-2xl bg-surface-sunken p-6 md:p-8 dark:bg-dark-raised">
+      <div class="skeleton-shimmer mb-2 h-7 w-32 rounded-md"></div>
+      <div class="skeleton-shimmer h-4 w-44 rounded"></div>
+    </div>
+  )}
+
+  {banner === 'generation' && (
+    <div class="mb-8 rounded-2xl bg-gradient-to-br from-primary-50 to-surface-sunken p-6 md:p-8 dark:from-dark-raised dark:to-dark-surface">
+      <div class="skeleton-shimmer mb-2 h-7 w-40 rounded-md"></div>
+      <div class="skeleton-shimmer h-4 w-56 rounded"></div>
+    </div>
+  )}
+
+  <ul class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-4 lg:grid-cols-5 xl:grid-cols-6">
+    {Array.from({ length: cellCount }).map(() => (
+      <li class="list-none">
+        <div
+          class="overflow-hidden rounded-2xl bg-white p-4 text-center dark:bg-dark-surface"
+          style="border: 2px solid transparent"
+        >
+          <div class="relative aspect-square w-full">
+            <div class="skeleton-shimmer h-full w-full rounded-xl"></div>
+          </div>
+          <div class="mt-2 space-y-1.5">
+            <div class="skeleton-shimmer mx-auto h-6 w-3/4 rounded-md"></div>
+            <div class="flex flex-wrap justify-center gap-1">
+              <div class="skeleton-shimmer h-6 w-14 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+      </li>
+    ))}
+  </ul>
+</div>

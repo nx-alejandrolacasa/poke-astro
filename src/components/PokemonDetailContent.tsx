@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { BackButton } from '@/components/BackButton'
 import { Carousel } from '@/components/Carousel'
+import { ImageZoom } from '@/components/ImageZoom'
 import { PokemonEnrichedData } from '@/components/PokemonEnrichedData'
 import { RecentlyVisited } from '@/components/RecentlyVisited'
 import { TypeBadge } from '@/components/TypeBadge'
@@ -118,8 +119,10 @@ export function PokemonDetailContent({
   const [showShiny, setShowShiny] = useState(false)
   const [shinyAnimating, setShinyAnimating] = useState(false)
   const [shinyAnimKey, setShinyAnimKey] = useState(0)
+  const [zoomOpen, setZoomOpen] = useState(false)
   const shinyUrl = pokemon.sprites?.other?.['official-artwork']?.front_shiny
   const defaultUrl = getPokemonImage(pokemon)
+  const zoomSrc = showShiny && shinyUrl ? shinyUrl : defaultUrl
 
   useEffect(() => {
     const fetchEnrichedData = async () => {
@@ -267,11 +270,14 @@ export function PokemonDetailContent({
         <div
           className="bento-cell relative flex flex-col items-center justify-center gap-3 rounded-2xl bg-white p-6 md:col-span-2 md:row-span-2 dark:bg-dark-surface"
         >
-          {/* Shiny toggle — top-right corner */}
+          {/* Shiny toggle — top-right corner. p-3 (≈48×48 hit area) keeps it
+              well above the recommended 44px touch target so kids can tap it
+              comfortably without grazing the zoomable image. */}
           {shinyUrl && (
             <button
               type="button"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation()
                 setShowShiny((s) => {
                   if (!s) {
                     setShinyAnimKey((k) => k + 1)
@@ -280,7 +286,7 @@ export function PokemonDetailContent({
                   return !s
                 })
               }}
-              className={`absolute top-3 right-3 z-10 rounded-full p-2 transition-all ${showShiny ? 'shadow-lg shadow-amber-300/40 dark:shadow-amber-500/30' : 'bg-surface-sunken opacity-60 hover:opacity-100 dark:bg-dark-raised'}`}
+              className={`absolute top-2 right-2 z-20 cursor-pointer rounded-full p-3 transition-all ${showShiny ? 'shadow-lg shadow-amber-300/40 dark:shadow-amber-500/30' : 'bg-surface-sunken opacity-60 hover:opacity-100 dark:bg-dark-raised'}`}
               aria-label="Shiny"
               title="Shiny"
             >
@@ -306,8 +312,15 @@ export function PokemonDetailContent({
             </button>
           )}
 
-          {/* Sprite image with crossfade + shiny burst animation */}
-          <div className="relative aspect-square w-full max-w-[260px]">
+          {/* Sprite image — click to open the zoom overlay. The shiny button
+              is a sibling at z-20 so its clicks never reach this trigger; cry
+              buttons live below the image and don't overlap at all. */}
+          <button
+            type="button"
+            onClick={() => setZoomOpen(true)}
+            aria-label={t.pokemon.description}
+            className="relative aspect-square w-full max-w-[260px] cursor-zoom-in border-0 bg-transparent p-0 outline-none"
+          >
             {/* Shiny transformation rays / glow / sparkles */}
             {shinyAnimating && (
               <div
@@ -357,7 +370,7 @@ export function PokemonDetailContent({
                 loading="lazy"
               />
             )}
-          </div>
+          </button>
 
           {/* Cry buttons */}
           {(pokemon.cries?.latest || pokemon.cries?.legacy) && (
@@ -692,6 +705,14 @@ export function PokemonDetailContent({
           )}
         </div>
       )}
+
+      <ImageZoom
+        src={zoomSrc}
+        alt={`${pokemon.name} ${showShiny ? 'shiny ' : ''}artwork`}
+        open={zoomOpen}
+        onClose={() => setZoomOpen(false)}
+        locale={locale}
+      />
     </div>
   )
 }
