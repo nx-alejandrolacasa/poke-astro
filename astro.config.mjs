@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'node:url'
 import react from '@astrojs/react'
 import tailwindcss from '@tailwindcss/vite'
-import { defineConfig } from 'astro/config'
+import { defineConfig, svgoOptimizer } from 'astro/config'
 
 // Detect dev mode via npm script name (set by npm to "dev", "build", "preview", etc.)
 const isDev = process.env.npm_lifecycle_event === 'dev' || process.env.npm_lifecycle_event === 'start'
@@ -24,7 +24,22 @@ const adapter = await (async () => {
     return cloudflare()
   }
   const vercel = (await import('@astrojs/vercel')).default
-  return vercel()
+  return vercel({
+    // Incremental Static Regeneration. Pokémon data is immutable, so on-demand
+    // (SSR) routes — chiefly the high-cardinality /[locale]/pokemon/[name]
+    // detail pages — are rendered once on first request and then served from
+    // the edge cache instead of re-running SSR on every hit. Vercel invalidates
+    // the ISR cache on each deployment, so post-deploy HTML always references
+    // the current hashed assets (the reason HTML stays `no-cache` for the
+    // browser in middleware.ts). Prerendered routes remain fully static.
+    isr: {
+      expiration: 60 * 60 * 24 * 7, // 1 week
+      // Keep API routes on the plain serverless function so their bespoke
+      // stale-while-revalidate headers govern caching and error responses
+      // (5xx) are never cached as if they were valid pages.
+      exclude: [/^\/api\//],
+    },
+  })
 })()
 
 // https://astro.build/config
@@ -62,18 +77,17 @@ export default defineConfig({
   },
 
   // Experimental features
+  // Note: queuedRendering graduated to stable in Astro 7 (now the default
+  // rendering engine), so it no longer belongs in the experimental block.
   experimental: {
-    // Queued rendering: up to 2x faster rendering with queue-based engine
-    queuedRendering: {
-      enabled: true,
-    },
     // Chrome DevTools workspace support for live editing
     chromeDevtoolsWorkspace: true,
     // Client-side prerendering with Speculation Rules API
     clientPrerender: true,
     // Content collection intellisense in editors
     contentIntellisense: true,
-    // SVGO optimization for SVG assets
-    svgo: true,
+    // SVGO optimization for SVG assets (renamed from `svgo: true` in Astro 7;
+    // now takes an SvgOptimizer created by the `svgoOptimizer()` helper)
+    svgOptimizer: svgoOptimizer(),
   },
 })

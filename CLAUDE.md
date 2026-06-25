@@ -5,7 +5,7 @@
 This is a **Pokémon Pokédex application** built with Astro, React, and Tailwind CSS. It demonstrates a modern static-first web application using the PokéAPI to display Pokémon data with server-side rendering and selective client-side interactivity.
 
 **Tech Stack:**
-- **Framework:** Astro v6.0.2 (SSR mode with static prerendering)
+- **Framework:** Astro v7.0.0 (SSR mode with static prerendering)
 - **UI Library:** React 19.1.0 (for interactive components)
 - **Styling:** Tailwind CSS 4.1.0 (utility-first CSS via Vite plugin)
 - **Language:** TypeScript 5.8.3 (strict mode)
@@ -504,11 +504,11 @@ export default {
 
 ---
 
-**Last Updated:** 2026-03-11
-**Astro Version:** 6.0.2
-**React Version:** 19.1.0
-**Tailwind CSS Version:** 4.1.0
-**TypeScript Version:** 5.8.3
+**Last Updated:** 2026-06-23
+**Astro Version:** 7.0.0
+**React Version:** 19.2.7
+**Tailwind CSS Version:** 4.3.1
+**TypeScript Version:** 6.0.3
 **Node Version:** 22.x (required, minimum 22.12.0)
 
 ---
@@ -589,3 +589,66 @@ This project was upgraded from legacy versions to the latest stable releases:
 
 **Bug Fixes:**
 - Added missing `export const prerender = true` to redirect pages (`pokemon/[name]`, `type/[type]`, `generation/[id]`)
+
+---
+
+## Upgrade Notes (June 2026)
+
+### Astro 7 Upgrade
+- **Astro:** 6.1.8 → 7.0.0
+- **@astrojs/react:** 5.0.3 → 6.0.0
+- **@astrojs/vercel:** 10.0.4 → 11.0.0
+- **@astrojs/cloudflare:** 13.1.10 → 14.0.0
+- **@astrojs/node:** 10.0.5 → 11.0.0
+- **@astrojs/compiler-rs:** 0.1.8 → 0.2.2
+- **Vite:** 7.3.2 → 8.0.16 (also bumped via the `overrides.vite` → `$vite` pin)
+- **Tailwind CSS / @tailwindcss/vite:** 4.2.4 → 4.3.1
+- **@biomejs/biome:** 2.4.12 → 2.5.1
+- **React / react-dom:** 19.2.5 → 19.2.7 (`@types/react` → 19.2.17)
+- **@tanstack/react-virtual:** ^3.13.24 → 3.14.3 (pinned to a fixed version to match the project's no-semver-range convention)
+
+### Key Changes Addressed
+
+**Astro 7:**
+- Upgraded from Vite 7 to **Vite 8** (new Rolldown bundler; ships an esbuild/rollupOptions compatibility layer, so no Vite config changes were needed). The existing `@vite/env` resolveId workaround in `astro.config.mjs` is still required under Vite 8's Environment API and was kept.
+- The **Rust `.astro` compiler is now the default and only compiler.** It no longer auto-corrects HTML (unclosed tags / unterminated attributes now error). All existing `.astro` files compiled cleanly with no changes.
+- `compressHTML` default changed from `true` to `'jsx'` (whitespace between inline elements now stripped using JSX rules). No action needed.
+- **Markdown** now defaults to Astro's native `Sätteri` pipeline instead of remark/rehype. This project has no Markdown content, so no action was needed (would otherwise require installing `@astrojs/markdown-remark`).
+
+**Config changes (`astro.config.mjs`):**
+- `experimental.queuedRendering` graduated to **stable and is now the default rendering engine** — removed from the `experimental` block.
+- `experimental.svgo: true` was **renamed to `experimental.svgOptimizer`** and now takes an `SvgOptimizer` object: `svgOptimizer: svgoOptimizer()` (import `svgoOptimizer` from `astro/config`).
+- `clientPrerender`, `contentIntellisense`, and `chromeDevtoolsWorkspace` remain experimental in v7 and were kept as-is.
+
+**`astro dev` is now a background process:**
+- In Astro 7, `astro dev` spawns a **detached background dev server** and returns. Manage it with `astro dev stop`, `astro dev status`, and `astro dev logs` (logs stream to `.astro/dev.log`).
+
+**Not affected (verified):**
+- No Container API usage, so the `@astrojs/react` → `@astrojs/react/container-renderer` `getContainerRenderer()` import change did not apply.
+- `wrangler.jsonc` already uses the `@astrojs/cloudflare/entrypoints/server` entrypoint and does not use the removed `cloudflareModules` / `workerEntryPoint` options.
+- `ClientRouter` (`astro:transitions`) and `navigate` (`astro:transitions/client`) are public APIs and are unaffected; only internal view-transition constants/helpers were removed in v7.
+
+**Known transitive advisories:**
+- `npm audit` reports advisories in transitive deps of the **latest** `@astrojs/vercel@11` (`path-to-regexp` via `@vercel/routing-utils`) plus `@babel/core`, `tar`, and `brace-expansion`. `npm audit fix --force` would downgrade the Vercel adapter to v8, so these were intentionally left in place pending upstream fixes.
+
+---
+
+## Caching Strategy
+
+The app uses immutable Pokémon data, so caching is layered:
+
+**1. HTTP edge/browser caching (`src/middleware.ts`) — single source of truth.**
+- `/api/*` (JSON): `public, max-age=3600, s-maxage=604800, stale-while-revalidate=2592000` — browser revalidates hourly, edge serves week-old bytes instantly, SWR refreshes for 30 days. The API route handlers themselves no longer set `Cache-Control` (the middleware overrode them anyway); middleware is the only place it's defined.
+- HTML pages: `public, no-cache` — the browser always revalidates. This is deliberate: on Cloudflare Workers the edge cache isn't purged on deploy, so a browser holding stale HTML would reference old hashed CSS/JS filenames that 404. `no-cache` keeps clients from ever caching HTML.
+
+**2. Vercel ISR (Incremental Static Regeneration) — `astro.config.mjs`.**
+- Enabled on the Vercel adapter with `expiration: 1 week`. All on-demand (SSR) routes — chiefly the ~1,300 `/[locale]/pokemon/[name]` detail pages — render once on first request, then serve from the edge cache instead of re-running SSR per hit. No build-time cost (contrast with prerendering all detail pages, which the project deliberately avoids).
+- `exclude: [/^\/api\//]` keeps API routes on the plain serverless function so their SWR headers govern caching and 5xx responses aren't cached.
+- ISR's CDN freshness is governed by `expiration`, **independent of** the response `Cache-Control`. So the HTML `no-cache` header is complementary, not conflicting: the edge serves ISR-cached HTML (fast TTFB), while the browser still revalidates each navigation (no client-side stale-asset risk). Vercel invalidates the ISR cache on every deploy, so post-deploy HTML always references current hashed assets.
+- ISR is Vercel-only; on Cloudflare these routes remain plain SSR with `no-cache`.
+
+**3. Client-side IndexedDB cache (`src/utils/pokemonPagesCache.ts`).**
+- Infinite-scroll grids cache fetched pages in IndexedDB (namespaces `pokedex`, `type:*`, `generation:*`) with a TTL, for instant hydration and scroll restoration on back-nav.
+
+**4. Build-time prerendering.**
+- `[locale]/pokedex`, `[locale]/type/[type]`, `[locale]/generation/[id]` are `prerender = true` (static). `experimental.clientPrerender` adds Speculation Rules API client prerendering.
