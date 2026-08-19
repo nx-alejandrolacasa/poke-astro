@@ -22,8 +22,6 @@ poke-astro/
 │   ├── components/          # Reusable UI components (Astro + React)
 │   │   ├── Header.astro              # Navigation header
 │   │   ├── PokemonTile.tsx           # React card component
-│   │   ├── PokemonTileFetcher.astro  # Server-side Pokémon fetcher
-│   │   ├── PokemonTileFetcher.tsx    # Client-side Pokémon fetcher
 │   │   └── PokemonInfiniteScroll.tsx # Infinite scroll component (React)
 │   ├── layouts/             # Layout templates
 │   │   └── Layout.astro              # Root layout wrapper
@@ -353,7 +351,7 @@ import { InteractiveComponent } from '@components/InteractiveComponent'
 2. Check responsive design (mobile, tablet, desktop)
 3. Verify all links work
 4. Test in production build: `npm run build && npm run preview`
-5. Check TypeScript types: `npm run astro check`
+5. Check TypeScript types: `npm run check:types`
 
 ### Deployment
 - **Platform:** Vercel (serverless)
@@ -416,7 +414,6 @@ export default defineConfig({
 {
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
-    "baseUrl": "./",
     "jsx": "react-jsx",
     "jsxImportSource": "react",
     "paths": { "@*": ["src/*"] }
@@ -449,7 +446,7 @@ export default {
 ## Troubleshooting
 
 ### Build Fails
-- Check TypeScript errors: `npm run astro check`
+- Check TypeScript errors: `npm run check:types`
 - Verify all imports use correct aliases
 - Ensure all dynamic routes have `getStaticPaths()`
 
@@ -483,7 +480,7 @@ export default {
 ## Project-Specific Notes
 
 ### Infinite Scroll
-- Uses `react-intersection-observer` for detecting when to load more
+- Loading is driven by the virtualizer's visible-row window in `VirtualPokemonGrid.tsx` (`@tanstack/react-virtual`)
 - Loads 24 Pokémon per page progressively as user scrolls
 - Initial page (first 24) pre-rendered at build time for instant page load
 - Subsequent pages fetched client-side via API endpoints
@@ -504,11 +501,11 @@ export default {
 
 ---
 
-**Last Updated:** 2026-06-23
-**Astro Version:** 7.0.0
-**React Version:** 19.2.7
-**Tailwind CSS Version:** 4.3.1
-**TypeScript Version:** 6.0.3
+**Last Updated:** 2026-08-19
+**Astro Version:** 7.2.3
+**React Version:** 19.2.8
+**Tailwind CSS Version:** 4.3.3
+**TypeScript Version:** 6.0.3 (held; see Upgrade Notes, August 2026)
 **Node Version:** 22.x (required, minimum 22.12.0)
 
 ---
@@ -652,3 +649,101 @@ The app uses immutable Pokémon data, so caching is layered:
 
 **4. Build-time prerendering.**
 - `[locale]/pokedex`, `[locale]/type/[type]`, `[locale]/generation/[id]` are `prerender = true` (static). `experimental.clientPrerender` adds Speculation Rules API client prerendering.
+
+---
+
+## Upgrade Notes (August 2026)
+
+### Astro 7.2 Upgrade
+
+- **Astro:** 7.0.0 → 7.2.3
+- **@astrojs/vercel:** 11.0.0 → 11.0.6
+- **@astrojs/cloudflare:** 14.0.0 → 14.2.2
+- **@astrojs/node:** 11.0.0 → 11.1.3
+- **@astrojs/react:** 6.0.0 → 6.0.3
+- **Vite:** 8.0.16 → 8.2.1 (via the `overrides.vite` → `$vite` pin)
+- **Tailwind CSS / @tailwindcss/vite:** 4.3.1 → 4.3.3
+- **@biomejs/biome:** 2.5.1 → 2.5.9
+- **@tanstack/react-virtual:** 3.14.3 → 3.14.10
+- **React / react-dom:** 19.2.7 → 19.2.8
+
+### Lockstep constraint
+
+Astro and all three adapters must be bumped in the same change:
+`@astrojs/cloudflare@14.2.x` peers on `astro: ^7.2.0` and `@astrojs/node@11.1.3`
+peers on `astro: ^7.2.1` (it calls `app.getLogger()`). Bumping the adapters
+against Astro 7.0.x fails with `MISSING_EXPORT`.
+
+### Duplicate CSS fix (real payload win)
+
+Before the upgrade the build emitted **two byte-identical 232 KB stylesheets** —
+`ListerSkeleton.<hash>.css` (referenced by the prerendered listers) and
+`Layout.<hash>.css` (referenced by the SSR entry). Navigating from a lister to a
+detail page therefore re-downloaded the entire stylesheet under a second URL.
+Astro 7.1.4 dedupes styles shared between prerendered and on-demand routes.
+Client CSS went **464 KB → 232 KB** and both entrypoints now share one URL.
+
+This is the shape to watch for whenever a layout importing Tailwind is shared
+between `prerender = true` pages and SSR pages.
+
+### `session: false`
+
+Added to `astro.config.mjs`. The app is entirely stateless, so opting out
+(Astro 7.2+) keeps the session runtime and its `unstorage` driver out of the SSR
+bundle. Vercel has no default session driver so its bundle is unchanged, but the
+Node and Cloudflare adapters were wiring one — verified the Node adapter no
+longer logs `Enabling sessions with filesystem storage`.
+
+### Dependencies removed
+
+- **`react-intersection-observer`** — dead since commit `88c3f48` replaced it
+  with `@tanstack/react-virtual`. Nothing in `src/` imported it. Removed rather
+  than upgraded to v11.
+- **`@astrojs/compiler-rs`** — was pinned as a direct dependency at `0.2.2` but
+  imported nowhere. Astro 7.2.3 requires `^0.3.2`, and the newest release
+  (`0.4.0`) does **not** satisfy that range, so pinning it directly would
+  duplicate the native binding. Let Astro own this dependency.
+- **`PokemonTileFetcher.astro` / `PokemonTileFetcher.tsx`** — unreferenced
+  components that carried two latent type errors.
+
+### TypeScript 7 is intentionally NOT adopted
+
+TypeScript 7.0.2 is `latest`, and it does compile this project cleanly, but it
+is the native Go port and **ships no compiler API and no `tsserver`**:
+
+- `@astrojs/check@0.9.10` peers on `typescript: ^5.0.0 || ^6.0.0`.
+- `@astrojs/language-server` embeds the TS LanguageService API via Volar, which
+  TS 7 does not provide.
+- Microsoft's own 7.0 announcement states Astro projects must stay on TS 6.
+- Open upstream bug: withastro/astro#17268 — `astro check` reports TypeScript as
+  not installed under TS 7.
+
+Adopting it would trade instant typechecking on a ~55-file project for the loss
+of all `.astro` type checking and editor IntelliSense. **Stay on 6.0.3** and
+revisit once TS 7.1 ships the new API and Astro tooling adopts it.
+
+### New typecheck gate
+
+The project previously had **no typecheck gate at all** — `@astrojs/check` was
+never installed, so the documented `astro check` step would only prompt to
+install it. Added `@astrojs/check` plus a `check:types` script, and `@types/node`
+(pinned to 24.x to match the runtime) so `process.env` in `Layout.astro` resolves.
+This surfaced and fixed 4 pre-existing type errors; `npm run check:types` is now
+clean.
+
+### Not adopted
+
+- **`experimental.incrementalBuild`** (Astro 7.2) — can skip re-rendering
+  unchanged prerendered pages, but needs a `cacheKey` returned from each
+  `getStaticPaths()` plus persisting `node_modules/.astro/` across CI builds.
+  Deferred: a ~30s prerender of 46 routes isn't painful enough to justify a
+  fourth experimental flag and cache-invalidation risk.
+- **`experimental.collectionStorage`** (Astro 7.1) — content-layer only; this
+  project has no content collections.
+
+### Still required
+
+The hand-written `resolve-vite-env` Vite plugin in `astro.config.mjs` is **still
+needed** under Vite 8.2: `vite/dist/client/client.mjs` continues to import the
+`@vite/env` virtual module, and `vite/dist/client/env.mjs` still exists at the
+same path. Do not remove it without testing `astro dev`.
