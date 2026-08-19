@@ -89,8 +89,13 @@ export default defineConfig({
   experimental: {
     // Chrome DevTools workspace support for live editing
     chromeDevtoolsWorkspace: true,
-    // Client-side prerendering with Speculation Rules API
-    clientPrerender: true,
+    // Note: clientPrerender (Speculation Rules API) is deliberately NOT
+    // enabled. ClientRouter intercepts link clicks and fetch()es the target
+    // page itself, and that fetch cannot consume speculation-rules output
+    // (it only serves real navigations) — so hover/tap prefetches were
+    // prerendering pages that got thrown away. Without the flag, prefetch
+    // falls back to <link rel="prefetch">, which populates the HTTP cache
+    // that ClientRouter's fetch actually reads.
     // Content collection intellisense in editors
     contentIntellisense: true,
     // SVGO optimization for SVG assets (renamed from `svgo: true` in Astro 7;

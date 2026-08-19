@@ -3,34 +3,64 @@
 // Mirrors VirtualPokemonGrid's outer layout so the swap from skeleton to live
 // component is visually quiet.
 
+import BackButtonStatic from '@/components/BackButtonStatic.astro'
+import type { Locale } from '@/utils/i18n'
+
 export interface Props {
   banner?: 'type' | 'generation'
+  locale: Locale
+  // Real banner content, rendered instead of shimmer bars when known.
+  // Callers that know the destination (the per-type/per-generation pages,
+  // or the nav overlay via URL) should pass these so only genuinely
+  // unknown data shimmers.
+  bannerTitle?: string
+  bannerSubtitle?: string
+  bannerColor?: string
 }
 
-const { banner } = Astro.props
+const { banner, locale, bannerTitle, bannerSubtitle, bannerColor } = Astro.props
 
 const cellCount = 18
 ---
 
 <div>
-  {/* Back button + recents row placeholder. The recents pills are
-      client-only (they read IndexedDB), so we just leave space for the back
-      button — recents will pop in once the React component hydrates. */}
+  {/* Back button + recents row. The back button renders (and works) right
+      away; the recents pills are client-only (they read IndexedDB) and pop
+      in once the React component hydrates. */}
   <div class="mb-4 flex items-center gap-2">
-    <div class="h-10 w-10 shrink-0 rounded-full bg-white/60 shadow-lg shadow-black/[0.08] backdrop-blur-xl md:w-24 dark:bg-dark-surface/60 dark:shadow-black/30"></div>
+    <BackButtonStatic locale={locale} />
   </div>
 
   {banner === 'type' && (
-    <div class="mb-8 rounded-2xl bg-surface-sunken p-6 md:p-8 dark:bg-dark-raised">
-      <div class="skeleton-shimmer mb-2 h-7 w-32 rounded-md"></div>
-      <div class="skeleton-shimmer h-4 w-44 rounded"></div>
+    <div
+      class:list={['mb-8 rounded-2xl p-6 md:p-8', !bannerTitle && 'bg-surface-sunken dark:bg-dark-raised']}
+      style={bannerTitle && `background-color: ${bannerColor ?? '#a8a878'}18`}
+    >
+      {bannerTitle ? (
+        <h1 class="font-bold text-2xl text-ink tracking-tight md:text-3xl dark:text-dark-ink">{bannerTitle}</h1>
+      ) : (
+        <div class="skeleton-shimmer mb-2 h-7 w-32 rounded-md"></div>
+      )}
+      {bannerSubtitle ? (
+        <p class="text-ink-muted text-sm dark:text-dark-ink-muted">{bannerSubtitle}</p>
+      ) : (
+        <div class="skeleton-shimmer h-4 w-44 rounded"></div>
+      )}
     </div>
   )}
 
   {banner === 'generation' && (
     <div class="mb-8 rounded-2xl bg-gradient-to-br from-primary-50 to-surface-sunken p-6 md:p-8 dark:from-dark-raised dark:to-dark-surface">
-      <div class="skeleton-shimmer mb-2 h-7 w-40 rounded-md"></div>
-      <div class="skeleton-shimmer h-4 w-56 rounded"></div>
+      {bannerTitle ? (
+        <h1 class="font-bold text-2xl text-ink tracking-tight md:text-3xl dark:text-dark-ink">{bannerTitle}</h1>
+      ) : (
+        <div class="skeleton-shimmer mb-2 h-7 w-40 rounded-md"></div>
+      )}
+      {bannerSubtitle ? (
+        <p class="font-medium text-ink-muted text-sm dark:text-dark-ink-muted">{bannerSubtitle}</p>
+      ) : (
+        <div class="skeleton-shimmer h-4 w-56 rounded"></div>
+      )}
     </div>
   )}
 

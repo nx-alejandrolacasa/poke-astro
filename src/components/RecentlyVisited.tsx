@@ -88,28 +88,33 @@ export function RecentlyVisited({
     <div
       ref={scrollRef}
       className="-my-2 flex min-w-0 flex-1 items-center gap-2 overflow-x-auto py-2 md:justify-end"
-      style={{
-        '--scroll-fade-left': canScrollLeft ? 0 : 1,
-        '--scroll-fade-right': canScrollRight ? 0 : 1,
-        transition:
-          '--scroll-fade-left 250ms ease, --scroll-fade-right 250ms ease',
-        maskImage,
-        WebkitMaskImage: maskImage,
-      } as CSSProperties}
+      style={
+        {
+          '--scroll-fade-left': canScrollLeft ? 0 : 1,
+          '--scroll-fade-right': canScrollRight ? 0 : 1,
+          transition:
+            '--scroll-fade-left 250ms ease, --scroll-fade-right 250ms ease',
+          maskImage,
+          WebkitMaskImage: maskImage,
+        } as CSSProperties
+      }
     >
-      <span className="hidden shrink-0 font-sans font-bold text-[11px] text-ink-muted uppercase tracking-wider md:inline dark:text-dark-ink-muted">
+      <span className="hidden shrink-0 font-bold font-sans text-[11px] text-ink-muted uppercase tracking-wider md:inline dark:text-dark-ink-muted">
         {t.pokemon.recent}:
       </span>
       {visits.map((v) => (
         <a
           key={v.name}
           href={`/${locale}/pokemon/${v.name}`}
+          data-astro-prefetch="tap"
           className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-transparent px-3 py-2 font-semibold text-xs leading-5 shadow-md transition hover:brightness-110 active:scale-95"
-          style={{
-            '--pill-bg': v.typeColor,
-            backgroundColor: 'var(--pill-bg)',
-            color: 'contrast-color(var(--pill-bg))',
-          } as CSSProperties}
+          style={
+            {
+              '--pill-bg': v.typeColor,
+              backgroundColor: 'var(--pill-bg)',
+              color: 'contrast-color(var(--pill-bg))',
+            } as CSSProperties
+          }
         >
           <span className="font-mono opacity-70">
             #{v.id.toString().padStart(3, '0')}

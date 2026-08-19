@@ -6,7 +6,8 @@ import { TypeInfiniteScroll } from '@/components/TypeInfiniteScroll'
 import Layout from '@/layouts/Layout.astro'
 import { getI18n, locales } from '@/utils/i18n'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
-import { POKEMON_TYPES, getPokemonName } from '@/utils/pokemon'
+import { POKEMON_TYPES, getPokemonName, typeColors as typeHexColors } from '@/utils/pokemon'
+import { interpolate } from '@/utils/translations'
 
 export function getStaticPaths() {
   return locales.flatMap((locale) =>
@@ -93,6 +94,13 @@ const typeName = t.types[type as keyof typeof t.types] || getPokemonName(type)
     typeColor={gradientClass}
     locale={locale}
   >
-    <ListerSkeleton slot="fallback" banner="type" />
+    <ListerSkeleton
+      slot="fallback"
+      banner="type"
+      locale={locale}
+      bannerTitle={typeName}
+      bannerSubtitle={interpolate(t.pages.speciesCount, { count: initialData.count })}
+      bannerColor={typeHexColors[type]}
+    />
   </TypeInfiniteScroll>
 </Layout>

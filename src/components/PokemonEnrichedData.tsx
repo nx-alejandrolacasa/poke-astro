@@ -73,7 +73,7 @@ export function PokemonEnrichedData({
 
   const statsCell = (
     <div className="bento-cell rounded-2xl bg-white p-4 md:col-span-1 dark:bg-dark-surface">
-      <h2 className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
+      <h2 className="mb-3 font-bold font-sans text-primary text-xs uppercase tracking-wider dark:text-dark-primary">
         {t.pokemon.baseStats}
       </h2>
       <div className="space-y-3">
@@ -121,7 +121,7 @@ export function PokemonEnrichedData({
   if (loading) {
     return (
       <div
-        className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4 md:gap-4"
+        className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-4"
         style={{ '--type-color': typeColor } as React.CSSProperties}
       >
         {statsCell}
@@ -135,7 +135,7 @@ export function PokemonEnrichedData({
   if (error || !data) {
     return (
       <div
-        className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4 md:gap-4"
+        className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-4"
         style={{ '--type-color': typeColor } as React.CSSProperties}
       >
         {statsCell}
@@ -152,7 +152,7 @@ export function PokemonEnrichedData({
 
   return (
     <div
-      className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4 md:gap-4"
+      className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-4"
       style={{ '--type-color': typeColor } as React.CSSProperties}
     >
       {/* ── Base Stats — 1/4 desktop, 1/2 tablet, full mobile ── */}
@@ -160,12 +160,12 @@ export function PokemonEnrichedData({
 
       {/* ── Type Effectiveness — 1/4 desktop, 1/2 tablet, full mobile ── */}
       <div className="bento-cell rounded-2xl bg-white p-4 md:col-span-1 dark:bg-dark-surface">
-        <h2 className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
+        <h2 className="mb-3 font-bold font-sans text-primary text-xs uppercase tracking-wider dark:text-dark-primary">
           {t.pokemon.typeEffectiveness}
         </h2>
         <div className="space-y-3">
           <div>
-            <h3 className="mb-1.5 font-semibold text-xs text-orange-500 uppercase tracking-wider dark:text-orange-400">
+            <h3 className="mb-1.5 font-semibold text-orange-500 text-xs uppercase tracking-wider dark:text-orange-400">
               {t.pokemon.weakTo} ({data.typeEffectiveness.weaknesses.length})
             </h3>
             {data.typeEffectiveness.weaknesses.length > 0 ? (
@@ -188,7 +188,7 @@ export function PokemonEnrichedData({
             )}
           </div>
           <div>
-            <h3 className="mb-1.5 font-semibold text-xs text-emerald-500 uppercase tracking-wider dark:text-emerald-400">
+            <h3 className="mb-1.5 font-semibold text-emerald-500 text-xs uppercase tracking-wider dark:text-emerald-400">
               {t.pokemon.resistantTo} (
               {data.typeEffectiveness.resistances.length})
             </h3>
@@ -212,7 +212,7 @@ export function PokemonEnrichedData({
             )}
           </div>
           <div>
-            <h3 className="mb-1.5 font-semibold text-xs text-violet-500 uppercase tracking-wider dark:text-violet-400">
+            <h3 className="mb-1.5 font-semibold text-violet-500 text-xs uppercase tracking-wider dark:text-violet-400">
               {t.pokemon.immuneTo} ({data.typeEffectiveness.immunities.length})
             </h3>
             {data.typeEffectiveness.immunities.length > 0 ? (
@@ -238,7 +238,7 @@ export function PokemonEnrichedData({
       {/* ── Evolution Chain — 2/4 desktop, full tablet, full mobile ── */}
       {hasEvolutions && (
         <div className="bento-cell flex flex-col rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
-          <h2 className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
+          <h2 className="mb-3 font-bold font-sans text-primary text-xs uppercase tracking-wider dark:text-dark-primary">
             {t.pokemon.evolutionChain}
           </h2>
           <div className="flex flex-1 items-center justify-center">
@@ -278,16 +278,22 @@ function translateTime(name: string, t: Translations): string {
  *   use-item > level-up with level > trade > other
  * This keeps the UI compact — one condition line per evolution.
  */
-function pickBestEvolutionDetail(details: EvolutionDetail[]): EvolutionDetail | null {
+function pickBestEvolutionDetail(
+  details: EvolutionDetail[]
+): EvolutionDetail | null {
   if (!details || details.length === 0) return null
   if (details.length === 1) return details[0]
 
   // Prefer use-item (simplest to explain)
-  const itemDetail = details.find((d) => d.trigger?.name === 'use-item' && d.item)
+  const itemDetail = details.find(
+    (d) => d.trigger?.name === 'use-item' && d.item
+  )
   if (itemDetail) return itemDetail
 
   // Prefer level-up with a specific level
-  const levelDetail = details.find((d) => d.trigger?.name === 'level-up' && d.min_level)
+  const levelDetail = details.find(
+    (d) => d.trigger?.name === 'level-up' && d.min_level
+  )
   if (levelDetail) return levelDetail
 
   // Prefer trade
@@ -295,7 +301,10 @@ function pickBestEvolutionDetail(details: EvolutionDetail[]): EvolutionDetail | 
   if (tradeDetail) return tradeDetail
 
   // Prefer level-up with happiness/affection (no level)
-  const happyDetail = details.find((d) => d.trigger?.name === 'level-up' && (d.min_happiness || d.min_affection))
+  const happyDetail = details.find(
+    (d) =>
+      d.trigger?.name === 'level-up' && (d.min_happiness || d.min_affection)
+  )
   if (happyDetail) return happyDetail
 
   // Fall back to the last entry (usually the most modern method)
@@ -317,33 +326,80 @@ function getEvolutionConditionLabels(
   const trigger = d.trigger?.name
 
   if (trigger === 'level-up') {
-    if (d.min_level) labels.push(interpolate(t.pokemon.evolveLevel, { level: d.min_level }))
+    if (d.min_level)
+      labels.push(interpolate(t.pokemon.evolveLevel, { level: d.min_level }))
   } else if (trigger === 'use-item' && d.item) {
-    labels.push(interpolate(t.pokemon.evolveItem, { item: translateItem(d.item.name, t) }))
+    labels.push(
+      interpolate(t.pokemon.evolveItem, { item: translateItem(d.item.name, t) })
+    )
   } else if (trigger === 'trade') {
     if (d.trade_species) {
-      labels.push(interpolate(t.pokemon.evolveTradeWith, { species: getPokemonName(d.trade_species.name) }))
+      labels.push(
+        interpolate(t.pokemon.evolveTradeWith, {
+          species: getPokemonName(d.trade_species.name),
+        })
+      )
     } else {
       labels.push(t.pokemon.evolveTrade)
     }
   }
 
-  if (d.min_happiness) labels.push(interpolate(t.pokemon.evolveHappiness, { value: d.min_happiness }))
-  if (d.min_affection) labels.push(interpolate(t.pokemon.evolveAffection, { value: d.min_affection }))
-  if (d.min_beauty) labels.push(interpolate(t.pokemon.evolveBeauty, { value: d.min_beauty }))
-  if (d.held_item) labels.push(interpolate(t.pokemon.evolveHeldItem, { item: translateItem(d.held_item.name, t) }))
-  if (d.known_move) labels.push(interpolate(t.pokemon.evolveKnownMove, { move: getPokemonName(d.known_move.name) }))
-  if (d.known_move_type) labels.push(interpolate(t.pokemon.evolveKnownMoveType, { type: translateType(d.known_move_type.name, t) }))
-  if (d.time_of_day) labels.push(interpolate(t.pokemon.evolveTimeOfDay, { time: translateTime(d.time_of_day, t) }))
+  if (d.min_happiness)
+    labels.push(
+      interpolate(t.pokemon.evolveHappiness, { value: d.min_happiness })
+    )
+  if (d.min_affection)
+    labels.push(
+      interpolate(t.pokemon.evolveAffection, { value: d.min_affection })
+    )
+  if (d.min_beauty)
+    labels.push(interpolate(t.pokemon.evolveBeauty, { value: d.min_beauty }))
+  if (d.held_item)
+    labels.push(
+      interpolate(t.pokemon.evolveHeldItem, {
+        item: translateItem(d.held_item.name, t),
+      })
+    )
+  if (d.known_move)
+    labels.push(
+      interpolate(t.pokemon.evolveKnownMove, {
+        move: getPokemonName(d.known_move.name),
+      })
+    )
+  if (d.known_move_type)
+    labels.push(
+      interpolate(t.pokemon.evolveKnownMoveType, {
+        type: translateType(d.known_move_type.name, t),
+      })
+    )
+  if (d.time_of_day)
+    labels.push(
+      interpolate(t.pokemon.evolveTimeOfDay, {
+        time: translateTime(d.time_of_day, t),
+      })
+    )
   if (d.needs_overworld_rain) labels.push(t.pokemon.evolveRain)
   if (d.turn_upside_down) labels.push(t.pokemon.evolveUpsideDown)
-  if (d.party_species) labels.push(interpolate(t.pokemon.evolvePartySpecies, { species: getPokemonName(d.party_species.name) }))
-  if (d.party_type) labels.push(interpolate(t.pokemon.evolvePartyType, { type: translateType(d.party_type.name, t) }))
+  if (d.party_species)
+    labels.push(
+      interpolate(t.pokemon.evolvePartySpecies, {
+        species: getPokemonName(d.party_species.name),
+      })
+    )
+  if (d.party_type)
+    labels.push(
+      interpolate(t.pokemon.evolvePartyType, {
+        type: translateType(d.party_type.name, t),
+      })
+    )
   if (d.gender === 1) labels.push(t.pokemon.evolveGenderFemale)
   if (d.gender === 2) labels.push(t.pokemon.evolveGenderMale)
-  if (d.relative_physical_stats === 1) labels.push(t.pokemon.evolvePhysicalStatsHigher)
-  if (d.relative_physical_stats === 0) labels.push(t.pokemon.evolvePhysicalStatsEqual)
-  if (d.relative_physical_stats === -1) labels.push(t.pokemon.evolvePhysicalStatsLower)
+  if (d.relative_physical_stats === 1)
+    labels.push(t.pokemon.evolvePhysicalStatsHigher)
+  if (d.relative_physical_stats === 0)
+    labels.push(t.pokemon.evolvePhysicalStatsEqual)
+  if (d.relative_physical_stats === -1)
+    labels.push(t.pokemon.evolvePhysicalStatsLower)
 
   return labels
 }
@@ -370,7 +426,7 @@ function EvolutionTree({ tree, currentPokemon, locale }: EvolutionTreeProps) {
         >
           {stageIndex > 0 && (
             <div
-              className="font-bold text-xl text-ink-faint dark:text-dark-ink-faint"
+              className="font-bold text-ink-faint text-xl dark:text-dark-ink-faint"
               aria-hidden="true"
             >
               {hasBranching ? (
@@ -393,7 +449,10 @@ function EvolutionTree({ tree, currentPokemon, locale }: EvolutionTreeProps) {
                     speciesUrl={pokemon.speciesUrl}
                     isCurrentPokemon={pokemon.name === currentPokemon}
                     locale={locale}
-                    conditionLabels={getEvolutionConditionLabels(pokemon.evolutionDetails, t)}
+                    conditionLabels={getEvolutionConditionLabels(
+                      pokemon.evolutionDetails,
+                      t
+                    )}
                   />
                 ))}
               </div>
@@ -407,7 +466,10 @@ function EvolutionTree({ tree, currentPokemon, locale }: EvolutionTreeProps) {
                   speciesUrl={pokemon.speciesUrl}
                   isCurrentPokemon={pokemon.name === currentPokemon}
                   locale={locale}
-                  conditionLabels={getEvolutionConditionLabels(pokemon.evolutionDetails, t)}
+                  conditionLabels={getEvolutionConditionLabels(
+                    pokemon.evolutionDetails,
+                    t
+                  )}
                 />
               ))}
             </div>
@@ -437,6 +499,7 @@ function EvolutionCard({
   return (
     <a
       href={`/${locale}/pokemon/${name}`}
+      data-astro-prefetch="tap"
       className={`rounded-xl p-3 transition-all hover:scale-105 ${isCurrentPokemon ? 'bg-primary-50 ring-2 ring-primary dark:bg-primary/10' : 'bg-surface-sunken hover:ring-2 hover:ring-ink-faint/30 dark:bg-dark-raised dark:hover:ring-dark-ink-faint/30'}`}
     >
       <div className="text-center">
@@ -456,7 +519,7 @@ function EvolutionCard({
             {conditionLabels.map((label) => (
               <span
                 key={label}
-                className="rounded-full bg-primary/10 px-1.5 py-0.5 text-primary text-[9px] leading-tight dark:bg-dark-primary/10 dark:text-dark-primary"
+                className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] text-primary leading-tight dark:bg-dark-primary/10 dark:text-dark-primary"
               >
                 {label}
               </span>

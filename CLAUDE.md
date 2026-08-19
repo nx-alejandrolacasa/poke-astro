@@ -648,7 +648,11 @@ The app uses immutable Pokémon data, so caching is layered:
 - Infinite-scroll grids cache fetched pages in IndexedDB (namespaces `pokedex`, `type:*`, `generation:*`) with a TTL, for instant hydration and scroll restoration on back-nav.
 
 **4. Build-time prerendering.**
-- `[locale]/pokedex`, `[locale]/type/[type]`, `[locale]/generation/[id]` are `prerender = true` (static). `experimental.clientPrerender` adds Speculation Rules API client prerendering.
+- `[locale]/pokedex`, `[locale]/type/[type]`, `[locale]/generation/[id]` are `prerender = true` (static).
+
+**5. Link prefetch (ClientRouter).**
+- ClientRouter enables Astro prefetch (`prefetchAll: true`, default strategy `hover`). Dynamically rendered detail links (`PokemonTile`, `RecentlyVisited`, evolution cards in `PokemonEnrichedData`) opt into `data-astro-prefetch="tap"` so touch devices — where hover never fires — prefetch on `touchstart`, warming the Vercel ISR cache before the click lands.
+- `experimental.clientPrerender` is deliberately **not** enabled: ClientRouter intercepts clicks and `fetch()`es the target itself, which cannot consume Speculation Rules prerenders (navigation-only), so they were pure waste. Plain `<link rel="prefetch">` populates the HTTP cache that ClientRouter's fetch does read.
 
 ---
 

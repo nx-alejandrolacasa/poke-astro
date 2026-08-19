@@ -24,11 +24,30 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const [isLoading, setIsLoading] = useState(true)
   const [isClient, setIsClient] = useState(false)
-  const [dropdownPos, setDropdownPos] = useState<DropdownPos>({ top: 0, left: 0, width: 0 })
+  const [dropdownPos, setDropdownPos] = useState<DropdownPos>({
+    top: 0,
+    left: 0,
+    width: 0,
+  })
   const inputRef = useRef<HTMLInputElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => { setIsClient(true) }, [])
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  // Island is persisted across navigations (DOM kept, props refreshed by
+  // Astro by default), so the fetched names list survives the swap. Dismiss
+  // the dropdown and clear the query when the next page settles in.
+  useEffect(() => {
+    const reset = () => {
+      setQuery('')
+      setIsOpen(false)
+      setSelectedIndex(-1)
+    }
+    document.addEventListener('astro:page-load', reset)
+    return () => document.removeEventListener('astro:page-load', reset)
+  }, [])
 
   useEffect(() => {
     async function loadPokemonNames() {
@@ -179,46 +198,53 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
         </svg>
       </div>
 
-      {isClient && isOpen && suggestions.length > 0 && createPortal(
-        <div
-          ref={dropdownRef}
-          id="search-suggestions"
-          style={dropdownStyle}
-          className="z-50 overflow-hidden rounded-2xl border border-white/60 bg-white/70 shadow-lg shadow-black/[0.04] backdrop-blur-xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:shadow-black/20"
-          role="listbox"
-        >
-          {suggestions.map((name, index) => (
-            <button
-              type="button"
-              key={name}
-              onClick={() => navigateToPokemon(name)}
-              onMouseEnter={() => setSelectedIndex(index)}
-              className={`block w-full px-4 py-2.5 text-left text-sm transition-colors ${
-                index === selectedIndex
-                  ? 'bg-primary-50 text-primary-700 dark:bg-primary/10 dark:text-primary'
-                  : 'text-ink hover:bg-surface-sunken dark:text-dark-ink dark:hover:bg-dark-raised'
-              }`}
-              role="option"
-              aria-selected={index === selectedIndex}
-            >
-              <span className="font-medium">{getPokemonName(name)}</span>
-              <span className="ml-2 text-xs opacity-40">#{name}</span>
-            </button>
-          ))}
-        </div>,
-        document.body
-      )}
+      {isClient &&
+        isOpen &&
+        suggestions.length > 0 &&
+        createPortal(
+          <div
+            ref={dropdownRef}
+            id="search-suggestions"
+            style={dropdownStyle}
+            className="z-50 overflow-hidden rounded-2xl border border-white/60 bg-white/70 shadow-black/[0.04] shadow-lg backdrop-blur-xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:shadow-black/20"
+            role="listbox"
+          >
+            {suggestions.map((name, index) => (
+              <button
+                type="button"
+                key={name}
+                onClick={() => navigateToPokemon(name)}
+                onMouseEnter={() => setSelectedIndex(index)}
+                className={`block w-full px-4 py-2.5 text-left text-sm transition-colors ${
+                  index === selectedIndex
+                    ? 'bg-primary-50 text-primary-700 dark:bg-primary/10 dark:text-primary'
+                    : 'text-ink hover:bg-surface-sunken dark:text-dark-ink dark:hover:bg-dark-raised'
+                }`}
+                role="option"
+                aria-selected={index === selectedIndex}
+              >
+                <span className="font-medium">{getPokemonName(name)}</span>
+                <span className="ml-2 text-xs opacity-40">#{name}</span>
+              </button>
+            ))}
+          </div>,
+          document.body
+        )}
 
-      {isClient && isOpen && query && suggestions.length === 0 && createPortal(
-        <div
-          ref={dropdownRef}
-          style={dropdownStyle}
-          className="z-50 rounded-2xl border border-white/60 bg-white/70 px-4 py-3 text-ink-muted text-sm shadow-lg shadow-black/[0.04] backdrop-blur-xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:text-dark-ink-muted dark:shadow-black/20"
-        >
-          {t.search.noResults}
-        </div>,
-        document.body
-      )}
+      {isClient &&
+        isOpen &&
+        query &&
+        suggestions.length === 0 &&
+        createPortal(
+          <div
+            ref={dropdownRef}
+            style={dropdownStyle}
+            className="z-50 rounded-2xl border border-white/60 bg-white/70 px-4 py-3 text-ink-muted text-sm shadow-black/[0.04] shadow-lg backdrop-blur-xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:text-dark-ink-muted dark:shadow-black/20"
+          >
+            {t.search.noResults}
+          </div>,
+          document.body
+        )}
     </div>
   )
 }

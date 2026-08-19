@@ -232,6 +232,25 @@ html {
     background-size: 200% 100%;
   }
 
+  /* Pre-swap navigation skeleton (see Layout.astro's SPA plumbing script).
+     Inserted the moment a ClientRouter navigation starts, but only revealed
+     after a grace delay so fast (prefetched / ISR-hot) navigations never
+     flash it. Sits below the persistent chrome (header z-40, tab bar z-50)
+     and inherits <body>'s aurora background so the reveal is seamless. */
+  .nav-skeleton-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    overflow: hidden;
+    background: inherit;
+    padding-top: env(safe-area-inset-top);
+    opacity: 0;
+    animation: nav-skeleton-reveal 100ms ease-out 150ms forwards;
+  }
+  @keyframes nav-skeleton-reveal {
+    to { opacity: 1; }
+  }
+
   /* ── Shiny burst rays ── */
   .shiny-rays {
     position: absolute;

@@ -3,8 +3,12 @@ import { ClientRouter } from 'astro:transitions'
 import Analytics from '@vercel/analytics/astro'
 import '@/styles/global.css'
 import { BottomTabNav } from '@/components/BottomTabNav'
+import DetailSkeleton from '@/components/DetailSkeleton.astro'
 import Footer from '@/components/Footer.astro'
 import Header from '@/components/Header.astro'
+import ListerSkeleton from '@/components/ListerSkeleton.astro'
+import { typeColors } from '@/utils/pokemon'
+import { translations } from '@/utils/translations'
 import type { Locale } from '@/utils/i18n'
 
 export interface Props {
@@ -16,6 +20,14 @@ const { title, locale } = Astro.props
 // Guard `process` for workerd runtimes that may not polyfill it
 // (Cloudflare here uses `nodejs_compat`, but the guard is cheap insurance).
 const isVercel = typeof process !== 'undefined' && !!process.env.VERCEL
+
+// Data the nav-skeleton script needs to render real banner headings for
+// type/generation lister destinations (derivable from the URL alone).
+const navSkeletonData = {
+  typeLabels: translations[locale].types,
+  typeColors,
+  generationTitle: translations[locale].home.generation,
+}
 ---
 
 <!DOCTYPE html>
@@ -61,6 +73,57 @@ const isVercel = typeof process !== 'undefined' && !!process.env.VERCEL
           { duration: 180, easing: 'cubic-bezier(0.2, 0, 0, 1)', fill: 'backwards' },
         )
       })
+
+      // Perceived-instant navigation: the moment ClientRouter starts fetching
+      // the next page, cover the viewport with a skeleton approximating the
+      // destination (cloned from the <template>s at the end of <body>). The
+      // overlay only fades in after a grace delay (.nav-skeleton-overlay in
+      // global.css), so fast navigations never flash it. The swap replaces
+      // <body> wholesale, which removes the overlay automatically.
+      document.addEventListener('astro:before-preparation', (e) => {
+        document.getElementById('nav-skeleton-overlay')?.remove()
+        const path = e.to?.pathname ?? ''
+        const kind = /\/pokemon\//.test(path) ? 'detail' : 'lister'
+        const template = document.getElementById(`nav-skeleton-${kind}`)
+        if (!template) return
+        const overlay = document.createElement('div')
+        overlay.id = 'nav-skeleton-overlay'
+        overlay.className = 'nav-skeleton-overlay'
+        overlay.appendChild(template.content.cloneNode(true))
+        if (kind === 'lister') addListerBanner(overlay, path)
+        document.body.appendChild(overlay)
+      })
+
+      // Type/generation destinations carry their banner heading in the URL,
+      // so render the real title and tint; only the species count shimmers.
+      const addListerBanner = (overlay, path) => {
+        const dataEl = document.getElementById('nav-skeleton-data')
+        if (!dataEl) return
+        const data = JSON.parse(dataEl.textContent)
+        const typeName = path.match(/\/type\/([a-z]+)/)?.[1]
+        const genId = path.match(/\/generation\/(\d)/)?.[1]
+        const romans = { 1: 'I', 2: 'II', 3: 'III', 4: 'IV', 5: 'V', 6: 'VI', 7: 'VII', 8: 'VIII', 9: 'IX' }
+
+        const banner = document.createElement('div')
+        banner.className = 'mb-8 rounded-2xl p-6 md:p-8'
+        if (typeName && data.typeLabels[typeName]) {
+          banner.style.backgroundColor = `${data.typeColors[typeName] ?? '#a8a878'}18`
+        } else if (genId) {
+          banner.className += ' bg-gradient-to-br from-primary-50 to-surface-sunken dark:from-dark-raised dark:to-dark-surface'
+        } else {
+          return
+        }
+
+        const title = document.createElement('h1')
+        title.className = 'font-bold text-2xl text-ink tracking-tight md:text-3xl dark:text-dark-ink'
+        title.textContent = typeName
+          ? data.typeLabels[typeName]
+          : `${data.generationTitle} ${romans[genId]}`
+        const subtitle = document.createElement('div')
+        subtitle.className = 'skeleton-shimmer mt-1.5 h-4 w-44 rounded'
+        banner.append(title, subtitle)
+        overlay.querySelector('ul')?.before(banner)
+      }
     </script>
     <ClientRouter />
 
@@ -197,6 +260,21 @@ const isVercel = typeof process !== 'undefined' && !!process.env.VERCEL
       currentPath={Astro.url.pathname}
       transition:persist="bottom-nav"
     />
+    {/* Skeleton templates cloned into the nav overlay by the SPA plumbing
+        script in <head>. Inert until a navigation actually stalls. The
+        wrapper mirrors <main>'s container; lg:pt-24 clears the sticky
+        desktop header, which stays visible above the overlay (z-40 > z-30). */}
+    <template id="nav-skeleton-lister">
+      <div class="mx-auto max-w-7xl px-4 pt-3 md:px-6 lg:pt-24">
+        <ListerSkeleton locale={locale} />
+      </div>
+    </template>
+    <template id="nav-skeleton-detail">
+      <div class="mx-auto max-w-7xl px-4 pt-3 md:px-6 lg:pt-24">
+        <DetailSkeleton locale={locale} />
+      </div>
+    </template>
+    <script is:inline type="application/json" id="nav-skeleton-data" set:html={JSON.stringify(navSkeletonData)} />
     <script is:inline>
       // Register service worker for PWA
       if ('serviceWorker' in navigator) {
