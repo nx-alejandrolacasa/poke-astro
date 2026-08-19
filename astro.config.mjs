@@ -47,6 +47,13 @@ export default defineConfig({
   output: 'server',
   integrations: [react()],
   adapter,
+
+  // This app is entirely stateless: every page is derived from immutable
+  // PokeAPI data and nothing is stored per-visitor. Opting out (Astro 7.2+)
+  // keeps the session runtime and its `unstorage` driver out of the SSR
+  // bundle, which matters on Cloudflare Workers where the adapter would
+  // otherwise wire a default KV-backed driver and pay for it at cold start.
+  session: false,
   i18n: {
     defaultLocale: 'es',
     locales: ['en', 'es'],
