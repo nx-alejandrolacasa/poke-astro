@@ -4,7 +4,9 @@ import tailwindcss from '@tailwindcss/vite'
 import { defineConfig, svgoOptimizer } from 'astro/config'
 
 // Detect dev mode via npm script name (set by npm to "dev", "build", "preview", etc.)
-const isDev = process.env.npm_lifecycle_event === 'dev' || process.env.npm_lifecycle_event === 'start'
+const isDev =
+  process.env.npm_lifecycle_event === 'dev' ||
+  process.env.npm_lifecycle_event === 'start'
 
 // Adapter: Node for dev; Cloudflare when running on Cloudflare Pages
 // (CF_PAGES) or Workers Builds (WORKERS_CI_BUILD_UUID), or when explicitly
@@ -71,7 +73,9 @@ export default defineConfig({
         name: 'resolve-vite-env',
         resolveId(id) {
           if (id === '@vite/env') {
-            return fileURLToPath(new URL('node_modules/vite/dist/client/env.mjs', import.meta.url))
+            return fileURLToPath(
+              new URL('node_modules/vite/dist/client/env.mjs', import.meta.url)
+            )
           }
         },
       },

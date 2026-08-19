@@ -7,11 +7,7 @@ import { RecentlyVisited } from '@/components/RecentlyVisited'
 import { TypeBadge } from '@/components/TypeBadge'
 import type { Locale } from '@/utils/i18n'
 import type { Pokemon } from '@/utils/pokemon'
-import {
-  getPokemonImage,
-  getPokemonName,
-  getTypeColor,
-} from '@/utils/pokemon'
+import { getPokemonImage, getPokemonName, getTypeColor } from '@/utils/pokemon'
 import type { Translations } from '@/utils/translations'
 import { interpolate, translations } from '@/utils/translations'
 
@@ -101,8 +97,7 @@ export function PokemonDetailContent({
   const abilities = initialAbilities
   const types: TranslatedType[] = pokemon.types.map(({ type }) => ({
     name: type.name,
-    translatedName:
-      (t.types as Record<string, string>)[type.name] ?? type.name,
+    translatedName: (t.types as Record<string, string>)[type.name] ?? type.name,
   }))
   const stats: TranslatedStat[] = pokemon.stats.map(({ stat, base_stat }) => ({
     name: stat.name,
@@ -134,13 +129,15 @@ export function PokemonDetailContent({
           .then((res) => res.json())
           .then((data) => {
             // Extract genus in the user's locale
-            const genusEntry = data.genera?.find(
-              (g: { genus: string; language: { name: string } }) =>
-                g.language.name === locale
-            ) ?? data.genera?.find(
-              (g: { genus: string; language: { name: string } }) =>
-                g.language.name === 'en'
-            )
+            const genusEntry =
+              data.genera?.find(
+                (g: { genus: string; language: { name: string } }) =>
+                  g.language.name === locale
+              ) ??
+              data.genera?.find(
+                (g: { genus: string; language: { name: string } }) =>
+                  g.language.name === 'en'
+              )
             if (genusEntry) setGenus(genusEntry.genus)
 
             const entries =
@@ -221,16 +218,20 @@ export function PokemonDetailContent({
     }
   }
 
-  const genderBar = speciesInfo && speciesInfo.genderRate >= 0 ? (() => {
-    const femalePercent = (speciesInfo.genderRate / 8) * 100
-    const malePercent = 100 - femalePercent
-    return { malePercent, femalePercent }
-  })() : null
+  const genderBar =
+    speciesInfo && speciesInfo.genderRate >= 0
+      ? (() => {
+          const femalePercent = (speciesInfo.genderRate / 8) * 100
+          const malePercent = 100 - femalePercent
+          return { malePercent, femalePercent }
+        })()
+      : null
 
   return (
     <div className="space-y-4">
       {/* Hidden audio elements for cries */}
       {pokemon.cries?.latest && (
+        // biome-ignore lint/a11y/useMediaCaption: Pokémon cries are short sound effects with no dialogue to caption
         <audio
           ref={latestCryRef}
           src={pokemon.cries.latest}
@@ -239,6 +240,7 @@ export function PokemonDetailContent({
         />
       )}
       {pokemon.cries?.legacy && (
+        // biome-ignore lint/a11y/useMediaCaption: Pokémon cries are short sound effects with no dialogue to caption
         <audio
           ref={legacyCryRef}
           src={pokemon.cries.legacy}
@@ -265,11 +267,8 @@ export function PokemonDetailContent({
         className="grid grid-cols-1 gap-3 md:grid-cols-4 md:gap-4"
         style={{ '--type-color': typeColor } as React.CSSProperties}
       >
-
         {/* ── Sprite card — tall, spans 2 rows on desktop ── */}
-        <div
-          className="bento-cell relative flex flex-col items-center justify-center gap-3 rounded-2xl bg-white p-6 md:col-span-2 md:row-span-2 dark:bg-dark-surface"
-        >
+        <div className="bento-cell relative flex flex-col items-center justify-center gap-3 rounded-2xl bg-white p-6 md:col-span-2 md:row-span-2 dark:bg-dark-surface">
           {/* Shiny toggle — top-right corner. p-3 (≈48×48 hit area) keeps it
               well above the recommended 44px touch target so kids can tap it
               comfortably without grazing the zoomable image. */}
@@ -286,11 +285,16 @@ export function PokemonDetailContent({
                   return !s
                 })
               }}
-              className={`absolute top-2 right-2 z-20 cursor-pointer rounded-full p-3 transition-all ${showShiny ? 'shadow-lg shadow-amber-300/40 dark:shadow-amber-500/30' : 'bg-surface-sunken opacity-60 hover:opacity-100 dark:bg-dark-raised'}`}
+              className={`absolute top-2 right-2 z-20 cursor-pointer rounded-full p-3 transition-all ${showShiny ? 'shadow-amber-300/40 shadow-lg dark:shadow-amber-500/30' : 'bg-surface-sunken opacity-60 hover:opacity-100 dark:bg-dark-raised'}`}
               aria-label="Shiny"
               title="Shiny"
             >
-              <svg className="h-6 w-6" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+              <svg
+                className="h-6 w-6"
+                viewBox="0 0 100 100"
+                fill="none"
+                aria-hidden="true"
+              >
                 <defs>
                   <radialGradient id="shiny-grad" cx="0.35" cy="0.35" r="0.75">
                     <stop offset="0%" stopColor="#ff4444" />
@@ -299,7 +303,12 @@ export function PokemonDetailContent({
                     <stop offset="75%" stopColor="#2288ff" />
                     <stop offset="100%" stopColor="#44aaff" />
                   </radialGradient>
-                  <radialGradient id="shiny-grad-off" cx="0.35" cy="0.35" r="0.75">
+                  <radialGradient
+                    id="shiny-grad-off"
+                    cx="0.35"
+                    cy="0.35"
+                    r="0.75"
+                  >
                     <stop offset="0%" stopColor="#aaa" />
                     <stop offset="100%" stopColor="#ccc" />
                   </radialGradient>
@@ -334,17 +343,17 @@ export function PokemonDetailContent({
                   onAnimationEnd={() => setShinyAnimating(false)}
                 />
                 {[
-                  { top: '5%',  left: '48%', delay: '0.05s', size: 14 },
+                  { top: '5%', left: '48%', delay: '0.05s', size: 14 },
                   { top: '18%', left: '87%', delay: '0.20s', size: 10 },
                   { top: '62%', left: '93%', delay: '0.12s', size: 12 },
-                  { top: '90%', left: '55%', delay: '0.28s', size: 9  },
-                  { top: '75%', left: '7%',  delay: '0.18s', size: 11 },
+                  { top: '90%', left: '55%', delay: '0.28s', size: 9 },
+                  { top: '75%', left: '7%', delay: '0.18s', size: 11 },
                   { top: '15%', left: '10%', delay: '0.32s', size: 10 },
-                  { top: '42%', left: '3%',  delay: '0.08s', size: 8  },
-                  { top: '38%', left: '97%', delay: '0.38s', size: 8  },
-                ].map((s, i) => (
+                  { top: '42%', left: '3%', delay: '0.08s', size: 8 },
+                  { top: '38%', left: '97%', delay: '0.38s', size: 8 },
+                ].map((s) => (
                   <div
-                    key={i}
+                    key={`${s.top}-${s.left}`}
                     className="shiny-sparkle"
                     style={{
                       top: s.top,
@@ -375,7 +384,7 @@ export function PokemonDetailContent({
           {/* Cry buttons */}
           {(pokemon.cries?.latest || pokemon.cries?.legacy) && (
             <div className="flex items-center gap-2">
-              <span className="font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
+              <span className="font-bold font-sans text-primary text-xs uppercase tracking-wider dark:text-dark-primary">
                 {t.pokemon.cry}
               </span>
               {pokemon.cries?.latest && (
@@ -385,7 +394,12 @@ export function PokemonDetailContent({
                   className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-medium text-xs transition-all ${playingCry === 'latest' ? 'bg-primary text-white dark:bg-dark-primary' : 'bg-surface-sunken text-ink hover:bg-primary/10 dark:bg-dark-raised dark:text-dark-ink dark:hover:bg-dark-primary/10'}`}
                   title={t.pokemon.playCry}
                 >
-                  <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  <svg
+                    className="h-3.5 w-3.5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    aria-hidden="true"
+                  >
                     {playingCry === 'latest' ? (
                       <path d="M5.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75A.75.75 0 007.25 3h-1.5zm7 0a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75a.75.75 0 00-.75-.75h-1.5z" />
                     ) : (
@@ -402,7 +416,12 @@ export function PokemonDetailContent({
                   className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-medium text-xs transition-all ${playingCry === 'legacy' ? 'bg-primary text-white dark:bg-dark-primary' : 'bg-surface-sunken text-ink hover:bg-primary/10 dark:bg-dark-raised dark:text-dark-ink dark:hover:bg-dark-primary/10'}`}
                   title={t.pokemon.playCry}
                 >
-                  <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  <svg
+                    className="h-3.5 w-3.5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    aria-hidden="true"
+                  >
                     {playingCry === 'legacy' ? (
                       <path d="M5.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75A.75.75 0 007.25 3h-1.5zm7 0a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75a.75.75 0 00-.75-.75h-1.5z" />
                     ) : (
@@ -460,27 +479,31 @@ export function PokemonDetailContent({
         {/* ── Height + Weight ── */}
         <div className="grid grid-cols-2 gap-3 md:col-span-2 md:gap-4">
           <div className="bento-cell rounded-2xl bg-white p-4 dark:bg-dark-surface">
-            <p className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
+            <p className="mb-3 font-bold font-sans text-primary text-xs uppercase tracking-wider dark:text-dark-primary">
               {t.pokemon.height}
             </p>
-            <p className="font-mono font-bold text-ink text-2xl dark:text-dark-ink">
+            <p className="font-bold font-mono text-2xl text-ink dark:text-dark-ink">
               {(pokemon.height / 10).toLocaleString(locale, {
                 minimumFractionDigits: 1,
                 maximumFractionDigits: 1,
               })}{' '}
-              <span className="text-base text-ink-muted dark:text-dark-ink-muted">m</span>
+              <span className="text-base text-ink-muted dark:text-dark-ink-muted">
+                m
+              </span>
             </p>
           </div>
           <div className="bento-cell rounded-2xl bg-white p-4 dark:bg-dark-surface">
-            <p className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
+            <p className="mb-3 font-bold font-sans text-primary text-xs uppercase tracking-wider dark:text-dark-primary">
               {t.pokemon.weight}
             </p>
-            <p className="font-mono font-bold text-ink text-2xl dark:text-dark-ink">
+            <p className="font-bold font-mono text-2xl text-ink dark:text-dark-ink">
               {(pokemon.weight / 10).toLocaleString(locale, {
                 minimumFractionDigits: 1,
                 maximumFractionDigits: 1,
               })}{' '}
-              <span className="text-base text-ink-muted dark:text-dark-ink-muted">kg</span>
+              <span className="text-base text-ink-muted dark:text-dark-ink-muted">
+                kg
+              </span>
             </p>
           </div>
         </div>
@@ -503,7 +526,7 @@ export function PokemonDetailContent({
 
         {/* ── Abilities ── */}
         <div className="bento-cell rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
-          <p className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
+          <p className="mb-3 font-bold font-sans text-primary text-xs uppercase tracking-wider dark:text-dark-primary">
             {t.pokemon.abilities}
           </p>
           <div className="flex flex-wrap gap-2">
@@ -518,7 +541,6 @@ export function PokemonDetailContent({
             ))}
           </div>
         </div>
-
       </div>
 
       {/* ── Enriched data (type effectiveness + evolution chain) ── */}
@@ -537,7 +559,7 @@ export function PokemonDetailContent({
         >
           {/* ── Breeding Info ── */}
           <div className="bento-cell rounded-2xl bg-white p-4 dark:bg-dark-surface">
-            <p className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
+            <p className="mb-3 font-bold font-sans text-primary text-xs uppercase tracking-wider dark:text-dark-primary">
               {t.pokemon.breeding}
             </p>
             <div className="space-y-3">
@@ -564,7 +586,9 @@ export function PokemonDetailContent({
                 </span>
                 {genderBar ? (
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-blue-500 text-xs">♂ {genderBar.malePercent.toFixed(1)}%</span>
+                    <span className="font-medium text-blue-500 text-xs">
+                      ♂ {genderBar.malePercent.toFixed(1)}%
+                    </span>
                     <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-surface-sunken dark:bg-dark-raised">
                       <div
                         className="absolute top-0 left-0 h-full rounded-full bg-blue-400"
@@ -575,7 +599,9 @@ export function PokemonDetailContent({
                         style={{ width: `${genderBar.femalePercent}%` }}
                       />
                     </div>
-                    <span className="font-medium text-pink-500 text-xs">♀ {genderBar.femalePercent.toFixed(1)}%</span>
+                    <span className="font-medium text-pink-500 text-xs">
+                      ♀ {genderBar.femalePercent.toFixed(1)}%
+                    </span>
                   </div>
                 ) : (
                   <span className="text-ink-faint text-xs italic dark:text-dark-ink-faint">
@@ -610,7 +636,7 @@ export function PokemonDetailContent({
 
           {/* ── Training Info ── */}
           <div className="bento-cell rounded-2xl bg-white p-4 dark:bg-dark-surface">
-            <p className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
+            <p className="mb-3 font-bold font-sans text-primary text-xs uppercase tracking-wider dark:text-dark-primary">
               {t.pokemon.training}
             </p>
             <div className="space-y-3">
@@ -623,7 +649,9 @@ export function PokemonDetailContent({
                   <div className="relative h-2 w-20 overflow-hidden rounded-full bg-surface-sunken dark:bg-dark-raised">
                     <div
                       className={`absolute top-0 left-0 h-full rounded-full ${speciesInfo.captureRate > 150 ? 'bg-success' : speciesInfo.captureRate > 60 ? 'bg-warning' : 'bg-danger'}`}
-                      style={{ width: `${Math.min(100, (speciesInfo.captureRate / 255) * 100)}%` }}
+                      style={{
+                        width: `${Math.min(100, (speciesInfo.captureRate / 255) * 100)}%`,
+                      }}
                     />
                   </div>
                   <span className="font-mono text-ink text-xs dark:text-dark-ink">
@@ -649,7 +677,8 @@ export function PokemonDetailContent({
                     {t.pokemon.growthRate}
                   </span>
                   <span className="text-ink text-xs dark:text-dark-ink">
-                    {t.growthRates[speciesInfo.growthRate] ?? getPokemonName(speciesInfo.growthRate)}
+                    {t.growthRates[speciesInfo.growthRate] ??
+                      getPokemonName(speciesInfo.growthRate)}
                   </span>
                 </div>
               )}
@@ -660,7 +689,8 @@ export function PokemonDetailContent({
                     {t.pokemon.habitat}
                   </span>
                   <span className="text-ink text-xs dark:text-dark-ink">
-                    {t.habitats[speciesInfo.habitat] ?? getPokemonName(speciesInfo.habitat)}
+                    {t.habitats[speciesInfo.habitat] ??
+                      getPokemonName(speciesInfo.habitat)}
                   </span>
                 </div>
               )}
@@ -671,7 +701,8 @@ export function PokemonDetailContent({
                     {t.pokemon.shape}
                   </span>
                   <span className="text-ink text-xs dark:text-dark-ink">
-                    {t.shapes[speciesInfo.shape] ?? getPokemonName(speciesInfo.shape)}
+                    {t.shapes[speciesInfo.shape] ??
+                      getPokemonName(speciesInfo.shape)}
                   </span>
                 </div>
               )}
@@ -681,20 +712,26 @@ export function PokemonDetailContent({
           {/* ── Held Items ── */}
           {pokemon.held_items && pokemon.held_items.length > 0 && (
             <div className="bento-cell rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
-              <p className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
+              <p className="mb-3 font-bold font-sans text-primary text-xs uppercase tracking-wider dark:text-dark-primary">
                 {t.pokemon.heldItems}
               </p>
               <div className="space-y-2">
                 {pokemon.held_items.map(({ item, version_details }) => {
-                  const latestVersion = version_details[version_details.length - 1]
+                  const latestVersion =
+                    version_details[version_details.length - 1]
                   return (
-                    <div key={item.name} className="flex items-center justify-between gap-2">
+                    <div
+                      key={item.name}
+                      className="flex items-center justify-between gap-2"
+                    >
                       <span className="text-ink text-xs capitalize dark:text-dark-ink">
                         {getPokemonName(item.name)}
                       </span>
                       {latestVersion && (
                         <span className="text-ink-muted text-xs dark:text-dark-ink-muted">
-                          {interpolate(t.pokemon.heldItemRarity, { rarity: latestVersion.rarity })}
+                          {interpolate(t.pokemon.heldItemRarity, {
+                            rarity: latestVersion.rarity,
+                          })}
                         </span>
                       )}
                     </div>

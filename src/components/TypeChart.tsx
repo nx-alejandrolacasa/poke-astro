@@ -166,7 +166,7 @@ function DetailPanel({
           className="space-y-3 rounded-xl bg-red-50/50 p-3 dark:bg-red-500/10"
           style={{ border: `1px solid ${isDark ? '#ef444440' : '#ef444420'}` }}
         >
-          <h3 className="font-bold text-xs text-red-500 uppercase tracking-widest">
+          <h3 className="font-bold text-red-500 text-xs uppercase tracking-widest">
             {locale === 'es' ? 'Atacando' : 'Attacking'}
           </h3>
           <div className="space-y-2">
@@ -201,7 +201,7 @@ function DetailPanel({
           className="space-y-3 rounded-xl bg-blue-50/50 p-3 dark:bg-blue-500/10"
           style={{ border: `1px solid ${isDark ? '#3b82f640' : '#3b82f620'}` }}
         >
-          <h3 className="font-bold text-xs text-blue-500 uppercase tracking-widest">
+          <h3 className="font-bold text-blue-500 text-xs uppercase tracking-widest">
             {locale === 'es' ? 'Defendiendo' : 'Defending'}
           </h3>
           <div className="space-y-2">
@@ -370,7 +370,10 @@ export function TypeChart({ locale }: TypeChartProps) {
                 )}
                 <span
                   className="w-full rounded-lg py-0.5 text-center font-semibold text-xs capitalize"
-                  style={{ backgroundColor: color, color: getContrastColor(color) }}
+                  style={{
+                    backgroundColor: color,
+                    color: getContrastColor(color),
+                  }}
                 >
                   {t.types[type]}
                 </span>

@@ -28,6 +28,10 @@ export function RecentlyVisited({
   const [canScrollLeft, setCanScrollLeft] = useState(false)
   const [canScrollRight, setCanScrollRight] = useState(false)
 
+  // Only re-run when the visited pokemon changes. The other props are
+  // derived from the same pokemon (and `currentTypes` is a fresh array
+  // literal on every parent render, which would otherwise thrash).
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentional, see above
   useEffect(() => {
     let cancelled = false
     ;(async () => {
@@ -50,12 +54,11 @@ export function RecentlyVisited({
     return () => {
       cancelled = true
     }
-    // Only re-run when the visited pokemon changes. The other props are
-    // derived from the same pokemon (and `currentTypes` is a fresh array
-    // literal on every parent render, which would otherwise thrash).
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentName])
 
+  // `visits` isn't read inside, but changing pills change scrollWidth
+  // without firing the ResizeObserver, so re-measure when they change.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentional, see above
   useEffect(() => {
     const el = scrollRef.current
     if (!el) return

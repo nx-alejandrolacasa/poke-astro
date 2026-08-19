@@ -8,7 +8,6 @@ import {
 import { translations } from '@/utils/translations'
 
 type HomeContentProps = {
-  totalPokemon: number
   locale: Locale
 }
 
@@ -32,7 +31,7 @@ const GENERATIONS = [
   { region: 'Paldea', mascot: 1007, type: 'fighting' }, // Koraidon
 ]
 
-export function HomeContent({ totalPokemon, locale }: HomeContentProps) {
+export function HomeContent({ locale }: HomeContentProps) {
   const t = translations[locale]
 
   return (

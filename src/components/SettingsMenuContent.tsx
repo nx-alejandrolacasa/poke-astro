@@ -38,7 +38,9 @@ export function SettingsMenuContent({
   useEffect(() => {
     if (window.theme) setCurrentTheme(window.theme.getTheme())
     const sync = (e: Event) => {
-      const detail = (e as CustomEvent).detail as { theme?: ThemeMode } | undefined
+      const detail = (e as CustomEvent).detail as
+        | { theme?: ThemeMode }
+        | undefined
       if (detail?.theme) setCurrentTheme(detail.theme)
     }
     document.addEventListener('theme-changed', sync)
@@ -53,20 +55,35 @@ export function SettingsMenuContent({
   return (
     <>
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="font-bold text-ink text-sm dark:text-dark-ink">{t.settings.title}</h2>
+        <h2 className="font-bold text-ink text-sm dark:text-dark-ink">
+          {t.settings.title}
+        </h2>
         <button
           type="button"
           onClick={onClose}
           className="flex h-8 w-8 items-center justify-center rounded-full text-ink-muted transition-colors hover:bg-black/5 hover:text-ink dark:text-dark-ink-muted dark:hover:bg-white/8 dark:hover:text-dark-ink"
           aria-label={t.modal.close}
         >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <svg
+            className="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       </div>
 
-      <p className="mb-2 font-semibold text-ink-muted text-xs uppercase tracking-wider dark:text-dark-ink-muted">{t.settings.language}</p>
+      <p className="mb-2 font-semibold text-ink-muted text-xs uppercase tracking-wider dark:text-dark-ink-muted">
+        {t.settings.language}
+      </p>
       <div className="mb-4 grid grid-cols-2 gap-2">
         {locales.map((loc) => (
           <a
@@ -83,7 +100,9 @@ export function SettingsMenuContent({
         ))}
       </div>
 
-      <p className="mb-2 font-semibold text-ink-muted text-xs uppercase tracking-wider dark:text-dark-ink-muted">{t.settings.theme}</p>
+      <p className="mb-2 font-semibold text-ink-muted text-xs uppercase tracking-wider dark:text-dark-ink-muted">
+        {t.settings.theme}
+      </p>
       <div className="grid grid-cols-3 gap-2">
         {(['auto', 'light', 'dark'] as const).map((mode) => (
           <button
@@ -97,8 +116,19 @@ export function SettingsMenuContent({
             }`}
             aria-pressed={currentTheme === mode}
           >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={THEME_ICON_PATHS[mode]} />
+            <svg
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d={THEME_ICON_PATHS[mode]}
+              />
             </svg>
             {t.settings[mode]}
           </button>
