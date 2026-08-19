@@ -1,12 +1,13 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.11/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.9/schema.json",
   "files": {
     "includes": [
       "**",
       "!**/node_modules",
       "!**/.astro",
       "!**/dist",
-      "!**/styles/global.css"
+      "!**/styles/global.css",
+      "!public"
     ],
     "ignoreUnknown": true
   },
