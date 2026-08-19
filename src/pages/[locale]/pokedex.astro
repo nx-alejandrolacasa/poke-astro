@@ -19,6 +19,6 @@ const initialData = await fetchPokemonPage(1)
 
 <Layout title={t.header.pokedex} locale={locale}>
   <PokemonInfiniteScroll client:only="react" initialData={initialData} locale={locale}>
-    <ListerSkeleton slot="fallback" />
+    <ListerSkeleton slot="fallback" locale={locale} />
   </PokemonInfiniteScroll>
 </Layout>

@@ -67,11 +67,14 @@ const currentPath = Astro.url.pathname
       </a>
     </div>
 
-    <!-- Right group: settings + search, mirrors the mobile nav order -->
+    <!-- Right group: settings + search, mirrors the mobile nav order.
+         Both islands are persisted across SPA swaps (like BottomTabNav) so
+         they keep state — chiefly PokemonSearch's fetched names list — and
+         skip rehydration; Astro refreshes their props on each swap. -->
     <div class="ml-auto flex items-center gap-2">
-      <HeaderSettings client:load locale={locale} currentPath={currentPath} />
+      <HeaderSettings client:load locale={locale} currentPath={currentPath} transition:persist="header-settings" />
       <div class="w-full max-w-sm">
-        <PokemonSearch client:load locale={locale} />
+        <PokemonSearch client:load locale={locale} transition:persist="header-search" />
       </div>
     </div>
   </nav>

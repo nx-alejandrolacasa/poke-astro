@@ -6,7 +6,12 @@ import { TypeInfiniteScroll } from '@/components/TypeInfiniteScroll'
 import Layout from '@/layouts/Layout.astro'
 import { getI18n, locales } from '@/utils/i18n'
 import type { Pokemon, PokemonList } from '@/utils/pokemon'
-import { POKEMON_TYPES, getPokemonName } from '@/utils/pokemon'
+import {
+  getPokemonName,
+  POKEMON_TYPES,
+  typeColors as typeHexColors,
+} from '@/utils/pokemon'
+import { interpolate } from '@/utils/translations'
 
 export function getStaticPaths() {
   return locales.flatMap((locale) =>
@@ -66,13 +71,15 @@ const pokemonPromises = pokemonSlice.map(
   async (p: { pokemon: { url: string } }) => {
     const res = await fetch(p.pokemon.url)
     if (!res.ok) {
-      return null  
+      return null
     }
     return res.json()
   }
 )
 
-const results: Pokemon[] = (await Promise.all(pokemonPromises)).filter(Boolean) as Pokemon[]
+const results: Pokemon[] = (await Promise.all(pokemonPromises)).filter(
+  Boolean
+) as Pokemon[]
 
 // Sort by National Pokédex number
 results.sort((a, b) => a.id - b.id)
@@ -93,6 +100,13 @@ const typeName = t.types[type as keyof typeof t.types] || getPokemonName(type)
     typeColor={gradientClass}
     locale={locale}
   >
-    <ListerSkeleton slot="fallback" banner="type" />
+    <ListerSkeleton
+      slot="fallback"
+      banner="type"
+      locale={locale}
+      bannerTitle={typeName}
+      bannerSubtitle={interpolate(t.pages.speciesCount, { count: initialData.count })}
+      bannerColor={typeHexColors[type]}
+    />
   </TypeInfiniteScroll>
 </Layout>

@@ -4,7 +4,9 @@ import tailwindcss from '@tailwindcss/vite'
 import { defineConfig, svgoOptimizer } from 'astro/config'
 
 // Detect dev mode via npm script name (set by npm to "dev", "build", "preview", etc.)
-const isDev = process.env.npm_lifecycle_event === 'dev' || process.env.npm_lifecycle_event === 'start'
+const isDev =
+  process.env.npm_lifecycle_event === 'dev' ||
+  process.env.npm_lifecycle_event === 'start'
 
 // Adapter: Node for dev; Cloudflare when running on Cloudflare Pages
 // (CF_PAGES) or Workers Builds (WORKERS_CI_BUILD_UUID), or when explicitly
@@ -71,7 +73,9 @@ export default defineConfig({
         name: 'resolve-vite-env',
         resolveId(id) {
           if (id === '@vite/env') {
-            return fileURLToPath(new URL('node_modules/vite/dist/client/env.mjs', import.meta.url))
+            return fileURLToPath(
+              new URL('node_modules/vite/dist/client/env.mjs', import.meta.url)
+            )
           }
         },
       },
@@ -89,8 +93,13 @@ export default defineConfig({
   experimental: {
     // Chrome DevTools workspace support for live editing
     chromeDevtoolsWorkspace: true,
-    // Client-side prerendering with Speculation Rules API
-    clientPrerender: true,
+    // Note: clientPrerender (Speculation Rules API) is deliberately NOT
+    // enabled. ClientRouter intercepts link clicks and fetch()es the target
+    // page itself, and that fetch cannot consume speculation-rules output
+    // (it only serves real navigations) — so hover/tap prefetches were
+    // prerendering pages that got thrown away. Without the flag, prefetch
+    // falls back to <link rel="prefetch">, which populates the HTTP cache
+    // that ClientRouter's fetch actually reads.
     // Content collection intellisense in editors
     contentIntellisense: true,
     // SVGO optimization for SVG assets (renamed from `svgo: true` in Astro 7;

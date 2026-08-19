@@ -41,7 +41,9 @@ export const GET: APIRoute = async ({ params }) => {
       }
     )
 
-    const results: Pokemon[] = (await Promise.all(pokemonPromises)).filter(Boolean) as Pokemon[]
+    const results: Pokemon[] = (await Promise.all(pokemonPromises)).filter(
+      Boolean
+    ) as Pokemon[]
 
     // Sort by National Pokédex number
     results.sort((a, b) => a.id - b.id)

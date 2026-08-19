@@ -1,0 +1,37 @@
+---
+// Pre-navigation skeleton approximating the Pokémon detail page's bento
+// layout (back-button row, tall sprite card, side info cells). Cloned into
+// the nav-skeleton overlay by Layout.astro's SPA script while ClientRouter
+// fetches a detail page.
+import BackButtonStatic from '@/components/BackButtonStatic.astro'
+import type { Locale } from '@/utils/i18n'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+---
+
+<div>
+  <div class="mb-4 flex items-center gap-2">
+    <BackButtonStatic locale={locale} />
+  </div>
+
+  <div class="grid grid-cols-1 gap-3 md:grid-cols-4 md:gap-4">
+    <div class="rounded-2xl bg-white p-6 md:col-span-2 md:row-span-2 dark:bg-dark-surface">
+      <div class="skeleton-shimmer aspect-square w-full rounded-xl"></div>
+      <div class="skeleton-shimmer mx-auto mt-4 h-7 w-1/2 rounded-md"></div>
+      <div class="mt-3 flex justify-center gap-2">
+        <div class="skeleton-shimmer h-6 w-16 rounded-full"></div>
+        <div class="skeleton-shimmer h-6 w-16 rounded-full"></div>
+      </div>
+    </div>
+    {Array.from({ length: 4 }).map(() => (
+      <div class="rounded-2xl bg-white p-6 md:col-span-2 dark:bg-dark-surface">
+        <div class="skeleton-shimmer mb-3 h-5 w-24 rounded-md"></div>
+        <div class="skeleton-shimmer h-16 w-full rounded-xl"></div>
+      </div>
+    ))}
+  </div>
+</div>

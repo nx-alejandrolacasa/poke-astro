@@ -1,0 +1,27 @@
+---
+// Static twin of BackButton.tsx for skeletons: same look, but functional
+// before any hydration via a plain inline handler. Skips the can-go-back
+// detection — whenever a skeleton is showing, the user just navigated, so
+// there is always a page to go back to.
+import type { Locale } from '@/utils/i18n'
+import { translations } from '@/utils/translations'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const t = translations[locale]
+---
+
+<button
+  type="button"
+  onclick="history.back()"
+  aria-label={t.pages.back}
+  class="inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-white/60 bg-white/70 px-2.5 py-2.5 font-semibold text-red-500 text-sm shadow-lg shadow-black/[0.08] backdrop-blur-xl transition-all hover:bg-red-500/10 active:scale-95 md:px-4 md:py-2 dark:border-white/[0.08] dark:bg-dark-surface/70 dark:text-red-300 dark:shadow-black/30 dark:hover:bg-red-500/15"
+>
+  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+  </svg>
+  <span class="hidden md:inline">{t.pages.back}</span>
+</button>

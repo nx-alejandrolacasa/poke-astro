@@ -75,7 +75,7 @@ export function Carousel({
     return (
       <div className={className}>
         {label && (
-          <p className="mb-2 font-bold text-sm text-primary uppercase tracking-wider dark:text-dark-primary">
+          <p className="mb-2 font-bold text-primary text-sm uppercase tracking-wider dark:text-dark-primary">
             {label}
           </p>
         )}
@@ -93,7 +93,7 @@ export function Carousel({
       onPointerCancel={finishPointer}
     >
       {label && (
-        <p className="mb-3 font-sans font-bold text-xs text-primary uppercase tracking-wider dark:text-dark-primary">
+        <p className="mb-3 font-bold font-sans text-primary text-xs uppercase tracking-wider dark:text-dark-primary">
           {label}
         </p>
       )}
@@ -104,7 +104,16 @@ export function Carousel({
           className="hidden h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-primary transition-colors hover:bg-primary/10 dark:text-dark-primary dark:hover:bg-dark-primary/15 [@media(pointer:fine)]:flex"
           aria-label="Previous"
         >
-          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <svg
+            className="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </button>
@@ -128,7 +137,16 @@ export function Carousel({
           className="hidden h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-primary transition-colors hover:bg-primary/10 dark:text-dark-primary dark:hover:bg-dark-primary/15 [@media(pointer:fine)]:flex"
           aria-label="Next"
         >
-          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <svg
+            className="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
             <path d="M9 6l6 6-6 6" />
           </svg>
         </button>

@@ -26,7 +26,11 @@ export function TypeBadge({ type, label, size = 'sm', href }: TypeBadgeProps) {
 
   if (href) {
     return (
-      <a href={href} className={`${className} transition-opacity hover:opacity-90`} style={style}>
+      <a
+        href={href}
+        className={`${className} transition-opacity hover:opacity-90`}
+        style={style}
+      >
         {displayName}
       </a>
     )
