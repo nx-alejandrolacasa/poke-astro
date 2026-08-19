@@ -741,6 +741,19 @@ clean.
 - **`experimental.collectionStorage`** (Astro 7.1) — content-layer only; this
   project has no content collections.
 
+### Lockfile: pinned `rolldown` override
+
+`package.json` overrides `rolldown` to **1.2.4**. Vite 8.2.1 depends on
+`rolldown: ~1.2.1`, which floats to 1.2.5 — and rolldown 1.2.5 declares optional
+dependencies on `@rolldown/binding-darwin-x64@1.2.5` and
+`@rolldown/binding-linux-arm64-gnu@1.2.5`, **neither of which was ever published**
+(those two platform packages stop at 1.2.4). npm cannot record them, and
+`npm ci` then aborts with `Missing: ... from lock file` on every platform.
+
+Since Vercel and Cloudflare both install with `npm ci`, this breaks deploys, not
+just local installs. Pinning 1.2.4 satisfies Vite's `~1.2.1` range and has all 15
+platform bindings published. Revisit once rolldown publishes a complete 1.2.6+.
+
 ### Still required
 
 The hand-written `resolve-vite-env` Vite plugin in `astro.config.mjs` is **still

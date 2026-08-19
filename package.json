@@ -31,7 +31,8 @@
     "react-dom": "19.2.8"
   },
   "overrides": {
-    "vite": "$vite"
+    "vite": "$vite",
+    "rolldown": "1.2.4"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
