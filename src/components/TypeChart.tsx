@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { Locale } from '@/utils/i18n'
-import { typeRepresentativePokemon } from '@/utils/pokemon'
+import {
+  officialArtworkUrl,
+  optimizedImageUrl,
+  typeRepresentativePokemon,
+} from '@/utils/pokemon'
 import { translations } from '@/utils/translations'
 import type { PokemonType } from '@/utils/typeEffectiveness'
 import {
@@ -362,7 +366,7 @@ export function TypeChart({ locale }: TypeChartProps) {
               >
                 {pokeId !== undefined && (
                   <img
-                    src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokeId}.png`}
+                    src={optimizedImageUrl(officialArtworkUrl(pokeId), 56)}
                     alt={type}
                     className="h-12 w-12 object-contain md:h-14 md:w-14"
                     loading="lazy"

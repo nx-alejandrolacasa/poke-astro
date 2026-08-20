@@ -1,5 +1,9 @@
 import type { EvolutionDetail, EvolutionTreeNode } from '@utils/pokemon'
-import { getPokemonName } from '@utils/pokemon'
+import {
+  getPokemonName,
+  officialArtworkUrl,
+  optimizedImageUrl,
+} from '@utils/pokemon'
 import { useEffect, useState } from 'react'
 import type { Locale } from '@/utils/i18n'
 import type { Translations } from '@/utils/translations'
@@ -505,7 +509,7 @@ function EvolutionCard({
       <div className="text-center">
         {evoId && (
           <img
-            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${evoId}.png`}
+            src={optimizedImageUrl(officialArtworkUrl(evoId), 96)}
             alt={name}
             className="mx-auto h-20 w-20 object-contain md:h-24 md:w-24"
             loading="lazy"

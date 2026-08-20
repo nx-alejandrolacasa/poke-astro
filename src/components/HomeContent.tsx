@@ -1,6 +1,8 @@
 import { Carousel } from '@/components/Carousel'
 import type { Locale } from '@/utils/i18n'
 import {
+  officialArtworkUrl,
+  optimizedImageUrl,
   POKEMON_TYPES,
   typeColors,
   typeRepresentativePokemon,
@@ -78,7 +80,7 @@ export function HomeContent({ locale }: HomeContentProps) {
                 }}
               >
                 <img
-                  src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${gen.mascot}.png`}
+                  src={optimizedImageUrl(officialArtworkUrl(gen.mascot), 56)}
                   alt={gen.region}
                   className="h-12 w-12 object-contain md:h-14 md:w-14"
                   loading="lazy"
@@ -118,7 +120,7 @@ export function HomeContent({ locale }: HomeContentProps) {
                 }}
               >
                 <img
-                  src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokeId}.png`}
+                  src={optimizedImageUrl(officialArtworkUrl(pokeId), 56)}
                   alt={type}
                   className="h-12 w-12 object-contain md:h-14 md:w-14"
                   loading="lazy"

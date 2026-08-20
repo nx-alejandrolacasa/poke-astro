@@ -27,6 +27,18 @@ const adapter = await (async () => {
   }
   const vercel = (await import('@astrojs/vercel')).default
   return vercel({
+    // Vercel Image Optimization for the PokeAPI sprites (served from
+    // raw.githubusercontent.com, which sends max-age=300 and no resizing).
+    // optimizedImageUrl() in utils/pokemon.ts builds /_vercel/image URLs;
+    // its widths must be a subset of `sizes` here. Sprites are immutable,
+    // hence the long minimumCacheTTL.
+    imageService: true,
+    imagesConfig: {
+      sizes: [128, 256, 512],
+      domains: ['raw.githubusercontent.com'],
+      minimumCacheTTL: 60 * 60 * 24 * 30,
+      formats: ['image/avif', 'image/webp'],
+    },
     // Incremental Static Regeneration. Pokémon data is immutable, so on-demand
     // (SSR) routes — chiefly the high-cardinality /[locale]/pokemon/[name]
     // detail pages — are rendered once on first request and then served from
@@ -64,6 +76,14 @@ export default defineConfig({
     },
   },
   vite: {
+    // True only for Vercel builds: optimizedImageUrl() checks this flag and
+    // returns the raw sprite URL in dev and on Cloudflare, where the
+    // /_vercel/image endpoint doesn't exist.
+    define: {
+      'import.meta.env.PUBLIC_VERCEL_IMAGES': JSON.stringify(
+        !isDev && !isCloudflareCI
+      ),
+    },
     plugins: [
       tailwindcss(),
       // Workaround: Vite 7 Environment API processes client.mjs through
