@@ -240,6 +240,30 @@ export function getPokemonImage(pokemon: Pokemon) {
   )
 }
 
+export function officialArtworkUrl(id: number | string): string {
+  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`
+}
+
+/** Must stay a subset of imagesConfig.sizes in astro.config.mjs */
+const VERCEL_IMAGE_SIZES = [128, 256, 512]
+
+/**
+ * Route a remote sprite URL through Vercel Image Optimization (resized,
+ * AVIF/WebP, edge-cached across deployments). `width` is the largest CSS
+ * pixel size the image renders at; it's doubled for retina and rounded up
+ * to an allowed size. Returns the URL unchanged in dev, on Cloudflare, and
+ * for local assets like /not-found.svg.
+ */
+export function optimizedImageUrl(url: string, width: number): string {
+  if (!import.meta.env.PUBLIC_VERCEL_IMAGES || !url.startsWith('https://')) {
+    return url
+  }
+  const w =
+    VERCEL_IMAGE_SIZES.find((s) => s >= width * 2) ??
+    VERCEL_IMAGE_SIZES[VERCEL_IMAGE_SIZES.length - 1]
+  return `/_vercel/image?url=${encodeURIComponent(url)}&w=${w}&q=75`
+}
+
 /** Canonical Pokémon types, used for generating type-listing routes and
  * rendering the type grid on the home page. */
 export const POKEMON_TYPES = [

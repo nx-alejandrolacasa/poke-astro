@@ -1,5 +1,9 @@
 import type { Pokemon } from '@utils/pokemon'
-import { getPokemonImage, getTypeColor } from '@utils/pokemon'
+import {
+  getPokemonImage,
+  getTypeColor,
+  optimizedImageUrl,
+} from '@utils/pokemon'
 import { TypeBadge } from '@/components/TypeBadge'
 import type { Locale } from '@/utils/i18n'
 import { translations } from '@/utils/translations'
@@ -34,7 +38,11 @@ export function PokemonTile({
           </span>
           <img
             className="relative z-10 aspect-square w-full"
-            src={loading ? '/loading.svg' : getPokemonImage(pokemon)}
+            src={
+              loading
+                ? '/loading.svg'
+                : optimizedImageUrl(getPokemonImage(pokemon), 256)
+            }
             alt={`${pokemon.name} official artwork`}
           />
         </div>

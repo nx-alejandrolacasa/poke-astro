@@ -7,7 +7,12 @@ import { RecentlyVisited } from '@/components/RecentlyVisited'
 import { TypeBadge } from '@/components/TypeBadge'
 import type { Locale } from '@/utils/i18n'
 import type { Pokemon } from '@/utils/pokemon'
-import { getPokemonImage, getPokemonName, getTypeColor } from '@/utils/pokemon'
+import {
+  getPokemonImage,
+  getPokemonName,
+  getTypeColor,
+  optimizedImageUrl,
+} from '@/utils/pokemon'
 import type { Translations } from '@/utils/translations'
 import { interpolate, translations } from '@/utils/translations'
 
@@ -115,8 +120,9 @@ export function PokemonDetailContent({
   const [shinyAnimating, setShinyAnimating] = useState(false)
   const [shinyAnimKey, setShinyAnimKey] = useState(0)
   const [zoomOpen, setZoomOpen] = useState(false)
-  const shinyUrl = pokemon.sprites?.other?.['official-artwork']?.front_shiny
-  const defaultUrl = getPokemonImage(pokemon)
+  const rawShinyUrl = pokemon.sprites?.other?.['official-artwork']?.front_shiny
+  const shinyUrl = rawShinyUrl ? optimizedImageUrl(rawShinyUrl, 256) : null
+  const defaultUrl = optimizedImageUrl(getPokemonImage(pokemon), 256)
   const zoomSrc = showShiny && shinyUrl ? shinyUrl : defaultUrl
 
   useEffect(() => {
