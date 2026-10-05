@@ -84,8 +84,11 @@ const pageSize = 30
 const speciesSlice = genData.pokemon_species.slice(0, pageSize)
 
 // Fetch full details for first page
-const pokemonPromises = speciesSlice.map(async (species: { name: string }) => {
-  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${species.name}`)
+const pokemonPromises = speciesSlice.map(async (species: { url: string }) => {
+  // Species names don't always match a Pokémon name (e.g. `oricorio`
+  // → `oricorio-baile`), so fetch the default variety by species ID.
+  const speciesId = species.url.split('/').filter(Boolean).pop()
+  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${speciesId}`)
   if (!res.ok) return null
   return res.json()
 })
