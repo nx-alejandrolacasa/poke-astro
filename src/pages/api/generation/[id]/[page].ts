@@ -34,9 +34,12 @@ export const GET: APIRoute = async ({ params }) => {
 
     // Fetch full details for this page
     const pokemonPromises = speciesSlice.map(
-      async (species: { name: string }) => {
+      async (species: { url: string }) => {
+        // Species names don't always match a Pokémon name (e.g. `oricorio`
+        // → `oricorio-baile`), so fetch the default variety by species ID.
+        const speciesId = species.url.split('/').filter(Boolean).pop()
         const res = await fetch(
-          `https://pokeapi.co/api/v2/pokemon/${species.name}`
+          `https://pokeapi.co/api/v2/pokemon/${speciesId}`
         )
         if (!res.ok) return null
         return res.json()

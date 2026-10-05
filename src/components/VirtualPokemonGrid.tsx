@@ -59,6 +59,10 @@ export function VirtualPokemonGrid({
     }
   )
   const loadingPagesRef = useRef<Set<number>>(new Set())
+  // Pages that have been fetched successfully. A page may legitimately come
+  // back with fewer items than expected (e.g. an upstream 404 for one entry);
+  // without this, the missing indices would retrigger the same fetch forever.
+  const loadedPagesRef = useRef<Set<number>>(new Set([1]))
   const [containerWidth, setContainerWidth] = useState<number>(() =>
     typeof window === 'undefined' ? 0 : window.innerWidth
   )
@@ -154,10 +158,20 @@ export function VirtualPokemonGrid({
       results: initialPokemon,
     })
     getCachedPagesFrom(cacheNamespace, 2, pageSize).then((cached) => {
-      if (cancelled || cached.length === 0) return
+      if (cancelled) return
+      // Only trust complete pages: an incomplete page cached by an older
+      // build would otherwise leave permanent skeleton "holes" in the grid.
+      const complete: typeof cached = []
+      for (const entry of cached) {
+        const startIdx = (entry.page - 1) * pageSize
+        const expected = Math.min(pageSize, totalCount - startIdx)
+        if (entry.results.length < expected) break
+        complete.push(entry)
+      }
+      if (complete.length === 0) return
       setPokemonByIndex((prev) => {
         const next = new Map(prev)
-        for (const entry of cached) {
+        for (const entry of complete) {
           const startIdx = (entry.page - 1) * pageSize
           for (let i = 0; i < entry.results.length; i++) {
             next.set(startIdx + i, entry.results[i])
@@ -165,6 +179,7 @@ export function VirtualPokemonGrid({
         }
         return next
       })
+      for (const entry of complete) loadedPagesRef.current.add(entry.page)
     })
     return () => {
       cancelled = true
@@ -173,7 +188,8 @@ export function VirtualPokemonGrid({
 
   const loadPage = useCallback(
     async (page: number) => {
-      if (loadingPagesRef.current.has(page)) return
+      if (loadingPagesRef.current.has(page) || loadedPagesRef.current.has(page))
+        return
       loadingPagesRef.current.add(page)
       try {
         const data = await fetchPage(page)
@@ -185,6 +201,7 @@ export function VirtualPokemonGrid({
           }
           return next
         })
+        loadedPagesRef.current.add(page)
         putCachedPage(cacheNamespace, page, pageSize, data)
       } catch (e) {
         console.error('Failed to fetch page', page, e)
