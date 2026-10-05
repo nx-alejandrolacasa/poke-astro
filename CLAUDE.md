@@ -813,3 +813,26 @@ with unpublished bindings again, re-add an override that satisfies Vite's range.
 `http-cache-semantics`, `sharp` (miniflare) and `undici` advisories. Only
 `path-to-regexp` via `@vercel/routing-utils` in `@astrojs/vercel` remains; the
 forced fix would still downgrade the adapter.
+
+### React Compiler enabled
+
+`astro.config.mjs` now uses `react({ compiler: true })` (new in `@astrojs/react` 7).
+It runs the Oxc-based React Compiler through `@vitejs/plugin-react`. The compiler
+auto-memoizes **client** components and hooks; SSR output is not compiled. A
+`compiler-runtime` chunk in `dist/client/_astro/` shows that it is active.
+
+- **`oxc-transform-react` is pinned to 0.152.0 and overridden with `$oxc-transform-react`.**
+  `@astrojs/react@7.0.0` declares a stale optional peer `^0.145.0`, but it never
+  imports the package; it only passes `compiler` to `@vitejs/plugin-react@6.1.2`,
+  which is the actual consumer and requires `^0.152.0`. Without the override,
+  `npm install` fails with `ERESOLVE`. Remove the override when `@astrojs/react`
+  updates its peer range. Bump `oxc-transform-react` together with
+  `@vitejs/plugin-react`, following that package's peer range.
+- **Components the compiler skips** (they behave exactly as before; check with
+  `react({ compiler: { reportDiagnostics: true } })`):
+  - `VirtualPokemonGrid.tsx`: `useWindowVirtualizer` is flagged as an
+    incompatible library. This is expected for TanStack Virtual, so leave it as is.
+  - `PokemonDetailContent.tsx`, `PokemonEnrichedData.tsx`, `PokemonSearch.tsx`:
+    the compiler does not yet support `try … finally` or `throw` inside `try` in
+    these components' effects. Moving that logic into a plain helper function
+    would let the compiler optimize these components.

@@ -59,7 +59,9 @@ const adapter = await (async () => {
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
-  integrations: [react()],
+  // React Compiler (Oxc-based, via `oxc-transform-react`): auto-memoizes
+  // client components and hooks. Server rendering is not compiled.
+  integrations: [react({ compiler: true })],
   adapter,
 
   // This app is entirely stateless: every page is derived from immutable
