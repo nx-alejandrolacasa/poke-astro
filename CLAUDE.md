@@ -501,11 +501,11 @@ export default {
 
 ---
 
-**Last Updated:** 2026-08-19
-**Astro Version:** 7.2.3
-**React Version:** 19.2.8
+**Last Updated:** 2026-10-05
+**Astro Version:** 7.3.5
+**React Version:** 19.3.0
 **Tailwind CSS Version:** 4.3.3
-**TypeScript Version:** 6.0.3 (held; see Upgrade Notes, August 2026)
+**TypeScript Version:** 6.0.3 (held; see Upgrade Notes, August & October 2026)
 **Node Version:** 22.x (required, minimum 22.12.0)
 
 ---
@@ -745,7 +745,7 @@ clean.
 - **`experimental.collectionStorage`** (Astro 7.1) — content-layer only; this
   project has no content collections.
 
-### Lockfile: pinned `rolldown` override
+### Lockfile: pinned `rolldown` override (removed October 2026)
 
 `package.json` overrides `rolldown` to **1.2.4**. Vite 8.2.1 depends on
 `rolldown: ~1.2.1`, which floats to 1.2.5 — and rolldown 1.2.5 declares optional
@@ -761,6 +761,55 @@ platform bindings published. Revisit once rolldown publishes a complete 1.2.6+.
 ### Still required
 
 The hand-written `resolve-vite-env` Vite plugin in `astro.config.mjs` is **still
-needed** under Vite 8.2: `vite/dist/client/client.mjs` continues to import the
+needed** under Vite 8.2 (re-verified on Vite 8.3.2): `vite/dist/client/client.mjs` continues to import the
 `@vite/env` virtual module, and `vite/dist/client/env.mjs` still exists at the
 same path. Do not remove it without testing `astro dev`.
+
+---
+
+## Upgrade Notes (October 2026)
+
+### Astro 7.3 Upgrade
+
+- **Astro:** 7.2.3 → 7.3.5
+- **@astrojs/react:** 6.0.3 → **7.0.0** (major)
+- **@astrojs/vercel:** 11.0.6 → 11.0.11
+- **@astrojs/cloudflare:** 14.2.2 → 14.3.3 (transitively: `wrangler` 4.124 → 4.147, `@cloudflare/vite-plugin` 1.53 → 1.62)
+- **@astrojs/node:** 11.1.3 → 11.1.6
+- **Vite:** 8.2.1 → 8.3.2 (via the `overrides.vite` → `$vite` pin; transitively `rolldown` 1.2.12)
+- **React / react-dom:** 19.2.8 → 19.3.0 (`@types/react` / `@types/react-dom` → 19.3.0)
+- **@biomejs/biome:** 2.5.9 → 2.5.15 (`biome migrate` bumped the `$schema` URL)
+- **@tanstack/react-virtual:** 3.14.10 → 3.14.13
+- **@types/node:** 24.10.1 → 24.19.1 (kept on the 24.x line)
+- **Unchanged (already latest):** Tailwind CSS 4.3.3, `@vercel/analytics` 2.0.1, all `@fontsource*` packages, `@astrojs/check` 0.9.10
+- **TypeScript held at 6.0.3:** `@astrojs/check@0.9.10` still peers on `^5 || ^6`; Astro 7.3.4 only improved the error message for TS 7.
+
+### Vite compatibility check
+
+The Vite bump is **required**, not optional: `@astrojs/react@7` depends on
+`vite: ^8.3.0`, so staying on 8.2.1 would install a second Vite copy. Every
+Vite consumer accepts 8.3.2 — `astro` (`^8.0.13`), `@astrojs/cloudflare`
+(`^8.0.13`), `@vitejs/plugin-react@6` (`^8.0.0`), `@cloudflare/vite-plugin`
+(`^8.0.0`), and `@tailwindcss/vite` (`^8`) — and `npm ls vite` shows a single
+deduped 8.3.2.
+
+### `@astrojs/react` 7 breaking change
+
+Moves to `@vitejs/plugin-react` v6 (Oxc for JSX and Fast Refresh, no Babel) and
+removes the `babel` integration option. This project calls `react()` with no
+options, so no config change was needed.
+
+### `rolldown` override removed
+
+Vite 8.3.2 requires `rolldown: ~1.2.11`, so the old `1.2.4` pin no longer
+satisfied Vite's range. `rolldown@1.2.12` has all 15 platform bindings
+published, so the override was dropped and the lockfile records all of them
+(`npm ci` from a clean `node_modules` works). If a future rolldown patch ships
+with unpublished bindings again, re-add an override that satisfies Vite's range.
+
+### Known transitive advisories
+
+`npm audit fix` (non-forced) cleared the `brace-expansion`, `fast-uri`,
+`http-cache-semantics`, `sharp` (miniflare) and `undici` advisories. Only
+`path-to-regexp` via `@vercel/routing-utils` in `@astrojs/vercel` remains; the
+forced fix would still downgrade the adapter.
