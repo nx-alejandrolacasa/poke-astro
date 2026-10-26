@@ -9,7 +9,7 @@ export function FooterContent({ locale }: FooterContentProps) {
   const t = translations[locale]
 
   return (
-    <div className="flex flex-col items-center gap-2 text-center text-ink-faint text-xs dark:text-dark-ink-faint">
+    <div className="flex flex-col items-center gap-2 text-center text-xs text-ink-faint dark:text-dark-ink-faint">
       <p>{t.footer.legal}</p>
       <p className="font-mono">
         {t.footer.dataBy}{' '}

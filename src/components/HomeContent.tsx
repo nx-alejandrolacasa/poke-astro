@@ -63,7 +63,7 @@ export function HomeContent({ locale }: HomeContentProps) {
 
       {/* Browse by Generation */}
       <section className="space-y-4">
-        <h2 className="text-center font-bold text-ink text-xl md:text-2xl dark:text-dark-ink">
+        <h2 className="text-center text-xl font-bold text-ink md:text-2xl dark:text-dark-ink">
           {t.home.byGeneration}
         </h2>
         <div className="grid grid-cols-3 gap-3 md:grid-cols-6 lg:grid-cols-9">
@@ -86,7 +86,7 @@ export function HomeContent({ locale }: HomeContentProps) {
                   loading="lazy"
                 />
                 <span
-                  className="w-full rounded-lg py-0.5 text-center font-semibold text-xs"
+                  className="w-full rounded-lg py-0.5 text-center text-xs font-semibold"
                   style={{
                     backgroundColor: color,
                     color: getContrastColor(color),
@@ -102,7 +102,7 @@ export function HomeContent({ locale }: HomeContentProps) {
 
       {/* Browse by Type */}
       <section className="space-y-4">
-        <h2 className="text-center font-bold text-ink text-xl md:text-2xl dark:text-dark-ink">
+        <h2 className="text-center text-xl font-bold text-ink md:text-2xl dark:text-dark-ink">
           {t.home.pokemonTypes}
         </h2>
         <div className="grid grid-cols-3 gap-3 md:grid-cols-6 lg:grid-cols-9">
@@ -113,7 +113,7 @@ export function HomeContent({ locale }: HomeContentProps) {
               <a
                 key={type}
                 href={`/${locale}/type/${type}`}
-                className="group flex flex-col items-center gap-1 rounded-xl p-2 transition-all duration-200 hover:-translate-y-0.5 hover:border-opacity-80 active:scale-95"
+                className="group hover:border-opacity-80 flex flex-col items-center gap-1 rounded-xl p-2 transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
                 style={{
                   backgroundColor: `${color}15`,
                   border: `2px solid ${color}`,
@@ -126,7 +126,7 @@ export function HomeContent({ locale }: HomeContentProps) {
                   loading="lazy"
                 />
                 <span
-                  className="w-full rounded-lg py-0.5 text-center font-semibold text-xs capitalize"
+                  className="w-full rounded-lg py-0.5 text-center text-xs font-semibold capitalize"
                   style={{
                     backgroundColor: color,
                     color: getContrastColor(color),

@@ -211,7 +211,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
         aria-hidden={!searchOpen}
       >
         {/* Input + close — pinned at top */}
-        <div className="flex-shrink-0 border-black/[0.06] border-b pb-3 dark:border-white/[0.06]">
+        <div className="flex-shrink-0 border-b border-black/[0.06] pb-3 dark:border-white/[0.06]">
           <div className="flex items-center gap-2">
             <div className="relative flex-1">
               <input
@@ -224,7 +224,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
                   isLoading ? t.search.loading : t.search.placeholder
                 }
                 disabled={isLoading}
-                className="w-full rounded-full border border-black/[0.06] bg-surface-sunken px-4 py-3 pr-10 text-base text-ink placeholder-ink-faint transition-all focus:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/10 disabled:opacity-50 dark:border-white/[0.06] dark:bg-dark-raised dark:text-dark-ink dark:placeholder-dark-ink-faint"
+                className="w-full rounded-full border border-black/[0.06] bg-surface-sunken px-4 py-3 pr-10 text-base text-ink placeholder-ink-faint transition-all focus:border-primary/30 focus:ring-2 focus:ring-primary/10 focus:outline-none disabled:opacity-50 dark:border-white/[0.06] dark:bg-dark-raised dark:text-dark-ink dark:placeholder-dark-ink-faint"
                 role="combobox"
                 aria-label="Search Pokemon"
                 aria-autocomplete="list"
@@ -293,11 +293,11 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
               </button>
             ))
           ) : query && !isLoading ? (
-            <p className="px-4 py-3 text-ink-muted text-sm dark:text-dark-ink-muted">
+            <p className="px-4 py-3 text-sm text-ink-muted dark:text-dark-ink-muted">
               {t.search.noResults}
             </p>
           ) : (
-            <p className="px-4 py-6 text-center text-ink-faint text-sm dark:text-dark-ink-faint">
+            <p className="px-4 py-6 text-center text-sm text-ink-faint dark:text-dark-ink-faint">
               {locale === 'es' ? 'Escribe para buscar...' : 'Type to search...'}
             </p>
           )}
@@ -318,7 +318,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
         aria-modal="true"
         aria-label={t.settings.title}
         aria-hidden={!configOpen}
-        className={`fixed right-5 bottom-[calc(env(safe-area-inset-bottom)+5.25rem)] left-5 z-50 rounded-2xl border border-white/60 bg-white/90 p-4 shadow-black/[0.12] shadow-xl backdrop-blur-xl transition-all duration-200 sm:right-6 sm:left-auto sm:w-72 lg:hidden dark:border-white/[0.08] dark:bg-dark-surface/90 dark:shadow-black/40 ${
+        className={`fixed right-5 bottom-[calc(env(safe-area-inset-bottom)+5.25rem)] left-5 z-50 rounded-2xl border border-white/60 bg-white/90 p-4 shadow-xl shadow-black/[0.12] backdrop-blur-xl transition-all duration-200 sm:right-6 sm:left-auto sm:w-72 lg:hidden dark:border-white/[0.08] dark:bg-dark-surface/90 dark:shadow-black/40 ${
           configOpen
             ? 'translate-y-0 opacity-100'
             : 'pointer-events-none translate-y-2 opacity-0'
@@ -340,7 +340,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
         className="fixed right-0 bottom-4 left-0 z-40 mx-auto flex max-w-md items-center gap-2 px-5 sm:px-6 lg:hidden [@media(display-mode:standalone)]:bottom-[max(env(safe-area-inset-bottom),1rem)]"
         aria-label="Main navigation"
       >
-        <div className="flex h-14 flex-1 items-center justify-between gap-1 rounded-full border border-white/60 bg-white/70 px-2.5 shadow-black/[0.08] shadow-lg backdrop-blur-xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:shadow-black/30">
+        <div className="flex h-14 flex-1 items-center justify-between gap-1 rounded-full border border-white/60 bg-white/70 px-2.5 shadow-lg shadow-black/[0.08] backdrop-blur-xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:shadow-black/30">
           {tabs.map((tab) => {
             const isActive = tab.match(currentPath)
             const tint = TAB_TINTS[tab.tint]
@@ -355,7 +355,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
               >
                 <span className="flex-shrink-0">{tab.icon}</span>
                 <span
-                  className={`truncate font-semibold text-xs ${isActive ? '' : 'hidden md:inline'}`}
+                  className={`truncate text-xs font-semibold ${isActive ? '' : 'hidden md:inline'}`}
                 >
                   {tab.label}
                 </span>
@@ -394,7 +394,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
             setSearchOpen((prev) => !prev)
             if (searchOpen) setQuery('')
           }}
-          className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full border border-white/60 bg-white/70 text-blue-500 shadow-black/[0.08] shadow-lg backdrop-blur-xl transition-transform active:scale-95 dark:border-white/[0.08] dark:bg-dark-surface/70 dark:text-blue-300 dark:shadow-black/30"
+          className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full border border-white/60 bg-white/70 text-blue-500 shadow-lg shadow-black/[0.08] backdrop-blur-xl transition-transform active:scale-95 dark:border-white/[0.08] dark:bg-dark-surface/70 dark:text-blue-300 dark:shadow-black/30"
           aria-label={t.header.search}
           aria-expanded={searchOpen}
         >

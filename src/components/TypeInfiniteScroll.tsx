@@ -43,10 +43,10 @@ export function TypeInfiniteScroll({
         className="rounded-2xl p-6 md:p-8"
         style={{ backgroundColor: `${typeColors[type] ?? '#a8a878'}18` }}
       >
-        <h1 className="font-bold text-2xl text-ink tracking-tight md:text-3xl dark:text-dark-ink">
+        <h1 className="text-2xl font-bold tracking-tight text-ink md:text-3xl dark:text-dark-ink">
           {t.types[type as keyof typeof t.types]}
         </h1>
-        <p className="text-ink-muted text-sm dark:text-dark-ink-muted">
+        <p className="text-sm text-ink-muted dark:text-dark-ink-muted">
           {interpolate(t.pages.speciesCount, { count: initialData.count })}
         </p>
       </div>

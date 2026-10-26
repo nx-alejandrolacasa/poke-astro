@@ -158,7 +158,7 @@ function DetailPanel({
       >
         <TypeBadge type={type} size="lg" locale={locale} />
         <span
-          className="font-semibold text-xs uppercase tracking-widest"
+          className="text-xs font-semibold tracking-widest uppercase"
           style={{ color }}
         >
           {locale === 'es' ? 'Relaciones de tipo' : 'Type matchups'}
@@ -170,7 +170,7 @@ function DetailPanel({
           className="space-y-3 rounded-xl bg-red-50/50 p-3 dark:bg-red-500/10"
           style={{ border: `1px solid ${isDark ? '#ef444440' : '#ef444420'}` }}
         >
-          <h3 className="font-bold text-red-500 text-xs uppercase tracking-widest">
+          <h3 className="text-xs font-bold tracking-widest text-red-500 uppercase">
             {locale === 'es' ? 'Atacando' : 'Attacking'}
           </h3>
           <div className="space-y-2">
@@ -205,7 +205,7 @@ function DetailPanel({
           className="space-y-3 rounded-xl bg-blue-50/50 p-3 dark:bg-blue-500/10"
           style={{ border: `1px solid ${isDark ? '#3b82f640' : '#3b82f620'}` }}
         >
-          <h3 className="font-bold text-blue-500 text-xs uppercase tracking-widest">
+          <h3 className="text-xs font-bold tracking-widest text-blue-500 uppercase">
             {locale === 'es' ? 'Defendiendo' : 'Defending'}
           </h3>
           <div className="space-y-2">
@@ -261,12 +261,12 @@ function MatchupGroup({
     <div>
       <div className="mb-1.5 flex items-center gap-2">
         <span
-          className="inline-flex h-6 items-center justify-center rounded-lg px-2 font-bold font-mono text-sm text-white"
+          className="inline-flex h-6 items-center justify-center rounded-lg px-2 font-mono text-sm font-bold text-white"
           style={{ backgroundColor: accentColor }}
         >
           {multiplier}
         </span>
-        <span className="font-semibold text-sm" style={{ color: accentColor }}>
+        <span className="text-sm font-semibold" style={{ color: accentColor }}>
           {label} ({types.length})
         </span>
       </div>
@@ -304,10 +304,10 @@ export function TypeChart({ locale }: TypeChartProps) {
   return (
     <div className="space-y-8 pb-8 md:space-y-10 md:pb-12">
       <section className="space-y-4 pt-6 text-center md:pt-8">
-        <h1 className="font-bold text-3xl text-ink tracking-tight md:text-4xl dark:text-dark-ink">
+        <h1 className="text-3xl font-bold tracking-tight text-ink md:text-4xl dark:text-dark-ink">
           {t.header.typeChart}
         </h1>
-        <p className="mx-auto max-w-xl text-ink-muted text-sm md:text-base dark:text-dark-ink-muted">
+        <p className="mx-auto max-w-xl text-sm text-ink-muted md:text-base dark:text-dark-ink-muted">
           {locale === 'es'
             ? 'Toca un tipo para descubrir sus fortalezas y debilidades.'
             : 'Tap a type to discover its strengths and weaknesses.'}
@@ -319,7 +319,7 @@ export function TypeChart({ locale }: TypeChartProps) {
           <button
             type="button"
             onClick={() => setGen1(false)}
-            className={`rounded-lg px-4 py-2 font-semibold text-xs transition-all duration-200 ${
+            className={`rounded-lg px-4 py-2 text-xs font-semibold transition-all duration-200 ${
               !gen1
                 ? 'bg-surface-sunken text-primary dark:bg-dark-raised dark:text-primary'
                 : 'text-ink-muted hover:text-ink dark:text-dark-ink-muted dark:hover:text-dark-ink'
@@ -331,7 +331,7 @@ export function TypeChart({ locale }: TypeChartProps) {
           <button
             type="button"
             onClick={() => setGen1(true)}
-            className={`rounded-lg px-4 py-2 font-semibold text-xs transition-all duration-200 ${
+            className={`rounded-lg px-4 py-2 text-xs font-semibold transition-all duration-200 ${
               gen1
                 ? 'bg-surface-sunken text-primary dark:bg-dark-raised dark:text-primary'
                 : 'text-ink-muted hover:text-ink dark:text-dark-ink-muted dark:hover:text-dark-ink'
@@ -373,7 +373,7 @@ export function TypeChart({ locale }: TypeChartProps) {
                   />
                 )}
                 <span
-                  className="w-full rounded-lg py-0.5 text-center font-semibold text-xs capitalize"
+                  className="w-full rounded-lg py-0.5 text-center text-xs font-semibold capitalize"
                   style={{
                     backgroundColor: color,
                     color: getContrastColor(color),

@@ -90,7 +90,7 @@ export function HeaderSettings({ locale, currentPath }: HeaderSettingsProps) {
               role="dialog"
               aria-label={t.settings.title}
               style={{ top: coords.top, right: coords.right }}
-              className="fixed z-50 w-72 rounded-2xl border border-white/60 bg-white/90 p-4 shadow-black/[0.12] shadow-xl backdrop-blur-xl dark:border-white/[0.08] dark:bg-dark-surface/90 dark:shadow-black/40"
+              className="fixed z-50 w-72 rounded-2xl border border-white/60 bg-white/90 p-4 shadow-xl shadow-black/[0.12] backdrop-blur-xl dark:border-white/[0.08] dark:bg-dark-surface/90 dark:shadow-black/40"
             >
               <SettingsMenuContent
                 locale={locale}

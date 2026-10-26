@@ -41,10 +41,10 @@ export function GenerationInfiniteScroll({
       <div className="rounded-2xl bg-gradient-to-br from-primary-50 to-surface-sunken p-6 md:p-8 dark:from-dark-raised dark:to-dark-surface">
         <div className="flex items-center gap-4">
           <div>
-            <h1 className="font-bold text-2xl text-ink tracking-tight md:text-3xl dark:text-dark-ink">
+            <h1 className="text-2xl font-bold tracking-tight text-ink md:text-3xl dark:text-dark-ink">
               {generation.name}
             </h1>
-            <p className="font-medium text-ink-muted text-sm dark:text-dark-ink-muted">
+            <p className="text-sm font-medium text-ink-muted dark:text-dark-ink-muted">
               {generation.region} &middot;{' '}
               {interpolate(t.pages.speciesCount, { count: initialData.count })}
             </p>

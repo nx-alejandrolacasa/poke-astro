@@ -33,7 +33,7 @@ export function PokemonTile({
         data-astro-prefetch="tap"
       >
         <div className="relative aspect-square w-full">
-          <span className="absolute top-0 right-0 z-0 font-black font-mono text-ink/20 text-sm md:text-base dark:text-dark-ink/20">
+          <span className="absolute top-0 right-0 z-0 font-mono text-sm font-black text-ink/20 md:text-base dark:text-dark-ink/20">
             #{pokemon.id.toString().padStart(3, '0')}
           </span>
           <img
@@ -47,7 +47,7 @@ export function PokemonTile({
           />
         </div>
         <div className="mt-2 space-y-1.5">
-          <span className="block overflow-hidden text-ellipsis whitespace-nowrap font-semibold text-base text-ink capitalize dark:text-dark-ink">
+          <span className="block overflow-hidden text-base font-semibold text-ellipsis whitespace-nowrap text-ink capitalize dark:text-dark-ink">
             {pokemon.name.replaceAll('-', ' ')}
           </span>
           <div className="flex flex-wrap justify-center gap-1">

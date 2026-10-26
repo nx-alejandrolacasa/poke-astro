@@ -102,7 +102,7 @@ export function RecentlyVisited({
         } as CSSProperties
       }
     >
-      <span className="hidden shrink-0 font-bold font-sans text-[11px] text-ink-muted uppercase tracking-wider md:inline dark:text-dark-ink-muted">
+      <span className="hidden shrink-0 font-sans text-[11px] font-bold tracking-wider text-ink-muted uppercase md:inline dark:text-dark-ink-muted">
         {t.pokemon.recent}:
       </span>
       {visits.map((v) => (
@@ -110,7 +110,7 @@ export function RecentlyVisited({
           key={v.name}
           href={`/${locale}/pokemon/${v.name}`}
           data-astro-prefetch="tap"
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-transparent px-3 py-2 font-semibold text-xs leading-5 shadow-md transition hover:brightness-110 active:scale-95"
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-transparent px-3 py-2 text-xs leading-5 font-semibold shadow-md transition hover:brightness-110 active:scale-95"
           style={
             {
               '--pill-bg': v.typeColor,
