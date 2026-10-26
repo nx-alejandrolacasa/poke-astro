@@ -77,7 +77,7 @@ export function PokemonEnrichedData({
 
   const statsCell = (
     <div className="bento-cell rounded-2xl bg-white p-4 md:col-span-1 dark:bg-dark-surface">
-      <h2 className="mb-3 font-bold font-sans text-primary text-xs uppercase tracking-wider dark:text-dark-primary">
+      <h2 className="mb-3 font-sans text-xs font-bold tracking-wider text-primary uppercase dark:text-dark-primary">
         {t.pokemon.baseStats}
       </h2>
       <div className="space-y-3">
@@ -89,10 +89,10 @@ export function PokemonEnrichedData({
               key={name}
               className="grid grid-cols-[2fr_36px_3fr] items-center gap-2 text-ink dark:text-dark-ink"
             >
-              <div className="truncate text-right text-ink-muted text-xs dark:text-dark-ink-muted">
+              <div className="truncate text-right text-xs text-ink-muted dark:text-dark-ink-muted">
                 {translatedName}
               </div>
-              <div className="text-right font-bold font-mono text-xs">
+              <div className="text-right font-mono text-xs font-bold">
                 {baseStat}
               </div>
               <div className="flex items-center">
@@ -109,11 +109,11 @@ export function PokemonEnrichedData({
             </div>
           )
         })}
-        <div className="mt-3 grid grid-cols-[2fr_36px_3fr] gap-2 border-surface-sunken border-t pt-3 dark:border-dark-raised">
-          <div className="text-right font-bold text-ink text-xs uppercase dark:text-dark-ink">
+        <div className="mt-3 grid grid-cols-[2fr_36px_3fr] gap-2 border-t border-surface-sunken pt-3 dark:border-dark-raised">
+          <div className="text-right text-xs font-bold text-ink uppercase dark:text-dark-ink">
             {t.pokemon.total}
           </div>
-          <div className="text-right font-bold font-mono text-ink text-xs dark:text-dark-ink">
+          <div className="text-right font-mono text-xs font-bold text-ink dark:text-dark-ink">
             {totalStats}
           </div>
           <div />
@@ -164,12 +164,12 @@ export function PokemonEnrichedData({
 
       {/* ── Type Effectiveness — 1/4 desktop, 1/2 tablet, full mobile ── */}
       <div className="bento-cell rounded-2xl bg-white p-4 md:col-span-1 dark:bg-dark-surface">
-        <h2 className="mb-3 font-bold font-sans text-primary text-xs uppercase tracking-wider dark:text-dark-primary">
+        <h2 className="mb-3 font-sans text-xs font-bold tracking-wider text-primary uppercase dark:text-dark-primary">
           {t.pokemon.typeEffectiveness}
         </h2>
         <div className="space-y-3">
           <div>
-            <h3 className="mb-1.5 font-semibold text-orange-500 text-xs uppercase tracking-wider dark:text-orange-400">
+            <h3 className="mb-1.5 text-xs font-semibold tracking-wider text-orange-500 uppercase dark:text-orange-400">
               {t.pokemon.weakTo} ({data.typeEffectiveness.weaknesses.length})
             </h3>
             {data.typeEffectiveness.weaknesses.length > 0 ? (
@@ -178,7 +178,7 @@ export function PokemonEnrichedData({
                   ({ type, multiplier }) => (
                     <span
                       key={type}
-                      className="rounded-lg bg-orange-50 px-2 py-0.5 text-orange-700 text-xs capitalize dark:bg-orange-500/10 dark:text-orange-400"
+                      className="rounded-lg bg-orange-50 px-2 py-0.5 text-xs text-orange-700 capitalize dark:bg-orange-500/10 dark:text-orange-400"
                     >
                       {type} ({multiplier}x)
                     </span>
@@ -186,13 +186,13 @@ export function PokemonEnrichedData({
                 )}
               </div>
             ) : (
-              <p className="text-ink-faint text-xs dark:text-dark-ink-faint">
+              <p className="text-xs text-ink-faint dark:text-dark-ink-faint">
                 {t.pokemon.none}
               </p>
             )}
           </div>
           <div>
-            <h3 className="mb-1.5 font-semibold text-emerald-500 text-xs uppercase tracking-wider dark:text-emerald-400">
+            <h3 className="mb-1.5 text-xs font-semibold tracking-wider text-emerald-500 uppercase dark:text-emerald-400">
               {t.pokemon.resistantTo} (
               {data.typeEffectiveness.resistances.length})
             </h3>
@@ -202,7 +202,7 @@ export function PokemonEnrichedData({
                   ({ type, multiplier }) => (
                     <span
                       key={type}
-                      className="rounded-lg bg-emerald-50 px-2 py-0.5 text-emerald-700 text-xs capitalize dark:bg-emerald-500/10 dark:text-emerald-400"
+                      className="rounded-lg bg-emerald-50 px-2 py-0.5 text-xs text-emerald-700 capitalize dark:bg-emerald-500/10 dark:text-emerald-400"
                     >
                       {type} ({multiplier}x)
                     </span>
@@ -210,13 +210,13 @@ export function PokemonEnrichedData({
                 )}
               </div>
             ) : (
-              <p className="text-ink-faint text-xs dark:text-dark-ink-faint">
+              <p className="text-xs text-ink-faint dark:text-dark-ink-faint">
                 {t.pokemon.none}
               </p>
             )}
           </div>
           <div>
-            <h3 className="mb-1.5 font-semibold text-violet-500 text-xs uppercase tracking-wider dark:text-violet-400">
+            <h3 className="mb-1.5 text-xs font-semibold tracking-wider text-violet-500 uppercase dark:text-violet-400">
               {t.pokemon.immuneTo} ({data.typeEffectiveness.immunities.length})
             </h3>
             {data.typeEffectiveness.immunities.length > 0 ? (
@@ -224,14 +224,14 @@ export function PokemonEnrichedData({
                 {data.typeEffectiveness.immunities.map((type) => (
                   <span
                     key={type}
-                    className="rounded-lg bg-violet-50 px-2 py-0.5 text-violet-700 text-xs capitalize dark:bg-violet-500/10 dark:text-violet-400"
+                    className="rounded-lg bg-violet-50 px-2 py-0.5 text-xs text-violet-700 capitalize dark:bg-violet-500/10 dark:text-violet-400"
                   >
                     {type} (0x)
                   </span>
                 ))}
               </div>
             ) : (
-              <p className="text-ink-faint text-xs dark:text-dark-ink-faint">
+              <p className="text-xs text-ink-faint dark:text-dark-ink-faint">
                 {t.pokemon.none}
               </p>
             )}
@@ -242,7 +242,7 @@ export function PokemonEnrichedData({
       {/* ── Evolution Chain — 2/4 desktop, full tablet, full mobile ── */}
       {hasEvolutions && (
         <div className="bento-cell flex flex-col rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
-          <h2 className="mb-3 font-bold font-sans text-primary text-xs uppercase tracking-wider dark:text-dark-primary">
+          <h2 className="mb-3 font-sans text-xs font-bold tracking-wider text-primary uppercase dark:text-dark-primary">
             {t.pokemon.evolutionChain}
           </h2>
           <div className="flex flex-1 items-center justify-center">
@@ -430,7 +430,7 @@ function EvolutionTree({ tree, currentPokemon, locale }: EvolutionTreeProps) {
         >
           {stageIndex > 0 && (
             <div
-              className="font-bold text-ink-faint text-xl dark:text-dark-ink-faint"
+              className="text-xl font-bold text-ink-faint dark:text-dark-ink-faint"
               aria-hidden="true"
             >
               {hasBranching ? (
@@ -444,7 +444,7 @@ function EvolutionTree({ tree, currentPokemon, locale }: EvolutionTreeProps) {
             </div>
           )}
           {hasBranching && stage.length > 1 ? (
-            <div className="rounded-xl border-2 border-ink-faint/30 border-dashed p-2 dark:border-dark-ink-faint/30">
+            <div className="rounded-xl border-2 border-dashed border-ink-faint/30 p-2 dark:border-dark-ink-faint/30">
               <div className="flex flex-wrap justify-center gap-2">
                 {stage.map((pokemon) => (
                   <EvolutionCard
@@ -515,7 +515,7 @@ function EvolutionCard({
             loading="lazy"
           />
         )}
-        <p className="font-semibold text-ink text-sm capitalize dark:text-dark-ink">
+        <p className="text-sm font-semibold text-ink capitalize dark:text-dark-ink">
           {getPokemonName(name)}
         </p>
         {conditionLabels && conditionLabels.length > 0 && (
@@ -523,7 +523,7 @@ function EvolutionCard({
             {conditionLabels.map((label) => (
               <span
                 key={label}
-                className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] text-primary leading-tight dark:bg-dark-primary/10 dark:text-dark-primary"
+                className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] leading-tight text-primary dark:bg-dark-primary/10 dark:text-dark-primary"
               >
                 {label}
               </span>

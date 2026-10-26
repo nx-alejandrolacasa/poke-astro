@@ -75,7 +75,7 @@ export function Carousel({
     return (
       <div className={className}>
         {label && (
-          <p className="mb-2 font-bold text-primary text-sm uppercase tracking-wider dark:text-dark-primary">
+          <p className="mb-2 text-sm font-bold tracking-wider text-primary uppercase dark:text-dark-primary">
             {label}
           </p>
         )}
@@ -93,7 +93,7 @@ export function Carousel({
       onPointerCancel={finishPointer}
     >
       {label && (
-        <p className="mb-3 font-bold font-sans text-primary text-xs uppercase tracking-wider dark:text-dark-primary">
+        <p className="mb-3 font-sans text-xs font-bold tracking-wider text-primary uppercase dark:text-dark-primary">
           {label}
         </p>
       )}
