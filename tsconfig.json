@@ -4,7 +4,16 @@
     "jsx": "react-jsx",
     "jsxImportSource": "react",
     "paths": {
-      "@*": ["./src/*"]
+      "@*": ["./src/*"],
+      "@vercel/analytics/astro": [
+        "./node_modules/@vercel/analytics/dist/astro/index.astro"
+      ]
     }
-  }
+  },
+  "contentMappers": [
+    {
+      "package": "@astrojs/ts-content-mapper",
+      "extensions": [".astro"]
+    }
+  ]
 }
