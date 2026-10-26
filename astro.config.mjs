@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url'
 import react from '@astrojs/react'
 import tailwindcss from '@tailwindcss/vite'
+import { redact } from '@tanstack/redact/vite'
 import { defineConfig, svgoOptimizer } from 'astro/config'
 
 // Detect dev mode via npm script name (set by npm to "dev", "build", "preview", etc.)
@@ -15,6 +16,12 @@ const isCloudflareCI =
   !!process.env.CF_PAGES ||
   !!process.env.WORKERS_CI_BUILD_UUID ||
   process.env.DEPLOY_TARGET === 'cloudflare'
+
+// TanStack Redact: a smaller, synchronous drop-in runtime for React. Its Vite
+// plugin aliases `react`/`react-dom` imports (client and SSR) to Redact, so the
+// islands keep importing from 'react' unchanged. Astro is not an officially
+// supported integration, so set REDACT=false to fall back to real React.
+const useRedact = process.env.REDACT !== 'false'
 
 const adapter = await (async () => {
   if (isDev) {
@@ -86,6 +93,7 @@ export default defineConfig({
     },
     plugins: [
       tailwindcss(),
+      useRedact && redact(),
       // Workaround: Vite 7 Environment API processes client.mjs through
       // EnvironmentPluginContainer where @vite/env virtual module can't resolve.
       // Map it to the actual file on disk.

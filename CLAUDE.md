@@ -764,3 +764,30 @@ The hand-written `resolve-vite-env` Vite plugin in `astro.config.mjs` is **still
 needed** under Vite 8.2: `vite/dist/client/client.mjs` continues to import the
 `@vite/env` virtual module, and `vite/dist/client/env.mjs` still exists at the
 same path. Do not remove it without testing `astro dev`.
+
+---
+
+## TanStack Redact (October 2026, trial)
+
+`@tanstack/redact@0.2.0` replaces React's runtime via its Vite plugin
+(`redact()` in `astro.config.mjs`). Components keep importing from `react` /
+`react-dom`; the plugin aliases those imports at build time for **both the client
+and the SSR build** (so islands are server-rendered by Redact too — unlike
+Redact's Next.js integration, where React keeps SSR).
+
+- **Kill switch:** build with `REDACT=false` to fall back to real React. Use this
+  first if an island misbehaves.
+- **Payload:** client JS (`dist/client/_astro/*.js`, gzip) 108.2 KB → 68.7 KB
+  on Vercel builds; React's 56 KB `client.*.js` chunk is gone.
+- **Tradeoff:** rendering is fully synchronous — no time slicing or priority
+  scheduling. `startTransition` (used by `@astrojs/react`'s hydration) runs
+  synchronously. Redact's own benchmarks show hydration ~20% slower per root.
+- **Astro is not an officially supported Redact integration** (Start, Vite,
+  Vinext, Next.js are). Verified so far: build, typecheck, dev-server hydration,
+  state updates (`TypeChart`) and portals (`HeaderSettings`). Re-verify
+  `transition:persist` islands and the virtualized grids after any bump.
+- **Lockfile side effect:** Redact declares an optional peer pin of
+  `@cloudflare/vite-plugin: 1.65.0`, which npm honours, so adding it moved the
+  Cloudflare toolchain (`@cloudflare/vite-plugin` 1.53 → 1.65, `wrangler`,
+  `miniflare`, `workerd`). Still within `@astrojs/cloudflare`'s `^1.39.0` range.
+  Remove the pin's effect by removing Redact, not by overriding it.
