@@ -650,31 +650,40 @@ export function StatBattle({ locale }: StatBattleProps) {
                 <p className="text-xs text-ink-muted dark:text-dark-ink-muted">
                   {t.battle.legendaryHint}
                 </p>
-                <ul className="space-y-2">
+                <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   {GENERATIONS.map((gen) => {
                     const roster = legendaries.filter(
                       (p) => p.generation === gen.id
                     )
                     const cleared = roster.filter(beaten).length
+                    const complete = cleared === roster.length
                     return (
                       <li
                         key={gen.id}
-                        className="flex flex-wrap items-center gap-2 rounded-2xl bg-surface-sunken p-2 dark:bg-dark-raised"
+                        className="rounded-2xl bg-surface-sunken p-3 dark:bg-dark-raised"
                       >
-                        <span className="w-24 shrink-0 pl-1 font-mono text-xs text-ink-muted dark:text-dark-ink-muted">
-                          {gen.roman} · {gen.region}
-                          <br />
-                          <b
-                            className={
-                              cleared === roster.length
-                                ? 'text-emerald-600 dark:text-emerald-400'
-                                : 'text-ink dark:text-dark-ink'
-                            }
+                        <div className="mb-2 flex items-baseline justify-between gap-2">
+                          <span className="text-sm font-semibold text-ink dark:text-dark-ink">
+                            {t.quiz.gen} {gen.roman}{' '}
+                            <span className="font-normal text-ink-muted dark:text-dark-ink-muted">
+                              · {gen.region}
+                            </span>
+                          </span>
+                          <span
+                            className={`font-mono text-xs ${complete ? 'text-emerald-600 dark:text-emerald-400' : 'text-ink-muted dark:text-dark-ink-muted'}`}
                           >
                             {cleared}/{roster.length}
-                          </b>
-                        </span>
-                        <div className="flex flex-wrap gap-1">
+                          </span>
+                        </div>
+                        <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-black/[0.06] dark:bg-white/[0.08]">
+                          <div
+                            className="h-full rounded-full bg-emerald-500 transition-all duration-500"
+                            style={{
+                              width: `${(cleared / Math.max(1, roster.length)) * 100}%`,
+                            }}
+                          />
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
                           {roster.map((pokemon) => {
                             const done = beaten(pokemon)
                             const selected = target?.id === pokemon.id
@@ -691,7 +700,7 @@ export function StatBattle({ locale }: StatBattleProps) {
                                 <img
                                   src={artwork(pokemon, 40)}
                                   alt=""
-                                  className={`h-10 w-10 object-contain ${done ? '' : 'opacity-70 grayscale'}`}
+                                  className={`h-9 w-9 object-contain ${done ? '' : 'opacity-60 grayscale'}`}
                                   loading="lazy"
                                 />
                                 {done && (
