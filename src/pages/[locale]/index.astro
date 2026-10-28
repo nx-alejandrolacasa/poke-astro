@@ -1,6 +1,7 @@
 ---
 export const prerender = true
 
+import { Carousel } from '@/components/Carousel'
 import { PokemonOfTheDay } from '@/components/PokemonOfTheDay'
 import { RandomPokemonTile } from '@/components/RandomPokemonTile'
 import Layout from '@/layouts/Layout.astro'
@@ -46,13 +47,13 @@ const smallGames = [
 ---
 
 <Layout title={t.home.title} locale={locale}>
-  <div class="space-y-4 pb-8 md:pb-12">
-    <section class="pt-6 text-center md:pt-10">
-      <img src="/pokemon-logo.svg" alt="Pokemon" class="mx-auto mb-5 h-9 w-auto md:h-12 lg:h-14" />
-      <h1 class="pokemon-title text-3xl md:text-5xl lg:text-6xl">{t.home.title}</h1>
-    </section>
+  <div class="space-y-4 pt-4 pb-8 md:pb-12 lg:pt-8">
+    <div class="grid auto-rows-[minmax(8rem,auto)] grid-cols-2 gap-3 md:auto-rows-[minmax(9rem,auto)] md:grid-cols-4 md:gap-4 lg:auto-rows-[minmax(10.5rem,auto)] lg:grid-cols-6 xl:auto-rows-[minmax(12rem,auto)]">
+      <div class="col-span-2 flex flex-col items-center justify-center gap-4 text-center md:col-span-4 lg:col-span-2 lg:row-span-2">
+        <img src="/pokemon-logo.svg" alt="Pokemon" class="h-9 w-auto md:h-12" />
+        <h1 class="pokemon-title text-3xl md:text-4xl xl:text-5xl">{t.home.title}</h1>
+      </div>
 
-    <div class="grid auto-rows-[7.5rem] grid-cols-2 gap-3 md:auto-rows-[9rem] md:grid-cols-4 md:gap-4">
       <a href={`/${locale}/battle`} class:list={[tileClass, 'col-span-2 row-span-2']} style={tileStyle('#d46a6a')}>
         <img
           src={optimizedImageUrl(officialArtworkUrl(107), 128)}
@@ -95,6 +96,17 @@ const smallGames = [
         <h2 class="font-bold text-ink dark:text-dark-ink">{t.header.pokedex}</h2>
         <p class="text-ink-muted text-xs dark:text-dark-ink-muted">{interpolate(t.pages.speciesCount, { count: speciesCount })}</p>
       </a>
+
+      <div class="col-span-2 flex items-center justify-center rounded-3xl border-2 border-primary/20 bg-primary-50 p-4 text-center md:col-span-4 lg:col-span-2 dark:border-primary/10 dark:bg-dark-raised">
+        <Carousel
+          client:idle
+          className="w-full"
+          textClassName="text-ink text-sm leading-snug dark:text-dark-ink"
+          items={t.funFacts}
+          label={t.home.didYouKnow}
+          autoPlayMs={10000}
+        />
+      </div>
     </div>
 
     <div class="grid grid-cols-3 gap-3 md:grid-cols-9 md:gap-4">
