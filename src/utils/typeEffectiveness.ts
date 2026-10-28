@@ -303,3 +303,45 @@ export function getDefenseMatchups(
 
   return { weakTo, resistantTo, immuneTo }
 }
+
+export type DefenseSummary = {
+  weaknesses: { type: PokemonType; multiplier: number }[]
+  resistances: { type: PokemonType; multiplier: number }[]
+  immunities: PokemonType[]
+}
+
+/** Combined damage multiplier of every attacking type against a defender
+ * with the given types (modern chart). */
+export function getDefenseMultipliers(
+  defenderTypes: readonly string[]
+): Record<PokemonType, number> {
+  const result = {} as Record<PokemonType, number>
+  for (const attacker of ALL_TYPES) {
+    let multiplier = 1
+    for (const defender of defenderTypes) {
+      multiplier *= getEffectiveness(attacker, defender as PokemonType, false)
+    }
+    result[attacker] = multiplier
+  }
+  return result
+}
+
+export function summarizeDefense(
+  defenderTypes: readonly string[]
+): DefenseSummary {
+  const multipliers = getDefenseMultipliers(defenderTypes)
+  const summary: DefenseSummary = {
+    weaknesses: [],
+    resistances: [],
+    immunities: [],
+  }
+  for (const type of ALL_TYPES) {
+    const multiplier = multipliers[type]
+    if (multiplier === 0) summary.immunities.push(type)
+    else if (multiplier > 1) summary.weaknesses.push({ type, multiplier })
+    else if (multiplier < 1) summary.resistances.push({ type, multiplier })
+  }
+  summary.weaknesses.sort((a, b) => b.multiplier - a.multiplier)
+  summary.resistances.sort((a, b) => a.multiplier - b.multiplier)
+  return summary
+}

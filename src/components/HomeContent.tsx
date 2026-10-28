@@ -1,4 +1,5 @@
 import { Carousel } from '@/components/Carousel'
+import { GENERATIONS } from '@/utils/generations'
 import type { Locale } from '@/utils/i18n'
 import {
   officialArtworkUrl,
@@ -21,17 +22,12 @@ function getContrastColor(hex: string): string {
   return luminance > 0.55 ? '#1a1a2e' : '#ffffff'
 }
 
-const GENERATIONS = [
-  { region: 'Kanto', mascot: 25, type: 'electric' }, // Pikachu
-  { region: 'Johto', mascot: 249, type: 'psychic' }, // Lugia
-  { region: 'Hoenn', mascot: 384, type: 'dragon' }, // Rayquaza
-  { region: 'Sinnoh', mascot: 493, type: 'normal' }, // Arceus
-  { region: 'Unova', mascot: 644, type: 'dark' }, // Zekrom (Dragon/Electric taken, black-themed)
-  { region: 'Kalos', mascot: 716, type: 'fairy' }, // Xerneas
-  { region: 'Alola', mascot: 791, type: 'steel' }, // Solgaleo (Psychic taken)
-  { region: 'Galar', mascot: 888, type: 'water' }, // Zacian (Fairy taken, blue-themed box)
-  { region: 'Paldea', mascot: 1007, type: 'fighting' }, // Koraidon
-]
+const PLAY_LINKS = [
+  { path: 'quiz', key: 'quiz', mascot: 25, color: '#f4d67b' },
+  { path: 'compare', key: 'compare', mascot: 150, color: '#997a96' },
+  { path: 'team', key: 'team', mascot: 448, color: '#6896a8' },
+  { path: 'battle', key: 'battle', mascot: 107, color: '#d46a6a' },
+] as const
 
 export function HomeContent({ locale }: HomeContentProps) {
   const t = translations[locale]
@@ -61,18 +57,48 @@ export function HomeContent({ locale }: HomeContentProps) {
         </div>
       </section>
 
+      {/* Play */}
+      <section className="space-y-4">
+        <h2 className="text-center text-xl font-bold text-ink md:text-2xl dark:text-dark-ink">
+          {t.play.title}
+        </h2>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {PLAY_LINKS.map((link) => (
+            <a
+              key={link.path}
+              href={`/${locale}/${link.path}`}
+              className="flex flex-col items-center gap-1 rounded-xl p-2 text-center transition-all duration-200 hover:-translate-y-0.5 active:scale-95 md:p-3"
+              style={{
+                backgroundColor: `${link.color}15`,
+                border: `2px solid ${link.color}`,
+              }}
+            >
+              <img
+                src={optimizedImageUrl(officialArtworkUrl(link.mascot), 56)}
+                alt=""
+                className="h-12 w-12 object-contain md:h-14 md:w-14"
+                loading="lazy"
+              />
+              <span className="text-xs font-semibold text-ink md:text-sm dark:text-dark-ink">
+                {t.play[link.key]}
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
+
       {/* Browse by Generation */}
       <section className="space-y-4">
         <h2 className="text-center text-xl font-bold text-ink md:text-2xl dark:text-dark-ink">
           {t.home.byGeneration}
         </h2>
         <div className="grid grid-cols-3 gap-3 md:grid-cols-6 lg:grid-cols-9">
-          {GENERATIONS.map((gen, index) => {
+          {GENERATIONS.map((gen) => {
             const color = typeColors[gen.type] ?? '#a8a878'
             return (
               <a
                 key={gen.region}
-                href={`/${locale}/generation/${index + 1}`}
+                href={`/${locale}/generation/${gen.id}`}
                 className="group flex flex-col items-center gap-1 rounded-xl p-2 text-center transition-all duration-200 hover:-translate-y-0.5 active:scale-95 md:p-3"
                 style={{
                   backgroundColor: `${color}15`,
@@ -113,7 +139,7 @@ export function HomeContent({ locale }: HomeContentProps) {
               <a
                 key={type}
                 href={`/${locale}/type/${type}`}
-                className="group hover:border-opacity-80 flex flex-col items-center gap-1 rounded-xl p-2 transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
+                className="group flex flex-col items-center gap-1 rounded-xl p-2 transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
                 style={{
                   backgroundColor: `${color}15`,
                   border: `2px solid ${color}`,

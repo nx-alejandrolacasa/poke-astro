@@ -1,6 +1,6 @@
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/jetbrains-mono";
-@import "@fontsource/dela-gothic-one";
+@import "@fontsource/dela-gothic-one/latin.css";
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -178,6 +178,12 @@ html {
   h1, h2, h3 {
     font-family: var(--font-display);
   }
+
+  /* Sprites load slowly; keep alt text for assistive tech but don't flash
+     it in the tile while the image is still downloading. */
+  img {
+    color: transparent;
+  }
 }
 
 /* ══════════════════════════════════════════
@@ -196,6 +202,79 @@ html {
   /* Bento cell with inherited type color border */
   .bento-cell {
     border: 2px solid var(--type-color, #e5e7eb);
+  }
+
+  /* Stat bars grow in on first paint, staggered per row via inline delay. */
+  .stat-bar {
+    animation: stat-bar-grow 0.6s ease-out backwards;
+  }
+  @keyframes stat-bar-grow {
+    from { width: 0; }
+  }
+
+  /* Pokémon silhouette for the quiz. Reveal animates the filter away. */
+  .silhouette {
+    filter: brightness(0) drop-shadow(0 0 2px rgba(0, 0, 0, 0.35));
+    transition: filter 600ms ease-out;
+  }
+  .silhouette-revealed {
+    filter: brightness(1) drop-shadow(0 0 0 transparent);
+  }
+
+  /* Stats Battle cards: the card shakes and the artwork streaks past while
+     spinning; landing overshoots like a spring, the number pops and the
+     kept badge stamps on. */
+  .reel-card-rolling {
+    animation: reel-card-shake 90ms ease-in-out infinite alternate;
+  }
+  .reel-card-land {
+    animation: reel-card-bounce 550ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  .reel-rolling {
+    animation: reel-roll 100ms linear infinite;
+  }
+  .reel-land {
+    animation: reel-land 700ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  .stat-pop {
+    display: inline-block;
+    animation: stat-pop 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 150ms both;
+  }
+  .badge-stamp {
+    animation: badge-stamp 400ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  @keyframes reel-card-shake {
+    from { transform: translate(-1px, 1px) rotate(-1deg); }
+    to { transform: translate(1px, -2px) rotate(1deg); }
+  }
+  @keyframes reel-card-bounce {
+    0% { transform: translateY(10px) scale(0.94); }
+    55% { transform: translateY(-7px) scale(1.04); }
+    100% { transform: none; }
+  }
+  @keyframes reel-roll {
+    from { transform: translateY(-60%) skewY(-8deg) scale(0.9); filter: blur(4px); opacity: 0.4; }
+    to { transform: translateY(60%) skewY(-8deg) scale(0.9); filter: blur(4px); opacity: 0.4; }
+  }
+  @keyframes reel-land {
+    0% { transform: translateY(-70%) scale(0.4) rotate(-12deg); opacity: 0; filter: blur(3px); }
+    45% { transform: translateY(10%) scale(1.18) rotate(4deg); opacity: 1; filter: blur(0); }
+    70% { transform: translateY(-5%) scale(0.94) rotate(-2deg); }
+    85% { transform: translateY(2%) scale(1.03) rotate(1deg); }
+    100% { transform: none; }
+  }
+  @keyframes stat-pop {
+    0% { transform: scale(0) rotate(-15deg); opacity: 0; }
+    60% { transform: scale(1.4) rotate(5deg); opacity: 1; }
+    100% { transform: none; }
+  }
+  @keyframes badge-stamp {
+    0% { transform: scale(2.6) rotate(-25deg); opacity: 0; }
+    100% { transform: none; opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reel-card-rolling, .reel-card-land, .reel-land, .stat-pop, .badge-stamp { animation: none; }
+    .reel-rolling { animation: none; opacity: 0.4; }
   }
 
   /* Simple loader spinner */
@@ -246,6 +325,10 @@ html {
     padding-top: env(safe-area-inset-top);
     opacity: 0;
     animation: nav-skeleton-reveal 100ms ease-out 150ms forwards;
+    /* Captured as its own view-transition group, so the page snapshot
+       underneath is always the lister (never a half-faded skeleton) and
+       the overlay just fades out on top of the page crossfade. */
+    view-transition-name: nav-skeleton;
   }
   @keyframes nav-skeleton-reveal {
     to { opacity: 1; }
@@ -298,6 +381,25 @@ html {
       50% 100%, 38% 68%, 0% 50%, 38% 32%
     );
   }
+}
+
+/* View transition stacking: page crossfade at the bottom, the departing
+   skeleton overlay above it, and morphing elements (Pokémon artwork) on top
+   so they are never hidden behind the overlay while it fades out. */
+::view-transition-group(*) {
+  z-index: 2;
+}
+::view-transition-group(nav-skeleton) {
+  z-index: 1;
+}
+::view-transition-group(root) {
+  z-index: 0;
+}
+::view-transition-old(nav-skeleton) {
+  animation: 200ms ease-out both nav-skeleton-exit;
+}
+@keyframes nav-skeleton-exit {
+  to { opacity: 0; }
 }
 
 /* Progress fill for carousel dots */

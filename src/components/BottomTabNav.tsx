@@ -2,7 +2,8 @@ import { navigate } from 'astro:transitions/client'
 import { useEffect, useRef, useState } from 'react'
 import { SettingsMenuContent } from '@/components/SettingsMenuContent'
 import type { Locale } from '@/utils/i18n'
-import { getPokemonName } from '@/utils/pokemon'
+import type { PokemonRecord } from '@/utils/pokemon'
+import { loadPokemonIndex, searchPokemon } from '@/utils/pokemonIndex'
 import { translations } from '@/utils/translations'
 
 type BottomTabNavProps = {
@@ -10,7 +11,7 @@ type BottomTabNavProps = {
   currentPath: string
 }
 
-type Tint = 'purple' | 'red' | 'yellow' | 'gray'
+type Tint = 'purple' | 'red' | 'yellow' | 'green' | 'gray'
 
 const TAB_TINTS: Record<Tint, { base: string; active: string }> = {
   purple: {
@@ -25,6 +26,10 @@ const TAB_TINTS: Record<Tint, { base: string; active: string }> = {
     base: 'text-yellow-600 dark:text-yellow-400',
     active: 'bg-yellow-500/15 dark:bg-yellow-500/20',
   },
+  green: {
+    base: 'text-emerald-600 dark:text-emerald-400',
+    active: 'bg-emerald-500/15 dark:bg-emerald-500/20',
+  },
   gray: {
     base: 'text-ink-muted dark:text-dark-ink-muted',
     active: 'bg-black/5 dark:bg-white/8',
@@ -36,8 +41,8 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
   const [searchOpen, setSearchOpen] = useState(false)
   const [configOpen, setConfigOpen] = useState(false)
   const [query, setQuery] = useState('')
-  const [suggestions, setSuggestions] = useState<string[]>([])
-  const [allNames, setAllNames] = useState<string[]>([])
+  const [suggestions, setSuggestions] = useState<PokemonRecord[]>([])
+  const [index, setIndex] = useState<PokemonRecord[]>([])
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const [isLoading, setIsLoading] = useState(true)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -65,13 +70,10 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
   }, [configOpen])
 
   useEffect(() => {
-    fetch('/api/pokemon/names')
-      .then((res) => res.json())
-      .then((data) => {
-        setAllNames(data.names)
-        setIsLoading(false)
-      })
-      .catch(() => setIsLoading(false))
+    loadPokemonIndex()
+      .then(setIndex)
+      .catch(() => {})
+      .finally(() => setIsLoading(false))
   }, [])
 
   useEffect(() => {
@@ -80,12 +82,9 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
       setSelectedIndex(-1)
       return
     }
-    const filtered = allNames
-      .filter((name) => name.toLowerCase().includes(query.toLowerCase()))
-      .slice(0, 6)
-    setSuggestions(filtered)
+    setSuggestions(searchPokemon(index, query, locale, 6))
     setSelectedIndex(-1)
-  }, [query, allNames])
+  }, [query, index, locale])
 
   useEffect(() => {
     if (searchOpen && inputRef.current) {
@@ -121,9 +120,9 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
     } else if (e.key === 'Enter') {
       e.preventDefault()
       if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
-        navigateTo(suggestions[selectedIndex])
+        navigateTo(suggestions[selectedIndex].name)
       } else if (suggestions.length > 0) {
-        navigateTo(suggestions[0])
+        navigateTo(suggestions[0].name)
       }
     }
   }
@@ -195,6 +194,30 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
         </svg>
       ),
       match: (path: string) => path.startsWith(`/${locale}/types`),
+    },
+    {
+      label: t.header.play,
+      href: `/${locale}/play`,
+      tint: 'green' as Tint,
+      icon: (
+        <svg
+          className="h-5 w-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <rect x="2" y="6" width="20" height="12" rx="4" />
+          <path d="M6 12h4M8 10v4M15 11h.01M18 13h.01" />
+        </svg>
+      ),
+      match: (path: string) =>
+        ['play', 'quiz', 'compare', 'team', 'battle'].some((p) =>
+          path.startsWith(`/${locale}/${p}`)
+        ),
     },
   ]
 
@@ -275,21 +298,23 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
         {/* Scrollable results */}
         <div className="flex-1 overflow-y-auto p-2" role="listbox">
           {suggestions.length > 0 ? (
-            suggestions.map((name, index) => (
+            suggestions.map((pokemon, i) => (
               <button
                 type="button"
-                key={name}
-                onClick={() => navigateTo(name)}
+                key={pokemon.id}
+                onClick={() => navigateTo(pokemon.name)}
                 className={`block w-full rounded-xl px-4 py-3 text-left text-base transition-colors ${
-                  index === selectedIndex
+                  i === selectedIndex
                     ? 'bg-primary-50 text-primary-700 dark:bg-primary/10 dark:text-primary'
                     : 'text-ink hover:bg-surface-sunken dark:text-dark-ink dark:hover:bg-dark-raised'
                 }`}
                 role="option"
-                aria-selected={index === selectedIndex}
+                aria-selected={i === selectedIndex}
               >
-                <span className="font-medium">{getPokemonName(name)}</span>
-                <span className="ml-2 text-xs opacity-40">#{name}</span>
+                <span className="font-medium">{pokemon.names[locale]}</span>
+                <span className="ml-2 font-mono text-xs opacity-40">
+                  #{pokemon.id}
+                </span>
               </button>
             ))
           ) : query && !isLoading ? (

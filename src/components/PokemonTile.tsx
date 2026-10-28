@@ -1,35 +1,33 @@
-import type { Pokemon } from '@utils/pokemon'
-import {
-  getPokemonImage,
-  getTypeColor,
-  optimizedImageUrl,
-} from '@utils/pokemon'
 import { TypeBadge } from '@/components/TypeBadge'
 import type { Locale } from '@/utils/i18n'
+import type { PokemonSummary } from '@/utils/pokemon'
+import {
+  officialArtworkUrl,
+  optimizedImageUrl,
+  typeColors,
+} from '@/utils/pokemon'
 import { translations } from '@/utils/translations'
 
 type PokemonTileProps = {
-  loading?: boolean
-  pokemon: Pokemon
+  pokemon: PokemonSummary
   locale: Locale
 }
 
-export function PokemonTile({
-  loading = false,
-  pokemon,
-  locale,
-}: PokemonTileProps) {
-  const typeColor = getTypeColor(pokemon)
+export function PokemonTile({ pokemon, locale }: PokemonTileProps) {
+  const accent = pokemon.accent ?? typeColors[pokemon.types[0]] ?? '#a8a878'
   const t = translations[locale]
 
   return (
     <div
       className="overflow-hidden rounded-2xl bg-white p-4 text-center transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] dark:bg-dark-surface"
-      style={{ border: `2px solid ${typeColor}` }}
+      style={{
+        border: `2px solid ${accent}`,
+        backgroundImage: `radial-gradient(circle at 50% 35%, ${accent}2e, transparent 65%)`,
+      }}
     >
       <a
         href={`/${locale}/pokemon/${pokemon.name}`}
-        title={pokemon.name}
+        title={pokemon.names[locale]}
         data-astro-prefetch="tap"
       >
         <div className="relative aspect-square w-full">
@@ -38,26 +36,22 @@ export function PokemonTile({
           </span>
           <img
             className="relative z-10 aspect-square w-full"
-            src={
-              loading
-                ? '/loading.svg'
-                : optimizedImageUrl(getPokemonImage(pokemon), 256)
-            }
-            alt={`${pokemon.name} official artwork`}
+            src={optimizedImageUrl(officialArtworkUrl(pokemon.id), 256)}
+            alt={`${pokemon.names[locale]} official artwork`}
+            loading="lazy"
+            data-view-transition={`pokemon-${pokemon.id}`}
           />
         </div>
         <div className="mt-2 space-y-1.5">
-          <span className="block overflow-hidden text-base font-semibold text-ellipsis whitespace-nowrap text-ink capitalize dark:text-dark-ink">
-            {pokemon.name.replaceAll('-', ' ')}
+          <span className="block overflow-hidden text-base font-semibold text-ellipsis whitespace-nowrap text-ink dark:text-dark-ink">
+            {pokemon.names[locale]}
           </span>
           <div className="flex flex-wrap justify-center gap-1">
-            {pokemon.types.map((pt) => (
+            {pokemon.types.map((type) => (
               <TypeBadge
-                key={pt.type.name}
-                type={pt.type.name}
-                label={
-                  t.types[pt.type.name as keyof typeof t.types] ?? pt.type.name
-                }
+                key={type}
+                type={type}
+                label={t.types[type as keyof typeof t.types] ?? type}
                 size="sm"
               />
             ))}

@@ -14,9 +14,20 @@ import { translations } from '@/utils/translations'
 export interface Props {
   title: string
   locale: Locale
+  description?: string
+  image?: string
 }
 
-const { title, locale } = Astro.props
+const {
+  title,
+  locale,
+  description = locale === 'es'
+    ? 'Una Pokédex moderna con información de todos los Pokémon'
+    : 'A modern Pokédex with information on every Pokémon',
+  image = '/icon-512.png',
+} = Astro.props
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url)
+const ogImage = new URL(image, canonical)
 // Guard `process` for workerd runtimes that may not polyfill it
 // (Cloudflare here uses `nodejs_compat`, but the guard is cheap insurance).
 const isVercel = typeof process !== 'undefined' && !!process.env.VERCEL
@@ -43,43 +54,50 @@ const navSkeletonData = {
     {/* SPA navigation plumbing — keep everything about our transition
         strategy in one place.
 
-        Problem: ClientRouter wraps each swap in `document.startViewTransition`,
-        and the browser's snapshot layer hits iOS Safari quirks that make
-        the PWA look broken — stale `env(safe-area-*)`, baked-in
-        `backdrop-filter`, and persisted fixed elements drawn twice
-        mid-swap (live DOM + snapshot).
-
-        Solution: replace `startViewTransition` with a synchronous
-        pass-through so the swap runs with no snapshot machinery, and
-        reintroduce a simple WAAPI opacity fade on the new <main> for
-        visual continuity. The patch must be in place before ClientRouter
-        handles its first navigation, so this script sits above
-        <ClientRouter /> in document order. */}
+        iOS Safari's view-transition snapshot layer makes the PWA look
+        broken (stale env(safe-area-*), baked-in backdrop-filter, persisted
+        fixed elements drawn twice mid-swap), so on iOS we replace
+        startViewTransition with a synchronous pass-through and fake a WAAPI
+        fade on the new <main>. Everywhere else the real view transition
+        runs, and elements that share a view-transition-name (the artwork
+        in a tile and on the detail page) morph between pages. The patch
+        must be in place before ClientRouter handles its first navigation,
+        so this script sits above <ClientRouter /> in document order. */}
     <script is:inline>
-      document.startViewTransition = (cb) => {
-        const done = Promise.resolve(cb?.())
-        return {
-          ready: done,
-          finished: done,
-          updateCallbackDone: done,
-          skipTransition: () => {},
+      const isIOS = /iP(hone|ad|od)/.test(navigator.platform)
+        || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+      if (isIOS) {
+        document.startViewTransition = (cb) => {
+          const done = Promise.resolve(cb?.())
+          return {
+            ready: done,
+            finished: done,
+            updateCallbackDone: done,
+            skipTransition: () => {},
+          }
         }
+
+        document.addEventListener('astro:after-swap', () => {
+          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+          document.querySelector('main')?.animate(
+            [{ opacity: 0 }, { opacity: 1 }],
+            { duration: 180, easing: 'cubic-bezier(0.2, 0, 0, 1)', fill: 'backwards' },
+          )
+        })
       }
 
-      document.addEventListener('astro:after-swap', () => {
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-        document.querySelector('main')?.animate(
-          [{ opacity: 0 }, { opacity: 1 }],
-          { duration: 180, easing: 'cubic-bezier(0.2, 0, 0, 1)', fill: 'backwards' },
-        )
+      // Route trail for BackButton: from a detail page, "back" returns to the
+      // last non-detail route (the lister you came from) instead of the
+      // previous evolution you clicked through. Mirrors utils/routeHistory.ts.
+      document.addEventListener('astro:page-load', () => {
+        try {
+          const key = 'poke-astro:routes'
+          const routes = JSON.parse(sessionStorage.getItem(key) || '[]')
+          if (routes[routes.length - 1] !== location.pathname) routes.push(location.pathname)
+          sessionStorage.setItem(key, JSON.stringify(routes.slice(-50)))
+        } catch {}
       })
 
-      // Perceived-instant navigation: the moment ClientRouter starts fetching
-      // the next page, cover the viewport with a skeleton approximating the
-      // destination (cloned from the <template>s at the end of <body>). The
-      // overlay only fades in after a grace delay (.nav-skeleton-overlay in
-      // global.css), so fast navigations never flash it. The swap replaces
-      // <body> wholesale, which removes the overlay automatically.
       document.addEventListener('astro:before-preparation', (e) => {
         document.getElementById('nav-skeleton-overlay')?.remove()
         const path = e.to?.pathname ?? ''
@@ -91,8 +109,45 @@ const navSkeletonData = {
         overlay.className = 'nav-skeleton-overlay'
         overlay.appendChild(template.content.cloneNode(true))
         if (kind === 'lister') addListerBanner(overlay, path)
+        if (kind === 'detail') stageHeroMorph(overlay, path)
         document.body.appendChild(overlay)
       })
+
+      // Detail destinations: once the overlay actually reveals (slow fetch),
+      // hand the clicked tile's artwork to a clone inside the overlay and
+      // glide it to the skeleton's hero slot. The clone inherits the
+      // view-transition-name, so the final swap morphs from where the clone
+      // already is instead of jumping back to the tile. Fast navigations
+      // never reveal the overlay and keep the tile-to-hero morph untouched.
+      const stageHeroMorph = (overlay, path) => {
+        const tileImg = document.querySelector(`a[href="${path}"] img[data-view-transition]`)
+        const slot = overlay.querySelector('[data-hero-slot]')
+        if (!tileImg || !slot) return
+        // Only the clicked tile gets the name. If every tile carried one, each
+        // of the ~60 visible images would be snapshotted and fade out on its
+        // own, above the overlay, instead of crossfading with the page.
+        const name = tileImg.dataset.viewTransition
+        tileImg.style.viewTransitionName = name
+        const from = tileImg.getBoundingClientRect()
+        const clone = tileImg.cloneNode()
+        clone.removeAttribute('class')
+        clone.style.cssText = `position:absolute;left:${from.left}px;top:${from.top}px;width:${from.width}px;height:${from.height}px;object-fit:contain;z-index:1`
+        overlay.appendChild(clone)
+        const rect = (r) => ({ left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` })
+        const onReveal = (ev) => {
+          if (ev.target !== overlay) return
+          overlay.removeEventListener('animationstart', onReveal)
+          slot.classList.remove('skeleton-shimmer')
+          tileImg.style.viewTransitionName = 'none'
+          clone.style.viewTransitionName = name
+          clone.animate([rect(from), rect(slot.getBoundingClientRect())], {
+            duration: 350,
+            easing: 'cubic-bezier(0.2, 0, 0, 1)',
+            fill: 'forwards',
+          })
+        }
+        overlay.addEventListener('animationstart', onReveal)
+      }
 
       // Type/generation destinations carry their banner heading in the URL,
       // so render the real title and tint; only the species count shimmers.
@@ -105,7 +160,7 @@ const navSkeletonData = {
         const romans = { 1: 'I', 2: 'II', 3: 'III', 4: 'IV', 5: 'V', 6: 'VI', 7: 'VII', 8: 'VIII', 9: 'IX' }
 
         const banner = document.createElement('div')
-        banner.className = 'mb-8 rounded-2xl p-6 md:p-8'
+        banner.className = 'mb-8 rounded-2xl border-2 border-black/[0.06] dark:border-white/[0.08] p-6 md:p-8'
         if (typeName && data.typeLabels[typeName]) {
           banner.style.backgroundColor = `${data.typeColors[typeName] ?? '#a8a878'}18`
         } else if (genId) {
@@ -131,7 +186,14 @@ const navSkeletonData = {
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#fefefe" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#1e2636" media="(prefers-color-scheme: dark)" />
-    <meta name="description" content="Una Pokedex moderna con informacion de todos los Pokemon" />
+    <meta name="description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={locale === 'es' ? 'es_ES' : 'en_US'} />
+    <meta name="twitter:card" content="summary_large_image" />
 
     <!-- iOS PWA Support -->
     <meta name="apple-mobile-web-app-capable" content="yes" />

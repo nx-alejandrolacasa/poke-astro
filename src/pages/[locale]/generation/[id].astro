@@ -1,126 +1,48 @@
 ---
 export const prerender = true
 
-import { GenerationInfiniteScroll } from '@/components/GenerationInfiniteScroll'
 import ListerSkeleton from '@/components/ListerSkeleton.astro'
+import { PokemonLister } from '@/components/PokemonLister'
 import Layout from '@/layouts/Layout.astro'
+import { GENERATIONS } from '@/utils/generations'
 import { getI18n, locales } from '@/utils/i18n'
-import type { Pokemon, PokemonList } from '@/utils/pokemon'
+import { getAllPokemon, toSummary } from '@/utils/pokemon'
 import { interpolate } from '@/utils/translations'
 
-const generations: Record<
-  string,
-  { nameEn: string; nameEs: string; region: string }
-> = {
-  '1': { nameEn: 'Generation I', nameEs: 'Generación I', region: 'Kanto' },
-  '2': { nameEn: 'Generation II', nameEs: 'Generación II', region: 'Johto' },
-  '3': { nameEn: 'Generation III', nameEs: 'Generación III', region: 'Hoenn' },
-  '4': { nameEn: 'Generation IV', nameEs: 'Generación IV', region: 'Sinnoh' },
-  '5': { nameEn: 'Generation V', nameEs: 'Generación V', region: 'Unova' },
-  '6': { nameEn: 'Generation VI', nameEs: 'Generación VI', region: 'Kalos' },
-  '7': { nameEn: 'Generation VII', nameEs: 'Generación VII', region: 'Alola' },
-  '8': {
-    nameEn: 'Generation VIII',
-    nameEs: 'Generación VIII',
-    region: 'Galar',
-  },
-  '9': { nameEn: 'Generation IX', nameEs: 'Generación IX', region: 'Paldea' },
-}
-
 export function getStaticPaths() {
-  const ids = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
   return locales.flatMap((locale) =>
-    ids.map((id) => ({ params: { locale, id } }))
+    GENERATIONS.map((gen) => ({ params: { locale, id: String(gen.id) } }))
   )
 }
 
 const { locale: localeParam, id = '' } = Astro.params
 const { locale, t } = getI18n(localeParam)
 
-const generationData = generations[id]
-if (!generationData) {
+const generation = GENERATIONS.find((gen) => gen.id === Number(id))
+if (!generation) {
   return Astro.redirect(`/${locale}/404`)
 }
 
-const generation = {
-  id: Number(id),
-  name: locale === 'es' ? generationData.nameEs : generationData.nameEn,
-  region: generationData.region,
-}
+const pokemon = (await getAllPokemon())
+  .filter((p) => p.isDefault && p.generation === generation.id)
+  .map(toSummary)
 
-// Generation color mapping
-const genColors: Record<number, string> = {
-  1: 'from-red-600 to-blue-600',
-  2: 'from-yellow-500 to-purple-600',
-  3: 'from-blue-600 to-green-600',
-  4: 'from-purple-600 to-pink-600',
-  5: 'from-gray-700 to-blue-700',
-  6: 'from-pink-500 to-blue-500',
-  7: 'from-orange-500 to-blue-600',
-  8: 'from-cyan-600 to-purple-700',
-  9: 'from-red-600 to-purple-600',
-}
-
-const gradientClass = genColors[generation.id] || 'from-gray-400 to-gray-500'
-
-// Fetch generation data from PokéAPI
-const genRes = await fetch(
-  `https://pokeapi.co/api/v2/generation/${generation.id}`
-)
-if (!genRes.ok) {
-  return Astro.redirect(`/${locale}/404`)
-}
-const genData = await genRes.json()
-
-// Sort all species references by ID (extracted from URL) before pagination
-genData.pokemon_species.sort((a: { url: string }, b: { url: string }) => {
-  const idA = Number(a.url.split('/').filter(Boolean).pop())
-  const idB = Number(b.url.split('/').filter(Boolean).pop())
-  return idA - idB
-})
-
-// Get first page of pokemon (30 items)
-const pageSize = 30
-const speciesSlice = genData.pokemon_species.slice(0, pageSize)
-
-// Fetch full details for first page
-const pokemonPromises = speciesSlice.map(async (species: { url: string }) => {
-  // Species names don't always match a Pokémon name (e.g. `oricorio`
-  // → `oricorio-baile`), so fetch the default variety by species ID.
-  const speciesId = species.url.split('/').filter(Boolean).pop()
-  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${speciesId}`)
-  if (!res.ok) return null
-  return res.json()
-})
-
-const resultsWithNull = await Promise.all(pokemonPromises)
-const results: Pokemon[] = resultsWithNull.filter(
-  (p): p is Pokemon => p !== null
-)
-
-// Sort by National Pokédex number
-results.sort((a, b) => a.id - b.id)
-
-const initialData: PokemonList = {
-  count: genData.pokemon_species.length,
-  results,
-}
+const title = `${t.home.generation} ${generation.roman}`
+const subtitle = `${generation.region} · ${interpolate(t.pages.speciesCount, { count: pokemon.length })}`
 ---
 
-<Layout title={`${generation.name} - ${generation.region} ${t.pages.region}`} locale={locale}>
-  <GenerationInfiniteScroll
-    client:only="react"
-    initialData={initialData}
-    generation={generation}
-    generationColor={gradientClass}
-    locale={locale}
-  >
+<Layout title={`${title} - ${generation.region} ${t.pages.region}`} locale={locale}>
+  <PokemonLister client:only="react" pokemon={pokemon} locale={locale}>
+    <div slot="banner" class="rounded-2xl border-2 border-black/[0.06] dark:border-white/[0.08] bg-gradient-to-br from-primary-50 to-surface-sunken p-6 md:p-8 dark:from-dark-raised dark:to-dark-surface">
+      <h1 class="font-bold text-2xl text-ink tracking-tight md:text-3xl dark:text-dark-ink">{title}</h1>
+      <p class="font-medium text-ink-muted text-sm dark:text-dark-ink-muted">{subtitle}</p>
+    </div>
     <ListerSkeleton
       slot="fallback"
       banner="generation"
       locale={locale}
-      bannerTitle={generation.name}
-      bannerSubtitle={`${generation.region} · ${interpolate(t.pages.speciesCount, { count: initialData.count })}`}
+      bannerTitle={title}
+      bannerSubtitle={subtitle}
     />
-  </GenerationInfiniteScroll>
+  </PokemonLister>
 </Layout>

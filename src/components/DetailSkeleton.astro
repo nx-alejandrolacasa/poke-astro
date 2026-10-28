@@ -19,12 +19,11 @@ const { locale } = Astro.props
   </div>
 
   <div class="grid grid-cols-1 gap-3 md:grid-cols-4 md:gap-4">
-    <div class="rounded-2xl bg-white p-6 md:col-span-2 md:row-span-2 dark:bg-dark-surface">
-      <div class="skeleton-shimmer aspect-square w-full rounded-xl"></div>
-      <div class="skeleton-shimmer mx-auto mt-4 h-7 w-1/2 rounded-md"></div>
-      <div class="mt-3 flex justify-center gap-2">
-        <div class="skeleton-shimmer h-6 w-16 rounded-full"></div>
-        <div class="skeleton-shimmer h-6 w-16 rounded-full"></div>
+    <div class="flex flex-col items-center justify-center gap-3 rounded-2xl bg-white p-6 md:col-span-2 md:row-span-2 dark:bg-dark-surface">
+      <div data-hero-slot class="skeleton-shimmer aspect-square w-full max-w-[260px] rounded-xl"></div>
+      <div class="flex items-center gap-2">
+        <div class="skeleton-shimmer h-7 w-16 rounded-full"></div>
+        <div class="skeleton-shimmer h-7 w-16 rounded-full"></div>
       </div>
     </div>
     {Array.from({ length: 4 }).map(() => (

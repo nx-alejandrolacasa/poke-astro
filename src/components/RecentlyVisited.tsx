@@ -110,14 +110,11 @@ export function RecentlyVisited({
           key={v.name}
           href={`/${locale}/pokemon/${v.name}`}
           data-astro-prefetch="tap"
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-transparent px-3 py-2 text-xs leading-5 font-semibold shadow-md transition hover:brightness-110 active:scale-95"
-          style={
-            {
-              '--pill-bg': v.typeColor,
-              backgroundColor: 'var(--pill-bg)',
-              color: 'contrast-color(var(--pill-bg))',
-            } as CSSProperties
-          }
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border-2 bg-white px-3 py-1.5 text-xs leading-5 font-semibold text-ink shadow-sm shadow-black/[0.04] transition hover:-translate-y-px active:scale-95 dark:bg-dark-surface dark:text-dark-ink"
+          style={{
+            borderColor: v.typeColor,
+            backgroundImage: `linear-gradient(${v.typeColor}2e, ${v.typeColor}2e)`,
+          }}
         >
           <span className="font-mono opacity-70">
             #{v.id.toString().padStart(3, '0')}
