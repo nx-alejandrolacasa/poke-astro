@@ -557,20 +557,40 @@ export function StatBattle({ locale }: StatBattleProps) {
               <p className="text-xs text-ink-muted dark:text-dark-ink-muted">
                 {t.battle.survivalHint}
               </p>
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <GenerationSelect
-                  value={generation}
-                  onChange={setGeneration}
-                  locale={locale}
-                  label={t.battle.reelGen}
-                  disabled={loading}
-                />
-                <p className="font-mono text-sm text-ink-muted dark:text-dark-ink-muted">
-                  🏆 {t.battle.bestStreak}{' '}
-                  <b className="text-ink dark:text-dark-ink">
-                    {survivalBest[generation] ?? 0}
-                  </b>
-                </p>
+              <div
+                role="radiogroup"
+                aria-label={t.battle.reelGen}
+                className="grid grid-cols-1 gap-1.5 sm:grid-cols-2"
+              >
+                {[
+                  { id: 0, label: t.quiz.allGens },
+                  ...GENERATIONS.map((gen) => ({
+                    id: gen.id,
+                    label: `${t.quiz.gen} ${gen.roman} · ${gen.region}`,
+                  })),
+                ].map((option) => {
+                  const active = generation === option.id
+                  const best = survivalBest[option.id] ?? 0
+                  return (
+                    <button
+                      key={option.id}
+                      type="button"
+                      role="radio"
+                      aria-checked={active}
+                      onClick={() => setGeneration(option.id)}
+                      disabled={loading}
+                      className={`flex items-center justify-between gap-3 rounded-xl border-2 px-3 py-2 text-left text-sm transition-all active:scale-[0.98] ${active ? 'border-primary bg-primary-50 text-ink dark:border-dark-primary dark:bg-primary/10 dark:text-dark-ink' : 'border-transparent bg-surface-sunken text-ink hover:border-black/[0.08] dark:bg-dark-raised dark:text-dark-ink dark:hover:border-white/[0.1]'}`}
+                    >
+                      <span className="font-medium">{option.label}</span>
+                      <span
+                        className={`shrink-0 font-mono text-xs ${best > 0 ? 'text-ink dark:text-dark-ink' : 'text-ink-faint dark:text-dark-ink-faint'}`}
+                        title={t.battle.bestStreak}
+                      >
+                        🏆 <b>{best}</b>
+                      </span>
+                    </button>
+                  )
+                })}
               </div>
             </section>
 
