@@ -15,7 +15,7 @@ type PokemonListerProps = {
 export function PokemonLister({ pokemon, locale, banner }: PokemonListerProps) {
   return (
     <div className="space-y-8">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 border-b border-black/[0.06] pb-3 dark:border-white/[0.08]">
         <BackButton locale={locale} />
         <RecentlyVisited locale={locale} />
       </div>
