@@ -247,6 +247,9 @@ export type Translations = {
     resultWin: string
     resultLose: string
     resultTie: string
+    unlocked: string
+    unlockedAll: string
+    lockedHint: string
     spinning: string
     win: string
     lose: string
@@ -636,6 +639,10 @@ export const translations: Record<Language, Translations> = {
       resultWin: 'Win',
       resultLose: 'Loss',
       resultTie: 'Tie',
+      unlocked: 'Generation {gen} unlocked for this Pokémon!',
+      unlockedAll: 'All generations unlocked for this Pokémon!',
+      lockedHint:
+        'Beat each generation with this Pokémon to unlock the next. All generations unlock once you have beaten every one.',
       spinning: 'Drawing…',
       win: 'You beat it!',
       lose: 'Not this time.',
@@ -1025,6 +1032,10 @@ export const translations: Record<Language, Translations> = {
       resultWin: 'Victoria',
       resultLose: 'Derrota',
       resultTie: 'Empate',
+      unlocked: '¡Generación {gen} desbloqueada para este Pokémon!',
+      unlockedAll: '¡Todas las generaciones desbloqueadas para este Pokémon!',
+      lockedHint:
+        'Supera cada generación con este Pokémon para desbloquear la siguiente. «Todas» se desbloquea al vencer en todas.',
       spinning: 'Repartiendo…',
       win: '¡Lo has superado!',
       lose: 'Esta vez no.',

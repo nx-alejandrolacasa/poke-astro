@@ -7,6 +7,8 @@ type GenerationSelectProps = {
   onChange: (generation: number) => void
   locale: Locale
   label: string
+  unlockedUpTo?: number
+  allUnlocked?: boolean
 }
 
 const CHEVRON =
@@ -17,6 +19,8 @@ export function GenerationSelect({
   onChange,
   locale,
   label,
+  unlockedUpTo = Number.POSITIVE_INFINITY,
+  allUnlocked = true,
 }: GenerationSelectProps) {
   const t = translations[locale]
   return (
@@ -32,9 +36,13 @@ export function GenerationSelect({
         backgroundSize: '1.1rem',
       }}
     >
-      <option value={0}>{t.quiz.allGens}</option>
+      <option value={0} disabled={!allUnlocked}>
+        {allUnlocked ? '' : '🔒 '}
+        {t.quiz.allGens}
+      </option>
       {GENERATIONS.map((gen) => (
-        <option key={gen.id} value={gen.id}>
+        <option key={gen.id} value={gen.id} disabled={gen.id > unlockedUpTo}>
+          {gen.id > unlockedUpTo ? '🔒 ' : ''}
           {t.quiz.gen} {gen.roman} · {gen.region}
         </option>
       ))}

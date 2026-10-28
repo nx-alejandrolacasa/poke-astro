@@ -2,10 +2,11 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { GenerationSelect } from '@/components/GenerationSelect'
 import { PokemonPicker } from '@/components/PokemonPicker'
 import { usePokemonIndex } from '@/components/usePokemonIndex'
+import { GENERATIONS } from '@/utils/generations'
 import type { Locale } from '@/utils/i18n'
 import type { PokemonRecord } from '@/utils/pokemon'
 import { officialArtworkUrl, optimizedImageUrl } from '@/utils/pokemon'
-import { translations } from '@/utils/translations'
+import { interpolate, translations } from '@/utils/translations'
 
 type StatBattleProps = {
   locale: Locale
@@ -25,6 +26,29 @@ type BattleRecord = {
   targetTotal: number
   total: number
   cards: number[]
+  generation: number
+}
+
+const LAST_GENERATION = GENERATIONS[GENERATIONS.length - 1].id
+
+function wonGenerations(history: BattleRecord[], targetId: number) {
+  return new Set(
+    history
+      .filter((r) => r.targetId === targetId && r.total > r.targetTotal)
+      .map((r) => r.generation)
+  )
+}
+
+function highestUnlocked(won: Set<number>) {
+  let generation = 1
+  while (generation < LAST_GENERATION && won.has(generation)) generation++
+  return generation
+}
+
+function clampGeneration(wanted: number, won: Set<number>) {
+  const allUnlocked = GENERATIONS.every((g) => won.has(g.id))
+  if (wanted === 0) return allUnlocked ? 0 : highestUnlocked(won)
+  return Math.min(wanted, highestUnlocked(won))
 }
 
 const HISTORY_KEY = 'poke-astro:battle:history'
@@ -94,6 +118,7 @@ export function StatBattle({ locale }: StatBattleProps) {
       targetTotal: sumStats(target),
       total: reelTotal(reels),
       cards: reels.map((reel) => reel.pokemon.id),
+      generation,
     }
     const next = [record, ...history].slice(0, HISTORY_SIZE)
     setHistory(next)
@@ -107,9 +132,9 @@ export function StatBattle({ locale }: StatBattleProps) {
 
   const [generation, setGeneration] = useState(0)
   const defaults = index.filter((p) => p.isDefault)
-  const pool = defaults.filter(
-    (p) => generation === 0 || p.generation === generation
-  )
+  const poolFor = (gen: number) =>
+    defaults.filter((p) => gen === 0 || p.generation === gen)
+  const pool = poolFor(generation)
   const rolling = reels.some((reel) => reel.rolling)
 
   useEffect(() => {
@@ -173,7 +198,10 @@ export function StatBattle({ locale }: StatBattleProps) {
     clearTimers()
     setTarget(pokemon)
     setPhase('playing')
-    const seed = Array.from({ length: REEL_COUNT }, () => randomOf(pool))
+    const gen = clampGeneration(generation, wonGenerations(history, pokemon.id))
+    setGeneration(gen)
+    const candidates = poolFor(gen)
+    const seed = Array.from({ length: REEL_COUNT }, () => randomOf(candidates))
     preload(seed)
     setStrip(seed)
     setRedrawUsed(false)
@@ -183,7 +211,9 @@ export function StatBattle({ locale }: StatBattleProps) {
         pokemon,
         kept: false,
         rolling: false,
-      }))
+      })),
+      undefined,
+      candidates
     )
   }
 
@@ -247,6 +277,28 @@ export function StatBattle({ locale }: StatBattleProps) {
         ? { label: t.battle.resultLose, color: LOSS_COLOR }
         : { label: t.battle.resultTie, color: TIE_COLOR }
   const wins = history.filter((r) => r.total > r.targetTotal).length
+  const won = target ? wonGenerations(history, target.id) : new Set<number>()
+  const unlockedUpTo = target ? highestUnlocked(won) : LAST_GENERATION
+  const allUnlocked = !target || GENERATIONS.every((g) => won.has(g.id))
+  const wonBefore = target
+    ? wonGenerations(
+        history.filter((r) => r.at !== history[0]?.at),
+        target.id
+      )
+    : won
+  const justUnlocked =
+    phase === 'done' &&
+    diff > 0 &&
+    generation > 0 &&
+    !wonBefore.has(generation) &&
+    won.has(generation)
+  const unlockMessage = !justUnlocked
+    ? null
+    : generation === LAST_GENERATION
+      ? t.battle.unlockedAll
+      : interpolate(t.battle.unlocked, {
+          gen: GENERATIONS.find((g) => g.id === generation + 1)?.roman ?? '',
+        })
   const shownHistory = onlyWins
     ? history.filter((r) => r.total > r.targetTotal)
     : history
@@ -277,11 +329,19 @@ export function StatBattle({ locale }: StatBattleProps) {
         </button>
         <GenerationSelect
           value={generation}
-          onChange={setGeneration}
+          onChange={(gen) => setGeneration(clampGeneration(gen, won))}
           locale={locale}
           label={t.battle.reelGen}
+          unlockedUpTo={unlockedUpTo}
+          allUnlocked={allUnlocked}
         />
       </div>
+
+      {target && !allUnlocked && (
+        <p className="text-center text-xs text-ink-muted dark:text-dark-ink-muted">
+          🔒 {t.battle.lockedHint}
+        </p>
+      )}
 
       {target ? (
         <div
@@ -463,6 +523,11 @@ export function StatBattle({ locale }: StatBattleProps) {
           <p className="text-2xl font-black text-ink dark:text-dark-ink">
             {result}
           </p>
+          {unlockMessage && (
+            <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+              🔓 {unlockMessage}
+            </p>
+          )}
           <p className="font-mono text-sm text-ink-muted dark:text-dark-ink-muted">
             {total} vs {targetTotal}
           </p>
