@@ -237,6 +237,7 @@ export type Translations = {
     target: string
     yours: string
     hint: string
+    reroll: string
     spinning: string
     win: string
     lose: string
@@ -616,6 +617,7 @@ export const translations: Record<Language, Translations> = {
       target: 'Target',
       yours: 'Your total',
       hint: 'Tap a reel to keep it. The rest spin again.',
+      reroll: 'Repeated Pokémon: tap to re-roll this reel',
       spinning: 'Spinning…',
       win: 'You beat it!',
       lose: 'Not this time.',
@@ -995,6 +997,7 @@ export const translations: Record<Language, Translations> = {
       target: 'Objetivo',
       yours: 'Tu total',
       hint: 'Toca un rodillo para fijarlo. El resto vuelve a girar.',
+      reroll: 'Pokémon repetido: toca para volver a girar este rodillo',
       spinning: 'Girando…',
       win: '¡Lo has superado!',
       lose: 'Esta vez no.',

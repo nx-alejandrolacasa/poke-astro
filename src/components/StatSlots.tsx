@@ -63,14 +63,20 @@ export function StatSlots({ locale }: StatSlotsProps) {
     }
   }, [])
 
-  const spin = (current: Reel[]) => {
-    const open = current.flatMap((reel, i) => (reel.kept ? [] : [i]))
-    const landing = open.map(() => randomOf(pool))
+  const spin = (
+    current: Reel[],
+    targets = current.flatMap((reel, i) => (reel.kept ? [] : [i])),
+    candidates = pool
+  ) => {
+    const openCount = current.filter((reel) => !reel.kept).length
+    const landing = targets.map(() => randomOf(candidates))
     for (const pokemon of landing) new Image().src = artwork(pokemon, 112)
     setReels(
-      current.map((reel) => (reel.kept ? reel : { ...reel, rolling: true }))
+      current.map((reel, i) =>
+        targets.includes(i) ? { ...reel, rolling: true } : reel
+      )
     )
-    open.forEach((reelIndex, order) => {
+    targets.forEach((reelIndex, order) => {
       const stop = window.setTimeout(
         () => {
           setReels((rs) =>
@@ -80,7 +86,7 @@ export function StatSlots({ locale }: StatSlotsProps) {
                 : reel
             )
           )
-          if (order === open.length - 1 && open.length === 1) {
+          if (order === targets.length - 1 && openCount === 1) {
             setReels((rs) => rs.map((reel) => ({ ...reel, kept: true })))
             setPhase('done')
           }
@@ -104,8 +110,22 @@ export function StatSlots({ locale }: StatSlotsProps) {
     )
   }
 
+  const shownIds = reels.map((reel) => reel.pokemon.id)
+  const repeatedIds = new Set(
+    shownIds.filter((id, i) => shownIds.indexOf(id) !== i)
+  )
+
   const keep = (reelIndex: number) => {
     if (phase !== 'playing' || rolling || reels[reelIndex].kept) return
+    if (repeatedIds.has(reels[reelIndex].pokemon.id)) {
+      const others = new Set(shownIds.filter((_, i) => i !== reelIndex))
+      spin(
+        reels,
+        [reelIndex],
+        pool.filter((p) => !others.has(p.id))
+      )
+      return
+    }
     const next = reels.map((reel, i) =>
       i === reelIndex ? { ...reel, kept: true } : reel
     )
@@ -282,6 +302,13 @@ export function StatSlots({ locale }: StatSlotsProps) {
                     style={{ background: reelAccent }}
                   >
                     ✓
+                  </span>
+                ) : !reel.rolling && repeatedIds.has(reel.pokemon.id) ? (
+                  <span
+                    className="absolute top-1.5 left-1.5 rounded-full bg-amber-400 px-1.5 text-[10px] font-bold text-amber-950"
+                    title={t.slots.reroll}
+                  >
+                    ↻
                   </span>
                 ) : (
                   <span className="absolute top-1.5 left-2 font-mono text-[10px] text-ink-faint dark:text-dark-ink-faint">
