@@ -30,6 +30,8 @@ const STAT_LABEL_KEYS = [
 const REEL_COUNT = STAT_LABEL_KEYS.length
 const ROLL_MS = 700
 const STAGGER_MS = 150
+const TICK_MS = 120
+const STRIP_SIZE = 24
 const WIN_COLOR = '#10b981'
 
 const randomOf = <T,>(items: T[]): T =>
@@ -47,6 +49,8 @@ export function StatSlots({ locale }: StatSlotsProps) {
   const [target, setTarget] = useState<PokemonRecord | null>(null)
   const [reels, setReels] = useState<Reel[]>([])
   const [phase, setPhase] = useState<Phase>('pick')
+  const [strip, setStrip] = useState<PokemonRecord[]>([])
+  const [tick, setTick] = useState(0)
   const timers = useRef<number[]>([])
 
   const [generation, setGeneration] = useState(0)
@@ -55,6 +59,16 @@ export function StatSlots({ locale }: StatSlotsProps) {
     (p) => generation === 0 || p.generation === generation
   )
   const rolling = reels.some((reel) => reel.rolling)
+
+  useEffect(() => {
+    if (!rolling) return
+    const id = window.setInterval(() => setTick((n) => n + 1), TICK_MS)
+    return () => window.clearInterval(id)
+  }, [rolling])
+
+  const preload = (pokemon: PokemonRecord[]) => {
+    for (const p of pokemon) new Image().src = artwork(p, 112)
+  }
   const keptCount = reels.filter((reel) => reel.kept).length
 
   const clearTimers = () => {
@@ -75,7 +89,8 @@ export function StatSlots({ locale }: StatSlotsProps) {
   ) => {
     const openCount = current.filter((reel) => !reel.kept).length
     const landing = targets.map(() => randomOf(candidates))
-    for (const pokemon of landing) new Image().src = artwork(pokemon, 112)
+    preload(landing)
+    setStrip((shown) => [...shown, ...landing].slice(-STRIP_SIZE))
     setReels(
       current.map((reel, i) =>
         targets.includes(i) ? { ...reel, rolling: true } : reel
@@ -106,6 +121,9 @@ export function StatSlots({ locale }: StatSlotsProps) {
     clearTimers()
     setTarget(pokemon)
     setPhase('playing')
+    const seed = Array.from({ length: REEL_COUNT }, () => randomOf(pool))
+    preload(seed)
+    setStrip(seed)
     spin(
       Array.from({ length: REEL_COUNT }, () => ({
         pokemon,
@@ -275,6 +293,10 @@ export function StatSlots({ locale }: StatSlotsProps) {
         <div className="grid grid-cols-3 gap-2 sm:gap-3 md:grid-cols-6">
           {reels.map((reel, i) => {
             const reelAccent = reel.pokemon.accent ?? accent
+            const shown =
+              reel.rolling && strip.length > 0
+                ? strip[(tick + i * 5) % strip.length]
+                : reel.pokemon
             const canKeep = phase === 'playing' && !rolling && !reel.kept
             return (
               <button
@@ -302,8 +324,8 @@ export function StatSlots({ locale }: StatSlotsProps) {
                 </span>
                 <div className="aspect-square w-full">
                   <img
-                    key={reel.pokemon.id}
-                    src={artwork(reel.pokemon, 112)}
+                    key={reel.rolling ? 'rolling' : reel.pokemon.id}
+                    src={artwork(shown, 112)}
                     alt=""
                     className={`h-full w-full object-contain ${reel.rolling ? 'reel-rolling' : 'reel-land'}`}
                     draggable={false}
