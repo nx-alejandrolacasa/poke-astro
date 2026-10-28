@@ -7,6 +7,7 @@ export type Translations = {
     pokedex: string
     types: string
     typeChart: string
+    play: string
     menu: string
     close: string
     search: string
@@ -96,6 +97,7 @@ export type Translations = {
     previousSprite: string
     nextSprite: string
     recent: string
+    compare: string
   }
   // Pokémon species metadata lookups
   eggGroups: Record<string, string>
@@ -188,6 +190,59 @@ export type Translations = {
     dataBy: string
     builtWith: string
   }
+  // Play section: quiz, compare, team
+  play: {
+    title: string
+    quiz: string
+    compare: string
+    team: string
+    typeToSearch: string
+  }
+  quiz: {
+    title: string
+    subtitle: string
+    question: string
+    correct: string
+    wrong: string
+    score: string
+    streak: string
+    best: string
+    next: string
+    reveal: string
+    gen: string
+    allGens: string
+  }
+  compare: {
+    title: string
+    subtitle: string
+    first: string
+    second: string
+    pick: string
+    swap: string
+    total: string
+    matchup: string
+    dealsTo: string
+    neutral: string
+    openDetail: string
+  }
+  team: {
+    title: string
+    subtitle: string
+    empty: string
+    addMember: string
+    remove: string
+    clear: string
+    full: string
+    coverage: string
+    coverageHint: string
+    weak: string
+    resist: string
+    immune: string
+    noWeakness: string
+    uncovered: string
+    add: string
+    inTeam: string
+  }
 }
 
 export const translations: Record<Language, Translations> = {
@@ -197,6 +252,7 @@ export const translations: Record<Language, Translations> = {
       pokedex: 'Pokédex',
       types: 'Types',
       typeChart: 'Type Chart',
+      play: 'Play',
       menu: 'Menu',
       close: 'Close',
       search: 'Search',
@@ -282,6 +338,7 @@ export const translations: Record<Language, Translations> = {
       previousSprite: 'Previous sprite',
       nextSprite: 'Next sprite',
       recent: 'Recent',
+      compare: 'Compare',
     },
     eggGroups: {
       monster: 'Monster',
@@ -494,6 +551,60 @@ export const translations: Record<Language, Translations> = {
       dataBy: 'Data by',
       builtWith: 'Built with',
     },
+    play: {
+      title: 'Play',
+      quiz: "Who's that Pokémon?",
+      compare: 'Compare',
+      team: 'Team builder',
+      typeToSearch: 'Type to search...',
+    },
+    quiz: {
+      title: "Who's that Pokémon?",
+      subtitle: 'Guess the silhouette. Four options, one is right.',
+      question: 'Who is it?',
+      correct: "That's right!",
+      wrong: 'Not quite. It was',
+      score: 'Score',
+      streak: 'Streak',
+      best: 'Best streak',
+      next: 'Next',
+      reveal: 'Reveal',
+      gen: 'Generation',
+      allGens: 'All generations',
+    },
+    compare: {
+      title: 'Compare',
+      subtitle: 'Pick two Pokémon and put their base stats side by side.',
+      first: 'First Pokémon',
+      second: 'Second Pokémon',
+      pick: 'Pick a Pokémon',
+      swap: 'Swap',
+      total: 'Total',
+      matchup: 'Type matchup',
+      dealsTo: 'deals {multiplier}× to',
+      neutral: 'Neutral damage both ways',
+      openDetail: 'Open details',
+    },
+    team: {
+      title: 'Team builder',
+      subtitle:
+        'Build a team of six and see which attacking types it struggles against.',
+      empty: 'Empty slot',
+      addMember: 'Add a Pokémon',
+      remove: 'Remove',
+      clear: 'Clear team',
+      full: 'Your team is full',
+      coverage: 'Defensive coverage',
+      coverageHint:
+        'For every attacking type: how many team members take super-effective, resisted or no damage.',
+      weak: 'weak',
+      resist: 'resist',
+      immune: 'immune',
+      noWeakness: 'Nothing on the team is weak to this type.',
+      uncovered: 'No one on the team resists this type.',
+      add: 'Add to team',
+      inTeam: 'In your team',
+    },
   },
   es: {
     header: {
@@ -501,6 +612,7 @@ export const translations: Record<Language, Translations> = {
       pokedex: 'Pokédex',
       types: 'Tipos',
       typeChart: 'Tabla de Tipos',
+      play: 'Jugar',
       menu: 'Menú',
       close: 'Cerrar',
       search: 'Buscar',
@@ -586,6 +698,7 @@ export const translations: Record<Language, Translations> = {
       previousSprite: 'Imagen anterior',
       nextSprite: 'Imagen siguiente',
       recent: 'Recientes',
+      compare: 'Comparar',
     },
     eggGroups: {
       monster: 'Monstruo',
@@ -797,6 +910,60 @@ export const translations: Record<Language, Translations> = {
         'Proyecto fan — sin afiliación con Nintendo, Game Freak ni The Pokémon Company. Todas las marcas de Pokémon pertenecen a sus respectivos dueños.',
       dataBy: 'Datos de',
       builtWith: 'Hecho con',
+    },
+    play: {
+      title: 'Jugar',
+      quiz: '¿Quién es ese Pokémon?',
+      compare: 'Comparar',
+      team: 'Equipo',
+      typeToSearch: 'Escribe para buscar...',
+    },
+    quiz: {
+      title: '¿Quién es ese Pokémon?',
+      subtitle: 'Adivina la silueta. Cuatro opciones, una es correcta.',
+      question: '¿Quién es?',
+      correct: '¡Correcto!',
+      wrong: 'Casi. Era',
+      score: 'Puntos',
+      streak: 'Racha',
+      best: 'Mejor racha',
+      next: 'Siguiente',
+      reveal: 'Revelar',
+      gen: 'Generación',
+      allGens: 'Todas las generaciones',
+    },
+    compare: {
+      title: 'Comparar',
+      subtitle: 'Elige dos Pokémon y compara sus estadísticas base.',
+      first: 'Primer Pokémon',
+      second: 'Segundo Pokémon',
+      pick: 'Elige un Pokémon',
+      swap: 'Intercambiar',
+      total: 'Total',
+      matchup: 'Enfrentamiento de tipos',
+      dealsTo: 'hace {multiplier}× a',
+      neutral: 'Daño neutral en ambos sentidos',
+      openDetail: 'Ver detalles',
+    },
+    team: {
+      title: 'Equipo',
+      subtitle:
+        'Monta un equipo de seis y descubre contra qué tipos de ataque sufre.',
+      empty: 'Hueco libre',
+      addMember: 'Añadir un Pokémon',
+      remove: 'Quitar',
+      clear: 'Vaciar equipo',
+      full: 'Tu equipo está completo',
+      coverage: 'Cobertura defensiva',
+      coverageHint:
+        'Para cada tipo de ataque: cuántos miembros reciben daño súper eficaz, reducido o nulo.',
+      weak: 'débil',
+      resist: 'resiste',
+      immune: 'inmune',
+      noWeakness: 'Nadie en el equipo es débil a este tipo.',
+      uncovered: 'Nadie en el equipo resiste este tipo.',
+      add: 'Añadir al equipo',
+      inTeam: 'En tu equipo',
     },
   },
 }

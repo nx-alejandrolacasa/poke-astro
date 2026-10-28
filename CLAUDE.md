@@ -21,9 +21,11 @@ npm run check:types  # astro sync && tsc --noEmit --runExternalCode
 ## Architecture
 
 - Routes live under `src/pages/[locale]/` (`en`, `es`; default `es`). Unprefixed pages redirect.
-- Listers (`pokedex`, `type/[type]`, `generation/[id]`) are prerendered. Detail pages are SSR (ISR on Vercel).
-- Infinite scroll: `VirtualPokemonGrid` places results at index `(page-1)*pageSize+i`, so `/api/*` pages must be full. Fetch Pokémon by species ID, because species names can 404 at `/pokemon/{name}`.
-- Caching: `src/middleware.ts` is the only place that sets `Cache-Control`. HTML is `no-cache` on purpose, because Cloudflare doesn't purge on deploy. Client pages are cached in IndexedDB (`pokemonPagesCache.ts`).
+- Data: `getAllPokemon()` in `src/utils/pokemon.ts` loads the whole Pokédex (1302 entries) with one PokéAPI GraphQL query, memoised per process. It feeds every prerendered lister and the static `/api/pokemon/index.json`, which the client uses for search, quiz, compare and team. Detail pages still use the REST API.
+- Listers (`pokedex`, `type/[type]`, `generation/[id]`) are prerendered with the full filtered list of `PokemonSummary` as island props; there is no paging and no client fetch. Play pages (`play`, `quiz`, `compare`, `team`) are prerendered shells with `client:only` islands.
+- Detail pages are `.astro` markup rendered on the server (ISR on Vercel). Only the hero (shiny toggle, zoom), cry buttons, description carousel and recents are islands. Type effectiveness comes from the static chart in `typeEffectiveness.ts`, not from the API.
+- Accent colours: `src/data/accentColors.json` holds one dominant colour per Pokémon, extracted from the official artwork. Regenerate with `NODE_USE_ENV_PROXY=1 node scripts/extract-accent-colors.mjs` when new Pokémon appear (it only fetches missing IDs).
+- Caching: `src/middleware.ts` is the only place that sets `Cache-Control`. HTML is `no-cache` on Cloudflare only, because it doesn't purge on deploy; Vercel keeps its ISR headers. The service worker caches only `index.json` and static assets.
 - Adapter: Node in dev; Cloudflare when `CF_PAGES`, `WORKERS_CI_BUILD_UUID` or `DEPLOY_TARGET=cloudflare` is set; Vercel otherwise.
 
 ## Gotchas
@@ -33,3 +35,5 @@ npm run check:types  # astro sync && tsc --noEmit --runExternalCode
 - The `@vercel/analytics/astro` entry in `tsconfig.json` `paths` works around a TS 7 error in that package. Remove it once upstream fixes it.
 - Keep the `resolve-vite-env` plugin in `astro.config.mjs`: Vite's client still imports `@vite/env`.
 - `experimental.clientPrerender` stays off, because ClientRouter can't use Speculation Rules prerenders. Detail links use `data-astro-prefetch="tap"`.
+- View transitions run for real except on iOS, where `Layout.astro` replaces `startViewTransition` with a pass-through (Safari snapshot bugs). Tile and hero artwork share `view-transition-name: pokemon-{id}` so they morph between pages.
+- `getStaticPaths` and `index.json` need `beta.pokeapi.co` at build time. If the GraphQL endpoint is down the build fails; there is no REST fallback.

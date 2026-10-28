@@ -65,6 +65,21 @@ const currentPath = Astro.url.pathname
         </svg>
         <span>{t.header.types}</span>
       </a>
+      <a
+        href={`/${locale}/play`}
+        class:list={[
+          'flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-semibold text-emerald-600 transition-all dark:text-emerald-400',
+          ['play', 'quiz', 'compare', 'team'].some((p) => currentPath.startsWith(`/${locale}/${p}`))
+            ? 'bg-emerald-500/15 dark:bg-emerald-500/20'
+            : 'hover:bg-emerald-500/8 dark:hover:bg-emerald-500/10'
+        ]}
+      >
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="6" width="20" height="12" rx="4" />
+          <path d="M6 12h4M8 10v4M15 11h.01M18 13h.01" />
+        </svg>
+        <span>{t.header.play}</span>
+      </a>
     </div>
 
     <!-- Right group: settings + search, mirrors the mobile nav order.

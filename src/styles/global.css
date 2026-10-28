@@ -1,6 +1,6 @@
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/jetbrains-mono";
-@import "@fontsource/dela-gothic-one";
+@import "@fontsource/dela-gothic-one/latin.css";
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -196,6 +196,23 @@ html {
   /* Bento cell with inherited type color border */
   .bento-cell {
     border: 2px solid var(--type-color, #e5e7eb);
+  }
+
+  /* Stat bars grow in on first paint, staggered per row via inline delay. */
+  .stat-bar {
+    animation: stat-bar-grow 0.6s ease-out backwards;
+  }
+  @keyframes stat-bar-grow {
+    from { width: 0; }
+  }
+
+  /* Pokémon silhouette for the quiz. Reveal animates the filter away. */
+  .silhouette {
+    filter: brightness(0) drop-shadow(0 0 2px rgba(0, 0, 0, 0.35));
+    transition: filter 600ms ease-out;
+  }
+  .silhouette-revealed {
+    filter: brightness(1) drop-shadow(0 0 0 transparent);
   }
 
   /* Simple loader spinner */

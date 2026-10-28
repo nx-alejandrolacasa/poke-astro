@@ -1,39 +1,484 @@
 ---
-import {
-  fetchAbilityDetails,
-  fetchPokemonByName,
-  getPokemonName,
-  getTranslatedName,
-} from '@utils/pokemon'
-import { PokemonDetailContent } from '@/components/PokemonDetailContent'
+import { BackButton } from '@/components/BackButton'
+import { Carousel } from '@/components/Carousel'
+import { CryButtons } from '@/components/CryButtons'
+import EvolutionTree from '@/components/EvolutionTree.astro'
+import { PokemonHero } from '@/components/PokemonHero'
+import { RecentlyVisited } from '@/components/RecentlyVisited'
+import { TypeBadge } from '@/components/TypeBadge'
 import Layout from '@/layouts/Layout.astro'
 import { getI18n } from '@/utils/i18n'
+import {
+  fetchAbilityDetails,
+  fetchEvolutionChain,
+  fetchPokemonByName,
+  fetchPokemonSpecies,
+  getAccentColor,
+  getPokemonImage,
+  getPokemonName,
+  getTranslatedName,
+  getTypeColor,
+  optimizedImageUrl,
+  STAT_NAMES,
+} from '@/utils/pokemon'
+import { interpolate, type Translations } from '@/utils/translations'
+import { summarizeDefense } from '@/utils/typeEffectiveness'
 
 const { locale: localeParam, name = '' } = Astro.params
-const { locale } = getI18n(localeParam)
+const { locale, t } = getI18n(localeParam)
 
-const pokemon = await fetchPokemonByName(name)
+const pokemon = await fetchPokemonByName(name).catch(() => null)
+if (!pokemon) {
+  Astro.response.status = 404
+}
 
-// Pre-translate ability names on the server so the first paint on a
-// Spanish page doesn't show English fallbacks (the React component used
-// to fetch these client-side, causing a visible en → es flash).
-const initialAbilities = pokemon
-  ? await Promise.all(
-      pokemon.abilities.map(async ({ ability, is_hidden }) => {
-        const fallback = ability.name.replaceAll('-', ' ')
-        const details = await fetchAbilityDetails(ability.name)
-        return {
-          name: ability.name,
-          translatedName: details
-            ? getTranslatedName(details.names, locale, fallback)
-            : fallback,
-          isHidden: is_hidden,
-        }
-      })
+const [species, abilities] = pokemon
+  ? await Promise.all([
+      fetchPokemonSpecies(pokemon.species.name),
+      Promise.all(
+        pokemon.abilities.map(async ({ ability, is_hidden }) => {
+          const fallback = ability.name.replaceAll('-', ' ')
+          const details = await fetchAbilityDetails(ability.name)
+          return {
+            name: ability.name,
+            label: details
+              ? getTranslatedName(details.names, locale, fallback)
+              : fallback,
+            isHidden: is_hidden,
+          }
+        })
+      ),
+    ])
+  : [null, []]
+const evolutionChain = species
+  ? await fetchEvolutionChain(species.evolution_chain.url)
+  : null
+
+const displayName = species
+  ? getTranslatedName(species.names, locale, getPokemonName(name))
+  : getPokemonName(name)
+const pokemonName =
+  pokemon?.name === species?.name ? displayName : getPokemonName(name)
+const genus =
+  species?.genera.find((g) => g.language.name === locale)?.genus ??
+  species?.genera.find((g) => g.language.name === 'en')?.genus ??
+  null
+
+const cleanFlavor = (text: string) =>
+  text
+    .replace(/[\f\n]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+const flavorEntries = species?.flavor_text_entries ?? []
+const localizedEntries = flavorEntries.some((e) => e.language.name === locale)
+  ? flavorEntries.filter((e) => e.language.name === locale)
+  : flavorEntries.filter((e) => e.language.name === 'en')
+const descriptions = [
+  ...new Set(
+    localizedEntries.map((e) => cleanFlavor(e.flavor_text)).filter(Boolean)
+  ),
+]
+
+const typeColor = pokemon ? getTypeColor(pokemon) : '#a8a878'
+const accent = pokemon ? (getAccentColor(pokemon.id) ?? typeColor) : typeColor
+const types = pokemon?.types.map(({ type }) => type.name) ?? []
+const typeLabel = (type: string) =>
+  (t.types as Record<string, string>)[type] ?? getPokemonName(type)
+const defense = summarizeDefense(types)
+
+const STAT_KEYS: Record<string, keyof Translations['stats']> = {
+  hp: 'hp',
+  attack: 'attack',
+  defense: 'defense',
+  'special-attack': 'specialAttack',
+  'special-defense': 'specialDefense',
+  speed: 'speed',
+}
+// Highest base stat ever recorded per category, so bar fill reflects how
+// strong the Pokémon is for that stat.
+const MAX_STAT: Record<string, number> = {
+  hp: 255,
+  attack: 190,
+  defense: 230,
+  'special-attack': 194,
+  'special-defense': 230,
+  speed: 200,
+}
+const stats = STAT_NAMES.map((statName) => ({
+  name: statName,
+  label: t.stats[STAT_KEYS[statName]],
+  value: pokemon?.stats.find((s) => s.stat.name === statName)?.base_stat ?? 0,
+}))
+const statTotal = stats.reduce((sum, s) => sum + s.value, 0)
+const statTone = (value: number) =>
+  value >= 100 ? 'bg-success' : value >= 50 ? 'bg-warning' : 'bg-danger'
+
+const genderRate = species?.gender_rate ?? -1
+const femalePercent = genderRate >= 0 ? (genderRate / 8) * 100 : null
+const captureRate = species?.capture_rate ?? 0
+const captureTone =
+  captureRate > 150
+    ? 'bg-success'
+    : captureRate > 60
+      ? 'bg-warning'
+      : 'bg-danger'
+
+const defaultUrl = pokemon
+  ? optimizedImageUrl(getPokemonImage(pokemon), 256)
+  : ''
+const shinyArtwork =
+  pokemon?.sprites.other['official-artwork'].front_shiny ?? null
+const shinyUrl = shinyArtwork ? optimizedImageUrl(shinyArtwork, 256) : null
+const cries = pokemon
+  ? [
+      pokemon.cries?.latest && {
+        key: 'latest',
+        src: pokemon.cries.latest,
+        label: t.pokemon.latestCry,
+      },
+      pokemon.cries?.legacy && {
+        key: 'legacy',
+        src: pokemon.cries.legacy,
+        label: t.pokemon.legacyCry,
+      },
+    ].filter((c): c is { key: string; src: string; label: string } =>
+      Boolean(c)
     )
   : []
+const formatDecimal = (value: number) =>
+  (value / 10).toLocaleString(locale, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  })
+
+const shortStats = stats.map((s) => `${s.label} ${s.value}`).join(' · ')
+const ogDescription = pokemon
+  ? [genus, types.map(typeLabel).join('/'), shortStats, descriptions[0]]
+      .filter(Boolean)
+      .join(' · ')
+  : undefined
+const defenseSections = [
+  {
+    title: t.pokemon.weakTo,
+    headingTone: 'text-orange-500 dark:text-orange-400',
+    chipTone:
+      'bg-orange-50 text-orange-700 dark:bg-orange-500/10 dark:text-orange-400',
+    entries: defense.weaknesses.map(
+      (w) => `${typeLabel(w.type)} (${w.multiplier}x)`
+    ),
+  },
+  {
+    title: t.pokemon.resistantTo,
+    headingTone: 'text-emerald-500 dark:text-emerald-400',
+    chipTone:
+      'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400',
+    entries: defense.resistances.map(
+      (r) => `${typeLabel(r.type)} (${r.multiplier}x)`
+    ),
+  },
+  {
+    title: t.pokemon.immuneTo,
+    headingTone: 'text-violet-500 dark:text-violet-400',
+    chipTone:
+      'bg-violet-50 text-violet-700 dark:bg-violet-500/10 dark:text-violet-400',
+    entries: defense.immunities.map((i) => `${typeLabel(i)} (0x)`),
+  },
+]
+const headingClass =
+  'mb-3 font-bold font-sans text-primary text-xs uppercase tracking-wider dark:text-dark-primary'
+const cellClass = 'bento-cell rounded-2xl bg-white p-4 dark:bg-dark-surface'
+const rowClass = 'flex items-center justify-between gap-2'
+const labelClass = 'text-ink-muted text-xs dark:text-dark-ink-muted'
+const valueClass = 'font-mono text-ink text-xs dark:text-dark-ink'
 ---
 
-<Layout title={`Pokémon Astro - ${getPokemonName(name)}`} locale={locale}>
-  {pokemon && <PokemonDetailContent client:load pokemon={pokemon} pokemonName={name} locale={locale} initialAbilities={initialAbilities} />}
+<Layout
+  title={pokemon ? `#${pokemon.id} ${pokemonName} - Pokémon Astro` : `Pokémon Astro - ${getPokemonName(name)}`}
+  locale={locale}
+  description={ogDescription}
+  image={pokemon ? getPokemonImage(pokemon) : undefined}
+>
+  {!pokemon && (
+    <div class="py-24 text-center">
+      <h1 class="font-bold text-2xl text-ink dark:text-dark-ink">404</h1>
+      <p class="mt-2 text-ink-muted dark:text-dark-ink-muted">{t.errors.loadFailed}</p>
+      <BackButton client:load locale={locale} />
+    </div>
+  )}
+  {pokemon && (
+    <div class="space-y-4" style={`--type-color: ${accent}`}>
+      <div class="flex items-center gap-2">
+        <BackButton client:load locale={locale} />
+        <RecentlyVisited
+          client:idle
+          currentName={name}
+          currentId={pokemon.id}
+          currentTypeColor={accent}
+          currentTypes={types}
+          locale={locale}
+        />
+      </div>
+
+      <div class="grid grid-cols-1 gap-3 md:grid-cols-4 md:gap-4">
+        <div
+          class="bento-cell relative flex flex-col items-center justify-center gap-3 rounded-2xl bg-white p-6 md:col-span-2 md:row-span-2 dark:bg-dark-surface"
+          style={`background-image: radial-gradient(circle at 50% 40%, ${accent}33, transparent 65%)`}
+        >
+          <PokemonHero
+            client:load
+            id={pokemon.id}
+            displayName={pokemonName}
+            defaultUrl={defaultUrl}
+            shinyUrl={shinyUrl}
+            accent={accent}
+            zoomLabel={t.pokemon.description}
+            locale={locale}
+          />
+          {cries.length > 0 && (
+            <CryButtons client:visible cries={cries} heading={t.pokemon.cry} playLabel={t.pokemon.playCry} />
+          )}
+        </div>
+
+        <div class="bento-cell flex flex-col justify-center rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="font-black font-mono text-ink-muted text-lg dark:text-dark-ink-muted">
+              #{pokemon.id.toString().padStart(3, '0')}
+            </span>
+            {types.map((type) => (
+              <TypeBadge type={type} label={typeLabel(type)} size="sm" href={`/${locale}/type/${type}`} />
+            ))}
+            {species?.is_baby && (
+              <span class="inline-flex items-center rounded-full bg-pink-100 px-3 py-1 font-semibold text-pink-700 text-xs dark:bg-pink-500/10 dark:text-pink-400">{t.pokemon.baby}</span>
+            )}
+            {species?.is_legendary && (
+              <span class="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 font-semibold text-amber-700 text-xs dark:bg-amber-500/10 dark:text-amber-400">{t.pokemon.legendary}</span>
+            )}
+            {species?.is_mythical && (
+              <span class="inline-flex items-center rounded-full bg-violet-100 px-3 py-1 font-semibold text-violet-700 text-xs dark:bg-violet-500/10 dark:text-violet-400">{t.pokemon.mythical}</span>
+            )}
+          </div>
+          <h1 class="font-black text-3xl text-ink tracking-tight md:text-4xl dark:text-dark-ink">{pokemonName}</h1>
+          {genus && <p class="mt-0.5 text-ink-muted text-sm italic dark:text-dark-ink-muted">{genus}</p>}
+          <div class="mt-3 flex flex-wrap gap-2">
+            <a
+              href={`/${locale}/compare?a=${pokemon.name}`}
+              class="inline-flex items-center gap-1.5 rounded-full bg-surface-sunken px-3 py-1.5 font-medium text-ink text-xs transition-colors hover:bg-primary/10 dark:bg-dark-raised dark:text-dark-ink dark:hover:bg-dark-primary/10"
+            >
+              ⚖ {t.pokemon.compare}
+            </a>
+            <a
+              href={`/${locale}/team?add=${pokemon.name}`}
+              class="inline-flex items-center gap-1.5 rounded-full bg-surface-sunken px-3 py-1.5 font-medium text-ink text-xs transition-colors hover:bg-primary/10 dark:bg-dark-raised dark:text-dark-ink dark:hover:bg-dark-primary/10"
+            >
+              + {t.team.add}
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 md:col-span-2 md:gap-4">
+          <div class={cellClass}>
+            <p class={headingClass}>{t.pokemon.height}</p>
+            <p class="font-bold font-mono text-2xl text-ink dark:text-dark-ink">
+              {formatDecimal(pokemon.height)} <span class="text-base text-ink-muted dark:text-dark-ink-muted">m</span>
+            </p>
+          </div>
+          <div class={cellClass}>
+            <p class={headingClass}>{t.pokemon.weight}</p>
+            <p class="font-bold font-mono text-2xl text-ink dark:text-dark-ink">
+              {formatDecimal(pokemon.weight)} <span class="text-base text-ink-muted dark:text-dark-ink-muted">kg</span>
+            </p>
+          </div>
+        </div>
+
+        {descriptions.length > 0 && (
+          <div class="bento-cell rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
+            <Carousel
+              client:idle
+              items={descriptions}
+              label={t.pokemon.description}
+              autoPlayMs={8000}
+              textClassName="text-ink text-sm leading-relaxed dark:text-dark-ink"
+            />
+          </div>
+        )}
+
+        <div class="bento-cell rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
+          <p class={headingClass}>{t.pokemon.abilities}</p>
+          <div class="flex flex-wrap gap-2">
+            {abilities.map(({ name: abilityName, label, isHidden }) => (
+              <span
+                class:list={[
+                  'rounded-full px-3 py-1 font-medium text-xs capitalize',
+                  isHidden
+                    ? 'bg-amber-100 text-amber-800 dark:bg-amber-500/10 dark:text-amber-400'
+                    : 'bg-surface-sunken text-ink dark:bg-dark-raised dark:text-dark-ink',
+                ]}
+                title={isHidden ? t.pokemon.hidden : abilityName}
+              >
+                {label}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-4">
+        <div class={cellClass}>
+          <h2 class={headingClass}>{t.pokemon.baseStats}</h2>
+          <div class="space-y-3">
+            {stats.map((stat, index) => (
+              <div class="grid grid-cols-[2fr_36px_3fr] items-center gap-2 text-ink dark:text-dark-ink">
+                <div class="truncate text-right text-ink-muted text-xs dark:text-dark-ink-muted">{stat.label}</div>
+                <div class="text-right font-bold font-mono text-xs">{stat.value}</div>
+                <div class="relative h-2 w-full overflow-hidden rounded-full bg-surface-sunken dark:bg-dark-raised">
+                  <div
+                    class:list={['absolute top-0 left-0 h-2 rounded-full stat-bar', statTone(stat.value)]}
+                    style={`width: ${Math.min(100, (stat.value / (MAX_STAT[stat.name] ?? 255)) * 100)}%; animation-delay: ${index * 80}ms`}
+                  />
+                </div>
+              </div>
+            ))}
+            <div class="mt-3 grid grid-cols-[2fr_36px_3fr] gap-2 border-surface-sunken border-t pt-3 dark:border-dark-raised">
+              <div class="text-right font-bold text-ink text-xs uppercase dark:text-dark-ink">{t.pokemon.total}</div>
+              <div class="text-right font-bold font-mono text-ink text-xs dark:text-dark-ink">{statTotal}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class={cellClass}>
+          <h2 class={headingClass}>{t.pokemon.typeEffectiveness}</h2>
+          <div class="space-y-3">
+            {defenseSections.map(({ title, headingTone, chipTone, entries }) => (
+              <div>
+                <h3 class:list={['mb-1.5 font-semibold text-xs uppercase tracking-wider', headingTone]}>
+                  {title} ({entries.length})
+                </h3>
+                {entries.length > 0 ? (
+                  <div class="flex flex-wrap gap-1">
+                    {entries.map((entry) => (
+                      <span class:list={['rounded-lg px-2 py-0.5 text-xs', chipTone]}>{entry}</span>
+                    ))}
+                  </div>
+                ) : (
+                  <p class="text-ink-faint text-xs dark:text-dark-ink-faint">{t.pokemon.none}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {evolutionChain && evolutionChain.chain.evolves_to.length > 0 && (
+          <div class="bento-cell flex flex-col rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
+            <h2 class={headingClass}>{t.pokemon.evolutionChain}</h2>
+            <div class="flex flex-1 items-center justify-center">
+              <EvolutionTree chain={evolutionChain.chain} currentSpecies={pokemon.species.name} locale={locale} />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {species && (
+        <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
+          <div class={cellClass}>
+            <p class={headingClass}>{t.pokemon.breeding}</p>
+            <div class="space-y-3">
+              <div class="flex items-start justify-between gap-2">
+                <span class={labelClass}>{t.pokemon.eggGroups}</span>
+                <div class="flex flex-wrap justify-end gap-1">
+                  {species.egg_groups.map((group) => (
+                    <span class="rounded-full bg-surface-sunken px-2 py-0.5 text-ink text-xs dark:bg-dark-raised dark:text-dark-ink">
+                      {t.eggGroups[group.name] ?? getPokemonName(group.name)}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <span class={labelClass}>{t.pokemon.genderRatio}</span>
+                {femalePercent !== null ? (
+                  <div class="flex items-center gap-2">
+                    <span class="font-medium text-blue-500 text-xs">♂ {(100 - femalePercent).toFixed(1)}%</span>
+                    <div class="relative h-2 flex-1 overflow-hidden rounded-full bg-surface-sunken dark:bg-dark-raised">
+                      <div class="absolute top-0 left-0 h-full rounded-full bg-blue-400" style={`width: ${100 - femalePercent}%`} />
+                      <div class="absolute top-0 right-0 h-full rounded-full bg-pink-400" style={`width: ${femalePercent}%`} />
+                    </div>
+                    <span class="font-medium text-pink-500 text-xs">♀ {femalePercent.toFixed(1)}%</span>
+                  </div>
+                ) : (
+                  <span class="text-ink-faint text-xs italic dark:text-dark-ink-faint">{t.pokemon.genderless}</span>
+                )}
+              </div>
+              {species.hatch_counter !== null && (
+                <div class={rowClass}>
+                  <span class={labelClass}>{t.pokemon.hatchSteps}</span>
+                  <span class={valueClass}>{(species.hatch_counter * 256).toLocaleString(locale)}</span>
+                </div>
+              )}
+              {species.base_happiness !== null && (
+                <div class={rowClass}>
+                  <span class={labelClass}>{t.pokemon.baseHappiness}</span>
+                  <span class={valueClass}>{species.base_happiness}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div class={cellClass}>
+            <p class={headingClass}>{t.pokemon.training}</p>
+            <div class="space-y-3">
+              <div class={rowClass}>
+                <span class={labelClass}>{t.pokemon.captureRate}</span>
+                <div class="flex items-center gap-2">
+                  <div class="relative h-2 w-20 overflow-hidden rounded-full bg-surface-sunken dark:bg-dark-raised">
+                    <div class:list={['absolute top-0 left-0 h-full rounded-full', captureTone]} style={`width: ${Math.min(100, (captureRate / 255) * 100)}%`} />
+                  </div>
+                  <span class={valueClass}>{captureRate}</span>
+                </div>
+              </div>
+              {pokemon.base_experience !== null && (
+                <div class={rowClass}>
+                  <span class={labelClass}>{t.pokemon.baseExperience}</span>
+                  <span class={valueClass}>{pokemon.base_experience}</span>
+                </div>
+              )}
+              {species.growth_rate && (
+                <div class={rowClass}>
+                  <span class={labelClass}>{t.pokemon.growthRate}</span>
+                  <span class="text-ink text-xs dark:text-dark-ink">{t.growthRates[species.growth_rate.name] ?? getPokemonName(species.growth_rate.name)}</span>
+                </div>
+              )}
+              {species.habitat && (
+                <div class={rowClass}>
+                  <span class={labelClass}>{t.pokemon.habitat}</span>
+                  <span class="text-ink text-xs dark:text-dark-ink">{t.habitats[species.habitat.name] ?? getPokemonName(species.habitat.name)}</span>
+                </div>
+              )}
+              {species.shape && (
+                <div class={rowClass}>
+                  <span class={labelClass}>{t.pokemon.shape}</span>
+                  <span class="text-ink text-xs dark:text-dark-ink">{t.shapes[species.shape.name] ?? getPokemonName(species.shape.name)}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {pokemon.held_items.length > 0 && (
+            <div class="bento-cell rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
+              <p class={headingClass}>{t.pokemon.heldItems}</p>
+              <div class="space-y-2">
+                {pokemon.held_items.map(({ item, version_details }) => {
+                  const latest = version_details[version_details.length - 1]
+                  return (
+                    <div class={rowClass}>
+                      <span class="text-ink text-xs capitalize dark:text-dark-ink">{getPokemonName(item.name)}</span>
+                      {latest && <span class={labelClass}>{interpolate(t.pokemon.heldItemRarity, { rarity: latest.rarity })}</span>}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )}
 </Layout>

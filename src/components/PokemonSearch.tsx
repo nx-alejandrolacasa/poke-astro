@@ -2,7 +2,8 @@ import { navigate } from 'astro:transitions/client'
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type { Locale } from '@/utils/i18n'
-import { getPokemonName } from '@/utils/pokemon'
+import type { PokemonRecord } from '@/utils/pokemon'
+import { loadPokemonIndex, searchPokemon } from '@/utils/pokemonIndex'
 import { translations } from '@/utils/translations'
 
 type PokemonSearchProps = {
@@ -18,8 +19,8 @@ type DropdownPos = {
 export function PokemonSearch({ locale }: PokemonSearchProps) {
   const t = translations[locale]
   const [query, setQuery] = useState('')
-  const [suggestions, setSuggestions] = useState<string[]>([])
-  const [allPokemonNames, setAllPokemonNames] = useState<string[]>([])
+  const [suggestions, setSuggestions] = useState<PokemonRecord[]>([])
+  const [index, setIndex] = useState<PokemonRecord[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const [isLoading, setIsLoading] = useState(true)
@@ -50,18 +51,10 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
   }, [])
 
   useEffect(() => {
-    async function loadPokemonNames() {
-      try {
-        const response = await fetch('/api/pokemon/names')
-        const data = await response.json()
-        setAllPokemonNames(data.names)
-      } catch (error) {
-        console.error('Failed to load Pokemon names:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    loadPokemonNames()
+    loadPokemonIndex()
+      .then(setIndex)
+      .catch((error) => console.error('Failed to load Pokémon index:', error))
+      .finally(() => setIsLoading(false))
   }, [])
 
   useEffect(() => {
@@ -72,15 +65,11 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
       return
     }
 
-    const normalizedQuery = query.toLowerCase().replaceAll(' ', '-')
-    const filtered = allPokemonNames
-      .filter((name) => name.toLowerCase().includes(normalizedQuery))
-      .slice(0, 5)
-
+    const filtered = searchPokemon(index, query, locale, 5)
     setSuggestions(filtered)
     setIsOpen(filtered.length > 0)
     setSelectedIndex(-1)
-  }, [query, allPokemonNames])
+  }, [query, index, locale])
 
   // Position the portal dropdown beneath the input
   useEffect(() => {
@@ -138,9 +127,9 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
       case 'Enter':
         e.preventDefault()
         if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
-          navigateToPokemon(suggestions[selectedIndex])
+          navigateToPokemon(suggestions[selectedIndex].name)
         } else if (suggestions.length > 0) {
-          navigateToPokemon(suggestions[0])
+          navigateToPokemon(suggestions[0].name)
         }
         break
       case 'Escape':
@@ -209,22 +198,24 @@ export function PokemonSearch({ locale }: PokemonSearchProps) {
             className="z-50 overflow-hidden rounded-2xl border border-white/60 bg-white/70 shadow-lg shadow-black/[0.04] backdrop-blur-xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:shadow-black/20"
             role="listbox"
           >
-            {suggestions.map((name, index) => (
+            {suggestions.map((pokemon, i) => (
               <button
                 type="button"
-                key={name}
-                onClick={() => navigateToPokemon(name)}
-                onMouseEnter={() => setSelectedIndex(index)}
+                key={pokemon.id}
+                onClick={() => navigateToPokemon(pokemon.name)}
+                onMouseEnter={() => setSelectedIndex(i)}
                 className={`block w-full px-4 py-2.5 text-left text-sm transition-colors ${
-                  index === selectedIndex
+                  i === selectedIndex
                     ? 'bg-primary-50 text-primary-700 dark:bg-primary/10 dark:text-primary'
                     : 'text-ink hover:bg-surface-sunken dark:text-dark-ink dark:hover:bg-dark-raised'
                 }`}
                 role="option"
-                aria-selected={index === selectedIndex}
+                aria-selected={i === selectedIndex}
               >
-                <span className="font-medium">{getPokemonName(name)}</span>
-                <span className="ml-2 text-xs opacity-40">#{name}</span>
+                <span className="font-medium">{pokemon.names[locale]}</span>
+                <span className="ml-2 font-mono text-xs opacity-40">
+                  #{pokemon.id}
+                </span>
               </button>
             ))}
           </div>,

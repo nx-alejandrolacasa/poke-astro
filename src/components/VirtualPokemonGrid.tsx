@@ -1,33 +1,19 @@
 import { useWindowVirtualizer } from '@tanstack/react-virtual'
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { PokemonTile } from '@/components/PokemonTile'
-import { SkeletonCard } from '@/components/SkeletonCard'
 import type { Locale } from '@/utils/i18n'
-import type { Pokemon, PokemonList } from '@/utils/pokemon'
-import { getCachedPagesFrom, putCachedPage } from '@/utils/pokemonPagesCache'
+import type { PokemonSummary } from '@/utils/pokemon'
 import { getScrollSnapshot, saveScrollSnapshot } from '@/utils/scrollMemory'
 
 type VirtualPokemonGridProps = {
-  initialPokemon: Pokemon[]
-  totalCount: number
-  pageSize: number
-  fetchPage: (page: number) => Promise<PokemonList>
-  cacheNamespace: string
+  pokemon: PokemonSummary[]
   locale: Locale
 }
 
 const GAP_PX = 16
 
-// Mirror of Tailwind grid-cols-* breakpoints used previously on the static
-// grid. Keeping them in lock-step matters because real-PokemonTile vs
-// SkeletonCard heights compare cell-for-cell.
+// Mirror of the Tailwind grid-cols-* breakpoints ListerSkeleton uses, so the
+// skeleton and the live grid line up cell for cell.
 function getColumnCount(width: number): number {
   if (width >= 1280) return 6
   if (width >= 1024) return 5
@@ -41,45 +27,22 @@ function getColumnCount(width: number): number {
 const TILE_CONTENT_HEIGHT_PX = 98
 
 export function VirtualPokemonGrid({
-  initialPokemon,
-  totalCount,
-  pageSize,
-  fetchPage,
-  cacheNamespace,
+  pokemon,
   locale,
 }: VirtualPokemonGridProps) {
   const parentRef = useRef<HTMLDivElement>(null)
-  const [pokemonByIndex, setPokemonByIndex] = useState<Map<number, Pokemon>>(
-    () => {
-      const m = new Map<number, Pokemon>()
-      for (let i = 0; i < initialPokemon.length; i++) {
-        m.set(i, initialPokemon[i])
-      }
-      return m
-    }
-  )
-  const loadingPagesRef = useRef<Set<number>>(new Set())
-  // Pages that have been fetched successfully. A page may legitimately come
-  // back with fewer items than expected (e.g. an upstream 404 for one entry);
-  // without this, the missing indices would retrigger the same fetch forever.
-  const loadedPagesRef = useRef<Set<number>>(new Set([1]))
   const [containerWidth, setContainerWidth] = useState<number>(() =>
     typeof window === 'undefined' ? 0 : window.innerWidth
   )
   const [scrollMargin, setScrollMargin] = useState(0)
 
-  // Track viewport width via ResizeObserver on the parent so column count
-  // and cell height adapt to actual layout, not just window width.
   useLayoutEffect(() => {
     if (!parentRef.current) return
     const update = () => {
       const el = parentRef.current
       if (!el) return
       setContainerWidth(el.clientWidth)
-      // Distance from page top to the virtualized grid — useWindowVirtualizer
-      // needs this so its scroll math aligns with window.scrollY.
-      const rect = el.getBoundingClientRect()
-      setScrollMargin(rect.top + window.scrollY)
+      setScrollMargin(el.getBoundingClientRect().top + window.scrollY)
     }
     update()
     const ro = new ResizeObserver(update)
@@ -97,7 +60,7 @@ export function VirtualPokemonGrid({
       ? (containerWidth - (columnCount - 1) * GAP_PX) / columnCount
       : 200
   const rowHeight = cellWidth + TILE_CONTENT_HEIGHT_PX
-  const rowCount = Math.ceil(totalCount / columnCount)
+  const rowCount = Math.ceil(pokemon.length / columnCount)
 
   const rowVirtualizer = useWindowVirtualizer({
     count: rowCount,
@@ -106,9 +69,6 @@ export function VirtualPokemonGrid({
     scrollMargin,
   })
 
-  // Restore scroll synchronously, before paint. The virtualizer reports its
-  // total size based on rowCount × estimated row height, so the document is
-  // the right height immediately and scrollTo lands precisely.
   const initialSnapshot = useMemo(
     () =>
       typeof window === 'undefined'
@@ -118,28 +78,17 @@ export function VirtualPokemonGrid({
   )
   const restoredRef = useRef(false)
   useLayoutEffect(() => {
-    if (restoredRef.current) return
-    if (initialSnapshot == null) return
-    // Don't try to restore until we've measured the parent — otherwise
-    // rowHeight is the fallback estimate and scrollTo can land off.
-    if (containerWidth === 0) return
+    if (restoredRef.current || initialSnapshot == null || containerWidth === 0)
+      return
     window.scrollTo(0, initialSnapshot.scrollY)
     restoredRef.current = true
   }, [initialSnapshot, containerWidth])
 
-  // Persist scroll on leave. itemCount is no longer needed for height
-  // calculation (the virtualizer derives that from totalCount), but we
-  // still write it so the snapshot type stays consistent with non-virtual
-  // callers — and it costs nothing.
-  const sizeRef = useRef(pokemonByIndex.size)
-  useEffect(() => {
-    sizeRef.current = pokemonByIndex.size
-  }, [pokemonByIndex])
   useEffect(() => {
     const prev = history.scrollRestoration
     history.scrollRestoration = 'manual'
     const save = () =>
-      saveScrollSnapshot(window.location.pathname, sizeRef.current)
+      saveScrollSnapshot(window.location.pathname, pokemon.length)
     window.addEventListener('pagehide', save)
     document.addEventListener('astro:before-swap', save)
     return () => {
@@ -147,88 +96,7 @@ export function VirtualPokemonGrid({
       document.removeEventListener('astro:before-swap', save)
       history.scrollRestoration = prev
     }
-  }, [])
-
-  // Hydrate cached pages from IndexedDB on mount. Page 1 is already in
-  // pokemonByIndex from initialPokemon; this fills 2..N in one shot.
-  useEffect(() => {
-    let cancelled = false
-    putCachedPage(cacheNamespace, 1, pageSize, {
-      count: totalCount,
-      results: initialPokemon,
-    })
-    getCachedPagesFrom(cacheNamespace, 2, pageSize).then((cached) => {
-      if (cancelled) return
-      // Only trust complete pages: an incomplete page cached by an older
-      // build would otherwise leave permanent skeleton "holes" in the grid.
-      const complete: typeof cached = []
-      for (const entry of cached) {
-        const startIdx = (entry.page - 1) * pageSize
-        const expected = Math.min(pageSize, totalCount - startIdx)
-        if (entry.results.length < expected) break
-        complete.push(entry)
-      }
-      if (complete.length === 0) return
-      setPokemonByIndex((prev) => {
-        const next = new Map(prev)
-        for (const entry of complete) {
-          const startIdx = (entry.page - 1) * pageSize
-          for (let i = 0; i < entry.results.length; i++) {
-            next.set(startIdx + i, entry.results[i])
-          }
-        }
-        return next
-      })
-      for (const entry of complete) loadedPagesRef.current.add(entry.page)
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [cacheNamespace, pageSize, totalCount, initialPokemon])
-
-  const loadPage = useCallback(
-    async (page: number) => {
-      if (loadingPagesRef.current.has(page) || loadedPagesRef.current.has(page))
-        return
-      loadingPagesRef.current.add(page)
-      try {
-        const data = await fetchPage(page)
-        setPokemonByIndex((prev) => {
-          const next = new Map(prev)
-          const startIdx = (page - 1) * pageSize
-          for (let i = 0; i < data.results.length; i++) {
-            next.set(startIdx + i, data.results[i])
-          }
-          return next
-        })
-        loadedPagesRef.current.add(page)
-        putCachedPage(cacheNamespace, page, pageSize, data)
-      } catch (e) {
-        console.error('Failed to fetch page', page, e)
-      } finally {
-        loadingPagesRef.current.delete(page)
-      }
-    },
-    [fetchPage, pageSize, cacheNamespace]
-  )
-
-  // Whenever the visible row window changes, fetch any pages that contain
-  // missing items. Overscan in useWindowVirtualizer pre-fetches a few rows
-  // beyond viewport so loading feels instant during scrolling.
-  const virtualRows = rowVirtualizer.getVirtualItems()
-  useEffect(() => {
-    const pagesToLoad = new Set<number>()
-    for (const row of virtualRows) {
-      const startIdx = row.index * columnCount
-      const endIdx = Math.min(startIdx + columnCount, totalCount)
-      for (let i = startIdx; i < endIdx; i++) {
-        if (!pokemonByIndex.has(i)) {
-          pagesToLoad.add(Math.floor(i / pageSize) + 1)
-        }
-      }
-    }
-    for (const page of pagesToLoad) loadPage(page)
-  }, [virtualRows, columnCount, totalCount, pokemonByIndex, pageSize, loadPage])
+  }, [pokemon.length])
 
   return (
     <div ref={parentRef} className="relative w-full">
@@ -239,26 +107,9 @@ export function VirtualPokemonGrid({
           width: '100%',
         }}
       >
-        {virtualRows.map((virtualRow) => {
-          const startIdx = virtualRow.index * columnCount
-          const cells: React.ReactNode[] = []
-          for (let i = 0; i < columnCount; i++) {
-            const idx = startIdx + i
-            if (idx >= totalCount) {
-              cells.push(<div key={`empty-${idx}`} />)
-              continue
-            }
-            const poke = pokemonByIndex.get(idx)
-            cells.push(
-              <div key={idx}>
-                {poke ? (
-                  <PokemonTile pokemon={poke} locale={locale} />
-                ) : (
-                  <SkeletonCard />
-                )}
-              </div>
-            )
-          }
+        {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+          const start = virtualRow.index * columnCount
+          const row = pokemon.slice(start, start + columnCount)
           return (
             <div
               key={virtualRow.key}
@@ -275,7 +126,9 @@ export function VirtualPokemonGrid({
                 paddingBottom: `${GAP_PX}px`,
               }}
             >
-              {cells}
+              {row.map((p) => (
+                <PokemonTile key={p.id} pokemon={p} locale={locale} />
+              ))}
             </div>
           )
         })}

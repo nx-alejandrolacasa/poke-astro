@@ -2,10 +2,10 @@
 export const prerender = true
 
 import ListerSkeleton from '@/components/ListerSkeleton.astro'
-import { PokemonInfiniteScroll } from '@/components/PokemonInfiniteScroll'
+import { PokemonLister } from '@/components/PokemonLister'
 import Layout from '@/layouts/Layout.astro'
 import { getI18n, getLocalePaths } from '@/utils/i18n'
-import { fetchPokemonPage } from '@/utils/pokemon'
+import { getAllPokemon, toSummary } from '@/utils/pokemon'
 
 export function getStaticPaths() {
   return getLocalePaths()
@@ -14,11 +14,11 @@ export function getStaticPaths() {
 const { locale: localeParam } = Astro.params
 const { locale, t } = getI18n(localeParam)
 
-const initialData = await fetchPokemonPage(1)
+const pokemon = (await getAllPokemon()).map(toSummary)
 ---
 
 <Layout title={t.header.pokedex} locale={locale}>
-  <PokemonInfiniteScroll client:only="react" initialData={initialData} locale={locale}>
+  <PokemonLister client:only="react" pokemon={pokemon} locale={locale}>
     <ListerSkeleton slot="fallback" locale={locale} />
-  </PokemonInfiniteScroll>
+  </PokemonLister>
 </Layout>

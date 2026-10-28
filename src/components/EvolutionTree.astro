@@ -1,0 +1,78 @@
+---
+import {
+  collectEvolutionStages,
+  getEvolutionConditionLabels,
+} from '@/utils/evolution'
+import type { Locale } from '@/utils/i18n'
+import type { EvolutionNode } from '@/utils/pokemon'
+import {
+  getPokemonName,
+  officialArtworkUrl,
+  optimizedImageUrl,
+} from '@/utils/pokemon'
+import { translations } from '@/utils/translations'
+
+interface Props {
+  chain: EvolutionNode
+  currentSpecies: string
+  locale: Locale
+}
+
+const { chain, currentSpecies, locale } = Astro.props
+const t = translations[locale]
+const stages = collectEvolutionStages(chain)
+const hasBranching = stages.some((stage) => stage.length > 1)
+const rowOnDesktop = hasBranching ? '' : 'md:flex-row md:gap-1'
+---
+
+<div class:list={['flex flex-col items-center justify-center gap-2', rowOnDesktop]}>
+  {stages.map((stage, stageIndex) => (
+    <div class:list={['flex flex-col items-center gap-2', rowOnDesktop]}>
+      {stageIndex > 0 && (
+        <div class="font-bold text-ink-faint text-xl dark:text-dark-ink-faint" aria-hidden="true">
+          {hasBranching ? '↓' : <><span class="md:hidden">↓</span><span class="hidden md:inline">→</span></>}
+        </div>
+      )}
+      <div
+        class:list={[
+          'flex flex-wrap items-center justify-center gap-2',
+          hasBranching && stage.length > 1 && 'rounded-xl border-2 border-dashed border-ink-faint/30 p-2 dark:border-dark-ink-faint/30',
+        ]}
+      >
+        {stage.map((entry) => {
+          const labels = getEvolutionConditionLabels(entry.evolutionDetails, t)
+          const isCurrent = entry.name === currentSpecies
+          return (
+            <a
+              href={`/${locale}/pokemon/${entry.name}`}
+              data-astro-prefetch="tap"
+              class:list={[
+                'rounded-xl p-3 text-center transition-all hover:scale-105',
+                isCurrent
+                  ? 'bg-primary-50 ring-2 ring-primary dark:bg-primary/10'
+                  : 'bg-surface-sunken hover:ring-2 hover:ring-ink-faint/30 dark:bg-dark-raised dark:hover:ring-dark-ink-faint/30',
+              ]}
+            >
+              <img
+                src={optimizedImageUrl(officialArtworkUrl(entry.speciesId), 96)}
+                alt={entry.name}
+                class="mx-auto h-20 w-20 object-contain md:h-24 md:w-24"
+                loading="lazy"
+              />
+              <p class="font-semibold text-ink text-sm capitalize dark:text-dark-ink">{getPokemonName(entry.name)}</p>
+              {labels.length > 0 && (
+                <div class="mt-1 flex flex-wrap justify-center gap-0.5">
+                  {labels.map((label) => (
+                    <span class="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] text-primary leading-tight dark:bg-dark-primary/10 dark:text-dark-primary">
+                      {label}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </a>
+          )
+        })}
+      </div>
+    </div>
+  ))}
+</div>

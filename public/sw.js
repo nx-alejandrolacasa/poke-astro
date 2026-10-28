@@ -1,5 +1,5 @@
 const STATIC_CACHE = 'pokedex-static-v5'
-const API_CACHE = 'pokedex-api-v1'
+const API_CACHE = 'pokedex-api-v2'
 
 const STATIC_ASSETS = [
   '/favicon.ico',
@@ -16,15 +16,9 @@ const STATIC_ASSETS = [
 // API endpoints whose responses are safe to cache offline. Pokémon data is
 // effectively immutable; stale-while-revalidate gives instant cache hits with
 // silent background refresh.
-const CACHEABLE_API_PATTERNS = [
-  /^\/api\/pokemon\/page\/\d+$/,
-  /^\/api\/pokemon\/names$/,
-  /^\/api\/pokemon\/[^/]+\/enriched/,
-  /^\/api\/generation\/[^/]+\/\d+$/,
-  /^\/api\/type\/[^/]+\/\d+$/,
-]
+const CACHEABLE_API_PATTERNS = [/^\/api\/pokemon\/index\.json$/]
 
-const API_CACHE_MAX_ENTRIES = 300
+const API_CACHE_MAX_ENTRIES = 5
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

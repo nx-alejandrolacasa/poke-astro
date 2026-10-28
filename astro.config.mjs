@@ -89,6 +89,7 @@ const adapter = await (async () => {
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://poke-astro.vercel.app',
   output: 'server',
   integrations: [react()],
   adapter,
