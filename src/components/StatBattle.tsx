@@ -218,6 +218,7 @@ export function StatBattle({ locale }: StatBattleProps) {
   const [phase, setPhase] = useState<Phase>('setup')
   const [strip, setStrip] = useState<PokemonRecord[]>([])
   const [redrawUsed, setRedrawUsed] = useState(false)
+  const [summaryDismissed, setSummaryDismissed] = useState(false)
   const [generation, setGeneration] = useState(0)
   const [legendGen, setLegendGen] = useState(1)
   const [mode, setMode] = useState<Mode>('classic')
@@ -378,6 +379,7 @@ export function StatBattle({ locale }: StatBattleProps) {
     clearTimers()
     setTarget(pokemon)
     setPhase('playing')
+    setSummaryDismissed(false)
     setGeneration(gen)
     const candidates = poolFor(gen)
     const seed = Array.from({ length: REEL_COUNT }, () => randomOf(candidates))
@@ -464,6 +466,7 @@ export function StatBattle({ locale }: StatBattleProps) {
     const onKey = (e: KeyboardEvent) => {
       const n = Number(e.key)
       if (n >= 1 && n <= REEL_COUNT) keep(n - 1)
+      if (e.key === 'Escape' && phase === 'done') setSummaryDismissed(true)
       if ((e.key === 'Enter' || e.key === ' ') && phase === 'done') {
         e.preventDefault()
         if (mode !== 'survival') startBattle()
@@ -517,7 +520,7 @@ export function StatBattle({ locale }: StatBattleProps) {
   if (phase === 'setup') {
     return (
       <>
-        <div className="flex items-center gap-2 border-b border-black/[0.06] pb-3 dark:border-white/[0.08]">
+        <div className="mb-6 flex items-center gap-2 border-b border-black/[0.06] pb-3 dark:border-white/[0.08]">
           <BackButton locale={locale} />
         </div>
         <div className="mx-auto max-w-3xl space-y-6">
@@ -898,43 +901,95 @@ export function StatBattle({ locale }: StatBattleProps) {
 
   return (
     <>
-      <div className="flex items-center gap-2 border-b border-black/[0.06] pb-3 dark:border-white/[0.08]">
+      <div className="mb-6 flex items-center gap-2 border-b border-black/[0.06] pb-3 dark:border-white/[0.08]">
         <BackButton locale={locale} onBack={backToSetup} />
       </div>
       <div className="mx-auto max-w-3xl space-y-6">
-        {phase === 'done' && (
+        {phase === 'done' && !summaryDismissed && (
           <div
-            className="space-y-3 rounded-3xl border-2 p-5 text-center"
-            style={{
-              borderColor: ahead ? WIN_COLOR : accent,
-              backgroundImage: `radial-gradient(circle at 50% 0%, ${ahead ? WIN_COLOR : accent}33, transparent 70%)`,
-            }}
+            className="fixed inset-0 z-50 flex animate-zoom-overlay-in items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+            role="dialog"
+            aria-modal="true"
+            aria-label={mode === 'classic' ? t.battle.summary : t.battle[mode]}
           >
-            <p className="font-mono text-[11px] tracking-wide text-ink-muted uppercase dark:text-dark-ink-muted">
-              {mode === 'classic' ? t.battle.summary : t.battle[mode]}
-            </p>
-            <p className="text-2xl font-black text-ink dark:text-dark-ink">
-              {mode === 'survival' && diff <= 0 ? t.battle.runOver : result}
-            </p>
-            {diff > 0 && redrawUsed && (
-              <p className="text-sm text-amber-700 dark:text-amber-300">
-                ↻ {t.battle.redrawWin}
+            <button
+              type="button"
+              aria-label={t.modal.close}
+              onClick={() => setSummaryDismissed(true)}
+              className="absolute inset-0 h-full w-full cursor-default outline-none"
+            />
+            <div
+              className="relative w-full max-w-md animate-zoom-image-in space-y-3 rounded-3xl border-2 bg-white p-6 text-center shadow-2xl dark:bg-dark-surface"
+              style={{
+                borderColor: ahead ? WIN_COLOR : accent,
+                backgroundImage: `radial-gradient(circle at 50% 0%, ${ahead ? WIN_COLOR : accent}33, transparent 70%)`,
+              }}
+            >
+              <button
+                type="button"
+                aria-label={t.modal.close}
+                onClick={() => setSummaryDismissed(true)}
+                className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full text-ink-muted transition-colors hover:bg-black/[0.06] hover:text-ink dark:text-dark-ink-muted dark:hover:bg-white/[0.08] dark:hover:text-dark-ink"
+              >
+                ✕
+              </button>
+              <p className="font-mono text-[11px] tracking-wide text-ink-muted uppercase dark:text-dark-ink-muted">
+                {mode === 'classic' ? t.battle.summary : t.battle[mode]}
               </p>
-            )}
-            {mode === 'survival' && (
-              <p className="font-mono text-sm text-ink dark:text-dark-ink">
-                🔥 {t.battle.streak} <b>{streak}</b> · 🏆 {t.battle.bestStreak}{' '}
-                <b>{survivalBest[generation] ?? 0}</b>
+              <img
+                src={artwork(target, 112)}
+                alt={target.names[locale]}
+                className={`mx-auto h-24 w-24 object-contain ${ahead ? '' : 'grayscale'}`}
+              />
+              <p className="text-2xl font-black text-ink dark:text-dark-ink">
+                {mode === 'survival' && diff <= 0 ? t.battle.runOver : result}
               </p>
-            )}
-            {unlockMessage && (
-              <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-                🔓 {unlockMessage}
+              <p className="font-mono text-sm text-ink-muted dark:text-dark-ink-muted">
+                {total} vs {targetTotal} · {target.names[locale]}
               </p>
-            )}
-            <p className="font-mono text-sm text-ink-muted dark:text-dark-ink-muted">
-              {total} vs {targetTotal}
-            </p>
+              {diff > 0 && redrawUsed && (
+                <p className="text-sm text-amber-700 dark:text-amber-300">
+                  ↻ {t.battle.redrawWin}
+                </p>
+              )}
+              {mode === 'survival' && (
+                <p className="font-mono text-sm text-ink dark:text-dark-ink">
+                  🔥 {t.battle.streak} <b>{streak}</b> · 🏆{' '}
+                  {t.battle.bestStreak} <b>{survivalBest[generation] ?? 0}</b>
+                </p>
+              )}
+              {unlockMessage && (
+                <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+                  🔓 {unlockMessage}
+                </p>
+              )}
+              <div className="flex flex-wrap justify-center gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={
+                    mode !== 'survival'
+                      ? startBattle
+                      : diff > 0
+                        ? nextOpponent
+                        : startSurvival
+                  }
+                  className={PRIMARY_BUTTON}
+                >
+                  {mode !== 'survival'
+                    ? t.battle.again
+                    : diff > 0
+                      ? t.battle.nextOpponent
+                      : t.battle.newRun}
+                </button>
+                <button
+                  type="button"
+                  onClick={backToSetup}
+                  className={SECONDARY_BUTTON}
+                >
+                  {t.battle.backToSetup}
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
