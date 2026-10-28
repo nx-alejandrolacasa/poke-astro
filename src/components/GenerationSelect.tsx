@@ -9,6 +9,7 @@ type GenerationSelectProps = {
   label: string
   unlockedUpTo?: number
   allUnlocked?: boolean
+  disabled?: boolean
 }
 
 const CHEVRON =
@@ -21,6 +22,7 @@ export function GenerationSelect({
   label,
   unlockedUpTo = Number.POSITIVE_INFINITY,
   allUnlocked = true,
+  disabled = false,
 }: GenerationSelectProps) {
   const t = translations[locale]
   return (
@@ -29,7 +31,8 @@ export function GenerationSelect({
       onChange={(e) => onChange(Number(e.target.value))}
       aria-label={label}
       title={label}
-      className="appearance-none rounded-full border border-black/[0.06] bg-surface-sunken bg-no-repeat py-2 pr-9 pl-4 text-sm text-ink focus:border-primary/30 focus:ring-2 focus:ring-primary/10 focus:outline-none dark:border-white/[0.06] dark:bg-dark-raised dark:text-dark-ink"
+      disabled={disabled}
+      className="appearance-none rounded-full border border-black/[0.06] bg-surface-sunken bg-no-repeat py-2 pr-9 pl-4 text-sm text-ink focus:border-primary/30 focus:ring-2 focus:ring-primary/10 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/[0.06] dark:bg-dark-raised dark:text-dark-ink"
       style={{
         backgroundImage: CHEVRON,
         backgroundPosition: 'right 0.9rem center',

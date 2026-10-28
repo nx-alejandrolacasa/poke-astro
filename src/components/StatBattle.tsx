@@ -470,6 +470,7 @@ export function StatBattle({ locale }: StatBattleProps) {
             label={t.battle.reelGen}
             unlockedUpTo={unlockedUpTo}
             allUnlocked={allUnlocked}
+            disabled={!target}
           />
           {target && !allUnlocked && (
             <p className="text-xs text-ink-muted dark:text-dark-ink-muted">
