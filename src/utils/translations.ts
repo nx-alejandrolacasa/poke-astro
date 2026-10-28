@@ -257,6 +257,15 @@ export type Translations = {
     legendary: string
     legendaryHint: string
     legendaryDone: string
+    mode: string
+    classic: string
+    survival: string
+    survivalHint: string
+    streak: string
+    bestStreak: string
+    nextOpponent: string
+    newRun: string
+    runOver: string
     spinning: string
     win: string
     lose: string
@@ -658,6 +667,16 @@ export const translations: Record<Language, Translations> = {
       legendaryHint:
         'Beat every legendary with the cards of its own generation. Clear all nine regions to unlock every generation for good.',
       legendaryDone: 'Complete!',
+      mode: 'Mode',
+      classic: 'Duel',
+      survival: 'Survival',
+      survivalHint:
+        'Face random Pokémon one after another with the cards of the region you choose. One loss ends the run.',
+      streak: 'Streak',
+      bestStreak: 'Best streak',
+      nextOpponent: 'Next opponent',
+      newRun: 'New run',
+      runOver: 'Run over',
       spinning: 'Drawing…',
       win: 'You beat it!',
       lose: 'Not this time.',
@@ -1059,6 +1078,16 @@ export const translations: Record<Language, Translations> = {
       legendaryHint:
         'Vence a cada legendario con las cartas de su propia generación. Completa las nueve regiones para desbloquear todas las generaciones para siempre.',
       legendaryDone: '¡Completado!',
+      mode: 'Modo',
+      classic: 'Duelo',
+      survival: 'Supervivencia',
+      survivalHint:
+        'Enfréntate a Pokémon al azar uno tras otro con las cartas de la región que elijas. Una derrota termina la racha.',
+      streak: 'Racha',
+      bestStreak: 'Mejor racha',
+      nextOpponent: 'Siguiente rival',
+      newRun: 'Nueva racha',
+      runOver: 'Fin de la racha',
       spinning: 'Repartiendo…',
       win: '¡Lo has superado!',
       lose: 'Esta vez no.',
