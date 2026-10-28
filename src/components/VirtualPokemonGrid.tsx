@@ -62,13 +62,6 @@ export function VirtualPokemonGrid({
   const rowHeight = cellWidth + TILE_CONTENT_HEIGHT_PX
   const rowCount = Math.ceil(pokemon.length / columnCount)
 
-  const rowVirtualizer = useWindowVirtualizer({
-    count: rowCount,
-    estimateSize: () => rowHeight + GAP_PX,
-    overscan: 4,
-    scrollMargin,
-  })
-
   const initialSnapshot = useMemo(
     () =>
       typeof window === 'undefined'
@@ -76,6 +69,17 @@ export function VirtualPokemonGrid({
         : getScrollSnapshot(window.location.pathname),
     []
   )
+
+  // The virtualizer scrolls the window to initialOffset when it mounts. Give
+  // it the saved position, or that scroll lands on 0 after our own restore.
+  const rowVirtualizer = useWindowVirtualizer({
+    count: rowCount,
+    estimateSize: () => rowHeight + GAP_PX,
+    overscan: 4,
+    scrollMargin,
+    initialOffset: initialSnapshot?.scrollY ?? 0,
+  })
+
   const restoredRef = useRef(false)
   useLayoutEffect(() => {
     if (restoredRef.current || initialSnapshot == null || containerWidth === 0)
