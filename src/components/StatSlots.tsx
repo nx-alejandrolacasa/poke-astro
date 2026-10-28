@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { PokemonPicker } from '@/components/PokemonPicker'
 import { usePokemonIndex } from '@/components/usePokemonIndex'
+import { GENERATIONS } from '@/utils/generations'
 import type { Locale } from '@/utils/i18n'
 import type { PokemonRecord } from '@/utils/pokemon'
 import { officialArtworkUrl, optimizedImageUrl } from '@/utils/pokemon'
@@ -48,7 +49,11 @@ export function StatSlots({ locale }: StatSlotsProps) {
   const [phase, setPhase] = useState<Phase>('pick')
   const timers = useRef<number[]>([])
 
-  const pool = index.filter((p) => p.isDefault)
+  const [generation, setGeneration] = useState(0)
+  const defaults = index.filter((p) => p.isDefault)
+  const pool = defaults.filter(
+    (p) => generation === 0 || p.generation === generation
+  )
   const rolling = reels.some((reel) => reel.rolling)
   const keptCount = reels.filter((reel) => reel.kept).length
 
@@ -171,12 +176,26 @@ export function StatSlots({ locale }: StatSlotsProps) {
         </div>
         <button
           type="button"
-          onClick={() => start(randomOf(pool))}
-          disabled={loading || pool.length === 0}
+          onClick={() => start(randomOf(defaults))}
+          disabled={loading || defaults.length === 0}
           className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-primary-600 active:scale-95 disabled:opacity-50 dark:bg-dark-primary"
         >
           🎲 {t.slots.random}
         </button>
+        <select
+          value={generation}
+          onChange={(e) => setGeneration(Number(e.target.value))}
+          aria-label={t.slots.reelGen}
+          title={t.slots.reelGen}
+          className="rounded-full border border-black/[0.06] bg-surface-sunken px-3 py-2 text-sm text-ink dark:border-white/[0.06] dark:bg-dark-raised dark:text-dark-ink"
+        >
+          <option value={0}>{t.quiz.allGens}</option>
+          {GENERATIONS.map((gen) => (
+            <option key={gen.id} value={gen.id}>
+              {t.quiz.gen} {gen.roman} · {gen.region}
+            </option>
+          ))}
+        </select>
       </div>
 
       {target ? (
@@ -357,7 +376,7 @@ export function StatSlots({ locale }: StatSlotsProps) {
             </button>
             <button
               type="button"
-              onClick={() => start(randomOf(pool))}
+              onClick={() => start(randomOf(defaults))}
               className="rounded-full border-2 border-black/[0.08] bg-white px-6 py-2.5 text-sm font-semibold text-ink transition-all hover:border-primary/40 active:scale-95 dark:border-white/[0.1] dark:bg-dark-surface dark:text-dark-ink"
             >
               🎲 {t.slots.random}
