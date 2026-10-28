@@ -21,7 +21,7 @@ export function PokemonLister({
 }: PokemonListerProps) {
   return (
     <div className="space-y-8">
-      <div className="flex items-center gap-2">
+      <div className="flex min-h-9 items-center gap-2">
         <BackButton locale={locale} />
         <RecentlyVisited locale={locale} />
       </div>
