@@ -265,6 +265,7 @@ export type Translations = {
     runOver: string
     redrawWin: string
     spinning: string
+    finale: string
     win: string
     lose: string
     tie: string
@@ -675,6 +676,7 @@ export const translations: Record<Language, Translations> = {
       runOver: 'Run over',
       redrawWin: 'Won using the full redraw',
       spinning: 'Drawing…',
+      finale: 'Your six are in! Adding it up…',
       win: 'You beat it!',
       lose: 'Not this time.',
       tie: 'Dead heat!',
@@ -1085,6 +1087,7 @@ export const translations: Record<Language, Translations> = {
       runOver: 'Fin de la racha',
       redrawWin: 'Ganado usando el reparto extra',
       spinning: 'Repartiendo…',
+      finale: '¡Ya tienes tus seis! Sumando…',
       win: '¡Lo has superado!',
       lose: 'Esta vez no.',
       tie: '¡Empate!',

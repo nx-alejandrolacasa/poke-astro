@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
 import { BackButton } from '@/components/BackButton'
 import { GenerationSelect } from '@/components/GenerationSelect'
 import { PokemonPicker } from '@/components/PokemonPicker'
@@ -20,7 +20,7 @@ type Reel = {
   rolling: boolean
 }
 
-type Phase = 'setup' | 'playing' | 'done'
+type Phase = 'setup' | 'playing' | 'finale' | 'done'
 type Mode = 'classic' | 'survival' | 'legendary'
 
 type BattleRecord = {
@@ -98,6 +98,7 @@ const STAT_LABEL_KEYS = [
 const REEL_COUNT = STAT_LABEL_KEYS.length
 const ROLL_MS = 900
 const STAGGER_MS = 180
+const FINALE_MS = 5000
 const TICK_MS = 100
 const STRIP_SIZE = 24
 const SURVIVAL_REDRAWS = 3
@@ -304,6 +305,10 @@ export function StatBattle({ locale }: StatBattleProps) {
     for (const id of timers.current) window.clearTimeout(id)
     timers.current = []
   }
+  const finishBattle = () => {
+    setPhase('finale')
+    timers.current.push(window.setTimeout(() => setPhase('done'), FINALE_MS))
+  }
   useEffect(() => {
     const pending = timers
     return () => {
@@ -337,7 +342,7 @@ export function StatBattle({ locale }: StatBattleProps) {
           )
           if (order === targets.length - 1 && openCount === 1) {
             setReels((rs) => rs.map((reel) => ({ ...reel, kept: true })))
-            setPhase('done')
+            finishBattle()
           }
         },
         ROLL_MS + order * STAGGER_MS
@@ -453,7 +458,7 @@ export function StatBattle({ locale }: StatBattleProps) {
     )
     if (next.every((reel) => reel.kept)) {
       setReels(next)
-      setPhase('done')
+      finishBattle()
     } else {
       spin(next)
     }
@@ -1032,13 +1037,15 @@ export function StatBattle({ locale }: StatBattleProps) {
                   reel.kept
                     ? 'shadow-md'
                     : 'border-black/[0.08] dark:border-white/[0.1]'
-                } ${reel.rolling ? 'reel-card-rolling' : ''} ${canKeep ? 'cursor-pointer hover:-translate-y-1 hover:border-primary/50 hover:shadow-md active:scale-95 dark:hover:border-dark-primary/50' : 'cursor-default'}`}
+                } ${reel.rolling ? 'reel-card-rolling' : ''} ${phase === 'finale' ? 'reel-card-finale' : ''} ${canKeep ? 'cursor-pointer hover:-translate-y-1 hover:border-primary/50 hover:shadow-md active:scale-95 dark:hover:border-dark-primary/50' : 'cursor-default'}`}
                 style={
                   reel.kept
-                    ? {
+                    ? ({
                         borderColor: reelAccent,
                         backgroundImage: `radial-gradient(circle at 50% 35%, ${reelAccent}40, transparent 65%)`,
-                      }
+                        '--reel-accent': reelAccent,
+                        '--reel-index': i,
+                      } as CSSProperties)
                     : undefined
                 }
               >
@@ -1115,6 +1122,13 @@ export function StatBattle({ locale }: StatBattleProps) {
               </span>
             </button>
           </div>
+        ) : phase === 'finale' ? (
+          <p
+            className="text-center text-sm font-semibold text-ink dark:text-dark-ink"
+            aria-live="polite"
+          >
+            {t.battle.finale}
+          </p>
         ) : (
           <div className="flex flex-wrap justify-center gap-2">
             <button
