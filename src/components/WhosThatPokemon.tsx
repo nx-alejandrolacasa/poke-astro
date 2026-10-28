@@ -177,19 +177,19 @@ export function WhosThatPokemon({ locale }: WhosThatPokemonProps) {
         {(round?.options ?? []).map((option, i) => {
           const isAnswer = option.id === round?.answer.id
           const tone = !revealed
-            ? 'bg-white hover:bg-primary-50 dark:bg-dark-surface dark:hover:bg-primary/10'
+            ? 'border-black/[0.08] bg-white shadow-sm shadow-black/[0.04] hover:border-primary/40 hover:bg-primary-50 dark:border-white/[0.1] dark:bg-dark-surface dark:hover:border-dark-primary/40 dark:hover:bg-primary/10'
             : isAnswer
-              ? 'bg-emerald-100 text-emerald-900 dark:bg-emerald-500/20 dark:text-emerald-200'
+              ? 'border-emerald-400 bg-emerald-100 text-emerald-900 dark:border-emerald-500/60 dark:bg-emerald-500/20 dark:text-emerald-200'
               : option.id === guess?.id
-                ? 'bg-rose-100 text-rose-900 dark:bg-rose-500/20 dark:text-rose-200'
-                : 'bg-white opacity-50 dark:bg-dark-surface'
+                ? 'border-rose-400 bg-rose-100 text-rose-900 dark:border-rose-500/60 dark:bg-rose-500/20 dark:text-rose-200'
+                : 'border-black/[0.08] bg-white opacity-50 dark:border-white/[0.1] dark:bg-dark-surface'
           return (
             <button
               key={option.id}
               type="button"
               onClick={() => answer(option)}
               disabled={revealed}
-              className={`flex items-center gap-3 rounded-2xl border-2 border-transparent px-4 py-3 text-left font-semibold text-ink transition-all active:scale-[0.98] disabled:cursor-default dark:text-dark-ink ${tone}`}
+              className={`flex items-center gap-3 rounded-2xl border-2 px-4 py-3 text-left font-semibold text-ink transition-all active:scale-[0.98] disabled:cursor-default dark:text-dark-ink ${tone}`}
             >
               <span className="font-mono text-xs opacity-40">{i + 1}</span>
               {option.names[locale]}
