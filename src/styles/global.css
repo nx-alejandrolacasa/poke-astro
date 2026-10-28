@@ -178,6 +178,12 @@ html {
   h1, h2, h3 {
     font-family: var(--font-display);
   }
+
+  /* Sprites load slowly; keep alt text for assistive tech but don't flash
+     it in the tile while the image is still downloading. */
+  img {
+    color: transparent;
+  }
 }
 
 /* ══════════════════════════════════════════
