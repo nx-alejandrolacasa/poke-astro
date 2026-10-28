@@ -97,6 +97,7 @@ export function StatBattle({ locale }: StatBattleProps) {
   const [phase, setPhase] = useState<Phase>('pick')
   const [strip, setStrip] = useState<PokemonRecord[]>([])
   const [redrawUsed, setRedrawUsed] = useState(false)
+  const [generation, setGeneration] = useState(0)
   const [tick, setTick] = useState(0)
   const timers = useRef<number[]>([])
   const [history, setHistory] = useState<BattleRecord[]>([])
@@ -123,14 +124,13 @@ export function StatBattle({ locale }: StatBattleProps) {
     const next = [record, ...history].slice(0, HISTORY_SIZE)
     setHistory(next)
     localStorage.setItem(HISTORY_KEY, JSON.stringify(next))
-  }, [phase, target, reels, history])
+  }, [phase, target, reels, history, generation])
 
   const clearHistory = () => {
     setHistory([])
     localStorage.removeItem(HISTORY_KEY)
   }
 
-  const [generation, setGeneration] = useState(0)
   const defaults = index.filter((p) => p.isDefault)
   const poolFor = (gen: number) =>
     defaults.filter((p) => gen === 0 || p.generation === gen)
