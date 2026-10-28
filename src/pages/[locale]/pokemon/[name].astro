@@ -240,7 +240,7 @@ const valueClass = 'font-mono text-ink text-xs dark:text-dark-ink'
   )}
   {pokemon && (
     <div class="space-y-4" style={`--type-color: ${accent}`}>
-      <div class="flex items-center gap-2 border-black/[0.06] border-b pb-3 dark:border-white/[0.08]">
+      <div class="flex items-center gap-2">
         <BackButton client:load locale={locale} />
         <RecentlyVisited
           client:idle
