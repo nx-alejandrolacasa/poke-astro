@@ -20,6 +20,12 @@ function point(index: number, value: number): [number, number] {
   ]
 }
 
+function labelAnchor(index: number): 'start' | 'middle' | 'end' {
+  const x = point(index, 1)[0] - CENTER
+  if (Math.abs(x) < 1) return 'middle'
+  return x > 0 ? 'start' : 'end'
+}
+
 function polygon(values: number[]): string {
   return values.map((v, i) => point(i, v).join(',')).join(' ')
 }
@@ -29,7 +35,7 @@ export function StatRadar({ series, labels, max = 200 }: StatRadarProps) {
   return (
     <svg
       viewBox={`0 0 ${SIZE} ${SIZE}`}
-      className="mx-auto w-full max-w-[280px]"
+      className="mx-auto w-full max-w-[280px] overflow-visible"
       role="img"
       aria-label={series.map((s) => s.label).join(' vs ')}
     >
@@ -44,7 +50,7 @@ export function StatRadar({ series, labels, max = 200 }: StatRadarProps) {
       ))}
       {STAT_NAMES.map((_, i) => {
         const [x, y] = point(i, 1)
-        const [lx, ly] = point(i, 1.22)
+        const [lx, ly] = point(i, 1.12)
         return (
           <g key={labels[i]}>
             <line
@@ -58,7 +64,7 @@ export function StatRadar({ series, labels, max = 200 }: StatRadarProps) {
             <text
               x={lx}
               y={ly}
-              textAnchor="middle"
+              textAnchor={labelAnchor(i)}
               dominantBaseline="middle"
               className="fill-ink-muted text-[10px] font-semibold dark:fill-dark-ink-muted"
             >
