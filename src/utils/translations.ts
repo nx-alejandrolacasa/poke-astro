@@ -5,8 +5,6 @@ export type Translations = {
   header: {
     home: string
     pokedex: string
-    types: string
-    typeChart: string
     play: string
     menu: string
     close: string
@@ -16,7 +14,8 @@ export type Translations = {
   home: {
     title: string
     subtitle: string
-    viewPokedex: string
+    pokemonOfTheDay: string
+    randomPokemon: string
     byTheNumbers: string
     totalPokemon: string
     speciesDiscovered: string
@@ -26,7 +25,6 @@ export type Translations = {
     pokemonGenerations: string
     didYouKnow: string
     browseByCategory: string
-    pokemonTypes: string
     byGeneration: string
     region: string
     generation: string
@@ -126,6 +124,7 @@ export type Translations = {
     backToHome: string
     region: string
     back: string
+    all: string
   }
   // Errors
   errors: {
@@ -191,10 +190,8 @@ export type Translations = {
     dataBy: string
     builtWith: string
   }
-  // Play section: quiz, compare, team
   play: {
     title: string
-    quiz: string
     compare: string
     team: string
     battle: string
@@ -298,8 +295,6 @@ export const translations: Record<Language, Translations> = {
     header: {
       home: 'Home',
       pokedex: 'Pokédex',
-      types: 'Types',
-      typeChart: 'Type Chart',
       play: 'Play',
       menu: 'Menu',
       close: 'Close',
@@ -308,7 +303,8 @@ export const translations: Record<Language, Translations> = {
     home: {
       title: "Gotta catch 'em all!",
       subtitle: '{count} Pokemon and counting.',
-      viewPokedex: 'View Full Pokédex →',
+      pokemonOfTheDay: 'Pokémon of the day',
+      randomPokemon: 'Surprise me',
       byTheNumbers: 'By the Numbers',
       totalPokemon: 'Total Pokémon',
       speciesDiscovered: 'Species discovered across all regions',
@@ -318,7 +314,6 @@ export const translations: Record<Language, Translations> = {
       pokemonGenerations: 'Pokémon generations',
       didYouKnow: '💡 Did You Know?',
       browseByCategory: 'Browse by Category',
-      pokemonTypes: 'By Type',
       byGeneration: 'By Generation',
       region: 'Region',
       generation: 'Generation',
@@ -520,6 +515,7 @@ export const translations: Record<Language, Translations> = {
       backToHome: 'Back to Home',
       region: 'Region',
       back: 'Back',
+      all: 'All',
     },
     errors: {
       loadFailed:
@@ -602,7 +598,6 @@ export const translations: Record<Language, Translations> = {
     },
     play: {
       title: 'Play',
-      quiz: "Who's that Pokémon?",
       compare: 'Compare',
       team: 'Team builder',
       battle: 'Stats Battle',
@@ -710,8 +705,6 @@ export const translations: Record<Language, Translations> = {
     header: {
       home: 'Inicio',
       pokedex: 'Pokédex',
-      types: 'Tipos',
-      typeChart: 'Tabla de Tipos',
       play: 'Jugar',
       menu: 'Menú',
       close: 'Cerrar',
@@ -720,7 +713,8 @@ export const translations: Record<Language, Translations> = {
     home: {
       title: '\u00a1Hazte con todos!',
       subtitle: '{count} Pokemon y sumando.',
-      viewPokedex: 'Ver Pokédex →',
+      pokemonOfTheDay: 'Pokémon del día',
+      randomPokemon: 'Sorpréndeme',
       byTheNumbers: 'En Números',
       totalPokemon: 'Total de Pokémon',
       speciesDiscovered: 'Especies descubiertas en todas las regiones',
@@ -730,7 +724,6 @@ export const translations: Record<Language, Translations> = {
       pokemonGenerations: 'Generaciones de Pokémon',
       didYouKnow: '💡 ¿Sabías Que?',
       browseByCategory: 'Explorar por Categoría',
-      pokemonTypes: 'Por Tipo',
       byGeneration: 'Por Generación',
       region: 'Región',
       generation: 'Generación',
@@ -932,6 +925,7 @@ export const translations: Record<Language, Translations> = {
       backToHome: 'Volver al Inicio',
       region: 'Región',
       back: 'Volver',
+      all: 'Todos',
     },
     errors: {
       loadFailed:
@@ -1014,7 +1008,6 @@ export const translations: Record<Language, Translations> = {
     },
     play: {
       title: 'Jugar',
-      quiz: '¿Quién es ese Pokémon?',
       compare: 'Comparar',
       team: 'Equipo',
       battle: 'Stats Battle',

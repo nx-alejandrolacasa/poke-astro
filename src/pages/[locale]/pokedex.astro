@@ -1,6 +1,7 @@
 ---
 export const prerender = true
 
+import ListerFilters from '@/components/ListerFilters.astro'
 import ListerSkeleton from '@/components/ListerSkeleton.astro'
 import { PokemonLister } from '@/components/PokemonLister'
 import Layout from '@/layouts/Layout.astro'
@@ -19,6 +20,7 @@ const pokemon = (await getAllPokemon()).map(toSummary)
 
 <Layout title={t.header.pokedex} locale={locale}>
   <PokemonLister client:only="react" pokemon={pokemon} locale={locale}>
+    <ListerFilters slot="filters" locale={locale} />
     <ListerSkeleton slot="fallback" locale={locale} />
   </PokemonLister>
 </Layout>

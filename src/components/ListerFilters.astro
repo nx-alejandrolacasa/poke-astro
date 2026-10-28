@@ -1,0 +1,64 @@
+---
+import { GENERATIONS } from '@/utils/generations'
+import type { Locale } from '@/utils/i18n'
+import { contrastInk, POKEMON_TYPES, typeColors } from '@/utils/pokemon'
+import { translations } from '@/utils/translations'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const t = translations[locale]
+const currentPath = Astro.url.pathname.replace(/\/$/, '')
+
+const generationChips = [
+  { href: `/${locale}/pokedex`, label: t.pages.all, color: '#705898' },
+  ...GENERATIONS.map((gen) => ({
+    href: `/${locale}/generation/${gen.id}`,
+    label: gen.region,
+    color: typeColors[gen.type],
+  })),
+]
+const typeChips = POKEMON_TYPES.map((type) => ({
+  href: `/${locale}/type/${type}`,
+  label: t.types[type],
+  color: typeColors[type],
+}))
+
+const rowClass =
+  'relative flex gap-2 overflow-x-auto [scrollbar-width:none] md:flex-wrap md:overflow-visible [&::-webkit-scrollbar]:hidden'
+const chipClass =
+  'inline-flex shrink-0 items-center rounded-full border-2 border-(--chip) bg-(--chip)/15 px-3 py-1.5 font-semibold text-ink text-xs transition hover:-translate-y-px active:scale-95 aria-[current=page]:bg-(--chip) aria-[current=page]:text-(--chip-ink) dark:text-dark-ink'
+---
+
+<div data-lister-filters class="space-y-2">
+  {[generationChips, typeChips].map((chips) => (
+    <div class={rowClass}>
+      {chips.map((chip) => (
+        <a
+          href={chip.href}
+          class={chipClass}
+          style={`--chip:${chip.color};--chip-ink:${contrastInk(chip.color)}`}
+          aria-current={chip.href === currentPath ? 'page' : undefined}
+        >
+          {chip.label}
+        </a>
+      ))}
+    </div>
+  ))}
+</div>
+
+<script>
+  const centerActiveChips = () => {
+    for (const chip of document.querySelectorAll<HTMLElement>(
+      '[data-lister-filters] [aria-current="page"]'
+    )) {
+      const row = chip.parentElement
+      if (!row) continue
+      row.scrollLeft = chip.offsetLeft - (row.clientWidth - chip.offsetWidth) / 2
+    }
+  }
+  centerActiveChips()
+  document.addEventListener('astro:page-load', centerActiveChips)
+</script>

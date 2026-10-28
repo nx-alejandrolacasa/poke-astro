@@ -1,12 +1,139 @@
 ---
-import { HomeContent } from '@/components/HomeContent'
+export const prerender = true
+
+import { Carousel } from '@/components/Carousel'
+import { PokemonOfTheDay } from '@/components/PokemonOfTheDay'
+import { RandomPokemonButton } from '@/components/RandomPokemonButton'
 import Layout from '@/layouts/Layout.astro'
-import { getI18n } from '@/utils/i18n'
+import { GENERATIONS } from '@/utils/generations'
+import { getI18n, getLocalePaths } from '@/utils/i18n'
+import {
+  contrastInk,
+  officialArtworkUrl,
+  optimizedImageUrl,
+  typeColors,
+} from '@/utils/pokemon'
+
+export function getStaticPaths() {
+  return getLocalePaths()
+}
 
 const { locale: localeParam } = Astro.params
 const { locale, t } = getI18n(localeParam)
+
+const tileClass =
+  'group rounded-3xl bg-white p-4 transition-all hover:-translate-y-1 active:scale-[0.98] dark:bg-dark-surface'
+const tileStyle = (color: string) =>
+  `border: 2px solid ${color}; background-image: radial-gradient(circle at 50% 35%, ${color}40, transparent 65%)`
+
+const wideGames = [
+  {
+    href: `/${locale}/compare`,
+    title: t.compare.title,
+    subtitle: t.compare.subtitle,
+    mascot: 150,
+    color: '#997a96',
+  },
+  {
+    href: `/${locale}/team`,
+    title: t.team.title,
+    subtitle: t.team.subtitle,
+    mascot: 448,
+    color: '#6896a8',
+  },
+]
 ---
 
 <Layout title={t.home.title} locale={locale}>
-  <HomeContent client:load locale={locale} />
+  <div class="space-y-4 pt-4 pb-8 md:pb-12 lg:pt-8">
+    <div class="grid auto-rows-[minmax(8rem,auto)] grid-cols-2 gap-3 md:auto-rows-[minmax(9rem,auto)] md:grid-cols-4 md:gap-4 lg:auto-rows-[minmax(10.5rem,auto)] lg:grid-cols-6 xl:auto-rows-[minmax(12rem,auto)]">
+      <div class="col-span-2 flex flex-col items-center justify-center gap-4 py-4 text-center md:col-span-4 lg:col-span-2 lg:row-span-2">
+        <img src="/pokemon-logo.svg" alt="Pokemon" class="h-9 w-auto md:h-12" />
+        <h1 class="pokemon-title text-3xl md:text-4xl xl:text-5xl">{t.home.title}</h1>
+        <div class="flex flex-wrap justify-center gap-2">
+          <a
+            href={`/${locale}/pokedex`}
+            class="inline-flex items-center gap-2 rounded-full bg-secondary px-5 py-2.5 font-bold text-sm text-white transition-all hover:-translate-y-0.5 hover:bg-secondary-600 active:scale-95"
+          >
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="2" y1="12" x2="8.5" y2="12" />
+              <line x1="15.5" y1="12" x2="22" y2="12" />
+              <circle cx="12" cy="12" r="3.5" />
+            </svg>
+            {t.header.pokedex}
+          </a>
+          <RandomPokemonButton client:idle locale={locale} />
+        </div>
+      </div>
+
+      <a href={`/${locale}/battle`} class:list={[tileClass, 'col-span-2 row-span-2 flex flex-col items-center justify-center gap-2 text-center']} style={tileStyle('#d46a6a')}>
+        <img
+          src={optimizedImageUrl(officialArtworkUrl(107), 256)}
+          alt=""
+          class="min-h-0 w-auto flex-1 object-contain transition-transform group-hover:scale-110"
+        />
+        <h2 class="font-bold text-2xl text-ink dark:text-dark-ink">{t.battle.title}</h2>
+        <p class="text-ink-muted text-sm dark:text-dark-ink-muted">{t.battle.subtitle}</p>
+      </a>
+
+      <div class="col-span-2 row-span-2">
+        <PokemonOfTheDay client:only="react" locale={locale}>
+          <div slot="fallback" class="skeleton-shimmer h-full w-full rounded-3xl"></div>
+        </PokemonOfTheDay>
+      </div>
+
+      {wideGames.map((game) => (
+        <a href={game.href} class:list={[tileClass, 'col-span-2 flex items-center gap-4']} style={tileStyle(game.color)}>
+          <img
+            src={optimizedImageUrl(officialArtworkUrl(game.mascot), 128)}
+            alt=""
+            class="h-full w-auto max-w-[40%] object-contain transition-transform group-hover:scale-110"
+            loading="lazy"
+          />
+          <div class="min-w-0 space-y-1">
+            <h2 class="font-bold text-ink text-xl dark:text-dark-ink">{game.title}</h2>
+            <p class="text-ink-muted text-sm dark:text-dark-ink-muted">{game.subtitle}</p>
+          </div>
+        </a>
+      ))}
+
+      <div class="col-span-2 flex items-center justify-center rounded-3xl border-2 border-primary/20 bg-primary-50 p-4 text-center md:col-span-4 lg:col-span-2 dark:border-primary/10 dark:bg-dark-raised">
+        <Carousel
+          client:idle
+          className="w-full"
+          textClassName="text-ink text-sm leading-snug dark:text-dark-ink"
+          items={t.funFacts}
+          label={t.home.didYouKnow}
+          autoPlayMs={10000}
+        />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-3 md:grid-cols-9 md:gap-4">
+      {GENERATIONS.map((gen) => {
+        const color = typeColors[gen.type]
+        return (
+          <a
+            href={`/${locale}/generation/${gen.id}`}
+            class="flex flex-col items-center gap-1 rounded-2xl p-2 text-center transition-all duration-200 hover:-translate-y-0.5 active:scale-95 md:p-3"
+            style={`background-color: ${color}15; border: 2px solid ${color}`}
+          >
+            <img
+              src={optimizedImageUrl(officialArtworkUrl(gen.mascot), 56)}
+              alt={gen.region}
+              class="h-12 w-12 object-contain md:h-14 md:w-14"
+              loading="lazy"
+            />
+            <span
+              class="w-full rounded-lg py-0.5 text-center font-semibold text-xs"
+              style={`background-color: ${color}; color: ${contrastInk(color)}`}
+            >
+              {gen.region}
+            </span>
+          </a>
+        )
+      })}
+    </div>
+  </div>
 </Layout>
