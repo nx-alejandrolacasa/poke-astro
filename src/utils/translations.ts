@@ -239,6 +239,7 @@ export type Translations = {
     hint: string
     reroll: string
     reelGen: string
+    redraw: string
     spinning: string
     win: string
     lose: string
@@ -620,6 +621,7 @@ export const translations: Record<Language, Translations> = {
       hint: 'Tap a card to keep it. The rest are drawn again.',
       reroll: 'Repeated Pokémon: tap to draw this card again',
       reelGen: 'Generation of the cards',
+      redraw: 'Draw all again',
       spinning: 'Drawing…',
       win: 'You beat it!',
       lose: 'Not this time.',
@@ -1001,6 +1003,7 @@ export const translations: Record<Language, Translations> = {
       hint: 'Toca una carta para quedártela. El resto se reparte de nuevo.',
       reroll: 'Pokémon repetido: toca para repartir esta carta de nuevo',
       reelGen: 'Generación de las cartas',
+      redraw: 'Repartir todo de nuevo',
       spinning: 'Repartiendo…',
       win: '¡Lo has superado!',
       lose: 'Esta vez no.',

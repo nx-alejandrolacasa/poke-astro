@@ -50,6 +50,7 @@ export function StatBattle({ locale }: StatBattleProps) {
   const [reels, setReels] = useState<Reel[]>([])
   const [phase, setPhase] = useState<Phase>('pick')
   const [strip, setStrip] = useState<PokemonRecord[]>([])
+  const [redrawUsed, setRedrawUsed] = useState(false)
   const [tick, setTick] = useState(0)
   const timers = useRef<number[]>([])
 
@@ -124,6 +125,7 @@ export function StatBattle({ locale }: StatBattleProps) {
     const seed = Array.from({ length: REEL_COUNT }, () => randomOf(pool))
     preload(seed)
     setStrip(seed)
+    setRedrawUsed(false)
     spin(
       Array.from({ length: REEL_COUNT }, () => ({
         pokemon,
@@ -158,6 +160,12 @@ export function StatBattle({ locale }: StatBattleProps) {
     } else {
       spin(next)
     }
+  }
+
+  const redrawAll = () => {
+    if (phase !== 'playing' || rolling || redrawUsed) return
+    setRedrawUsed(true)
+    spin(reels)
   }
 
   useEffect(() => {
@@ -364,15 +372,26 @@ export function StatBattle({ locale }: StatBattleProps) {
       )}
 
       {phase === 'playing' && (
-        <p
-          className="text-center text-sm text-ink-muted dark:text-dark-ink-muted"
-          aria-live="polite"
-        >
-          {rolling ? t.battle.spinning : t.battle.hint}{' '}
-          <span className="font-mono">
-            {keptCount}/{REEL_COUNT}
-          </span>
-        </p>
+        <div className="flex flex-col items-center gap-3">
+          <p
+            className="text-center text-sm text-ink-muted dark:text-dark-ink-muted"
+            aria-live="polite"
+          >
+            {rolling ? t.battle.spinning : t.battle.hint}{' '}
+            <span className="font-mono">
+              {keptCount}/{REEL_COUNT}
+            </span>
+          </p>
+          <button
+            type="button"
+            onClick={redrawAll}
+            disabled={rolling || redrawUsed}
+            className="rounded-full border-2 border-black/[0.08] bg-white px-5 py-2 text-sm font-semibold text-ink transition-all hover:border-primary/40 active:scale-95 disabled:cursor-default disabled:opacity-40 dark:border-white/[0.1] dark:bg-dark-surface dark:text-dark-ink"
+          >
+            ↻ {t.battle.redraw}{' '}
+            <span className="font-mono opacity-60">{redrawUsed ? 0 : 1}/1</span>
+          </button>
+        </div>
       )}
 
       {phase === 'done' && target && (
