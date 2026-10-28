@@ -48,6 +48,7 @@ export type Translations = {
     immuneTo: string
     none: string
     evolutionChain: string
+    forms: string
     // Phase 1 additions
     category: string
     cry: string
@@ -291,6 +292,7 @@ export const translations: Record<Language, Translations> = {
       immuneTo: 'Immune To',
       none: 'None',
       evolutionChain: 'Evolution Chain',
+      forms: 'Forms',
       category: 'Category',
       cry: 'Cry',
       playCry: 'Play Cry',
@@ -651,6 +653,7 @@ export const translations: Record<Language, Translations> = {
       immuneTo: 'Inmune A',
       none: 'Ninguno',
       evolutionChain: 'Evoluciones',
+      forms: 'Formas',
       category: 'Categoría',
       cry: 'Grito',
       playCry: 'Reproducir Grito',

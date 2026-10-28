@@ -12,12 +12,14 @@ import {
   fetchAbilityDetails,
   fetchEvolutionChain,
   fetchPokemonByName,
+  fetchPokemonForm,
   fetchPokemonSpecies,
   getAccentColor,
   getPokemonImage,
   getPokemonName,
   getTranslatedName,
   getTypeColor,
+  officialArtworkUrl,
   optimizedImageUrl,
   STAT_NAMES,
 } from '@/utils/pokemon'
@@ -57,8 +59,39 @@ const evolutionChain = species
 const displayName = species
   ? getTranslatedName(species.names, locale, getPokemonName(name))
   : getPokemonName(name)
+
+const localizedOrEnglish = (
+  names: { language: { name: string }; name: string }[],
+  fallback: string
+) => getTranslatedName(names, locale, getTranslatedName(names, 'en', fallback))
+
+const forms = species
+  ? await Promise.all(
+      species.varieties.map(async ({ pokemon: variety }) => {
+        const form = await fetchPokemonForm(variety.name)
+        const formLabel = form
+          ? localizedOrEnglish(form.form_names, getPokemonName(form.form_name))
+          : ''
+        const fallbackLabel = formLabel
+          ? `${displayName} (${formLabel})`
+          : displayName
+        return {
+          name: variety.name,
+          id: Number(variety.url.split('/').filter(Boolean).at(-1)),
+          label: form
+            ? localizedOrEnglish(form.names, fallbackLabel)
+            : getPokemonName(variety.name),
+          isCurrent: variety.name === pokemon?.name,
+        }
+      })
+    )
+  : []
+const otherForms = forms.filter((form) => !form.isCurrent)
+const currentForm = forms.find((form) => form.isCurrent)
 const pokemonName =
-  pokemon?.name === species?.name ? displayName : getPokemonName(name)
+  pokemon?.name === species?.name
+    ? displayName
+    : (currentForm?.label ?? getPokemonName(name))
 const genus =
   species?.genera.find((g) => g.language.name === locale)?.genus ??
   species?.genera.find((g) => g.language.name === 'en')?.genus ??
@@ -372,6 +405,29 @@ const valueClass = 'font-mono text-ink text-xs dark:text-dark-ink'
             <h2 class={headingClass}>{t.pokemon.evolutionChain}</h2>
             <div class="flex flex-1 items-center justify-center">
               <EvolutionTree chain={evolutionChain.chain} currentSpecies={pokemon.species.name} locale={locale} />
+            </div>
+          </div>
+        )}
+
+        {otherForms.length > 0 && (
+          <div class="bento-cell rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
+            <h2 class={headingClass}>{t.pokemon.forms}</h2>
+            <div class="flex flex-wrap justify-center gap-2">
+              {otherForms.map((form) => (
+                <a
+                  href={`/${locale}/pokemon/${form.name}`}
+                  data-astro-prefetch="tap"
+                  class="w-28 rounded-xl bg-surface-sunken p-3 text-center transition-all hover:scale-105 hover:ring-2 hover:ring-ink-faint/30 dark:bg-dark-raised dark:hover:ring-dark-ink-faint/30"
+                >
+                  <img
+                    src={optimizedImageUrl(officialArtworkUrl(form.id), 96)}
+                    alt={form.label}
+                    class="mx-auto h-20 w-20 object-contain"
+                    loading="lazy"
+                  />
+                  <span class="mt-2 block font-medium text-ink text-xs dark:text-dark-ink">{form.label}</span>
+                </a>
+              ))}
             </div>
           </div>
         )}

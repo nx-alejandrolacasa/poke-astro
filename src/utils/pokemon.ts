@@ -115,6 +115,15 @@ export type EvolutionNode = {
   species: { name: string; url: string }
 }
 
+export type PokemonForm = {
+  form_name: string
+  form_names: { language: { name: string }; name: string }[]
+  is_mega: boolean
+  name: string
+  names: { language: { name: string }; name: string }[]
+  pokemon: { name: string; url: string }
+}
+
 export type AbilityDetails = {
   name: string
   names: { language: { name: string }; name: string }[]
@@ -385,6 +394,17 @@ export async function fetchEvolutionChain(
   const res = await fetch(url)
   if (!res.ok) {
     console.warn(`Failed to fetch evolution chain: ${res.status}`)
+    return null
+  }
+  return res.json()
+}
+
+export async function fetchPokemonForm(
+  name: string
+): Promise<PokemonForm | null> {
+  const res = await fetch(`https://pokeapi.co/api/v2/pokemon-form/${name}`)
+  if (!res.ok) {
+    console.warn(`Failed to fetch form for ${name}: ${res.status}`)
     return null
   }
   return res.json()
