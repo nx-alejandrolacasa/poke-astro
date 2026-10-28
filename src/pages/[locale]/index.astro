@@ -1,16 +1,19 @@
 ---
 export const prerender = true
 
-import { Carousel } from '@/components/Carousel'
+import { PokemonOfTheDay } from '@/components/PokemonOfTheDay'
+import { RandomPokemonTile } from '@/components/RandomPokemonTile'
 import Layout from '@/layouts/Layout.astro'
 import { GENERATIONS } from '@/utils/generations'
 import { getI18n, getLocalePaths } from '@/utils/i18n'
 import {
   contrastInk,
+  getAllPokemon,
   officialArtworkUrl,
   optimizedImageUrl,
   typeColors,
 } from '@/utils/pokemon'
+import { interpolate } from '@/utils/translations'
 
 export function getStaticPaths() {
   return getLocalePaths()
@@ -19,25 +22,23 @@ export function getStaticPaths() {
 const { locale: localeParam } = Astro.params
 const { locale, t } = getI18n(localeParam)
 
-const games = [
-  {
-    href: `/${locale}/battle`,
-    title: t.battle.title,
-    subtitle: t.battle.subtitle,
-    mascot: 107,
-    color: '#d46a6a',
-  },
+const speciesCount = (await getAllPokemon()).filter((p) => p.isDefault).length
+
+const tileClass =
+  'group flex flex-col items-center justify-center gap-2 rounded-3xl bg-white p-4 text-center transition-all hover:-translate-y-1 active:scale-[0.98] dark:bg-dark-surface'
+const tileStyle = (color: string) =>
+  `border: 2px solid ${color}; background-image: radial-gradient(circle at 50% 35%, ${color}40, transparent 65%)`
+
+const smallGames = [
   {
     href: `/${locale}/compare`,
     title: t.compare.title,
-    subtitle: t.compare.subtitle,
     mascot: 150,
     color: '#997a96',
   },
   {
     href: `/${locale}/team`,
     title: t.team.title,
-    subtitle: t.team.subtitle,
     mascot: 448,
     color: '#6896a8',
   },
@@ -45,73 +46,81 @@ const games = [
 ---
 
 <Layout title={t.home.title} locale={locale}>
-  <div class="space-y-10 pb-8 md:space-y-14 md:pb-12">
+  <div class="space-y-4 pb-8 md:pb-12">
     <section class="pt-6 text-center md:pt-10">
       <img src="/pokemon-logo.svg" alt="Pokemon" class="mx-auto mb-5 h-9 w-auto md:h-12 lg:h-14" />
       <h1 class="pokemon-title text-3xl md:text-5xl lg:text-6xl">{t.home.title}</h1>
     </section>
 
-    <section class="space-y-4">
-      <h2 class="text-center font-bold text-ink text-xl md:text-2xl dark:text-dark-ink">{t.play.title}</h2>
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-        {games.map((game) => (
+    <div class="grid auto-rows-[7.5rem] grid-cols-2 gap-3 md:auto-rows-[9rem] md:grid-cols-4 md:gap-4">
+      <a href={`/${locale}/battle`} class:list={[tileClass, 'col-span-2 row-span-2']} style={tileStyle('#d46a6a')}>
+        <img
+          src={optimizedImageUrl(officialArtworkUrl(107), 128)}
+          alt=""
+          class="min-h-0 w-auto flex-1 object-contain transition-transform group-hover:scale-110"
+        />
+        <h2 class="font-bold text-ink text-2xl dark:text-dark-ink">{t.battle.title}</h2>
+        <p class="text-ink-muted text-sm dark:text-dark-ink-muted">{t.battle.subtitle}</p>
+      </a>
+
+      <div class="col-span-2 row-span-2">
+        <PokemonOfTheDay client:only="react" locale={locale}>
+          <div slot="fallback" class="skeleton-shimmer h-full w-full rounded-3xl"></div>
+        </PokemonOfTheDay>
+      </div>
+
+      {smallGames.map((game) => (
+        <a href={game.href} class={tileClass} style={tileStyle(game.color)}>
+          <img
+            src={optimizedImageUrl(officialArtworkUrl(game.mascot), 128)}
+            alt=""
+            class="min-h-0 w-auto flex-1 object-contain transition-transform group-hover:scale-110"
+            loading="lazy"
+          />
+          <h2 class="font-bold text-ink dark:text-dark-ink">{game.title}</h2>
+        </a>
+      ))}
+
+      <RandomPokemonTile client:only="react" locale={locale}>
+        <div slot="fallback" class="skeleton-shimmer h-full w-full rounded-3xl"></div>
+      </RandomPokemonTile>
+
+      <a href={`/${locale}/pokedex`} class={tileClass} style={tileStyle('#E3350D')}>
+        <svg class="h-10 w-10 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="2" y1="12" x2="8.5" y2="12" />
+          <line x1="15.5" y1="12" x2="22" y2="12" />
+          <circle cx="12" cy="12" r="3.5" />
+        </svg>
+        <h2 class="font-bold text-ink dark:text-dark-ink">{t.header.pokedex}</h2>
+        <p class="text-ink-muted text-xs dark:text-dark-ink-muted">{interpolate(t.pages.speciesCount, { count: speciesCount })}</p>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-3 gap-3 md:grid-cols-9 md:gap-4">
+      {GENERATIONS.map((gen) => {
+        const color = typeColors[gen.type]
+        return (
           <a
-            href={game.href}
-            class="group flex flex-col items-center gap-3 rounded-3xl bg-white p-6 text-center transition-all hover:-translate-y-1 active:scale-[0.98] dark:bg-dark-surface"
-            style={`border: 2px solid ${game.color}; background-image: radial-gradient(circle at 50% 30%, ${game.color}40, transparent 65%)`}
+            href={`/${locale}/generation/${gen.id}`}
+            class="flex flex-col items-center gap-1 rounded-2xl p-2 text-center transition-all duration-200 hover:-translate-y-0.5 active:scale-95 md:p-3"
+            style={`background-color: ${color}15; border: 2px solid ${color}`}
           >
             <img
-              src={optimizedImageUrl(officialArtworkUrl(game.mascot), 128)}
-              alt=""
-              class="h-28 w-28 object-contain transition-transform group-hover:scale-110"
+              src={optimizedImageUrl(officialArtworkUrl(gen.mascot), 56)}
+              alt={gen.region}
+              class="h-12 w-12 object-contain md:h-14 md:w-14"
               loading="lazy"
             />
-            <h3 class="font-bold text-ink text-xl dark:text-dark-ink">{game.title}</h3>
-            <p class="text-ink-muted text-sm dark:text-dark-ink-muted">{game.subtitle}</p>
-          </a>
-        ))}
-      </div>
-    </section>
-
-    <section class="mx-auto max-w-2xl">
-      <div class="rounded-2xl border-2 border-primary/20 bg-primary-50 p-6 text-center dark:border-primary/10 dark:bg-dark-raised">
-        <Carousel client:idle items={t.funFacts} label={t.home.didYouKnow} autoPlayMs={10000} />
-      </div>
-    </section>
-
-    <section class="space-y-4">
-      <h2 class="text-center font-bold text-ink text-xl md:text-2xl dark:text-dark-ink">{t.header.pokedex}</h2>
-      <a
-        href={`/${locale}/pokedex`}
-        class="flex items-center justify-center rounded-2xl bg-secondary px-6 py-4 text-center font-bold text-lg text-white transition-all hover:-translate-y-0.5 hover:bg-secondary-600 active:scale-[0.98]"
-      >
-        {t.home.viewPokedex}
-      </a>
-      <div class="grid grid-cols-3 gap-3 md:grid-cols-6 lg:grid-cols-9">
-        {GENERATIONS.map((gen) => {
-          const color = typeColors[gen.type]
-          return (
-            <a
-              href={`/${locale}/generation/${gen.id}`}
-              class="flex flex-col items-center gap-1 rounded-xl p-2 text-center transition-all duration-200 hover:-translate-y-0.5 active:scale-95 md:p-3"
-              style={`background-color: ${color}15; border: 2px solid ${color}`}
+            <span
+              class="w-full rounded-lg py-0.5 text-center font-semibold text-xs"
+              style={`background-color: ${color}; color: ${contrastInk(color)}`}
             >
-              <img
-                src={optimizedImageUrl(officialArtworkUrl(gen.mascot), 56)}
-                alt={gen.region}
-                class="h-12 w-12 object-contain md:h-14 md:w-14"
-                loading="lazy"
-              />
-              <span
-                class="w-full rounded-lg py-0.5 text-center font-semibold text-xs"
-                style={`background-color: ${color}; color: ${contrastInk(color)}`}
-              >
-                {gen.region}
-              </span>
-            </a>
-          )
-        })}
-      </div>
-    </section>
+              {gen.region}
+            </span>
+          </a>
+        )
+      })}
+    </div>
   </div>
 </Layout>

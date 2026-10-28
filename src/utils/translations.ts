@@ -14,7 +14,8 @@ export type Translations = {
   home: {
     title: string
     subtitle: string
-    viewPokedex: string
+    pokemonOfTheDay: string
+    randomPokemon: string
     byTheNumbers: string
     totalPokemon: string
     speciesDiscovered: string
@@ -302,7 +303,8 @@ export const translations: Record<Language, Translations> = {
     home: {
       title: "Gotta catch 'em all!",
       subtitle: '{count} Pokemon and counting.',
-      viewPokedex: 'View Full Pokédex →',
+      pokemonOfTheDay: 'Pokémon of the day',
+      randomPokemon: 'Surprise me',
       byTheNumbers: 'By the Numbers',
       totalPokemon: 'Total Pokémon',
       speciesDiscovered: 'Species discovered across all regions',
@@ -711,7 +713,8 @@ export const translations: Record<Language, Translations> = {
     home: {
       title: '\u00a1Hazte con todos!',
       subtitle: '{count} Pokemon y sumando.',
-      viewPokedex: 'Ver Pokédex →',
+      pokemonOfTheDay: 'Pokémon del día',
+      randomPokemon: 'Sorpréndeme',
       byTheNumbers: 'En Números',
       totalPokemon: 'Total de Pokémon',
       speciesDiscovered: 'Especies descubiertas en todas las regiones',
