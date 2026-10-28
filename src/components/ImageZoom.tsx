@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { usePresence } from '@/components/usePresence'
 import type { Locale } from '@/utils/i18n'
 import { translations } from '@/utils/translations'
 
@@ -15,26 +16,7 @@ const EXIT_DURATION_MS = 220
 
 export function ImageZoom({ src, alt, open, onClose, locale }: ImageZoomProps) {
   const t = translations[locale]
-  // `mounted` controls DOM presence; `closing` flips the keyframe class so
-  // the overlay can play its exit animation before unmount.
-  const [mounted, setMounted] = useState(open)
-  const [closing, setClosing] = useState(false)
-
-  useEffect(() => {
-    if (open) {
-      setMounted(true)
-      setClosing(false)
-      return
-    }
-    if (mounted) {
-      setClosing(true)
-      const timeout = setTimeout(() => {
-        setMounted(false)
-        setClosing(false)
-      }, EXIT_DURATION_MS)
-      return () => clearTimeout(timeout)
-    }
-  }, [open, mounted])
+  const { mounted, closing } = usePresence(open, EXIT_DURATION_MS)
 
   useEffect(() => {
     if (!open) return
