@@ -28,7 +28,7 @@ npm run check:types  # astro sync && tsc --noEmit --runExternalCode
 
 ## Gotchas
 
-- **React runtime is [TanStack Redact](https://tanstack.com/redact)** (Vite plugin, client and SSR). Build with `REDACT=false` to use real React if an island misbehaves.
+- **React runtime is [TanStack Redact](https://tanstack.com/redact)** (Vite plugin, client, SSR and prerender). Build with `REDACT=false` (or `0`, `off`) to use real React if an island misbehaves. CI runs `check` and `check:types` on every push and PR.
 - **TypeScript 7.1 beta.** `.astro` files are checked through `@astrojs/ts-content-mapper`. `astro check` doesn't support TS 7, and the Astro editor extension may not either.
 - The `@vercel/analytics/astro` entry in `tsconfig.json` `paths` works around a TS 7 error in that package. Remove it once upstream fixes it.
 - Keep the `resolve-vite-env` plugin in `astro.config.mjs`: Vite's client still imports `@vite/env`.

@@ -64,9 +64,7 @@
   },
   "tailwind": {
     "stylesheet": "./src/styles/global.css",
-    "attributes": ["className"],
-    "mergeFunctions": ["cn"],
-    "variantFunctions": ["cva"]
+    "attributes": ["className"]
   },
   "linter": {
     "enabled": true,

@@ -113,7 +113,7 @@ export function HomeContent({ locale }: HomeContentProps) {
               <a
                 key={type}
                 href={`/${locale}/type/${type}`}
-                className="group hover:border-opacity-80 flex flex-col items-center gap-1 rounded-xl p-2 transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
+                className="group flex flex-col items-center gap-1 rounded-xl p-2 transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
                 style={{
                   backgroundColor: `${color}15`,
                   border: `2px solid ${color}`,

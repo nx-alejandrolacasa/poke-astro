@@ -18,10 +18,34 @@ const isCloudflareCI =
   process.env.DEPLOY_TARGET === 'cloudflare'
 
 // TanStack Redact: a smaller, synchronous drop-in runtime for React. Its Vite
-// plugin aliases `react`/`react-dom` imports (client and SSR) to Redact, so the
-// islands keep importing from 'react' unchanged. Astro is not an officially
-// supported integration, so set REDACT=false to fall back to real React.
-const useRedact = process.env.REDACT !== 'false'
+// plugin aliases `react`/`react-dom` imports to Redact, so the islands keep
+// importing from 'react' unchanged. Astro is not an officially supported
+// integration, so set REDACT=false (or 0, off) to fall back to real React.
+const useRedact = !['false', '0', 'off'].includes(process.env.REDACT ?? '')
+
+// Redact only configures Vite's `client` and `ssr` environments. Astro also
+// renders through `prerender` (build) and `astro` (dev), so give them the same
+// alias/dedupe/noExternal setup or they could load real React next to Redact.
+function redactForAstroEnvironments() {
+  const plugins = redact()
+  const [core] = plugins
+  return [
+    ...plugins,
+    {
+      name: 'redact:astro-environments',
+      enforce: 'pre',
+      config(...args) {
+        const { environments } = core.config.call(this, ...args)
+        return {
+          environments: {
+            prerender: environments.ssr,
+            astro: environments.ssr,
+          },
+        }
+      },
+    },
+  ]
+}
 
 const adapter = await (async () => {
   if (isDev) {
@@ -93,7 +117,7 @@ export default defineConfig({
     },
     plugins: [
       tailwindcss(),
-      useRedact && redact(),
+      useRedact && redactForAstroEnvironments(),
       // Workaround: Vite 7 Environment API processes client.mjs through
       // EnvironmentPluginContainer where @vite/env virtual module can't resolve.
       // Map it to the actual file on disk.
