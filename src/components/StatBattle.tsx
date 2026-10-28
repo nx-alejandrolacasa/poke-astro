@@ -216,6 +216,7 @@ export function StatBattle({ locale }: StatBattleProps) {
   const [redrawUsed, setRedrawUsed] = useState(false)
   const [generation, setGeneration] = useState(0)
   const [challenge, setChallenge] = useState(false)
+  const [legendGen, setLegendGen] = useState(1)
   const [mode, setMode] = useState<Mode>('classic')
   const [streak, setStreak] = useState(0)
   const [survivalBest, setSurvivalBest] = useState<Record<number, number>>({})
@@ -662,72 +663,68 @@ export function StatBattle({ locale }: StatBattleProps) {
                 <p className="text-xs text-ink-muted dark:text-dark-ink-muted">
                   {t.battle.legendaryHint}
                 </p>
-                <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                <div className="flex [scrollbar-width:thin] gap-1.5 overflow-x-auto pb-1">
                   {GENERATIONS.map((gen) => {
                     const roster = legendaries.filter(
                       (p) => p.generation === gen.id
                     )
                     const cleared = roster.filter(beaten).length
                     const complete = cleared === roster.length
+                    const active = legendGen === gen.id
                     return (
-                      <li
+                      <button
                         key={gen.id}
-                        className="rounded-2xl bg-surface-sunken p-3 dark:bg-dark-raised"
+                        type="button"
+                        onClick={() => setLegendGen(gen.id)}
+                        aria-pressed={active}
+                        title={`${t.quiz.gen} ${gen.roman} · ${gen.region}`}
+                        className={`flex shrink-0 flex-col items-center rounded-xl px-3 py-1.5 transition-all ${active ? 'bg-primary text-white shadow-md dark:bg-dark-primary' : complete ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-200' : 'bg-surface-sunken text-ink hover:bg-black/[0.06] dark:bg-dark-raised dark:text-dark-ink dark:hover:bg-white/[0.08]'}`}
                       >
-                        <div className="mb-2 flex items-baseline justify-between gap-2">
-                          <span className="text-sm font-semibold text-ink dark:text-dark-ink">
-                            {t.quiz.gen} {gen.roman}{' '}
-                            <span className="font-normal text-ink-muted dark:text-dark-ink-muted">
-                              · {gen.region}
-                            </span>
-                          </span>
-                          <span
-                            className={`font-mono text-xs ${complete ? 'text-emerald-600 dark:text-emerald-400' : 'text-ink-muted dark:text-dark-ink-muted'}`}
-                          >
-                            {cleared}/{roster.length}
-                          </span>
-                        </div>
-                        <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-black/[0.06] dark:bg-white/[0.08]">
-                          <div
-                            className="h-full rounded-full bg-emerald-500 transition-all duration-500"
-                            style={{
-                              width: `${(cleared / Math.max(1, roster.length)) * 100}%`,
-                            }}
-                          />
-                        </div>
-                        <div className="flex flex-wrap gap-1.5">
-                          {roster.map((pokemon) => {
-                            const done = beaten(pokemon)
-                            const selected = target?.id === pokemon.id
-                            return (
-                              <button
-                                key={pokemon.id}
-                                type="button"
-                                onClick={() => chooseLegendary(pokemon)}
-                                title={`${pokemon.names[locale]} · ${sumStats(pokemon)}`}
-                                aria-label={pokemon.names[locale]}
-                                aria-pressed={selected}
-                                className={`relative rounded-xl bg-white p-1 transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-95 dark:bg-dark-surface ${selected ? 'ring-2 ring-primary' : done ? 'ring-2 ring-emerald-400' : 'ring-1 ring-black/[0.06] dark:ring-white/[0.08]'}`}
-                              >
-                                <img
-                                  src={artwork(pokemon, 40)}
-                                  alt=""
-                                  className={`h-9 w-9 object-contain ${done ? '' : 'opacity-60 grayscale'}`}
-                                  loading="lazy"
-                                />
-                                {done && (
-                                  <span className="absolute -top-1 -right-1 rounded-full bg-emerald-500 px-1 text-[9px] font-bold text-white">
-                                    ✓
-                                  </span>
-                                )}
-                              </button>
-                            )
-                          })}
-                        </div>
-                      </li>
+                        <span className="text-sm font-bold">{gen.roman}</span>
+                        <span
+                          className={`font-mono text-[10px] ${active ? 'text-white/80' : 'opacity-60'}`}
+                        >
+                          {cleared}/{roster.length}
+                        </span>
+                      </button>
                     )
                   })}
-                </ul>
+                </div>
+                <div className="flex snap-x snap-mandatory [scrollbar-width:thin] gap-2 overflow-x-auto pb-2">
+                  {legendaries
+                    .filter((p) => p.generation === legendGen)
+                    .map((pokemon) => {
+                      const done = beaten(pokemon)
+                      const selected = target?.id === pokemon.id
+                      return (
+                        <button
+                          key={pokemon.id}
+                          type="button"
+                          onClick={() => chooseLegendary(pokemon)}
+                          aria-pressed={selected}
+                          className={`relative flex w-28 shrink-0 snap-start flex-col items-center gap-1 rounded-2xl border-2 bg-white p-2 text-center transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-95 dark:bg-dark-surface ${selected ? 'border-primary' : done ? 'border-emerald-400' : 'border-black/[0.08] dark:border-white/[0.1]'}`}
+                        >
+                          <img
+                            src={artwork(pokemon, 80)}
+                            alt=""
+                            className={`h-16 w-16 object-contain ${done ? '' : 'opacity-70 grayscale'}`}
+                            loading="lazy"
+                          />
+                          <span className="w-full truncate text-xs font-semibold text-ink dark:text-dark-ink">
+                            {pokemon.names[locale]}
+                          </span>
+                          <span className="font-mono text-[10px] text-ink-muted dark:text-dark-ink-muted">
+                            {sumStats(pokemon)}
+                          </span>
+                          {done && (
+                            <span className="absolute top-1.5 right-1.5 rounded-full bg-emerald-500 px-1.5 text-[10px] font-bold text-white">
+                              ✓
+                            </span>
+                          )}
+                        </button>
+                      )
+                    })}
+                </div>
               </section>
             )}
 
