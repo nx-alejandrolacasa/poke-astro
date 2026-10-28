@@ -269,6 +269,10 @@ html {
     padding-top: env(safe-area-inset-top);
     opacity: 0;
     animation: nav-skeleton-reveal 100ms ease-out 150ms forwards;
+    /* Captured as its own view-transition group, so the page snapshot
+       underneath is always the lister (never a half-faded skeleton) and
+       the overlay just fades out on top of the page crossfade. */
+    view-transition-name: nav-skeleton;
   }
   @keyframes nav-skeleton-reveal {
     to { opacity: 1; }
@@ -321,6 +325,25 @@ html {
       50% 100%, 38% 68%, 0% 50%, 38% 32%
     );
   }
+}
+
+/* View transition stacking: page crossfade at the bottom, the departing
+   skeleton overlay above it, and morphing elements (Pokémon artwork) on top
+   so they are never hidden behind the overlay while it fades out. */
+::view-transition-group(*) {
+  z-index: 2;
+}
+::view-transition-group(nav-skeleton) {
+  z-index: 1;
+}
+::view-transition-group(root) {
+  z-index: 0;
+}
+::view-transition-old(nav-skeleton) {
+  animation: 200ms ease-out both nav-skeleton-exit;
+}
+@keyframes nav-skeleton-exit {
+  to { opacity: 0; }
 }
 
 /* Progress fill for carousel dots */
