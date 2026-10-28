@@ -297,7 +297,7 @@ export const translations: Record<Language, Translations> = {
     header: {
       home: 'Home',
       pokedex: 'Pokédex',
-      play: 'Play',
+      play: 'Games',
       menu: 'Menu',
       close: 'Close',
       search: 'Search',
@@ -709,7 +709,7 @@ export const translations: Record<Language, Translations> = {
     header: {
       home: 'Inicio',
       pokedex: 'Pokédex',
-      play: 'Jugar',
+      play: 'Juegos',
       menu: 'Menú',
       close: 'Cerrar',
       search: 'Buscar',

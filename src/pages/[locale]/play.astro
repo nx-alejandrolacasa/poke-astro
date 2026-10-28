@@ -1,5 +1,63 @@
 ---
-import { getLocale } from '@/utils/i18n'
+export const prerender = true
 
-return Astro.redirect(`/${getLocale(Astro.params.locale)}`, 301)
+import Layout from '@/layouts/Layout.astro'
+import { getI18n, getLocalePaths } from '@/utils/i18n'
+import { officialArtworkUrl, optimizedImageUrl } from '@/utils/pokemon'
+
+export function getStaticPaths() {
+  return getLocalePaths()
+}
+
+const { locale: localeParam } = Astro.params
+const { locale, t } = getI18n(localeParam)
+
+const games = [
+  {
+    href: `/${locale}/battle`,
+    title: t.battle.title,
+    subtitle: t.battle.subtitle,
+    mascot: 107,
+    color: '#d46a6a',
+  },
+  {
+    href: `/${locale}/compare`,
+    title: t.compare.title,
+    subtitle: t.compare.subtitle,
+    mascot: 150,
+    color: '#997a96',
+  },
+  {
+    href: `/${locale}/team`,
+    title: t.team.title,
+    subtitle: t.team.subtitle,
+    mascot: 448,
+    color: '#6896a8',
+  },
+]
 ---
+
+<Layout title={t.header.play} locale={locale}>
+  <div class="space-y-6 pt-4 md:pt-8">
+    <h1 class="pokemon-title text-center text-3xl md:text-5xl">{t.header.play}</h1>
+    <div class="grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-4">
+      {games.map((game) => (
+        <a
+          href={game.href}
+          class="group flex items-center gap-4 rounded-3xl bg-white p-4 transition-all hover:-translate-y-1 active:scale-[0.98] md:h-72 md:flex-col md:justify-center md:gap-2 md:p-6 md:text-center dark:bg-dark-surface"
+          style={`border: 2px solid ${game.color}; background-image: radial-gradient(circle at 50% 35%, ${game.color}40, transparent 65%)`}
+        >
+          <img
+            src={optimizedImageUrl(officialArtworkUrl(game.mascot), 256)}
+            alt=""
+            class="h-24 w-auto object-contain transition-transform group-hover:scale-110 md:min-h-0 md:flex-1"
+          />
+          <div class="min-w-0 space-y-1">
+            <h2 class="font-bold text-ink text-xl md:text-2xl dark:text-dark-ink">{game.title}</h2>
+            <p class="text-ink-muted text-sm dark:text-dark-ink-muted">{game.subtitle}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</Layout>

@@ -11,7 +11,7 @@ type BottomTabNavProps = {
   currentPath: string
 }
 
-type Tint = 'purple' | 'red' | 'gray'
+type Tint = 'purple' | 'red' | 'green' | 'gray'
 
 const TAB_TINTS: Record<Tint, { base: string; active: string }> = {
   purple: {
@@ -21,6 +21,10 @@ const TAB_TINTS: Record<Tint, { base: string; active: string }> = {
   red: {
     base: 'text-red-500 dark:text-red-300',
     active: 'bg-red-500/12 dark:bg-red-500/15',
+  },
+  green: {
+    base: 'text-emerald-600 dark:text-emerald-400',
+    active: 'bg-emerald-500/15 dark:bg-emerald-500/20',
   },
   gray: {
     base: 'text-ink-muted dark:text-dark-ink-muted',
@@ -140,12 +144,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
           />
         </svg>
       ),
-      match: (path: string) =>
-        path === `/${locale}` ||
-        path === `/${locale}/` ||
-        ['quiz', 'compare', 'team', 'battle'].some((p) =>
-          path.startsWith(`/${locale}/${p}`)
-        ),
+      match: (path: string) => path === `/${locale}` || path === `/${locale}/`,
     },
     {
       label: t.header.pokedex,
@@ -171,6 +170,30 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
         path.startsWith(`/${locale}/pokemon/`) ||
         path.startsWith(`/${locale}/type/`) ||
         path.startsWith(`/${locale}/generation/`),
+    },
+    {
+      label: t.header.play,
+      href: `/${locale}/play`,
+      tint: 'green' as Tint,
+      icon: (
+        <svg
+          className="h-5 w-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <rect x="2" y="6" width="20" height="12" rx="4" />
+          <path d="M6 12h4M8 10v4M15 11h.01M18 13h.01" />
+        </svg>
+      ),
+      match: (path: string) =>
+        ['play', 'quiz', 'compare', 'team', 'battle'].some((p) =>
+          path.startsWith(`/${locale}/${p}`)
+        ),
     },
   ]
 
