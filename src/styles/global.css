@@ -221,23 +221,60 @@ html {
     filter: brightness(1) drop-shadow(0 0 0 transparent);
   }
 
-  /* Stat Battle cards: blurred roll while spinning, small bounce on landing. */
+  /* Stats Battle cards: the card shakes and the artwork streaks past while
+     spinning; landing overshoots like a spring, the number pops and the
+     kept badge stamps on. */
+  .reel-card-rolling {
+    animation: reel-card-shake 90ms ease-in-out infinite alternate;
+  }
+  .reel-card-land {
+    animation: reel-card-bounce 550ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
   .reel-rolling {
-    animation: reel-roll 120ms linear infinite;
+    animation: reel-roll 100ms linear infinite;
   }
   .reel-land {
-    animation: reel-land 350ms cubic-bezier(0.2, 0.8, 0.3, 1.2);
+    animation: reel-land 700ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  .stat-pop {
+    display: inline-block;
+    animation: stat-pop 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 150ms both;
+  }
+  .badge-stamp {
+    animation: badge-stamp 400ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  @keyframes reel-card-shake {
+    from { transform: translate(-1px, 1px) rotate(-1deg); }
+    to { transform: translate(1px, -2px) rotate(1deg); }
+  }
+  @keyframes reel-card-bounce {
+    0% { transform: translateY(10px) scale(0.94); }
+    55% { transform: translateY(-7px) scale(1.04); }
+    100% { transform: none; }
   }
   @keyframes reel-roll {
-    from { transform: translateY(-45%); filter: blur(3px); opacity: 0.5; }
-    to { transform: translateY(45%); filter: blur(3px); opacity: 0.5; }
+    from { transform: translateY(-60%) skewY(-8deg) scale(0.9); filter: blur(4px); opacity: 0.4; }
+    to { transform: translateY(60%) skewY(-8deg) scale(0.9); filter: blur(4px); opacity: 0.4; }
   }
   @keyframes reel-land {
-    from { transform: translateY(-25%) scale(0.85); opacity: 0; }
+    0% { transform: translateY(-70%) scale(0.4) rotate(-12deg); opacity: 0; filter: blur(3px); }
+    45% { transform: translateY(10%) scale(1.18) rotate(4deg); opacity: 1; filter: blur(0); }
+    70% { transform: translateY(-5%) scale(0.94) rotate(-2deg); }
+    85% { transform: translateY(2%) scale(1.03) rotate(1deg); }
+    100% { transform: none; }
+  }
+  @keyframes stat-pop {
+    0% { transform: scale(0) rotate(-15deg); opacity: 0; }
+    60% { transform: scale(1.4) rotate(5deg); opacity: 1; }
+    100% { transform: none; }
+  }
+  @keyframes badge-stamp {
+    0% { transform: scale(2.6) rotate(-25deg); opacity: 0; }
+    100% { transform: none; opacity: 1; }
   }
   @media (prefers-reduced-motion: reduce) {
+    .reel-card-rolling, .reel-card-land, .reel-land, .stat-pop, .badge-stamp { animation: none; }
     .reel-rolling { animation: none; opacity: 0.4; }
-    .reel-land { animation: none; }
   }
 
   /* Simple loader spinner */

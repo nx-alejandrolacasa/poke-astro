@@ -95,9 +95,9 @@ const STAT_LABEL_KEYS = [
   'speed',
 ] as const
 const REEL_COUNT = STAT_LABEL_KEYS.length
-const ROLL_MS = 700
-const STAGGER_MS = 150
-const TICK_MS = 120
+const ROLL_MS = 900
+const STAGGER_MS = 180
+const TICK_MS = 100
 const STRIP_SIZE = 24
 
 const randomOf = <T,>(items: T[]): T =>
@@ -947,11 +947,11 @@ export function StatBattle({ locale }: StatBattleProps) {
               onClick={() => keep(i)}
               disabled={!canKeep}
               aria-label={`${t.stats[STAT_LABEL_KEYS[i]]}: ${reel.rolling ? '…' : reel.pokemon.stats[i]} · ${reel.pokemon.names[locale]}`}
-              className={`relative flex flex-col items-center gap-1 overflow-hidden rounded-2xl border-2 bg-white p-2 text-center transition-all dark:bg-dark-surface ${
+              className={`relative overflow-hidden rounded-2xl border-2 bg-white p-2 text-center transition-all dark:bg-dark-surface ${
                 reel.kept
                   ? 'shadow-md'
                   : 'border-black/[0.08] dark:border-white/[0.1]'
-              } ${canKeep ? 'cursor-pointer hover:-translate-y-1 hover:border-primary/50 hover:shadow-md active:scale-95 dark:hover:border-dark-primary/50' : 'cursor-default'}`}
+              } ${reel.rolling ? 'reel-card-rolling' : ''} ${canKeep ? 'cursor-pointer hover:-translate-y-1 hover:border-primary/50 hover:shadow-md active:scale-95 dark:hover:border-dark-primary/50' : 'cursor-default'}`}
               style={
                 reel.kept
                   ? {
@@ -961,27 +961,33 @@ export function StatBattle({ locale }: StatBattleProps) {
                   : undefined
               }
             >
-              <span className="font-mono text-[10px] tracking-wide text-ink-muted uppercase dark:text-dark-ink-muted">
-                {t.stats[STAT_LABEL_KEYS[i]]}
-              </span>
-              <div className="aspect-square w-full">
-                <img
-                  key={reel.rolling ? 'rolling' : reel.pokemon.id}
-                  src={artwork(shown, 112)}
-                  alt=""
-                  className={`h-full w-full object-contain ${reel.rolling ? 'reel-rolling' : 'reel-land'}`}
-                  draggable={false}
-                />
+              <div
+                key={reel.rolling ? 'rolling' : reel.pokemon.id}
+                className={`flex flex-col items-center gap-1 ${reel.rolling ? '' : 'reel-card-land'}`}
+              >
+                <span className="font-mono text-[10px] tracking-wide text-ink-muted uppercase dark:text-dark-ink-muted">
+                  {t.stats[STAT_LABEL_KEYS[i]]}
+                </span>
+                <div className="aspect-square w-full">
+                  <img
+                    src={artwork(shown, 112)}
+                    alt=""
+                    className={`h-full w-full object-contain ${reel.rolling ? 'reel-rolling' : 'reel-land'}`}
+                    draggable={false}
+                  />
+                </div>
+                <span
+                  className={`text-2xl font-black text-ink tabular-nums dark:text-dark-ink ${reel.rolling ? 'animate-pulse' : 'stat-pop'}`}
+                >
+                  {reel.rolling ? '··' : reel.pokemon.stats[i]}
+                </span>
+                <span className="w-full truncate text-[11px] text-ink-muted dark:text-dark-ink-muted">
+                  {reel.rolling ? ' ' : reel.pokemon.names[locale]}
+                </span>
               </div>
-              <span className="text-2xl font-black text-ink tabular-nums dark:text-dark-ink">
-                {reel.rolling ? '··' : reel.pokemon.stats[i]}
-              </span>
-              <span className="w-full truncate text-[11px] text-ink-muted dark:text-dark-ink-muted">
-                {reel.rolling ? ' ' : reel.pokemon.names[locale]}
-              </span>
               {reel.kept ? (
                 <span
-                  className="absolute top-1.5 right-1.5 rounded-full px-1.5 text-[10px] font-bold text-white"
+                  className="badge-stamp absolute top-1.5 right-1.5 rounded-full px-1.5 text-[10px] font-bold text-white"
                   style={{ background: reelAccent }}
                 >
                   ✓
