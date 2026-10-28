@@ -20,10 +20,6 @@ const { locale, t } = getI18n(localeParam)
     <div class="flex items-center gap-2">
       <BackButton client:load locale={locale} />
     </div>
-    <div class="text-center">
-      <h1 class="pokemon-title text-2xl md:text-4xl">{t.battle.title}</h1>
-      <p class="mt-2 text-ink-muted text-sm dark:text-dark-ink-muted">{t.battle.subtitle}</p>
-    </div>
     <StatBattle client:only="react" locale={locale}>
       <PlaySkeleton slot="fallback" />
     </StatBattle>

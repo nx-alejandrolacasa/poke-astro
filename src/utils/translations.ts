@@ -250,6 +250,10 @@ export type Translations = {
     unlocked: string
     unlockedAll: string
     lockedHint: string
+    stepPokemon: string
+    fight: string
+    summary: string
+    backToSetup: string
     spinning: string
     win: string
     lose: string
@@ -643,6 +647,10 @@ export const translations: Record<Language, Translations> = {
       unlockedAll: 'All generations unlocked for this Pokémon!',
       lockedHint:
         'Beat each generation with this Pokémon to unlock the next. All generations unlock once you have beaten every one.',
+      stepPokemon: 'Your Pokémon',
+      fight: 'Battle!',
+      summary: 'Battle summary',
+      backToSetup: 'Change Pokémon',
       spinning: 'Drawing…',
       win: 'You beat it!',
       lose: 'Not this time.',
@@ -1036,6 +1044,10 @@ export const translations: Record<Language, Translations> = {
       unlockedAll: '¡Todas las generaciones desbloqueadas para este Pokémon!',
       lockedHint:
         'Supera cada generación con este Pokémon para desbloquear la siguiente. «Todas» se desbloquea al vencer en todas.',
+      stepPokemon: 'Tu Pokémon',
+      fight: '¡Al combate!',
+      summary: 'Resumen del combate',
+      backToSetup: 'Cambiar de Pokémon',
       spinning: 'Repartiendo…',
       win: '¡Lo has superado!',
       lose: 'Esta vez no.',
