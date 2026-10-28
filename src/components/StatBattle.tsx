@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { GenerationSelect } from '@/components/GenerationSelect'
 import { PokemonPicker } from '@/components/PokemonPicker'
 import { usePokemonIndex } from '@/components/usePokemonIndex'
@@ -18,6 +18,28 @@ type Reel = {
 }
 
 type Phase = 'pick' | 'playing' | 'done'
+
+type BattleRecord = {
+  at: number
+  targetId: number
+  targetTotal: number
+  total: number
+  cards: number[]
+}
+
+const HISTORY_KEY = 'poke-astro:battle:history'
+const HISTORY_SIZE = 50
+const LOSS_COLOR = '#f43f5e'
+const TIE_COLOR = '#f59e0b'
+
+function readHistory(): BattleRecord[] {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(HISTORY_KEY) ?? '[]')
+    return Array.isArray(parsed) ? parsed : []
+  } catch {
+    return []
+  }
+}
 
 const STAT_LABEL_KEYS = [
   'hp',
@@ -53,6 +75,35 @@ export function StatBattle({ locale }: StatBattleProps) {
   const [redrawUsed, setRedrawUsed] = useState(false)
   const [tick, setTick] = useState(0)
   const timers = useRef<number[]>([])
+  const [history, setHistory] = useState<BattleRecord[]>([])
+  const [onlyWins, setOnlyWins] = useState(false)
+  const recorded = useRef(false)
+  const byId = useMemo(
+    () => new Map(index.map((p) => [p.id, p] as const)),
+    [index]
+  )
+
+  useEffect(() => setHistory(readHistory()), [])
+
+  useEffect(() => {
+    if (phase !== 'done' || !target || recorded.current) return
+    recorded.current = true
+    const record: BattleRecord = {
+      at: Date.now(),
+      targetId: target.id,
+      targetTotal: sumStats(target),
+      total: reelTotal(reels),
+      cards: reels.map((reel) => reel.pokemon.id),
+    }
+    const next = [record, ...history].slice(0, HISTORY_SIZE)
+    setHistory(next)
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(next))
+  }, [phase, target, reels, history])
+
+  const clearHistory = () => {
+    setHistory([])
+    localStorage.removeItem(HISTORY_KEY)
+  }
 
   const [generation, setGeneration] = useState(0)
   const defaults = index.filter((p) => p.isDefault)
@@ -126,6 +177,7 @@ export function StatBattle({ locale }: StatBattleProps) {
     preload(seed)
     setStrip(seed)
     setRedrawUsed(false)
+    recorded.current = false
     spin(
       Array.from({ length: REEL_COUNT }, () => ({
         pokemon,
@@ -188,6 +240,20 @@ export function StatBattle({ locale }: StatBattleProps) {
   const accent = target?.accent ?? '#705898'
   const result =
     diff > 0 ? t.battle.win : diff < 0 ? t.battle.lose : t.battle.tie
+  const outcome = (record: BattleRecord) =>
+    record.total > record.targetTotal
+      ? { label: t.battle.resultWin, color: WIN_COLOR }
+      : record.total < record.targetTotal
+        ? { label: t.battle.resultLose, color: LOSS_COLOR }
+        : { label: t.battle.resultTie, color: TIE_COLOR }
+  const wins = history.filter((r) => r.total > r.targetTotal).length
+  const shownHistory = onlyWins
+    ? history.filter((r) => r.total > r.targetTotal)
+    : history
+  const dateFormat = new Intl.DateTimeFormat(locale, {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  })
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -417,6 +483,103 @@ export function StatBattle({ locale }: StatBattleProps) {
             </button>
           </div>
         </div>
+      )}
+
+      {history.length > 0 && (
+        <section className="space-y-3 border-t border-black/[0.06] pt-6 dark:border-white/[0.08]">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 className="font-bold text-ink dark:text-dark-ink">
+              {t.battle.history}{' '}
+              <span className="font-mono text-xs text-ink-muted dark:text-dark-ink-muted">
+                {wins}/{history.length}
+              </span>
+            </h2>
+            <div className="flex items-center gap-3 text-sm">
+              <label className="flex cursor-pointer items-center gap-2 text-ink dark:text-dark-ink">
+                <input
+                  type="checkbox"
+                  checked={onlyWins}
+                  onChange={(e) => setOnlyWins(e.target.checked)}
+                  className="h-4 w-4 accent-primary"
+                />
+                {t.battle.onlyWins}
+              </label>
+              <button
+                type="button"
+                onClick={clearHistory}
+                className="text-ink-muted underline-offset-2 hover:underline dark:text-dark-ink-muted"
+              >
+                {t.battle.clearHistory}
+              </button>
+            </div>
+          </div>
+          {shownHistory.length === 0 ? (
+            <p className="text-center text-sm text-ink-muted dark:text-dark-ink-muted">
+              {t.battle.noWins}
+            </p>
+          ) : (
+            <ul className="space-y-2">
+              {shownHistory.map((record) => {
+                const targetPokemon = byId.get(record.targetId)
+                const { label, color } = outcome(record)
+                return (
+                  <li
+                    key={record.at}
+                    className="flex items-center gap-3 rounded-2xl border-2 bg-white p-2 pr-3 dark:bg-dark-surface"
+                    style={{ borderColor: `${color}80` }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => targetPokemon && start(targetPokemon)}
+                      disabled={!targetPokemon}
+                      title={t.battle.again}
+                      className="shrink-0 rounded-xl bg-surface-sunken p-1 transition-transform hover:scale-110 dark:bg-dark-raised"
+                    >
+                      <img
+                        src={optimizedImageUrl(
+                          officialArtworkUrl(record.targetId),
+                          48
+                        )}
+                        alt=""
+                        className="h-12 w-12 object-contain"
+                        loading="lazy"
+                      />
+                    </button>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-semibold text-ink dark:text-dark-ink">
+                        {targetPokemon?.names[locale] ?? `#${record.targetId}`}
+                      </p>
+                      <p className="text-xs text-ink-muted dark:text-dark-ink-muted">
+                        {dateFormat.format(record.at)}
+                      </p>
+                    </div>
+                    <div className="hidden -space-x-2 sm:flex">
+                      {record.cards.map((id, i) => (
+                        <img
+                          key={STAT_LABEL_KEYS[i]}
+                          src={optimizedImageUrl(officialArtworkUrl(id), 28)}
+                          alt={byId.get(id)?.names[locale] ?? ''}
+                          title={`${t.stats[STAT_LABEL_KEYS[i]]}: ${byId.get(id)?.stats[i] ?? '?'}`}
+                          className="h-7 w-7 rounded-full bg-white object-contain ring-2 ring-white dark:bg-dark-raised dark:ring-dark-surface"
+                          loading="lazy"
+                        />
+                      ))}
+                    </div>
+                    <span className="font-mono text-sm text-ink tabular-nums dark:text-dark-ink">
+                      {record.total} vs {record.targetTotal}
+                    </span>
+                    <span
+                      className="rounded-full px-2 py-0.5 text-xs font-bold text-white"
+                      style={{ background: color }}
+                    >
+                      {label}
+                    </span>
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+        </section>
       )}
     </div>
   )

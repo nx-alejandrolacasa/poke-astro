@@ -240,6 +240,13 @@ export type Translations = {
     reroll: string
     reelGen: string
     redraw: string
+    history: string
+    onlyWins: string
+    noWins: string
+    clearHistory: string
+    resultWin: string
+    resultLose: string
+    resultTie: string
     spinning: string
     win: string
     lose: string
@@ -622,6 +629,13 @@ export const translations: Record<Language, Translations> = {
       reroll: 'Repeated Pokémon: tap to draw this card again',
       reelGen: 'Generation of the cards',
       redraw: 'Draw all again',
+      history: 'Battle log',
+      onlyWins: 'Only wins',
+      noWins: 'No wins yet.',
+      clearHistory: 'Clear',
+      resultWin: 'Win',
+      resultLose: 'Loss',
+      resultTie: 'Tie',
       spinning: 'Drawing…',
       win: 'You beat it!',
       lose: 'Not this time.',
@@ -1004,6 +1018,13 @@ export const translations: Record<Language, Translations> = {
       reroll: 'Pokémon repetido: toca para repartir esta carta de nuevo',
       reelGen: 'Generación de las cartas',
       redraw: 'Repartir todo de nuevo',
+      history: 'Historial',
+      onlyWins: 'Solo victorias',
+      noWins: 'Aún no hay victorias.',
+      clearHistory: 'Borrar',
+      resultWin: 'Victoria',
+      resultLose: 'Derrota',
+      resultTie: 'Empate',
       spinning: 'Repartiendo…',
       win: '¡Lo has superado!',
       lose: 'Esta vez no.',
