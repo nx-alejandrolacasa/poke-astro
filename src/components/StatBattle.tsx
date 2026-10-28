@@ -100,6 +100,7 @@ const ROLL_MS = 900
 const STAGGER_MS = 180
 const TICK_MS = 100
 const STRIP_SIZE = 24
+const SURVIVAL_REDRAWS = 3
 
 const randomOf = <T,>(items: T[]): T =>
   items[Math.floor(Math.random() * items.length)]
@@ -223,6 +224,7 @@ export function StatBattle({ locale }: StatBattleProps) {
   const [legendGen, setLegendGen] = useState(1)
   const [mode, setMode] = useState<Mode>('classic')
   const [streak, setStreak] = useState(0)
+  const [runRedraws, setRunRedraws] = useState(0)
   const [survivalBest, setSurvivalBest] = useState<Record<number, number>>({})
   const [tick, setTick] = useState(0)
   const timers = useRef<number[]>([])
@@ -414,6 +416,7 @@ export function StatBattle({ locale }: StatBattleProps) {
 
   const startSurvival = () => {
     setStreak(0)
+    setRunRedraws(0)
     nextOpponent()
   }
 
@@ -456,9 +459,16 @@ export function StatBattle({ locale }: StatBattleProps) {
     }
   }
 
+  const runRedrawsLeft =
+    mode === 'survival'
+      ? SURVIVAL_REDRAWS - runRedraws
+      : Number.POSITIVE_INFINITY
+  const canRedraw = !rolling && !redrawUsed && runRedrawsLeft > 0
+
   const redrawAll = () => {
-    if (phase !== 'playing' || rolling || redrawUsed) return
+    if (phase !== 'playing' || !canRedraw) return
     setRedrawUsed(true)
+    if (mode === 'survival') setRunRedraws((n) => n + 1)
     spin(reels)
   }
 
@@ -1094,12 +1104,14 @@ export function StatBattle({ locale }: StatBattleProps) {
             <button
               type="button"
               onClick={redrawAll}
-              disabled={rolling || redrawUsed}
+              disabled={!canRedraw}
               className={SECONDARY_BUTTON}
             >
               ↻ {t.battle.redraw}{' '}
               <span className="font-mono opacity-60">
                 {redrawUsed ? 0 : 1}/1
+                {mode === 'survival' &&
+                  ` · 🔥 ${Math.max(0, runRedrawsLeft)}/${SURVIVAL_REDRAWS}`}
               </span>
             </button>
           </div>
