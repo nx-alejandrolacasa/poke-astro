@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { usePresence } from '@/components/usePresence'
 import type { Locale } from '@/utils/i18n'
 import type { PokemonRecord } from '@/utils/pokemon'
 import { officialArtworkUrl, optimizedImageUrl } from '@/utils/pokemon'
@@ -24,6 +25,10 @@ export function PokemonPicker({
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(0)
   const results = searchPokemon(index, query, locale, 6)
+  const list = usePresence(results.length > 0, 150)
+  const lastResults = useRef(results)
+  if (results.length > 0) lastResults.current = results
+  const shownResults = results.length > 0 ? results : lastResults.current
 
   useEffect(() => setSelected(0), [])
 
@@ -67,12 +72,12 @@ export function PokemonPicker({
         aria-expanded={results.length > 0}
         aria-label={placeholder ?? t.search.placeholder}
       />
-      {results.length > 0 && (
+      {list.mounted && (
         <div
           role="listbox"
-          className="absolute top-full right-0 left-0 z-30 mt-2 overflow-hidden rounded-2xl border border-white/60 bg-white/90 shadow-lg shadow-black/[0.06] backdrop-blur-xl dark:border-white/[0.08] dark:bg-dark-surface/90"
+          className={`absolute top-full right-0 left-0 z-30 mt-2 overflow-hidden rounded-2xl border border-white/60 bg-white/90 shadow-lg shadow-black/[0.06] backdrop-blur-xl dark:border-white/[0.08] dark:bg-dark-surface/90 ${list.closing ? 'animate-pop-out' : 'animate-pop-in'}`}
         >
-          {results.map((pokemon, i) => (
+          {shownResults.map((pokemon, i) => (
             <button
               key={pokemon.id}
               type="button"

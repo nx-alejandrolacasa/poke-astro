@@ -3,6 +3,7 @@ import { BackButton } from '@/components/BackButton'
 import { GenerationSelect } from '@/components/GenerationSelect'
 import { PokemonPicker } from '@/components/PokemonPicker'
 import { usePokemonIndex } from '@/components/usePokemonIndex'
+import { usePresence } from '@/components/usePresence'
 import { GENERATIONS } from '@/utils/generations'
 import type { Locale } from '@/utils/i18n'
 import type { PokemonRecord } from '@/utils/pokemon'
@@ -221,6 +222,7 @@ export function StatBattle({ locale }: StatBattleProps) {
   const [strip, setStrip] = useState<PokemonRecord[]>([])
   const [redrawUsed, setRedrawUsed] = useState(false)
   const [summaryDismissed, setSummaryDismissed] = useState(false)
+  const summary = usePresence(phase === 'done' && !summaryDismissed, 220)
   const [generation, setGeneration] = useState(0)
   const [legendGen, setLegendGen] = useState(1)
   const [mode, setMode] = useState<Mode>('classic')
@@ -920,9 +922,9 @@ export function StatBattle({ locale }: StatBattleProps) {
         <BackButton locale={locale} onBack={backToSetup} />
       </div>
       <div className="mx-auto max-w-3xl space-y-6">
-        {phase === 'done' && !summaryDismissed && (
+        {summary.mounted && (
           <div
-            className="fixed inset-0 z-50 flex animate-zoom-overlay-in items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+            className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm ${summary.closing ? 'animate-zoom-overlay-out' : 'animate-zoom-overlay-in'}`}
             role="dialog"
             aria-modal="true"
             aria-label={mode === 'classic' ? t.battle.summary : t.battle[mode]}
@@ -934,7 +936,7 @@ export function StatBattle({ locale }: StatBattleProps) {
               className="absolute inset-0 h-full w-full cursor-default outline-none"
             />
             <div
-              className="relative w-full max-w-md animate-zoom-image-in space-y-3 rounded-3xl border-2 bg-white p-6 text-center shadow-2xl dark:bg-dark-surface"
+              className={`relative w-full max-w-md space-y-3 rounded-3xl border-2 bg-white p-6 text-center shadow-2xl dark:bg-dark-surface ${summary.closing ? 'animate-zoom-image-out' : 'animate-zoom-image-in'}`}
               style={{
                 borderColor: ahead ? WIN_COLOR : accent,
                 backgroundImage: `radial-gradient(circle at 50% 0%, ${ahead ? WIN_COLOR : accent}33, transparent 70%)`,
