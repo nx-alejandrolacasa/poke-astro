@@ -605,7 +605,7 @@ export const translations: Record<Language, Translations> = {
       quiz: "Who's that Pokémon?",
       compare: 'Compare',
       team: 'Team builder',
-      battle: 'Stat Battle',
+      battle: 'Stats Battle',
       typeToSearch: 'Type to search...',
     },
     quiz: {
@@ -636,7 +636,7 @@ export const translations: Record<Language, Translations> = {
       openDetail: 'Open details',
     },
     battle: {
-      title: 'Stat Battle',
+      title: 'Stats Battle',
       subtitle:
         'Six cards, one per stat. Keep one at a time and beat the base stat total of your Pokémon.',
       intro: 'Choose a Pokémon or draw a random one to start.',
@@ -1017,7 +1017,7 @@ export const translations: Record<Language, Translations> = {
       quiz: '¿Quién es ese Pokémon?',
       compare: 'Comparar',
       team: 'Equipo',
-      battle: 'Duelo de Estadísticas',
+      battle: 'Stats Battle',
       typeToSearch: 'Escribe para buscar...',
     },
     quiz: {
@@ -1048,7 +1048,7 @@ export const translations: Record<Language, Translations> = {
       openDetail: 'Ver detalles',
     },
     battle: {
-      title: 'Duelo de Estadísticas',
+      title: 'Stats Battle',
       subtitle:
         'Seis cartas, una por estadística. Quédate una cada vez y supera el total de estadísticas base de tu Pokémon.',
       intro: 'Elige un Pokémon o saca uno al azar para empezar.',
