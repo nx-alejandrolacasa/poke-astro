@@ -109,8 +109,41 @@ const navSkeletonData = {
         overlay.className = 'nav-skeleton-overlay'
         overlay.appendChild(template.content.cloneNode(true))
         if (kind === 'lister') addListerBanner(overlay, path)
+        if (kind === 'detail') stageHeroMorph(overlay, path)
         document.body.appendChild(overlay)
       })
+
+      // Detail destinations: once the overlay actually reveals (slow fetch),
+      // hand the clicked tile's artwork to a clone inside the overlay and
+      // glide it to the skeleton's hero slot. The clone inherits the
+      // view-transition-name, so the final swap morphs from where the clone
+      // already is instead of jumping back to the tile. Fast navigations
+      // never reveal the overlay and keep the tile-to-hero morph untouched.
+      const stageHeroMorph = (overlay, path) => {
+        const tileImg = document.querySelector(`a[href="${path}"] img`)
+        const slot = overlay.querySelector('[data-hero-slot]')
+        const name = tileImg?.style.viewTransitionName
+        if (!tileImg || !slot || !name || name === 'none') return
+        const from = tileImg.getBoundingClientRect()
+        const clone = tileImg.cloneNode()
+        clone.removeAttribute('class')
+        clone.style.cssText = `position:absolute;left:${from.left}px;top:${from.top}px;width:${from.width}px;height:${from.height}px;object-fit:contain;z-index:1`
+        overlay.appendChild(clone)
+        const rect = (r) => ({ left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` })
+        const onReveal = (ev) => {
+          if (ev.target !== overlay) return
+          overlay.removeEventListener('animationstart', onReveal)
+          slot.classList.remove('skeleton-shimmer')
+          tileImg.style.viewTransitionName = 'none'
+          clone.style.viewTransitionName = name
+          clone.animate([rect(from), rect(slot.getBoundingClientRect())], {
+            duration: 350,
+            easing: 'cubic-bezier(0.2, 0, 0, 1)',
+            fill: 'forwards',
+          })
+        }
+        overlay.addEventListener('animationstart', onReveal)
+      }
 
       // Type/generation destinations carry their banner heading in the URL,
       // so render the real title and tint; only the species count shimmers.
