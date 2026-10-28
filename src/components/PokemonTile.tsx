@@ -39,7 +39,7 @@ export function PokemonTile({ pokemon, locale }: PokemonTileProps) {
             src={optimizedImageUrl(officialArtworkUrl(pokemon.id), 256)}
             alt={`${pokemon.names[locale]} official artwork`}
             loading="lazy"
-            style={{ viewTransitionName: `pokemon-${pokemon.id}` }}
+            data-view-transition={`pokemon-${pokemon.id}`}
           />
         </div>
         <div className="mt-2 space-y-1.5">

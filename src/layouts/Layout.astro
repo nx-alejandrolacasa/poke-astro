@@ -120,10 +120,14 @@ const navSkeletonData = {
       // already is instead of jumping back to the tile. Fast navigations
       // never reveal the overlay and keep the tile-to-hero morph untouched.
       const stageHeroMorph = (overlay, path) => {
-        const tileImg = document.querySelector(`a[href="${path}"] img`)
+        const tileImg = document.querySelector(`a[href="${path}"] img[data-view-transition]`)
         const slot = overlay.querySelector('[data-hero-slot]')
-        const name = tileImg?.style.viewTransitionName
-        if (!tileImg || !slot || !name || name === 'none') return
+        if (!tileImg || !slot) return
+        // Only the clicked tile gets the name. If every tile carried one, each
+        // of the ~60 visible images would be snapshotted and fade out on its
+        // own, above the overlay, instead of crossfading with the page.
+        const name = tileImg.dataset.viewTransition
+        tileImg.style.viewTransitionName = name
         const from = tileImg.getBoundingClientRect()
         const clone = tileImg.cloneNode()
         clone.removeAttribute('class')

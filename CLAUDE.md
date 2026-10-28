@@ -35,5 +35,5 @@ npm run check:types  # astro sync && tsc --noEmit --runExternalCode
 - The `@vercel/analytics/astro` entry in `tsconfig.json` `paths` works around a TS 7 error in that package. Remove it once upstream fixes it.
 - Keep the `resolve-vite-env` plugin in `astro.config.mjs`: Vite's client still imports `@vite/env`.
 - `experimental.clientPrerender` stays off, because ClientRouter can't use Speculation Rules prerenders. Detail links use `data-astro-prefetch="tap"`.
-- View transitions run for real except on iOS, where `Layout.astro` replaces `startViewTransition` with a pass-through (Safari snapshot bugs). Tile and hero artwork share `view-transition-name: pokemon-{id}` so they morph between pages.
+- View transitions run for real except on iOS, where `Layout.astro` replaces `startViewTransition` with a pass-through (Safari snapshot bugs). The detail hero carries `view-transition-name: pokemon-{id}`; tiles only carry it as `data-view-transition`, and `Layout.astro` assigns it to the clicked tile at click time. Never name every tile: each named element is snapshotted and animated separately.
 - `getStaticPaths` and `index.json` need `beta.pokeapi.co` at build time. If the GraphQL endpoint is down the build fails; there is no REST fallback.
