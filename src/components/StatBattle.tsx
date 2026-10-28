@@ -30,6 +30,7 @@ type BattleRecord = {
   cards: number[]
   generation: number
   mode?: Mode
+  redraw?: boolean
 }
 
 const LAST_GENERATION = GENERATIONS[GENERATIONS.length - 1].id
@@ -244,6 +245,7 @@ export function StatBattle({ locale }: StatBattleProps) {
       cards: reels.map((reel) => reel.pokemon.id),
       generation,
       ...(mode === 'survival' ? { mode } : {}),
+      ...(redrawUsed ? { redraw: true } : {}),
     }
     const next = [record, ...history].slice(0, HISTORY_SIZE)
     setHistory(next)
@@ -257,7 +259,17 @@ export function StatBattle({ locale }: StatBattleProps) {
         localStorage.setItem(SURVIVAL_KEY, JSON.stringify(best))
       }
     }
-  }, [phase, target, reels, history, generation, mode, streak, survivalBest])
+  }, [
+    phase,
+    target,
+    reels,
+    history,
+    generation,
+    mode,
+    streak,
+    survivalBest,
+    redrawUsed,
+  ])
 
   const clearHistory = () => {
     setHistory([])
@@ -828,8 +840,10 @@ export function StatBattle({ locale }: StatBattleProps) {
                       <span
                         className="rounded-full px-2 py-0.5 text-xs font-bold text-white"
                         style={{ background: color }}
+                        title={record.redraw ? t.battle.redrawWin : undefined}
                       >
                         {label}
+                        {record.redraw && ' ↻'}
                       </span>
                     </li>
                   )
@@ -860,6 +874,11 @@ export function StatBattle({ locale }: StatBattleProps) {
           <p className="text-2xl font-black text-ink dark:text-dark-ink">
             {mode === 'survival' && diff <= 0 ? t.battle.runOver : result}
           </p>
+          {diff > 0 && redrawUsed && (
+            <p className="text-sm text-amber-700 dark:text-amber-300">
+              ↻ {t.battle.redrawWin}
+            </p>
+          )}
           {mode === 'survival' && (
             <p className="font-mono text-sm text-ink dark:text-dark-ink">
               🔥 {t.battle.streak} <b>{streak}</b> · 🏆 {t.battle.bestStreak}{' '}
