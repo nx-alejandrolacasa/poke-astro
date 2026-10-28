@@ -19,7 +19,7 @@ export function PokemonLister({ pokemon, locale, banner }: PokemonListerProps) {
         <BackButton locale={locale} />
         <RecentlyVisited locale={locale} />
       </div>
-      {banner}
+      {banner && <div>{banner}</div>}
       <VirtualPokemonGrid pokemon={pokemon} locale={locale} />
       <BackToTop />
     </div>

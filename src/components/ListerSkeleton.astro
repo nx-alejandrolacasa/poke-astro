@@ -33,7 +33,7 @@ const cellCount = 18
 
   {banner === 'type' && (
     <div
-      class:list={['mb-8 rounded-2xl p-6 md:p-8', !bannerTitle && 'bg-surface-sunken dark:bg-dark-raised']}
+      class:list={['mb-8 rounded-2xl border-2 border-black/[0.06] dark:border-white/[0.08] p-6 md:p-8', !bannerTitle && 'bg-surface-sunken dark:bg-dark-raised']}
       style={bannerTitle && `background-color: ${bannerColor ?? '#a8a878'}18`}
     >
       {bannerTitle ? (
@@ -50,7 +50,7 @@ const cellCount = 18
   )}
 
   {banner === 'generation' && (
-    <div class="mb-8 rounded-2xl bg-gradient-to-br from-primary-50 to-surface-sunken p-6 md:p-8 dark:from-dark-raised dark:to-dark-surface">
+    <div class="mb-8 rounded-2xl border-2 border-black/[0.06] dark:border-white/[0.08] bg-gradient-to-br from-primary-50 to-surface-sunken p-6 md:p-8 dark:from-dark-raised dark:to-dark-surface">
       {bannerTitle ? (
         <h1 class="font-bold text-2xl text-ink tracking-tight md:text-3xl dark:text-dark-ink">{bannerTitle}</h1>
       ) : (
