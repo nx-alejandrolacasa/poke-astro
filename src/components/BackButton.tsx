@@ -1,5 +1,7 @@
+import { navigate } from 'astro:transitions/client'
 import { useEffect, useState } from 'react'
 import type { Locale } from '@/utils/i18n'
+import { isDetailRoute, lastNonDetailRoute } from '@/utils/routeHistory'
 import { translations } from '@/utils/translations'
 
 type BackButtonProps = {
@@ -12,8 +14,16 @@ export function BackButton({ locale }: BackButtonProps) {
   // arrived via in-app navigation; disable only after we confirm there's no
   // sensible previous page (no referrer, or referrer is off-origin).
   const [enabled, setEnabled] = useState(true)
+  const [target, setTarget] = useState<string | null>(null)
 
   useEffect(() => {
+    const path = window.location.pathname
+    const fromDetail = isDetailRoute(path) ? lastNonDetailRoute(path) : null
+    setTarget(fromDetail)
+    if (fromDetail) {
+      setEnabled(true)
+      return
+    }
     // Modern Navigation API exposes canGoBack directly (PWA-friendly)
     const nav = (window as Window & { navigation?: { canGoBack?: boolean } })
       .navigation
@@ -44,7 +54,8 @@ export function BackButton({ locale }: BackButtonProps) {
     <button
       type="button"
       onClick={() => {
-        if (enabled) window.history.back()
+        if (target) navigate(target)
+        else if (enabled) window.history.back()
       }}
       disabled={!enabled}
       aria-label={t.pages.back}
