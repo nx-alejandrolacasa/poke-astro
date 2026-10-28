@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
+import { GenerationSelect } from '@/components/GenerationSelect'
 import { usePokemonIndex } from '@/components/usePokemonIndex'
-import { GENERATIONS } from '@/utils/generations'
 import type { Locale } from '@/utils/i18n'
 import type { PokemonRecord } from '@/utils/pokemon'
 import { officialArtworkUrl, optimizedImageUrl } from '@/utils/pokemon'
@@ -111,19 +111,12 @@ export function WhosThatPokemon({ locale }: WhosThatPokemonProps) {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div className="flex flex-wrap items-center justify-center gap-2">
-        <select
+        <GenerationSelect
           value={generation}
-          onChange={(e) => setGeneration(Number(e.target.value))}
-          aria-label={t.quiz.gen}
-          className="rounded-full border border-black/[0.06] bg-surface-sunken px-3 py-1.5 text-sm text-ink dark:border-white/[0.06] dark:bg-dark-raised dark:text-dark-ink"
-        >
-          <option value={0}>{t.quiz.allGens}</option>
-          {GENERATIONS.map((gen) => (
-            <option key={gen.id} value={gen.id}>
-              {t.quiz.gen} {gen.roman} · {gen.region}
-            </option>
-          ))}
-        </select>
+          onChange={setGeneration}
+          locale={locale}
+          label={t.quiz.gen}
+        />
         <div className="flex gap-3 font-mono text-sm text-ink-muted dark:text-dark-ink-muted">
           <span>
             {t.quiz.score}{' '}

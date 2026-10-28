@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
+import { GenerationSelect } from '@/components/GenerationSelect'
 import { PokemonPicker } from '@/components/PokemonPicker'
 import { usePokemonIndex } from '@/components/usePokemonIndex'
-import { GENERATIONS } from '@/utils/generations'
 import type { Locale } from '@/utils/i18n'
 import type { PokemonRecord } from '@/utils/pokemon'
 import { officialArtworkUrl, optimizedImageUrl } from '@/utils/pokemon'
@@ -209,20 +209,12 @@ export function StatBattle({ locale }: StatBattleProps) {
         >
           {t.battle.random}
         </button>
-        <select
+        <GenerationSelect
           value={generation}
-          onChange={(e) => setGeneration(Number(e.target.value))}
-          aria-label={t.battle.reelGen}
-          title={t.battle.reelGen}
-          className="rounded-full border border-black/[0.06] bg-surface-sunken px-3 py-2 text-sm text-ink dark:border-white/[0.06] dark:bg-dark-raised dark:text-dark-ink"
-        >
-          <option value={0}>{t.quiz.allGens}</option>
-          {GENERATIONS.map((gen) => (
-            <option key={gen.id} value={gen.id}>
-              {t.quiz.gen} {gen.roman} · {gen.region}
-            </option>
-          ))}
-        </select>
+          onChange={setGeneration}
+          locale={locale}
+          label={t.battle.reelGen}
+        />
       </div>
 
       {target ? (
