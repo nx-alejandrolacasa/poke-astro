@@ -6,9 +6,10 @@ import { translations } from '@/utils/translations'
 
 type BackButtonProps = {
   locale: Locale
+  onBack?: () => void
 }
 
-export function BackButton({ locale }: BackButtonProps) {
+export function BackButton({ locale, onBack }: BackButtonProps) {
   const t = translations[locale]
   // Default to enabled so SSR/hydration match the common case where the user
   // arrived via in-app navigation; disable only after we confirm there's no
@@ -54,10 +55,11 @@ export function BackButton({ locale }: BackButtonProps) {
     <button
       type="button"
       onClick={() => {
-        if (target) navigate(target)
+        if (onBack) onBack()
+        else if (target) navigate(target)
         else if (enabled) window.history.back()
       }}
-      disabled={!enabled}
+      disabled={!onBack && !enabled}
       aria-label={t.pages.back}
       className="-ml-1 inline-flex shrink-0 cursor-pointer items-center gap-1 py-1 pr-2 text-sm font-semibold text-red-500 transition-all hover:text-red-600 active:scale-95 disabled:pointer-events-none disabled:cursor-default disabled:opacity-40 dark:text-red-300 dark:hover:text-red-200"
     >

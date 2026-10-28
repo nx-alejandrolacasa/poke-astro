@@ -1,7 +1,6 @@
 ---
 export const prerender = true
 
-import { BackButton } from '@/components/BackButton'
 import PlaySkeleton from '@/components/PlaySkeleton.astro'
 import { StatBattle } from '@/components/StatBattle'
 import Layout from '@/layouts/Layout.astro'
@@ -17,9 +16,6 @@ const { locale, t } = getI18n(localeParam)
 
 <Layout title={t.battle.title} locale={locale} description={t.battle.subtitle}>
   <div class="space-y-6">
-    <div class="flex items-center gap-2 border-black/[0.06] border-b pb-3 dark:border-white/[0.08]">
-      <BackButton client:load locale={locale} />
-    </div>
     <StatBattle client:only="react" locale={locale}>
       <PlaySkeleton slot="fallback" />
     </StatBattle>
