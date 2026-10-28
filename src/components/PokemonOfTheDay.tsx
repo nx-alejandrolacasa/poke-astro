@@ -65,7 +65,7 @@ export function PokemonOfTheDay({ locale }: PokemonOfTheDayProps) {
     <a
       href={`/${locale}/pokemon/${pokemon.name}`}
       data-astro-prefetch="tap"
-      className="group flex h-full flex-col items-center justify-center gap-1 rounded-3xl bg-white p-4 text-center transition-all hover:-translate-y-1 active:scale-[0.98] dark:bg-dark-surface"
+      className="group flex h-full min-h-0 flex-col items-center justify-center gap-1 rounded-3xl bg-white p-3 text-center transition-all hover:-translate-y-1 active:scale-[0.98] md:p-4 dark:bg-dark-surface"
       style={{
         border: `2px solid ${accent}`,
         backgroundImage: `radial-gradient(circle at 50% 35%, ${accent}40, transparent 65%)`,
@@ -80,13 +80,13 @@ export function PokemonOfTheDay({ locale }: PokemonOfTheDayProps) {
         className="min-h-0 w-auto flex-1 object-contain transition-transform group-hover:scale-110"
         data-view-transition={`pokemon-${pokemon.id}`}
       />
-      <span className="text-xl font-bold text-ink dark:text-dark-ink">
+      <span className="text-base font-bold text-ink md:text-xl dark:text-dark-ink">
         <span className="mr-2 font-mono text-sm opacity-40">
           #{pokemon.id.toString().padStart(3, '0')}
         </span>
         {pokemon.names[locale]}
       </span>
-      <div className="flex gap-1">
+      <div className="flex flex-wrap justify-center gap-1">
         {pokemon.types.map((type) => (
           <TypeBadge
             key={type}
