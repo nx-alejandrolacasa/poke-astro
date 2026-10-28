@@ -4,13 +4,11 @@ import type { Locale } from '@/utils/i18n'
 import { loadPokemonIndex } from '@/utils/pokemonIndex'
 import { translations } from '@/utils/translations'
 
-type RandomPokemonTileProps = {
+type RandomPokemonButtonProps = {
   locale: Locale
 }
 
-const ACCENT = '#705898'
-
-export function RandomPokemonTile({ locale }: RandomPokemonTileProps) {
+export function RandomPokemonButton({ locale }: RandomPokemonButtonProps) {
   const t = translations[locale]
   const [busy, setBusy] = useState(false)
 
@@ -30,14 +28,10 @@ export function RandomPokemonTile({ locale }: RandomPokemonTileProps) {
       type="button"
       onClick={surprise}
       disabled={busy}
-      className="group flex h-full w-full flex-col items-center justify-center gap-2 rounded-3xl bg-white p-4 text-center transition-all hover:-translate-y-1 active:scale-[0.98] disabled:opacity-60 dark:bg-dark-surface"
-      style={{
-        border: `2px solid ${ACCENT}`,
-        backgroundImage: `radial-gradient(circle at 50% 35%, ${ACCENT}40, transparent 65%)`,
-      }}
+      className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-primary-600 active:scale-95 disabled:opacity-60"
     >
       <svg
-        className={`h-10 w-10 text-primary transition-transform group-hover:rotate-12 dark:text-dark-primary ${busy ? 'animate-spin' : ''}`}
+        className={`h-4 w-4 ${busy ? 'animate-spin' : ''}`}
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -53,9 +47,7 @@ export function RandomPokemonTile({ locale }: RandomPokemonTileProps) {
         <circle cx="8" cy="16" r="1" fill="currentColor" />
         <circle cx="16" cy="16" r="1" fill="currentColor" />
       </svg>
-      <span className="font-bold text-ink dark:text-dark-ink">
-        {t.home.randomPokemon}
-      </span>
+      {t.home.randomPokemon}
     </button>
   )
 }
