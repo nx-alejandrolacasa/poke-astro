@@ -3,7 +3,7 @@ export const prerender = true
 
 import { BackButton } from '@/components/BackButton'
 import PlaySkeleton from '@/components/PlaySkeleton.astro'
-import { StatSlots } from '@/components/StatSlots'
+import { StatBattle } from '@/components/StatBattle'
 import Layout from '@/layouts/Layout.astro'
 import { getI18n, getLocalePaths } from '@/utils/i18n'
 
@@ -15,17 +15,17 @@ const { locale: localeParam } = Astro.params
 const { locale, t } = getI18n(localeParam)
 ---
 
-<Layout title={t.slots.title} locale={locale} description={t.slots.subtitle}>
+<Layout title={t.battle.title} locale={locale} description={t.battle.subtitle}>
   <div class="space-y-6">
     <div class="flex items-center gap-2">
       <BackButton client:load locale={locale} />
     </div>
     <div class="text-center">
-      <h1 class="pokemon-title text-2xl md:text-4xl">{t.slots.title}</h1>
-      <p class="mt-2 text-ink-muted text-sm dark:text-dark-ink-muted">{t.slots.subtitle}</p>
+      <h1 class="pokemon-title text-2xl md:text-4xl">{t.battle.title}</h1>
+      <p class="mt-2 text-ink-muted text-sm dark:text-dark-ink-muted">{t.battle.subtitle}</p>
     </div>
-    <StatSlots client:only="react" locale={locale}>
+    <StatBattle client:only="react" locale={locale}>
       <PlaySkeleton slot="fallback" />
-    </StatSlots>
+    </StatBattle>
   </div>
 </Layout>

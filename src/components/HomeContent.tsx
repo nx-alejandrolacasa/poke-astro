@@ -26,7 +26,7 @@ const PLAY_LINKS = [
   { path: 'quiz', key: 'quiz', mascot: 25, color: '#f4d67b' },
   { path: 'compare', key: 'compare', mascot: 150, color: '#997a96' },
   { path: 'team', key: 'team', mascot: 448, color: '#6896a8' },
-  { path: 'slots', key: 'slots', mascot: 52, color: '#d9b65a' },
+  { path: 'battle', key: 'battle', mascot: 107, color: '#d46a6a' },
 ] as const
 
 export function HomeContent({ locale }: HomeContentProps) {

@@ -7,7 +7,7 @@ import type { PokemonRecord } from '@/utils/pokemon'
 import { officialArtworkUrl, optimizedImageUrl } from '@/utils/pokemon'
 import { translations } from '@/utils/translations'
 
-type StatSlotsProps = {
+type StatBattleProps = {
   locale: Locale
 }
 
@@ -43,7 +43,7 @@ const reelTotal = (reels: Reel[]) =>
 const artwork = (pokemon: PokemonRecord, size: number) =>
   optimizedImageUrl(officialArtworkUrl(pokemon.id), size)
 
-export function StatSlots({ locale }: StatSlotsProps) {
+export function StatBattle({ locale }: StatBattleProps) {
   const t = translations[locale]
   const { index, loading } = usePokemonIndex()
   const [target, setTarget] = useState<PokemonRecord | null>(null)
@@ -178,7 +178,8 @@ export function StatSlots({ locale }: StatSlotsProps) {
   const diff = total - targetTotal
   const ahead = diff >= 0
   const accent = target?.accent ?? '#705898'
-  const result = diff > 0 ? t.slots.win : diff < 0 ? t.slots.lose : t.slots.tie
+  const result =
+    diff > 0 ? t.battle.win : diff < 0 ? t.battle.lose : t.battle.tie
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -187,7 +188,7 @@ export function StatSlots({ locale }: StatSlotsProps) {
           <PokemonPicker
             index={index}
             locale={locale}
-            placeholder={t.slots.pick}
+            placeholder={t.battle.pick}
             autoFocus={!target}
             onPick={start}
           />
@@ -198,13 +199,13 @@ export function StatSlots({ locale }: StatSlotsProps) {
           disabled={loading || defaults.length === 0}
           className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-primary-600 active:scale-95 disabled:opacity-50 dark:bg-dark-primary"
         >
-          🎲 {t.slots.random}
+          {t.battle.random}
         </button>
         <select
           value={generation}
           onChange={(e) => setGeneration(Number(e.target.value))}
-          aria-label={t.slots.reelGen}
-          title={t.slots.reelGen}
+          aria-label={t.battle.reelGen}
+          title={t.battle.reelGen}
           className="rounded-full border border-black/[0.06] bg-surface-sunken px-3 py-2 text-sm text-ink dark:border-white/[0.06] dark:bg-dark-raised dark:text-dark-ink"
         >
           <option value={0}>{t.quiz.allGens}</option>
@@ -252,7 +253,7 @@ export function StatSlots({ locale }: StatSlotsProps) {
             </div>
             <div className="shrink-0 text-right">
               <p className="font-mono text-[11px] tracking-wide text-ink-muted uppercase dark:text-dark-ink-muted">
-                {t.slots.target}
+                {t.battle.target}
               </p>
               <p className="text-3xl font-black text-ink tabular-nums dark:text-dark-ink">
                 {targetTotal}
@@ -262,7 +263,7 @@ export function StatSlots({ locale }: StatSlotsProps) {
           <div className="mt-4">
             <div className="flex items-baseline justify-between text-sm">
               <span className="text-ink-muted dark:text-dark-ink-muted">
-                {t.slots.yours}
+                {t.battle.yours}
               </span>
               <span
                 className={`font-mono font-bold tabular-nums transition-colors ${ahead ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}
@@ -285,7 +286,7 @@ export function StatSlots({ locale }: StatSlotsProps) {
         </div>
       ) : (
         <p className="text-center text-sm text-ink-muted dark:text-dark-ink-muted">
-          {loading ? t.slots.loading : t.slots.intro}
+          {loading ? t.battle.loading : t.battle.intro}
         </p>
       )}
 
@@ -347,7 +348,7 @@ export function StatSlots({ locale }: StatSlotsProps) {
                 ) : !reel.rolling && repeatedIds.has(reel.pokemon.id) ? (
                   <span
                     className="absolute top-1.5 left-1.5 rounded-full bg-amber-400 px-1.5 text-[10px] font-bold text-amber-950"
-                    title={t.slots.reroll}
+                    title={t.battle.reroll}
                   >
                     ↻
                   </span>
@@ -367,7 +368,7 @@ export function StatSlots({ locale }: StatSlotsProps) {
           className="text-center text-sm text-ink-muted dark:text-dark-ink-muted"
           aria-live="polite"
         >
-          {rolling ? t.slots.spinning : t.slots.hint}{' '}
+          {rolling ? t.battle.spinning : t.battle.hint}{' '}
           <span className="font-mono">
             {keptCount}/{REEL_COUNT}
           </span>
@@ -394,14 +395,14 @@ export function StatSlots({ locale }: StatSlotsProps) {
               onClick={() => start(target)}
               className="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-primary-600 active:scale-95 dark:bg-dark-primary"
             >
-              {t.slots.again}
+              {t.battle.again}
             </button>
             <button
               type="button"
               onClick={() => start(randomOf(defaults))}
               className="rounded-full border-2 border-black/[0.08] bg-white px-6 py-2.5 text-sm font-semibold text-ink transition-all hover:border-primary/40 active:scale-95 dark:border-white/[0.1] dark:bg-dark-surface dark:text-dark-ink"
             >
-              🎲 {t.slots.random}
+              {t.battle.random}
             </button>
           </div>
         </div>

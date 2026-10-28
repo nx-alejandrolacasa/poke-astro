@@ -221,7 +221,7 @@ html {
     filter: brightness(1) drop-shadow(0 0 0 transparent);
   }
 
-  /* Stat Slots reels: blurred roll while spinning, small bounce on landing. */
+  /* Stat Battle cards: blurred roll while spinning, small bounce on landing. */
   .reel-rolling {
     animation: reel-roll 120ms linear infinite;
   }

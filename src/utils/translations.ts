@@ -197,7 +197,7 @@ export type Translations = {
     quiz: string
     compare: string
     team: string
-    slots: string
+    battle: string
     typeToSearch: string
   }
   quiz: {
@@ -227,7 +227,7 @@ export type Translations = {
     neutral: string
     openDetail: string
   }
-  slots: {
+  battle: {
     title: string
     subtitle: string
     intro: string
@@ -577,7 +577,7 @@ export const translations: Record<Language, Translations> = {
       quiz: "Who's that Pokémon?",
       compare: 'Compare',
       team: 'Team builder',
-      slots: 'Stat Slots',
+      battle: 'Stat Battle',
       typeToSearch: 'Type to search...',
     },
     quiz: {
@@ -607,24 +607,24 @@ export const translations: Record<Language, Translations> = {
       neutral: 'Neutral damage both ways',
       openDetail: 'Open details',
     },
-    slots: {
-      title: 'Stat Slots',
+    battle: {
+      title: 'Stat Battle',
       subtitle:
-        'Six reels, one per stat. Keep one at a time and beat the base stat total of your Pokémon.',
-      intro: 'Choose a Pokémon or roll a random one to start.',
+        'Six cards, one per stat. Keep one at a time and beat the base stat total of your Pokémon.',
+      intro: 'Choose a Pokémon or draw a random one to start.',
       loading: 'Loading the Pokédex…',
       pick: 'Choose a Pokémon',
       random: 'Random Pokémon',
       target: 'Target',
       yours: 'Your total',
-      hint: 'Tap a reel to keep it. The rest spin again.',
-      reroll: 'Repeated Pokémon: tap to re-roll this reel',
-      reelGen: 'Generation of the reels',
-      spinning: 'Spinning…',
+      hint: 'Tap a card to keep it. The rest are drawn again.',
+      reroll: 'Repeated Pokémon: tap to draw this card again',
+      reelGen: 'Generation of the cards',
+      spinning: 'Drawing…',
       win: 'You beat it!',
       lose: 'Not this time.',
       tie: 'Dead heat!',
-      again: 'Spin again',
+      again: 'Play again',
     },
     team: {
       title: 'Team builder',
@@ -958,7 +958,7 @@ export const translations: Record<Language, Translations> = {
       quiz: '¿Quién es ese Pokémon?',
       compare: 'Comparar',
       team: 'Equipo',
-      slots: 'Tragaperras',
+      battle: 'Duelo de Estadísticas',
       typeToSearch: 'Escribe para buscar...',
     },
     quiz: {
@@ -988,24 +988,24 @@ export const translations: Record<Language, Translations> = {
       neutral: 'Daño neutral en ambos sentidos',
       openDetail: 'Ver detalles',
     },
-    slots: {
-      title: 'Tragaperras',
+    battle: {
+      title: 'Duelo de Estadísticas',
       subtitle:
-        'Seis rodillos, uno por estadística. Fija uno cada vez y supera el total de estadísticas base de tu Pokémon.',
+        'Seis cartas, una por estadística. Quédate una cada vez y supera el total de estadísticas base de tu Pokémon.',
       intro: 'Elige un Pokémon o saca uno al azar para empezar.',
       loading: 'Cargando la Pokédex…',
       pick: 'Elige un Pokémon',
       random: 'Pokémon al azar',
       target: 'Objetivo',
       yours: 'Tu total',
-      hint: 'Toca un rodillo para fijarlo. El resto vuelve a girar.',
-      reroll: 'Pokémon repetido: toca para volver a girar este rodillo',
-      reelGen: 'Generación de los rodillos',
-      spinning: 'Girando…',
+      hint: 'Toca una carta para quedártela. El resto se reparte de nuevo.',
+      reroll: 'Pokémon repetido: toca para repartir esta carta de nuevo',
+      reelGen: 'Generación de las cartas',
+      spinning: 'Repartiendo…',
       win: '¡Lo has superado!',
       lose: 'Esta vez no.',
       tie: '¡Empate!',
-      again: 'Girar otra vez',
+      again: 'Jugar otra vez',
     },
     team: {
       title: 'Equipo',
