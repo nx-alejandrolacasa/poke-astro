@@ -4,6 +4,7 @@
 // component is visually quiet.
 
 import BackButtonStatic from '@/components/BackButtonStatic.astro'
+import ListerFilters from '@/components/ListerFilters.astro'
 import type { Locale } from '@/utils/i18n'
 
 export interface Props {
@@ -29,6 +30,10 @@ const cellCount = 18
       in once the React component hydrates. */}
   <div class="mb-4 flex items-center gap-2">
     <BackButtonStatic locale={locale} />
+  </div>
+
+  <div class="mb-8">
+    <ListerFilters locale={locale} />
   </div>
 
   {banner === 'type' && (

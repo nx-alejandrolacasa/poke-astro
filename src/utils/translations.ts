@@ -5,8 +5,6 @@ export type Translations = {
   header: {
     home: string
     pokedex: string
-    types: string
-    typeChart: string
     play: string
     menu: string
     close: string
@@ -26,7 +24,6 @@ export type Translations = {
     pokemonGenerations: string
     didYouKnow: string
     browseByCategory: string
-    pokemonTypes: string
     byGeneration: string
     region: string
     generation: string
@@ -126,6 +123,7 @@ export type Translations = {
     backToHome: string
     region: string
     back: string
+    all: string
   }
   // Errors
   errors: {
@@ -191,10 +189,8 @@ export type Translations = {
     dataBy: string
     builtWith: string
   }
-  // Play section: quiz, compare, team
   play: {
     title: string
-    quiz: string
     compare: string
     team: string
     battle: string
@@ -298,8 +294,6 @@ export const translations: Record<Language, Translations> = {
     header: {
       home: 'Home',
       pokedex: 'Pokédex',
-      types: 'Types',
-      typeChart: 'Type Chart',
       play: 'Play',
       menu: 'Menu',
       close: 'Close',
@@ -318,7 +312,6 @@ export const translations: Record<Language, Translations> = {
       pokemonGenerations: 'Pokémon generations',
       didYouKnow: '💡 Did You Know?',
       browseByCategory: 'Browse by Category',
-      pokemonTypes: 'By Type',
       byGeneration: 'By Generation',
       region: 'Region',
       generation: 'Generation',
@@ -520,6 +513,7 @@ export const translations: Record<Language, Translations> = {
       backToHome: 'Back to Home',
       region: 'Region',
       back: 'Back',
+      all: 'All',
     },
     errors: {
       loadFailed:
@@ -602,7 +596,6 @@ export const translations: Record<Language, Translations> = {
     },
     play: {
       title: 'Play',
-      quiz: "Who's that Pokémon?",
       compare: 'Compare',
       team: 'Team builder',
       battle: 'Stats Battle',
@@ -710,8 +703,6 @@ export const translations: Record<Language, Translations> = {
     header: {
       home: 'Inicio',
       pokedex: 'Pokédex',
-      types: 'Tipos',
-      typeChart: 'Tabla de Tipos',
       play: 'Jugar',
       menu: 'Menú',
       close: 'Cerrar',
@@ -730,7 +721,6 @@ export const translations: Record<Language, Translations> = {
       pokemonGenerations: 'Generaciones de Pokémon',
       didYouKnow: '💡 ¿Sabías Que?',
       browseByCategory: 'Explorar por Categoría',
-      pokemonTypes: 'Por Tipo',
       byGeneration: 'Por Generación',
       region: 'Región',
       generation: 'Generación',
@@ -932,6 +922,7 @@ export const translations: Record<Language, Translations> = {
       backToHome: 'Volver al Inicio',
       region: 'Región',
       back: 'Volver',
+      all: 'Todos',
     },
     errors: {
       loadFailed:
@@ -1014,7 +1005,6 @@ export const translations: Record<Language, Translations> = {
     },
     play: {
       title: 'Jugar',
-      quiz: '¿Quién es ese Pokémon?',
       compare: 'Comparar',
       team: 'Equipo',
       battle: 'Stats Battle',

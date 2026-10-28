@@ -5,7 +5,6 @@ import '@/styles/global.css'
 import { BottomTabNav } from '@/components/BottomTabNav'
 import DetailSkeleton from '@/components/DetailSkeleton.astro'
 import Footer from '@/components/Footer.astro'
-import Header from '@/components/Header.astro'
 import ListerSkeleton from '@/components/ListerSkeleton.astro'
 import type { Locale } from '@/utils/i18n'
 import { typeColors } from '@/utils/pokemon'
@@ -108,7 +107,10 @@ const navSkeletonData = {
         overlay.id = 'nav-skeleton-overlay'
         overlay.className = 'nav-skeleton-overlay'
         overlay.appendChild(template.content.cloneNode(true))
-        if (kind === 'lister') addListerBanner(overlay, path)
+        if (kind === 'lister') {
+          addListerBanner(overlay, path)
+          markActiveFilter(overlay, path)
+        }
         if (kind === 'detail') stageHeroMorph(overlay, path)
         document.body.appendChild(overlay)
       })
@@ -147,6 +149,13 @@ const navSkeletonData = {
           })
         }
         overlay.addEventListener('animationstart', onReveal)
+      }
+
+      const markActiveFilter = (overlay, path) => {
+        for (const chip of overlay.querySelectorAll('[data-lister-filters] a')) {
+          if (chip.getAttribute('href') === path) chip.setAttribute('aria-current', 'page')
+          else chip.removeAttribute('aria-current')
+        }
       }
 
       // Type/generation destinations carry their banner heading in the URL,
@@ -311,7 +320,6 @@ const navSkeletonData = {
     </script>
   </head>
   <body class="text-ink transition-colors dark:text-dark-ink">
-    <Header locale={locale} />
     <main class="mx-auto max-w-7xl px-4 pt-3 pb-4 md:px-6 md:pb-6 lg:pt-6">
       <slot />
     </main>
@@ -324,15 +332,14 @@ const navSkeletonData = {
     />
     {/* Skeleton templates cloned into the nav overlay by the SPA plumbing
         script in <head>. Inert until a navigation actually stalls. The
-        wrapper mirrors <main>'s container; lg:pt-24 clears the sticky
-        desktop header, which stays visible above the overlay (z-40 > z-30). */}
+        wrapper mirrors <main>'s container. */}
     <template id="nav-skeleton-lister">
-      <div class="mx-auto max-w-7xl px-4 pt-3 md:px-6 lg:pt-24">
+      <div class="mx-auto max-w-7xl px-4 pt-3 md:px-6 lg:pt-6">
         <ListerSkeleton locale={locale} />
       </div>
     </template>
     <template id="nav-skeleton-detail">
-      <div class="mx-auto max-w-7xl px-4 pt-3 md:px-6 lg:pt-24">
+      <div class="mx-auto max-w-7xl px-4 pt-3 md:px-6 lg:pt-6">
         <DetailSkeleton locale={locale} />
       </div>
     </template>

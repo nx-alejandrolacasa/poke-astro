@@ -10,15 +10,22 @@ type PokemonListerProps = {
   pokemon: PokemonSummary[]
   locale: Locale
   banner?: ReactNode
+  filters?: ReactNode
 }
 
-export function PokemonLister({ pokemon, locale, banner }: PokemonListerProps) {
+export function PokemonLister({
+  pokemon,
+  locale,
+  banner,
+  filters,
+}: PokemonListerProps) {
   return (
     <div className="space-y-8">
       <div className="flex items-center gap-2">
         <BackButton locale={locale} />
         <RecentlyVisited locale={locale} />
       </div>
+      {filters && <div>{filters}</div>}
       {banner && <div>{banner}</div>}
       <VirtualPokemonGrid pokemon={pokemon} locale={locale} />
       <BackToTop />

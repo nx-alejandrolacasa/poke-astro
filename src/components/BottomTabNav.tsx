@@ -11,20 +11,12 @@ type BottomTabNavProps = {
   currentPath: string
 }
 
-type Tint = 'purple' | 'red' | 'yellow' | 'green' | 'gray'
+type Tint = 'red' | 'green' | 'gray'
 
 const TAB_TINTS: Record<Tint, { base: string; active: string }> = {
-  purple: {
-    base: 'text-primary dark:text-dark-primary',
-    active: 'bg-primary/12 dark:bg-dark-primary/15',
-  },
   red: {
     base: 'text-red-500 dark:text-red-300',
     active: 'bg-red-500/12 dark:bg-red-500/15',
-  },
-  yellow: {
-    base: 'text-yellow-600 dark:text-yellow-400',
-    active: 'bg-yellow-500/15 dark:bg-yellow-500/20',
   },
   green: {
     base: 'text-emerald-600 dark:text-emerald-400',
@@ -129,26 +121,30 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
 
   const tabs = [
     {
-      label: t.header.home,
+      label: t.header.play,
       href: `/${locale}`,
-      tint: 'purple' as Tint,
+      tint: 'green' as Tint,
       icon: (
         <svg
           className="h-5 w-5"
-          fill="none"
           viewBox="0 0 24 24"
+          fill="none"
           stroke="currentColor"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
           aria-hidden="true"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-          />
+          <rect x="2" y="6" width="20" height="12" rx="4" />
+          <path d="M6 12h4M8 10v4M15 11h.01M18 13h.01" />
         </svg>
       ),
-      match: (path: string) => path === `/${locale}` || path === `/${locale}/`,
+      match: (path: string) =>
+        path === `/${locale}` ||
+        path === `/${locale}/` ||
+        ['quiz', 'compare', 'team', 'battle'].some((p) =>
+          path.startsWith(`/${locale}/${p}`)
+        ),
     },
     {
       label: t.header.pokedex,
@@ -175,50 +171,6 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
         path.startsWith(`/${locale}/type/`) ||
         path.startsWith(`/${locale}/generation/`),
     },
-    {
-      label: t.header.types,
-      href: `/${locale}/types`,
-      tint: 'yellow' as Tint,
-      icon: (
-        <svg
-          className="h-5 w-5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" />
-        </svg>
-      ),
-      match: (path: string) => path.startsWith(`/${locale}/types`),
-    },
-    {
-      label: t.header.play,
-      href: `/${locale}/play`,
-      tint: 'green' as Tint,
-      icon: (
-        <svg
-          className="h-5 w-5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <rect x="2" y="6" width="20" height="12" rx="4" />
-          <path d="M6 12h4M8 10v4M15 11h.01M18 13h.01" />
-        </svg>
-      ),
-      match: (path: string) =>
-        ['play', 'quiz', 'compare', 'team', 'battle'].some((p) =>
-          path.startsWith(`/${locale}/${p}`)
-        ),
-    },
   ]
 
   return (
@@ -228,104 +180,106 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
           open, with a dedicated close (X) since the nav is hidden behind the
           on-screen keyboard anyway. */}
       <div
-        className={`fixed inset-0 z-50 flex flex-col bg-white/95 px-5 pt-[calc(env(safe-area-inset-top)+0.75rem)] backdrop-blur-xl transition-opacity duration-200 sm:px-6 sm:pt-[calc(env(safe-area-inset-top)+1rem)] lg:hidden dark:bg-dark-surface/95 ${
+        className={`fixed inset-0 z-50 flex flex-col bg-white/95 px-5 pt-[calc(env(safe-area-inset-top)+0.75rem)] backdrop-blur-xl transition-opacity duration-200 sm:px-6 sm:pt-[calc(env(safe-area-inset-top)+1rem)] dark:bg-dark-surface/95 ${
           searchOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
         aria-hidden={!searchOpen}
       >
-        {/* Input + close — pinned at top */}
-        <div className="flex-shrink-0 border-b border-black/[0.06] pb-3 dark:border-white/[0.06]">
-          <div className="flex items-center gap-2">
-            <div className="relative flex-1">
-              <input
-                ref={inputRef}
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={
-                  isLoading ? t.search.loading : t.search.placeholder
-                }
-                disabled={isLoading}
-                className="w-full rounded-full border border-black/[0.06] bg-surface-sunken px-4 py-3 pr-10 text-base text-ink placeholder-ink-faint transition-all focus:border-primary/30 focus:ring-2 focus:ring-primary/10 focus:outline-none disabled:opacity-50 dark:border-white/[0.06] dark:bg-dark-raised dark:text-dark-ink dark:placeholder-dark-ink-faint"
-                role="combobox"
-                aria-label="Search Pokemon"
-                aria-autocomplete="list"
-                aria-expanded={suggestions.length > 0}
-              />
-              <svg
-                className="pointer-events-none absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 text-ink-faint dark:text-dark-ink-faint"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        <div className="mx-auto flex min-h-0 w-full max-w-2xl flex-1 flex-col">
+          {/* Input + close — pinned at top */}
+          <div className="flex-shrink-0 border-b border-black/[0.06] pb-3 dark:border-white/[0.06]">
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder={
+                    isLoading ? t.search.loading : t.search.placeholder
+                  }
+                  disabled={isLoading}
+                  className="w-full rounded-full border border-black/[0.06] bg-surface-sunken px-4 py-3 pr-10 text-base text-ink placeholder-ink-faint transition-all focus:border-primary/30 focus:ring-2 focus:ring-primary/10 focus:outline-none disabled:opacity-50 dark:border-white/[0.06] dark:bg-dark-raised dark:text-dark-ink dark:placeholder-dark-ink-faint"
+                  role="combobox"
+                  aria-label="Search Pokemon"
+                  aria-autocomplete="list"
+                  aria-expanded={suggestions.length > 0}
                 />
-              </svg>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                setSearchOpen(false)
-                setQuery('')
-              }}
-              className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl text-ink-muted transition-colors hover:bg-surface-sunken hover:text-ink dark:text-dark-ink-muted dark:hover:bg-dark-raised dark:hover:text-dark-ink"
-              aria-label={t.modal.close}
-            >
-              <svg
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        {/* Scrollable results */}
-        <div className="flex-1 overflow-y-auto p-2" role="listbox">
-          {suggestions.length > 0 ? (
-            suggestions.map((pokemon, i) => (
+                <svg
+                  className="pointer-events-none absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 text-ink-faint dark:text-dark-ink-faint"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
               <button
                 type="button"
-                key={pokemon.id}
-                onClick={() => navigateTo(pokemon.name)}
-                className={`block w-full rounded-xl px-4 py-3 text-left text-base transition-colors ${
-                  i === selectedIndex
-                    ? 'bg-primary-50 text-primary-700 dark:bg-primary/10 dark:text-primary'
-                    : 'text-ink hover:bg-surface-sunken dark:text-dark-ink dark:hover:bg-dark-raised'
-                }`}
-                role="option"
-                aria-selected={i === selectedIndex}
+                onClick={() => {
+                  setSearchOpen(false)
+                  setQuery('')
+                }}
+                className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl text-ink-muted transition-colors hover:bg-surface-sunken hover:text-ink dark:text-dark-ink-muted dark:hover:bg-dark-raised dark:hover:text-dark-ink"
+                aria-label={t.modal.close}
               >
-                <span className="font-medium">{pokemon.names[locale]}</span>
-                <span className="ml-2 font-mono text-xs opacity-40">
-                  #{pokemon.id}
-                </span>
+                <svg
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
               </button>
-            ))
-          ) : query && !isLoading ? (
-            <p className="px-4 py-3 text-sm text-ink-muted dark:text-dark-ink-muted">
-              {t.search.noResults}
-            </p>
-          ) : (
-            <p className="px-4 py-6 text-center text-sm text-ink-faint dark:text-dark-ink-faint">
-              {locale === 'es' ? 'Escribe para buscar...' : 'Type to search...'}
-            </p>
-          )}
+            </div>
+          </div>
+
+          {/* Scrollable results */}
+          <div className="flex-1 overflow-y-auto p-2" role="listbox">
+            {suggestions.length > 0 ? (
+              suggestions.map((pokemon, i) => (
+                <button
+                  type="button"
+                  key={pokemon.id}
+                  onClick={() => navigateTo(pokemon.name)}
+                  className={`block w-full rounded-xl px-4 py-3 text-left text-base transition-colors ${
+                    i === selectedIndex
+                      ? 'bg-primary-50 text-primary-700 dark:bg-primary/10 dark:text-primary'
+                      : 'text-ink hover:bg-surface-sunken dark:text-dark-ink dark:hover:bg-dark-raised'
+                  }`}
+                  role="option"
+                  aria-selected={i === selectedIndex}
+                >
+                  <span className="font-medium">{pokemon.names[locale]}</span>
+                  <span className="ml-2 font-mono text-xs opacity-40">
+                    #{pokemon.id}
+                  </span>
+                </button>
+              ))
+            ) : query && !isLoading ? (
+              <p className="px-4 py-3 text-sm text-ink-muted dark:text-dark-ink-muted">
+                {t.search.noResults}
+              </p>
+            ) : (
+              <p className="px-4 py-6 text-center text-sm text-ink-faint dark:text-dark-ink-faint">
+                {t.play.typeToSearch}
+              </p>
+            )}
+          </div>
         </div>
       </div>
 
@@ -335,7 +289,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
           type="button"
           aria-label={t.modal.close}
           onClick={() => setConfigOpen(false)}
-          className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm"
         />
       )}
       <div
@@ -343,7 +297,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
         aria-modal="true"
         aria-label={t.settings.title}
         aria-hidden={!configOpen}
-        className={`fixed right-5 bottom-[calc(env(safe-area-inset-bottom)+5.25rem)] left-5 z-50 rounded-2xl border border-white/60 bg-white/90 p-4 shadow-xl shadow-black/[0.12] backdrop-blur-xl transition-all duration-200 sm:right-6 sm:left-auto sm:w-72 lg:hidden dark:border-white/[0.08] dark:bg-dark-surface/90 dark:shadow-black/40 ${
+        className={`fixed right-5 bottom-[calc(env(safe-area-inset-bottom)+5.25rem)] left-5 z-50 rounded-2xl border border-white/60 bg-white/90 p-4 shadow-xl shadow-black/[0.12] backdrop-blur-xl transition-all duration-200 sm:right-6 sm:left-auto sm:w-72 dark:border-white/[0.08] dark:bg-dark-surface/90 dark:shadow-black/40 ${
           configOpen
             ? 'translate-y-0 opacity-100'
             : 'pointer-events-none translate-y-2 opacity-0'
@@ -356,13 +310,13 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
         />
       </div>
 
-      {/* Tab bar — floating pill + standalone search circle, iOS 26 style.
-          Stays mounted across SPA navigations via `transition:persist` on
+      {/* Tab bar — floating pill + standalone search circle, iOS 26 style,
+          on every breakpoint. Stays mounted across SPA navigations via `transition:persist` on
           the island in Layout.astro, so the element never unmounts and
           local UI state (search query, settings sheet) survives page
           swaps. */}
       <nav
-        className="fixed right-0 bottom-4 left-0 z-40 mx-auto flex max-w-md items-center gap-2 px-5 sm:px-6 lg:hidden [@media(display-mode:standalone)]:bottom-[max(env(safe-area-inset-bottom),1rem)]"
+        className="fixed right-0 bottom-4 left-0 z-40 mx-auto flex max-w-md items-center gap-2 px-5 sm:px-6 [@media(display-mode:standalone)]:bottom-[max(env(safe-area-inset-bottom),1rem)]"
         aria-label="Main navigation"
       >
         <div className="flex h-14 flex-1 items-center justify-between gap-1 rounded-full border border-white/60 bg-white/70 px-2.5 shadow-lg shadow-black/[0.08] backdrop-blur-xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:shadow-black/30">
