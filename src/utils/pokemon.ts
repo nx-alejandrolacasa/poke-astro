@@ -140,6 +140,8 @@ export type PokemonSummary = {
 export type PokemonRecord = PokemonSummary & {
   generation: number
   isDefault: boolean
+  isLegendary: boolean
+  isMythical: boolean
   /** Base stats in PokéAPI order: HP, Atk, Def, Sp. Atk, Sp. Def, Speed */
   stats: number[]
   height: number
@@ -166,7 +168,7 @@ const ALL_POKEMON_QUERY = `{
     pokemon_v2_pokemontypes(order_by: {slot: asc}) { pokemon_v2_type { name } }
     pokemon_v2_pokemonstats(order_by: {stat_id: asc}) { base_stat }
     pokemon_v2_pokemonspecy {
-      generation_id
+      generation_id is_legendary is_mythical
       pokemon_v2_pokemonspeciesnames(where: {language_id: {_in: [7, 9]}}) { name language_id }
     }
   }
@@ -182,6 +184,8 @@ type GraphqlPokemon = {
   pokemon_v2_pokemonstats: { base_stat: number }[]
   pokemon_v2_pokemonspecy: {
     generation_id: number
+    is_legendary: boolean
+    is_mythical: boolean
     pokemon_v2_pokemonspeciesnames: { name: string; language_id: number }[]
   } | null
 }
@@ -229,6 +233,8 @@ function toRecord(p: GraphqlPokemon): PokemonRecord {
     accent: accentColors[p.id] ?? null,
     generation: p.pokemon_v2_pokemonspecy?.generation_id ?? 0,
     isDefault: p.is_default,
+    isLegendary: p.pokemon_v2_pokemonspecy?.is_legendary ?? false,
+    isMythical: p.pokemon_v2_pokemonspecy?.is_mythical ?? false,
     stats: p.pokemon_v2_pokemonstats.map((s) => s.base_stat),
     height: p.height,
     weight: p.weight,

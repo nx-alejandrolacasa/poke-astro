@@ -254,6 +254,9 @@ export type Translations = {
     fight: string
     summary: string
     backToSetup: string
+    legendary: string
+    legendaryHint: string
+    legendaryDone: string
     spinning: string
     win: string
     lose: string
@@ -651,6 +654,10 @@ export const translations: Record<Language, Translations> = {
       fight: 'Battle!',
       summary: 'Battle summary',
       backToSetup: 'Change Pokémon',
+      legendary: 'Legendary challenge',
+      legendaryHint:
+        'Beat every legendary with the cards of its own generation. Clear all nine regions to unlock every generation for good.',
+      legendaryDone: 'Complete!',
       spinning: 'Drawing…',
       win: 'You beat it!',
       lose: 'Not this time.',
@@ -1048,6 +1055,10 @@ export const translations: Record<Language, Translations> = {
       fight: '¡Al combate!',
       summary: 'Resumen del combate',
       backToSetup: 'Cambiar de Pokémon',
+      legendary: 'Reto legendario',
+      legendaryHint:
+        'Vence a cada legendario con las cartas de su propia generación. Completa las nueve regiones para desbloquear todas las generaciones para siempre.',
+      legendaryDone: '¡Completado!',
       spinning: 'Repartiendo…',
       win: '¡Lo has superado!',
       lose: 'Esta vez no.',

@@ -46,11 +46,17 @@ function highestUnlocked(won: Set<number>) {
   return generation
 }
 
-function clampGeneration(wanted: number, won: Set<number>) {
-  const allUnlocked = GENERATIONS.every((g) => won.has(g.id))
-  if (wanted === 0) return allUnlocked ? 0 : highestUnlocked(won)
+function clampGeneration(
+  wanted: number,
+  won: Set<number>,
+  allUnlocked = GENERATIONS.every((g) => won.has(g.id))
+) {
+  if (allUnlocked) return wanted
+  if (wanted === 0) return highestUnlocked(won)
   return Math.min(wanted, highestUnlocked(won))
 }
+
+const LEGENDARY_MIN_TOTAL = 500
 
 const HISTORY_KEY = 'poke-astro:battle:history'
 const HISTORY_SIZE = 50
@@ -90,6 +96,9 @@ const reelTotal = (reels: Reel[]) =>
 const artwork = (pokemon: PokemonRecord, size: number) =>
   optimizedImageUrl(officialArtworkUrl(pokemon.id), size)
 const isWin = (record: BattleRecord) => record.total > record.targetTotal
+const isLegendary = (pokemon: PokemonRecord) =>
+  (pokemon.isLegendary || pokemon.isMythical) &&
+  sumStats(pokemon) >= LEGENDARY_MIN_TOTAL
 
 const PRIMARY_BUTTON =
   'rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-primary-600 active:scale-95 disabled:opacity-50 dark:bg-dark-primary'
@@ -187,6 +196,7 @@ export function StatBattle({ locale }: StatBattleProps) {
   const [strip, setStrip] = useState<PokemonRecord[]>([])
   const [redrawUsed, setRedrawUsed] = useState(false)
   const [generation, setGeneration] = useState(0)
+  const [challenge, setChallenge] = useState(false)
   const [tick, setTick] = useState(0)
   const timers = useRef<number[]>([])
   const [history, setHistory] = useState<BattleRecord[]>([])
@@ -283,22 +293,46 @@ export function StatBattle({ locale }: StatBattleProps) {
     })
   }
 
+  const legendaries = defaults.filter(isLegendary)
+  const beaten = (pokemon: PokemonRecord) =>
+    history.some(
+      (r) =>
+        r.targetId === pokemon.id &&
+        isWin(r) &&
+        r.generation === pokemon.generation
+    )
+  const gauntletCleared = legendaries.length > 0 && legendaries.every(beaten)
   const won = target ? wonGenerations(history, target.id) : new Set<number>()
   const unlockedUpTo = target ? highestUnlocked(won) : LAST_GENERATION
-  const allUnlocked = !target || GENERATIONS.every((g) => won.has(g.id))
+  const allUnlocked =
+    !target || gauntletCleared || GENERATIONS.every((g) => won.has(g.id))
 
   const choose = (pokemon: PokemonRecord) => {
     setTarget(pokemon)
+    setChallenge(false)
+    const wonForPokemon = wonGenerations(history, pokemon.id)
     setGeneration(
-      clampGeneration(generation, wonGenerations(history, pokemon.id))
+      clampGeneration(
+        generation,
+        wonForPokemon,
+        gauntletCleared || GENERATIONS.every((g) => wonForPokemon.has(g.id))
+      )
     )
+  }
+
+  const chooseLegendary = (pokemon: PokemonRecord) => {
+    setTarget(pokemon)
+    setChallenge(true)
+    setGeneration(pokemon.generation)
   }
 
   const startBattle = () => {
     if (!target) return
     clearTimers()
     setPhase('playing')
-    const gen = clampGeneration(generation, won)
+    const gen = challenge
+      ? target.generation
+      : clampGeneration(generation, won, allUnlocked)
     setGeneration(gen)
     const candidates = poolFor(gen)
     const seed = Array.from({ length: REEL_COUNT }, () => randomOf(candidates))
@@ -465,19 +499,97 @@ export function StatBattle({ locale }: StatBattleProps) {
           </h2>
           <GenerationSelect
             value={generation}
-            onChange={(gen) => setGeneration(clampGeneration(gen, won))}
+            onChange={(gen) =>
+              setGeneration(clampGeneration(gen, won, allUnlocked))
+            }
             locale={locale}
             label={t.battle.reelGen}
             unlockedUpTo={unlockedUpTo}
             allUnlocked={allUnlocked}
-            disabled={!target}
+            disabled={!target || challenge}
           />
-          {target && !allUnlocked && (
+          {target && !allUnlocked && !challenge && (
             <p className="text-xs text-ink-muted dark:text-dark-ink-muted">
               🔒 {t.battle.lockedHint}
             </p>
           )}
         </section>
+
+        {legendaries.length > 0 && (
+          <section className="space-y-3 rounded-3xl bg-white p-5 dark:bg-dark-surface">
+            <h2 className="font-bold text-ink dark:text-dark-ink">
+              <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-400 font-mono text-xs text-amber-950">
+                ★
+              </span>
+              {t.battle.legendary}
+              {gauntletCleared && (
+                <span className="ml-2 rounded-full bg-emerald-500 px-2 py-0.5 text-xs text-white">
+                  {t.battle.legendaryDone}
+                </span>
+              )}
+            </h2>
+            <p className="text-xs text-ink-muted dark:text-dark-ink-muted">
+              {t.battle.legendaryHint}
+            </p>
+            <ul className="space-y-2">
+              {GENERATIONS.map((gen) => {
+                const roster = legendaries.filter(
+                  (p) => p.generation === gen.id
+                )
+                const cleared = roster.filter(beaten).length
+                return (
+                  <li
+                    key={gen.id}
+                    className="flex flex-wrap items-center gap-2 rounded-2xl bg-surface-sunken p-2 dark:bg-dark-raised"
+                  >
+                    <span className="w-24 shrink-0 pl-1 font-mono text-xs text-ink-muted dark:text-dark-ink-muted">
+                      {gen.roman} · {gen.region}
+                      <br />
+                      <b
+                        className={
+                          cleared === roster.length
+                            ? 'text-emerald-600 dark:text-emerald-400'
+                            : 'text-ink dark:text-dark-ink'
+                        }
+                      >
+                        {cleared}/{roster.length}
+                      </b>
+                    </span>
+                    <div className="flex flex-wrap gap-1">
+                      {roster.map((pokemon) => {
+                        const done = beaten(pokemon)
+                        const selected = target?.id === pokemon.id
+                        return (
+                          <button
+                            key={pokemon.id}
+                            type="button"
+                            onClick={() => chooseLegendary(pokemon)}
+                            title={`${pokemon.names[locale]} · ${sumStats(pokemon)}`}
+                            aria-label={pokemon.names[locale]}
+                            aria-pressed={selected}
+                            className={`relative rounded-xl bg-white p-1 transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-95 dark:bg-dark-surface ${selected ? 'ring-2 ring-primary' : done ? 'ring-2 ring-emerald-400' : 'ring-1 ring-black/[0.06] dark:ring-white/[0.08]'}`}
+                          >
+                            <img
+                              src={artwork(pokemon, 40)}
+                              alt=""
+                              className={`h-10 w-10 object-contain ${done ? '' : 'opacity-70 grayscale'}`}
+                              loading="lazy"
+                            />
+                            {done && (
+                              <span className="absolute -top-1 -right-1 rounded-full bg-emerald-500 px-1 text-[9px] font-bold text-white">
+                                ✓
+                              </span>
+                            )}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+          </section>
+        )}
 
         <div className="flex justify-center">
           <button
