@@ -80,7 +80,7 @@ export function PokemonPicker({
               aria-selected={i === selected}
               onMouseEnter={() => setSelected(i)}
               onClick={() => pick(pokemon)}
-              className={`flex w-full items-center gap-3 px-3 py-2 text-left text-sm transition-colors ${i === selected ? 'bg-primary-50 text-primary-700 dark:bg-primary/10 dark:text-primary' : 'text-ink dark:text-dark-ink'}`}
+              className={`flex w-full items-center gap-3 px-3 py-2 text-left text-sm transition-colors ${i === selected ? 'bg-primary-50 text-primary-700 dark:bg-dark-primary/20 dark:text-dark-ink' : 'text-ink dark:text-dark-ink'}`}
             >
               <img
                 src={optimizedImageUrl(officialArtworkUrl(pokemon.id), 32)}

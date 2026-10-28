@@ -258,7 +258,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
                   onClick={() => navigateTo(pokemon.name)}
                   className={`block w-full rounded-xl px-4 py-3 text-left text-base transition-colors ${
                     i === selectedIndex
-                      ? 'bg-primary-50 text-primary-700 dark:bg-primary/10 dark:text-primary'
+                      ? 'bg-primary-50 text-primary-700 dark:bg-dark-primary/20 dark:text-dark-ink'
                       : 'text-ink hover:bg-surface-sunken dark:text-dark-ink dark:hover:bg-dark-raised'
                   }`}
                   role="option"
