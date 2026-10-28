@@ -215,7 +215,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
         </svg>
       ),
       match: (path: string) =>
-        ['play', 'quiz', 'compare', 'team'].some((p) =>
+        ['play', 'quiz', 'compare', 'team', 'slots'].some((p) =>
           path.startsWith(`/${locale}/${p}`)
         ),
     },

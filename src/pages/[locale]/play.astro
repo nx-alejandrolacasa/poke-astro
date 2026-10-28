@@ -34,13 +34,20 @@ const cards = [
     mascot: 448,
     color: '#6896a8',
   },
+  {
+    href: `/${locale}/slots`,
+    title: t.slots.title,
+    subtitle: t.slots.subtitle,
+    mascot: 52,
+    color: '#d9b65a',
+  },
 ]
 ---
 
 <Layout title={t.play.title} locale={locale}>
   <div class="space-y-8">
     <h1 class="pokemon-title pt-6 text-center text-3xl md:text-5xl">{t.play.title}</h1>
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
       {cards.map((card) => (
         <a
           href={card.href}

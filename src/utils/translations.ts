@@ -197,6 +197,7 @@ export type Translations = {
     quiz: string
     compare: string
     team: string
+    slots: string
     typeToSearch: string
   }
   quiz: {
@@ -225,6 +226,22 @@ export type Translations = {
     dealsTo: string
     neutral: string
     openDetail: string
+  }
+  slots: {
+    title: string
+    subtitle: string
+    intro: string
+    loading: string
+    pick: string
+    random: string
+    target: string
+    yours: string
+    hint: string
+    spinning: string
+    win: string
+    lose: string
+    tie: string
+    again: string
   }
   team: {
     title: string
@@ -558,6 +575,7 @@ export const translations: Record<Language, Translations> = {
       quiz: "Who's that Pokémon?",
       compare: 'Compare',
       team: 'Team builder',
+      slots: 'Stat Slots',
       typeToSearch: 'Type to search...',
     },
     quiz: {
@@ -586,6 +604,23 @@ export const translations: Record<Language, Translations> = {
       dealsTo: 'deals {multiplier}× to',
       neutral: 'Neutral damage both ways',
       openDetail: 'Open details',
+    },
+    slots: {
+      title: 'Stat Slots',
+      subtitle:
+        'Six reels, one per stat. Keep one at a time and beat the base stat total of your Pokémon.',
+      intro: 'Choose a Pokémon or roll a random one to start.',
+      loading: 'Loading the Pokédex…',
+      pick: 'Choose a Pokémon',
+      random: 'Random Pokémon',
+      target: 'Target',
+      yours: 'Your total',
+      hint: 'Tap a reel to keep it. The rest spin again.',
+      spinning: 'Spinning…',
+      win: 'You beat it!',
+      lose: 'Not this time.',
+      tie: 'Dead heat!',
+      again: 'Spin again',
     },
     team: {
       title: 'Team builder',
@@ -919,6 +954,7 @@ export const translations: Record<Language, Translations> = {
       quiz: '¿Quién es ese Pokémon?',
       compare: 'Comparar',
       team: 'Equipo',
+      slots: 'Tragaperras',
       typeToSearch: 'Escribe para buscar...',
     },
     quiz: {
@@ -947,6 +983,23 @@ export const translations: Record<Language, Translations> = {
       dealsTo: 'hace {multiplier}× a',
       neutral: 'Daño neutral en ambos sentidos',
       openDetail: 'Ver detalles',
+    },
+    slots: {
+      title: 'Tragaperras',
+      subtitle:
+        'Seis rodillos, uno por estadística. Fija uno cada vez y supera el total de estadísticas base de tu Pokémon.',
+      intro: 'Elige un Pokémon o saca uno al azar para empezar.',
+      loading: 'Cargando la Pokédex…',
+      pick: 'Elige un Pokémon',
+      random: 'Pokémon al azar',
+      target: 'Objetivo',
+      yours: 'Tu total',
+      hint: 'Toca un rodillo para fijarlo. El resto vuelve a girar.',
+      spinning: 'Girando…',
+      win: '¡Lo has superado!',
+      lose: 'Esta vez no.',
+      tie: '¡Empate!',
+      again: 'Girar otra vez',
     },
     team: {
       title: 'Equipo',

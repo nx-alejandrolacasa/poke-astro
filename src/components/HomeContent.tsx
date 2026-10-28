@@ -26,6 +26,7 @@ const PLAY_LINKS = [
   { path: 'quiz', key: 'quiz', mascot: 25, color: '#f4d67b' },
   { path: 'compare', key: 'compare', mascot: 150, color: '#997a96' },
   { path: 'team', key: 'team', mascot: 448, color: '#6896a8' },
+  { path: 'slots', key: 'slots', mascot: 52, color: '#d9b65a' },
 ] as const
 
 export function HomeContent({ locale }: HomeContentProps) {
@@ -61,7 +62,7 @@ export function HomeContent({ locale }: HomeContentProps) {
         <h2 className="text-center text-xl font-bold text-ink md:text-2xl dark:text-dark-ink">
           {t.play.title}
         </h2>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {PLAY_LINKS.map((link) => (
             <a
               key={link.path}
