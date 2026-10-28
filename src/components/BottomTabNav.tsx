@@ -377,11 +377,11 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
                   isActive ? tint.active : 'active:scale-95'
                 }`}
                 aria-current={isActive ? 'page' : undefined}
+                aria-label={tab.label}
+                title={tab.label}
               >
                 <span className="flex-shrink-0">{tab.icon}</span>
-                <span
-                  className={`truncate text-xs font-semibold ${isActive ? '' : 'hidden md:inline'}`}
-                >
+                <span className="hidden truncate text-xs font-semibold md:inline">
                   {tab.label}
                 </span>
               </a>
