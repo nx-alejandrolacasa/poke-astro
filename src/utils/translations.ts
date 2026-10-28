@@ -124,7 +124,8 @@ export type Translations = {
     backToHome: string
     region: string
     back: string
-    all: string
+    allGenerations: string
+    allTypes: string
   }
   // Errors
   errors: {
@@ -516,7 +517,8 @@ export const translations: Record<Language, Translations> = {
       backToHome: 'Back to Home',
       region: 'Region',
       back: 'Back',
-      all: 'All',
+      allGenerations: 'All generations',
+      allTypes: 'All types',
     },
     errors: {
       loadFailed:
@@ -927,7 +929,8 @@ export const translations: Record<Language, Translations> = {
       backToHome: 'Volver al Inicio',
       region: 'Región',
       back: 'Volver',
-      all: 'Todos',
+      allGenerations: 'Todas las generaciones',
+      allTypes: 'Todos los tipos',
     },
     errors: {
       loadFailed:

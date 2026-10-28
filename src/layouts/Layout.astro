@@ -152,9 +152,9 @@ const navSkeletonData = {
       }
 
       const markActiveFilter = (overlay, path) => {
-        for (const chip of overlay.querySelectorAll('[data-lister-filters] a')) {
-          if (chip.getAttribute('href') === path) chip.setAttribute('aria-current', 'page')
-          else chip.removeAttribute('aria-current')
+        for (const select of overlay.querySelectorAll('[data-lister-filters] select')) {
+          const known = [...select.options].some((option) => option.value === path)
+          select.value = known ? path : select.options[0].value
         }
       }
 
