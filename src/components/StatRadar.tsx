@@ -8,9 +8,9 @@ type StatRadarProps = {
   max?: number
 }
 
-const SIZE = 240
+const SIZE = 300
 const CENTER = SIZE / 2
-const RADIUS = 88
+const RADIUS = 92
 
 function point(index: number, value: number): [number, number] {
   const angle = (Math.PI * 2 * index) / STAT_NAMES.length - Math.PI / 2

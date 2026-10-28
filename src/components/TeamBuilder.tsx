@@ -115,7 +115,7 @@ export function TeamBuilder({ locale }: TeamBuilderProps) {
             ) : (
               <div
                 key={`empty-${i.toString()}`}
-                className="flex aspect-[3/4] items-center justify-center rounded-2xl border-2 border-dashed border-ink-faint/30 text-center text-xs text-ink-faint dark:border-dark-ink-faint/30 dark:text-dark-ink-faint"
+                className="flex min-h-32 items-center justify-center rounded-2xl border-2 border-dashed border-ink-faint/30 text-center text-xs text-ink-faint dark:border-dark-ink-faint/30 dark:text-dark-ink-faint"
               >
                 {t.team.empty}
               </div>
@@ -195,7 +195,7 @@ export function TeamBuilder({ locale }: TeamBuilderProps) {
                       )
                     })}
                   </div>
-                  <span className="w-28 shrink-0 text-right font-mono text-[10px] text-ink-muted dark:text-dark-ink-muted">
+                  <span className="shrink-0 text-right font-mono text-[10px] whitespace-nowrap text-ink-muted dark:text-dark-ink-muted">
                     {weak} {t.team.weak} · {resist} {t.team.resist}
                     {immune > 0 ? ` · ${immune} ${t.team.immune}` : ''}
                   </span>
