@@ -20,7 +20,7 @@ type Reel = {
 }
 
 type Phase = 'setup' | 'playing' | 'done'
-type Mode = 'classic' | 'survival'
+type Mode = 'classic' | 'survival' | 'legendary'
 
 type BattleRecord = {
   at: number
@@ -215,7 +215,6 @@ export function StatBattle({ locale }: StatBattleProps) {
   const [strip, setStrip] = useState<PokemonRecord[]>([])
   const [redrawUsed, setRedrawUsed] = useState(false)
   const [generation, setGeneration] = useState(0)
-  const [challenge, setChallenge] = useState(false)
   const [legendGen, setLegendGen] = useState(1)
   const [mode, setMode] = useState<Mode>('classic')
   const [streak, setStreak] = useState(0)
@@ -245,7 +244,7 @@ export function StatBattle({ locale }: StatBattleProps) {
       total: reelTotal(reels),
       cards: reels.map((reel) => reel.pokemon.id),
       generation,
-      ...(mode === 'survival' ? { mode } : {}),
+      ...(mode !== 'classic' ? { mode } : {}),
       ...(redrawUsed ? { redraw: true } : {}),
     }
     const next = [record, ...history].slice(0, HISTORY_SIZE)
@@ -356,7 +355,6 @@ export function StatBattle({ locale }: StatBattleProps) {
 
   const choose = (pokemon: PokemonRecord) => {
     setTarget(pokemon)
-    setChallenge(false)
     const wonForPokemon = wonGenerations(history, pokemon.id)
     setGeneration(
       clampGeneration(
@@ -369,7 +367,6 @@ export function StatBattle({ locale }: StatBattleProps) {
 
   const chooseLegendary = (pokemon: PokemonRecord) => {
     setTarget(pokemon)
-    setChallenge(true)
     setGeneration(pokemon.generation)
   }
 
@@ -400,7 +397,7 @@ export function StatBattle({ locale }: StatBattleProps) {
     if (!target) return
     beginBattle(
       target,
-      challenge
+      mode === 'legendary'
         ? target.generation
         : clampGeneration(generation, won, allUnlocked)
     )
@@ -465,7 +462,7 @@ export function StatBattle({ locale }: StatBattleProps) {
       if (n >= 1 && n <= REEL_COUNT) keep(n - 1)
       if ((e.key === 'Enter' || e.key === ' ') && phase === 'done') {
         e.preventDefault()
-        if (mode === 'classic') startBattle()
+        if (mode !== 'survival') startBattle()
         else if (diff > 0) nextOpponent()
         else startSurvival()
       }
@@ -530,7 +527,7 @@ export function StatBattle({ locale }: StatBattleProps) {
           aria-label={t.battle.mode}
           className="mx-auto flex w-fit rounded-full bg-surface-sunken p-1 dark:bg-dark-raised"
         >
-          {(['classic', 'survival'] as const).map((m) => (
+          {(['classic', 'legendary', 'survival'] as const).map((m) => (
             <button
               key={m}
               type="button"
@@ -539,7 +536,7 @@ export function StatBattle({ locale }: StatBattleProps) {
               onClick={() => switchMode(m)}
               className={`rounded-full px-5 py-2 text-sm font-semibold transition-all ${mode === m ? 'bg-white text-ink shadow-sm dark:bg-dark-surface dark:text-dark-ink' : 'text-ink-muted hover:text-ink dark:text-dark-ink-muted dark:hover:text-dark-ink'}`}
             >
-              {m === 'classic' ? '⚔️ ' : '🔥 '}
+              {m === 'classic' ? '⚔️ ' : m === 'legendary' ? '★ ' : '🔥 '}
               {t.battle[m]}
             </button>
           ))}
@@ -600,68 +597,8 @@ export function StatBattle({ locale }: StatBattleProps) {
               </button>
             </div>
           </>
-        ) : (
+        ) : mode === 'legendary' ? (
           <>
-            <section className="space-y-3 rounded-3xl bg-white p-5 dark:bg-dark-surface">
-              <h2 className="font-bold text-ink dark:text-dark-ink">
-                <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary font-mono text-xs text-white dark:bg-dark-primary">
-                  1
-                </span>
-                {t.battle.stepPokemon}
-              </h2>
-              <div className="flex flex-col gap-2 sm:flex-row">
-                <div className="flex-1">
-                  <PokemonPicker
-                    index={index}
-                    locale={locale}
-                    placeholder={t.battle.pick}
-                    autoFocus={!target}
-                    onPick={choose}
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={() => choose(randomOf(defaults))}
-                  disabled={loading || defaults.length === 0}
-                  className={SECONDARY_BUTTON}
-                >
-                  {t.battle.random}
-                </button>
-              </div>
-              {target ? (
-                <TargetCard target={target} locale={locale} t={t} />
-              ) : (
-                <p className="text-center text-sm text-ink-muted dark:text-dark-ink-muted">
-                  {loading ? t.battle.loading : t.battle.intro}
-                </p>
-              )}
-            </section>
-
-            <section className="space-y-3 rounded-3xl bg-white p-5 dark:bg-dark-surface">
-              <h2 className="font-bold text-ink dark:text-dark-ink">
-                <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary font-mono text-xs text-white dark:bg-dark-primary">
-                  2
-                </span>
-                {t.battle.reelGen}
-              </h2>
-              <GenerationSelect
-                value={generation}
-                onChange={(gen) =>
-                  setGeneration(clampGeneration(gen, won, allUnlocked))
-                }
-                locale={locale}
-                label={t.battle.reelGen}
-                unlockedUpTo={unlockedUpTo}
-                allUnlocked={allUnlocked}
-                disabled={!target || challenge}
-              />
-              {target && !allUnlocked && !challenge && (
-                <p className="text-xs text-ink-muted dark:text-dark-ink-muted">
-                  🔒 {t.battle.lockedHint}
-                </p>
-              )}
-            </section>
-
             {legendaries.length > 0 && (
               <section className="space-y-3 rounded-3xl bg-white p-5 dark:bg-dark-surface">
                 <h2 className="font-bold text-ink dark:text-dark-ink">
@@ -742,6 +679,83 @@ export function StatBattle({ locale }: StatBattleProps) {
                 </div>
               </section>
             )}
+
+            {target && isLegendary(target) && (
+              <TargetCard target={target} locale={locale} t={t} />
+            )}
+
+            <div className="flex justify-center">
+              <button
+                type="button"
+                onClick={startBattle}
+                disabled={!target || !isLegendary(target)}
+                className={`${PRIMARY_BUTTON} px-10 py-3 text-base`}
+              >
+                ★ {t.battle.fight}
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <section className="space-y-3 rounded-3xl bg-white p-5 dark:bg-dark-surface">
+              <h2 className="font-bold text-ink dark:text-dark-ink">
+                <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary font-mono text-xs text-white dark:bg-dark-primary">
+                  1
+                </span>
+                {t.battle.stepPokemon}
+              </h2>
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <div className="flex-1">
+                  <PokemonPicker
+                    index={index}
+                    locale={locale}
+                    placeholder={t.battle.pick}
+                    autoFocus={!target}
+                    onPick={choose}
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => choose(randomOf(defaults))}
+                  disabled={loading || defaults.length === 0}
+                  className={SECONDARY_BUTTON}
+                >
+                  {t.battle.random}
+                </button>
+              </div>
+              {target ? (
+                <TargetCard target={target} locale={locale} t={t} />
+              ) : (
+                <p className="text-center text-sm text-ink-muted dark:text-dark-ink-muted">
+                  {loading ? t.battle.loading : t.battle.intro}
+                </p>
+              )}
+            </section>
+
+            <section className="space-y-3 rounded-3xl bg-white p-5 dark:bg-dark-surface">
+              <h2 className="font-bold text-ink dark:text-dark-ink">
+                <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary font-mono text-xs text-white dark:bg-dark-primary">
+                  2
+                </span>
+                {t.battle.reelGen}
+              </h2>
+              <GenerationSelect
+                value={generation}
+                onChange={(gen) =>
+                  setGeneration(clampGeneration(gen, won, allUnlocked))
+                }
+                locale={locale}
+                label={t.battle.reelGen}
+                unlockedUpTo={unlockedUpTo}
+                allUnlocked={allUnlocked}
+                disabled={!target}
+              />
+              {target && !allUnlocked && (
+                <p className="text-xs text-ink-muted dark:text-dark-ink-muted">
+                  🔒 {t.battle.lockedHint}
+                </p>
+              )}
+            </section>
 
             <div className="flex justify-center">
               <button
@@ -837,13 +851,13 @@ export function StatBattle({ locale }: StatBattleProps) {
                           />
                         ))}
                       </div>
-                      {record.mode === 'survival' && (
+                      {record.mode && record.mode !== 'classic' && (
                         <span
                           role="img"
-                          aria-label={t.battle.survival}
-                          title={t.battle.survival}
+                          aria-label={t.battle[record.mode]}
+                          title={t.battle[record.mode]}
                         >
-                          🔥
+                          {record.mode === 'survival' ? '🔥' : '★'}
                         </span>
                       )}
                       <span className="font-mono text-sm text-ink tabular-nums dark:text-dark-ink">
@@ -881,7 +895,7 @@ export function StatBattle({ locale }: StatBattleProps) {
           }}
         >
           <p className="font-mono text-[11px] tracking-wide text-ink-muted uppercase dark:text-dark-ink-muted">
-            {mode === 'survival' ? t.battle.survival : t.battle.summary}
+            {mode === 'classic' ? t.battle.summary : t.battle[mode]}
           </p>
           <p className="text-2xl font-black text-ink dark:text-dark-ink">
             {mode === 'survival' && diff <= 0 ? t.battle.runOver : result}
@@ -1015,7 +1029,7 @@ export function StatBattle({ locale }: StatBattleProps) {
           <button
             type="button"
             onClick={
-              mode === 'classic'
+              mode !== 'survival'
                 ? startBattle
                 : diff > 0
                   ? nextOpponent
@@ -1023,7 +1037,7 @@ export function StatBattle({ locale }: StatBattleProps) {
             }
             className={PRIMARY_BUTTON}
           >
-            {mode === 'classic'
+            {mode !== 'survival'
               ? t.battle.again
               : diff > 0
                 ? t.battle.nextOpponent
