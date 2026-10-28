@@ -104,8 +104,11 @@ const randomOf = <T,>(items: T[]): T =>
   items[Math.floor(Math.random() * items.length)]
 const sumStats = (pokemon: PokemonRecord) =>
   pokemon.stats.reduce((total, stat) => total + stat, 0)
-const reelTotal = (reels: Reel[]) =>
-  reels.reduce((total, reel, i) => total + reel.pokemon.stats[i], 0)
+const keptTotal = (reels: Reel[]) =>
+  reels.reduce(
+    (total, reel, i) => total + (reel.kept ? reel.pokemon.stats[i] : 0),
+    0
+  )
 const artwork = (pokemon: PokemonRecord, size: number) =>
   optimizedImageUrl(officialArtworkUrl(pokemon.id), size)
 const isWin = (record: BattleRecord) => record.total > record.targetTotal
@@ -241,7 +244,7 @@ export function StatBattle({ locale }: StatBattleProps) {
       at: Date.now(),
       targetId: target.id,
       targetTotal: sumStats(target),
-      total: reelTotal(reels),
+      total: keptTotal(reels),
       cards: reels.map((reel) => reel.pokemon.id),
       generation,
       ...(mode !== 'classic' ? { mode } : {}),
@@ -472,7 +475,7 @@ export function StatBattle({ locale }: StatBattleProps) {
   })
 
   const targetTotal = target ? sumStats(target) : 0
-  const total = reels.length ? reelTotal(reels) : 0
+  const total = reels.length ? keptTotal(reels) : 0
   const diff = total - targetTotal
   const ahead = diff >= 0
   const accent = target?.accent ?? '#705898'
