@@ -49,28 +49,28 @@ export function PokemonHero({
         <button
           type="button"
           onClick={toggleShiny}
-          className={`absolute top-2 right-2 z-20 cursor-pointer rounded-full p-3 transition-all ${showShiny ? 'shadow-lg shadow-amber-300/40 dark:shadow-amber-500/30' : 'bg-surface-sunken opacity-60 hover:opacity-100 dark:bg-dark-raised'}`}
+          className={`absolute top-2 right-2 z-20 cursor-pointer rounded-full p-3 transition-opacity ${showShiny ? '' : 'opacity-70 hover:opacity-100'}`}
           aria-label="Shiny"
           aria-pressed={showShiny}
           title="Shiny"
         >
           <svg
-            className="h-6 w-6"
+            className={`h-6 w-6 overflow-visible ${showShiny ? 'animate-shiny-shine motion-reduce:animate-none motion-reduce:drop-shadow-[0_0_6px_#fbbf24]' : 'drop-shadow-sm'}`}
             viewBox="0 0 100 100"
             fill="none"
             aria-hidden="true"
           >
             <defs>
               <radialGradient id="shiny-grad" cx="0.35" cy="0.35" r="0.75">
-                <stop offset="0%" stopColor="#ff4444" />
-                <stop offset="30%" stopColor="#ffaa00" />
-                <stop offset="55%" stopColor="#44cc44" />
-                <stop offset="75%" stopColor="#2288ff" />
-                <stop offset="100%" stopColor="#44aaff" />
+                <stop offset="0%" stop-color="#ff4444" />
+                <stop offset="30%" stop-color="#ffaa00" />
+                <stop offset="55%" stop-color="#44cc44" />
+                <stop offset="75%" stop-color="#2288ff" />
+                <stop offset="100%" stop-color="#44aaff" />
               </radialGradient>
               <radialGradient id="shiny-grad-off" cx="0.35" cy="0.35" r="0.75">
-                <stop offset="0%" stopColor="#aaa" />
-                <stop offset="100%" stopColor="#ccc" />
+                <stop offset="0%" stop-color="#5a6378" />
+                <stop offset="100%" stop-color="#1c2230" />
               </radialGradient>
             </defs>
             <path

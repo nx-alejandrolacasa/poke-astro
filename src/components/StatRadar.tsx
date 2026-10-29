@@ -64,8 +64,8 @@ export function StatRadar({ series, labels, max = 200 }: StatRadarProps) {
             <text
               x={lx}
               y={ly}
-              textAnchor={labelAnchor(i)}
-              dominantBaseline="middle"
+              text-anchor={labelAnchor(i)}
+              dominant-baseline="middle"
               className="fill-ink-muted text-[10px] font-semibold dark:fill-dark-ink-muted"
             >
               {labels[i]}
