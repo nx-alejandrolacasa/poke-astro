@@ -179,6 +179,10 @@ html {
   /* Tone the aurora down on mobile — smaller viewports make each blob cover
      proportionally more screen, so desktop intensities read as intrusive. */
   @media (max-width: 767px) {
+    body::before {
+      mask-image: linear-gradient(to bottom, black 60%, transparent 90%);
+    }
+
     body {
       --aurora:
         radial-gradient(800px circle at 0% 0%,    rgba(227,  53,  13, 0.06), transparent 65%),  /* TL — Red    */
