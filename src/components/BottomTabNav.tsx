@@ -1,5 +1,6 @@
 import { navigate } from 'astro:transitions/client'
 import { useEffect, useRef, useState } from 'react'
+import { RecentlyVisited } from '@/components/RecentlyVisited'
 import { SettingsMenuContent } from '@/components/SettingsMenuContent'
 import type { Locale } from '@/utils/i18n'
 import type { PokemonRecord } from '@/utils/pokemon'
@@ -299,9 +300,12 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
                 {t.search.noResults}
               </p>
             ) : (
-              <p className="px-4 py-6 text-center text-sm text-ink-faint dark:text-dark-ink-faint">
-                {t.play.typeToSearch}
-              </p>
+              <>
+                <p className="px-4 py-6 text-center text-sm text-ink-faint dark:text-dark-ink-faint">
+                  {t.play.typeToSearch}
+                </p>
+                {searchOpen && <RecentlyVisited locale={locale} />}
+              </>
             )}
           </div>
         </div>

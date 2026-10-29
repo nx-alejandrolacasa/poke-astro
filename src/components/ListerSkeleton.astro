@@ -17,15 +17,11 @@ const cellCount = 18
 ---
 
 <div>
-  {/* Back button + recents row. The back button renders (and works) right
-      away; the recents pills are client-only (they read IndexedDB) and pop
-      in once the React component hydrates. */}
-  <div class="mb-4 flex min-h-9 items-center gap-2">
+  <div class="mb-8 flex min-h-9 items-center gap-3">
     <BackButtonStatic locale={locale} />
-  </div>
-
-  <div class="mb-8">
-    <ListerFilters locale={locale} />
+    <div class="min-w-0 flex-1">
+      <ListerFilters locale={locale} />
+    </div>
   </div>
 
   <ul class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-4 lg:grid-cols-5 xl:grid-cols-6">

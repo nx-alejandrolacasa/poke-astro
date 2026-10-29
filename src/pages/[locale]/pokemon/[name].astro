@@ -4,7 +4,6 @@ import { Carousel } from '@/components/Carousel'
 import { CryButtons } from '@/components/CryButtons'
 import EvolutionTree from '@/components/EvolutionTree.astro'
 import { PokemonHero } from '@/components/PokemonHero'
-import { RecentlyVisited } from '@/components/RecentlyVisited'
 import { TypeBadge } from '@/components/TypeBadge'
 import Layout from '@/layouts/Layout.astro'
 import { getI18n } from '@/utils/i18n'
@@ -239,17 +238,19 @@ const valueClass = 'font-mono text-ink text-xs dark:text-dark-ink'
     </div>
   )}
   {pokemon && (
-    <div class="space-y-4" style={`--type-color: ${accent}`}>
+    <div
+      class="space-y-4"
+      style={`--type-color: ${accent}`}
+      data-recent-visit={JSON.stringify({
+        name,
+        displayName: getPokemonName(name),
+        id: pokemon.id,
+        typeColor: accent,
+        types,
+      })}
+    >
       <div class="mb-2 flex min-h-9 items-center gap-2">
         <BackButton client:load locale={locale} />
-        <RecentlyVisited
-          client:idle
-          currentName={name}
-          currentId={pokemon.id}
-          currentTypeColor={accent}
-          currentTypes={types}
-          locale={locale}
-        />
       </div>
 
       <div class="grid grid-cols-1 gap-3 md:grid-cols-4 md:gap-4">
@@ -542,3 +543,12 @@ const valueClass = 'font-mono text-ink text-xs dark:text-dark-ink'
     </div>
   )}
 </Layout>
+
+<script>
+  import { addRecentVisit } from '@/utils/recentVisits'
+
+  document.addEventListener('astro:page-load', () => {
+    const visit = document.querySelector<HTMLElement>('[data-recent-visit]')?.dataset.recentVisit
+    if (visit) addRecentVisit(JSON.parse(visit))
+  })
+</script>
