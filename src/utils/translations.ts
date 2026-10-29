@@ -191,8 +191,9 @@ export type Translations = {
     pasteFailed: string
     pastePrompt: string
   }
-  // Footer
-  footer: {
+  about: {
+    button: string
+    title: string
     legal: string
     dataBy: string
     builtWith: string
@@ -605,7 +606,9 @@ export const translations: Record<Language, Translations> = {
       pasteFailed: 'Nothing to restore',
       pastePrompt: 'Paste the code you copied on the other device',
     },
-    footer: {
+    about: {
+      button: 'About this app',
+      title: 'About',
       legal:
         'Fan-made project — not affiliated with Nintendo, Game Freak, or The Pokémon Company. All Pokémon trademarks belong to their respective owners.',
       dataBy: 'Data by',
@@ -1023,7 +1026,9 @@ export const translations: Record<Language, Translations> = {
       pasteFailed: 'Nada que restaurar',
       pastePrompt: 'Pega el código que copiaste en el otro dispositivo',
     },
-    footer: {
+    about: {
+      button: 'Acerca de la app',
+      title: 'Acerca de',
       legal:
         'Proyecto fan — sin afiliación con Nintendo, Game Freak ni The Pokémon Company. Todas las marcas de Pokémon pertenecen a sus respectivos dueños.',
       dataBy: 'Datos de',

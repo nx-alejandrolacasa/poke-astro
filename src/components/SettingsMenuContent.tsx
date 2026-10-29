@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { encodeAppState, restoreAppState } from '@/utils/appState'
 import type { Locale } from '@/utils/i18n'
 import { locales, localizeUrl } from '@/utils/i18n'
@@ -36,6 +36,7 @@ export function SettingsMenuContent({
   const t = translations[locale]
   const [currentTheme, setCurrentTheme] = useState<ThemeMode>('auto')
   const [transferStatus, setTransferStatus] = useState<string | null>(null)
+  const aboutRef = useRef<HTMLDialogElement>(null)
 
   useEffect(() => {
     if (window.theme) setCurrentTheme(window.theme.getTheme())
@@ -203,6 +204,58 @@ export function SettingsMenuContent({
           </>
         )}
       </div>
+
+      <button
+        type="button"
+        onClick={() => aboutRef.current?.showModal()}
+        className={`${transferButtonClass} mt-4 w-full border-t border-black/[0.06] bg-transparent pt-3 dark:border-white/[0.06] dark:bg-transparent`}
+      >
+        {t.about.button}
+      </button>
+
+      <dialog
+        ref={aboutRef}
+        closedby="any"
+        aria-label={t.about.title}
+        className="m-auto w-[calc(100%-2rem)] max-w-md rounded-3xl border-2 border-black/[0.06] bg-white p-0 text-center shadow-2xl backdrop:bg-black/50 backdrop:backdrop-blur-sm open:animate-zoom-image-in dark:border-white/[0.1] dark:bg-dark-surface"
+      >
+        <div className="space-y-3 p-6 text-xs text-ink-muted dark:text-dark-ink-muted">
+          <h2 className="text-lg font-bold text-ink dark:text-dark-ink">
+            {t.about.title}
+          </h2>
+          <p>{t.about.legal}</p>
+          <p className="font-mono">
+            {t.about.dataBy}{' '}
+            <AboutLink href="https://pokeapi.co">PokéAPI</AboutLink>
+            {' · '}
+            {t.about.builtWith}{' '}
+            <AboutLink href="https://astro.build">Astro</AboutLink>,{' '}
+            <AboutLink href="https://react.dev">React</AboutLink>
+            {' & '}
+            <AboutLink href="https://tailwindcss.com">Tailwind CSS</AboutLink>
+          </p>
+          <button
+            type="button"
+            onClick={() => aboutRef.current?.close()}
+            className="mt-2 w-full rounded-xl bg-primary/15 px-3 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/25 dark:bg-dark-primary/20 dark:text-dark-primary"
+          >
+            {t.modal.close}
+          </button>
+        </div>
+      </dialog>
     </>
+  )
+}
+
+function AboutLink({ href, children }: { href: string; children: string }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-primary transition-colors hover:text-primary-600"
+    >
+      {children}
+    </a>
   )
 }
