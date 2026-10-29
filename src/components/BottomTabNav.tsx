@@ -300,12 +300,7 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
                 {t.search.noResults}
               </p>
             ) : (
-              <>
-                <p className="px-4 py-6 text-center text-sm text-ink-faint dark:text-dark-ink-faint">
-                  {t.play.typeToSearch}
-                </p>
-                {searchOpen && <RecentlyVisited locale={locale} />}
-              </>
+              searchOpen && <RecentlyVisited locale={locale} />
             )}
           </div>
         </div>

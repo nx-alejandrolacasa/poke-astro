@@ -203,7 +203,6 @@ export type Translations = {
     compare: string
     team: string
     battle: string
-    typeToSearch: string
   }
   quiz: {
     title: string
@@ -619,7 +618,6 @@ export const translations: Record<Language, Translations> = {
       compare: 'Compare',
       team: 'Team builder',
       battle: 'Stats Battle',
-      typeToSearch: 'Type to search...',
     },
     quiz: {
       title: "Who's that Pokémon?",
@@ -1039,7 +1037,6 @@ export const translations: Record<Language, Translations> = {
       compare: 'Comparar',
       team: 'Equipo',
       battle: 'Stats Battle',
-      typeToSearch: 'Escribe para buscar...',
     },
     quiz: {
       title: '¿Quién es ese Pokémon?',
