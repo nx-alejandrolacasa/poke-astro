@@ -7,13 +7,12 @@ import { PokemonLister } from '@/components/PokemonLister'
 import Layout from '@/layouts/Layout.astro'
 import { getI18n, locales } from '@/utils/i18n'
 import {
+  generationsWithType,
   getAllPokemon,
   getPokemonName,
   POKEMON_TYPES,
   toSummary,
-  typeColors,
 } from '@/utils/pokemon'
-import { interpolate } from '@/utils/translations'
 
 export function getStaticPaths() {
   return locales.flatMap((locale) =>
@@ -24,28 +23,14 @@ export function getStaticPaths() {
 const { locale: localeParam, type = '' } = Astro.params
 const { locale, t } = getI18n(localeParam)
 
-const pokemon = (await getAllPokemon())
-  .filter((p) => p.types.includes(type))
-  .map(toSummary)
-
+const all = await getAllPokemon()
+const pokemon = all.filter((p) => p.types.includes(type)).map(toSummary)
 const typeName = t.types[type as keyof typeof t.types] || getPokemonName(type)
-const subtitle = interpolate(t.pages.speciesCount, { count: pokemon.length })
 ---
 
 <Layout title={`${typeName} - ${t.pages.typeTitle}`} locale={locale}>
   <PokemonLister client:only="react" pokemon={pokemon} locale={locale}>
-    <ListerFilters slot="filters" locale={locale} />
-    <div slot="banner" class="rounded-2xl border-2 border-black/[0.06] dark:border-white/[0.08] p-6 md:p-8" style={`background-color: ${typeColors[type] ?? '#a8a878'}18`}>
-      <h1 class="font-bold text-2xl text-ink tracking-tight md:text-3xl dark:text-dark-ink">{typeName}</h1>
-      <p class="text-ink-muted text-sm dark:text-dark-ink-muted">{subtitle}</p>
-    </div>
-    <ListerSkeleton
-      slot="fallback"
-      banner="type"
-      locale={locale}
-      bannerTitle={typeName}
-      bannerSubtitle={subtitle}
-      bannerColor={typeColors[type]}
-    />
+    <ListerFilters slot="filters" locale={locale} generations={generationsWithType(all, type)} />
+    <ListerSkeleton slot="fallback" locale={locale} />
   </PokemonLister>
 </Layout>

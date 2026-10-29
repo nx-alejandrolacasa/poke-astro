@@ -120,7 +120,6 @@ export type Translations = {
   // Type and Generation pages
   pages: {
     typeTitle: string
-    speciesCount: string
     backToHome: string
     region: string
     back: string
@@ -520,12 +519,11 @@ export const translations: Record<Language, Translations> = {
     },
     pages: {
       typeTitle: 'Type',
-      speciesCount: '{count} Pokémon species',
       backToHome: 'Back to Home',
       region: 'Region',
       back: 'Back',
-      allGenerations: 'All generations',
-      allTypes: 'All types',
+      allGenerations: 'Any generation',
+      allTypes: 'Any type',
     },
     errors: {
       loadFailed:
@@ -600,8 +598,8 @@ export const translations: Record<Language, Translations> = {
       light: 'Light',
       dark: 'Dark',
       transfer: 'Move to another device',
-      copyState: 'Copy my data',
-      pasteState: 'Paste my data',
+      copyState: 'Copy data',
+      pasteState: 'Paste data',
       copied: 'Copied!',
       pasted: 'Restored!',
       pasteFailed: 'Nothing to restore',
@@ -939,12 +937,11 @@ export const translations: Record<Language, Translations> = {
     },
     pages: {
       typeTitle: 'Tipo',
-      speciesCount: '{count} especies de Pokémon',
       backToHome: 'Volver al Inicio',
       region: 'Región',
       back: 'Volver',
-      allGenerations: 'Todas las generaciones',
-      allTypes: 'Todos los tipos',
+      allGenerations: 'Cualquier generación',
+      allTypes: 'Cualquier tipo',
     },
     errors: {
       loadFailed:
@@ -1019,8 +1016,8 @@ export const translations: Record<Language, Translations> = {
       light: 'Claro',
       dark: 'Oscuro',
       transfer: 'Mover a otro dispositivo',
-      copyState: 'Copiar mis datos',
-      pasteState: 'Pegar mis datos',
+      copyState: 'Copiar datos',
+      pasteState: 'Pegar datos',
       copied: '¡Copiado!',
       pasted: '¡Restaurado!',
       pasteFailed: 'Nada que restaurar',

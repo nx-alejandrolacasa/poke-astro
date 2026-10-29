@@ -7,8 +7,6 @@ import DetailSkeleton from '@/components/DetailSkeleton.astro'
 import Footer from '@/components/Footer.astro'
 import ListerSkeleton from '@/components/ListerSkeleton.astro'
 import type { Locale } from '@/utils/i18n'
-import { typeColors } from '@/utils/pokemon'
-import { translations } from '@/utils/translations'
 
 export interface Props {
   title: string
@@ -30,14 +28,6 @@ const ogImage = new URL(image, canonical)
 // Guard `process` for workerd runtimes that may not polyfill it
 // (Cloudflare here uses `nodejs_compat`, but the guard is cheap insurance).
 const isVercel = typeof process !== 'undefined' && !!process.env.VERCEL
-
-// Data the nav-skeleton script needs to render real banner headings for
-// type/generation lister destinations (derivable from the URL alone).
-const navSkeletonData = {
-  typeLabels: translations[locale].types,
-  typeColors,
-  generationTitle: translations[locale].home.generation,
-}
 ---
 
 <!DOCTYPE html>
@@ -108,7 +98,6 @@ const navSkeletonData = {
         overlay.className = 'nav-skeleton-overlay'
         overlay.appendChild(template.content.cloneNode(true))
         if (kind === 'lister') {
-          addListerBanner(overlay, path)
           markActiveFilter(overlay, path)
         }
         if (kind === 'detail') stageHeroMorph(overlay, path)
@@ -151,42 +140,19 @@ const navSkeletonData = {
         overlay.addEventListener('animationstart', onReveal)
       }
 
+      const parseLister = (path) => ({
+        generation: path.match(/\/generation\/(\d)/)?.[1],
+        type: path.match(/\/(?:type|generation\/\d)\/([a-z]+)/)?.[1],
+      })
+
       const markActiveFilter = (overlay, path) => {
+        const target = parseLister(path)
         for (const select of overlay.querySelectorAll('[data-lister-filters] select')) {
-          const known = [...select.options].some((option) => option.value === path)
-          select.value = known ? path : select.options[0].value
+          const match = [...select.options].find(
+            (option) => parseLister(option.value)[select.name] === target[select.name],
+          )
+          select.value = (match ?? select.options[0]).value
         }
-      }
-
-      // Type/generation destinations carry their banner heading in the URL,
-      // so render the real title and tint; only the species count shimmers.
-      const addListerBanner = (overlay, path) => {
-        const dataEl = document.getElementById('nav-skeleton-data')
-        if (!dataEl) return
-        const data = JSON.parse(dataEl.textContent)
-        const typeName = path.match(/\/type\/([a-z]+)/)?.[1]
-        const genId = path.match(/\/generation\/(\d)/)?.[1]
-        const romans = { 1: 'I', 2: 'II', 3: 'III', 4: 'IV', 5: 'V', 6: 'VI', 7: 'VII', 8: 'VIII', 9: 'IX' }
-
-        const banner = document.createElement('div')
-        banner.className = 'mb-8 rounded-2xl border-2 border-black/[0.06] dark:border-white/[0.08] p-6 md:p-8'
-        if (typeName && data.typeLabels[typeName]) {
-          banner.style.backgroundColor = `${data.typeColors[typeName] ?? '#a8a878'}18`
-        } else if (genId) {
-          banner.className += ' bg-gradient-to-br from-primary-50 to-surface-sunken dark:from-dark-raised dark:to-dark-surface'
-        } else {
-          return
-        }
-
-        const title = document.createElement('h1')
-        title.className = 'font-bold text-2xl text-ink tracking-tight md:text-3xl dark:text-dark-ink'
-        title.textContent = typeName
-          ? data.typeLabels[typeName]
-          : `${data.generationTitle} ${romans[genId]}`
-        const subtitle = document.createElement('div')
-        subtitle.className = 'skeleton-shimmer mt-1.5 h-4 w-44 rounded'
-        banner.append(title, subtitle)
-        overlay.querySelector('ul')?.before(banner)
       }
     </script>
     <ClientRouter />
@@ -343,7 +309,6 @@ const navSkeletonData = {
         <DetailSkeleton locale={locale} />
       </div>
     </template>
-    <script is:inline type="application/json" id="nav-skeleton-data" set:html={JSON.stringify(navSkeletonData)} />
     <script is:inline>
       // Register service worker for PWA
       if ('serviceWorker' in navigator) {

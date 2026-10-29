@@ -241,6 +241,26 @@ function toRecord(p: GraphqlPokemon): PokemonRecord {
   }
 }
 
+export function generationsWithType(all: PokemonRecord[], type: string) {
+  return [
+    ...new Set(
+      all
+        .filter((p) => p.isDefault && p.types.includes(type))
+        .map((p) => p.generation)
+    ),
+  ]
+}
+
+export function typesInGeneration(all: PokemonRecord[], generation: number) {
+  return [
+    ...new Set(
+      all
+        .filter((p) => p.isDefault && p.generation === generation)
+        .flatMap((p) => p.types)
+    ),
+  ]
+}
+
 export function getAccentColor(id: number): string | null {
   return accentColors[id] ?? null
 }

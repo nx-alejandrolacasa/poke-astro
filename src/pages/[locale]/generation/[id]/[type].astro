@@ -1,0 +1,56 @@
+---
+export const prerender = true
+
+import ListerFilters from '@/components/ListerFilters.astro'
+import ListerSkeleton from '@/components/ListerSkeleton.astro'
+import { PokemonLister } from '@/components/PokemonLister'
+import Layout from '@/layouts/Layout.astro'
+import { GENERATIONS } from '@/utils/generations'
+import { getI18n, locales } from '@/utils/i18n'
+import {
+  generationsWithType,
+  getAllPokemon,
+  toSummary,
+  typesInGeneration,
+} from '@/utils/pokemon'
+
+export async function getStaticPaths() {
+  const all = await getAllPokemon()
+  return locales.flatMap((locale) =>
+    GENERATIONS.flatMap((gen) =>
+      typesInGeneration(all, gen.id).map((type) => ({
+        params: { locale, id: String(gen.id), type },
+      }))
+    )
+  )
+}
+
+const { locale: localeParam, id = '', type = '' } = Astro.params
+const { locale, t } = getI18n(localeParam)
+
+const generation = GENERATIONS.find((gen) => gen.id === Number(id))
+if (!generation) {
+  return Astro.redirect(`/${locale}/404`)
+}
+
+const all = await getAllPokemon()
+const pokemon = all
+  .filter(
+    (p) =>
+      p.isDefault && p.generation === generation.id && p.types.includes(type)
+  )
+  .map(toSummary)
+const typeName = t.types[type as keyof typeof t.types]
+---
+
+<Layout title={`${typeName} - ${t.home.generation} ${generation.roman}`} locale={locale}>
+  <PokemonLister client:only="react" pokemon={pokemon} locale={locale}>
+    <ListerFilters
+      slot="filters"
+      locale={locale}
+      generations={generationsWithType(all, type)}
+      types={typesInGeneration(all, generation.id)}
+    />
+    <ListerSkeleton slot="fallback" locale={locale} />
+  </PokemonLister>
+</Layout>

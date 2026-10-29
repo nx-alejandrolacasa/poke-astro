@@ -7,8 +7,7 @@ import { PokemonLister } from '@/components/PokemonLister'
 import Layout from '@/layouts/Layout.astro'
 import { GENERATIONS } from '@/utils/generations'
 import { getI18n, locales } from '@/utils/i18n'
-import { getAllPokemon, toSummary } from '@/utils/pokemon'
-import { interpolate } from '@/utils/translations'
+import { getAllPokemon, toSummary, typesInGeneration } from '@/utils/pokemon'
 
 export function getStaticPaths() {
   return locales.flatMap((locale) =>
@@ -24,27 +23,15 @@ if (!generation) {
   return Astro.redirect(`/${locale}/404`)
 }
 
-const pokemon = (await getAllPokemon())
+const all = await getAllPokemon()
+const pokemon = all
   .filter((p) => p.isDefault && p.generation === generation.id)
   .map(toSummary)
-
-const title = `${t.home.generation} ${generation.roman}`
-const subtitle = `${generation.region} · ${interpolate(t.pages.speciesCount, { count: pokemon.length })}`
 ---
 
-<Layout title={`${title} - ${generation.region} ${t.pages.region}`} locale={locale}>
+<Layout title={`${t.home.generation} ${generation.roman} - ${generation.region} ${t.pages.region}`} locale={locale}>
   <PokemonLister client:only="react" pokemon={pokemon} locale={locale}>
-    <ListerFilters slot="filters" locale={locale} />
-    <div slot="banner" class="rounded-2xl border-2 border-black/[0.06] dark:border-white/[0.08] bg-gradient-to-br from-primary-50 to-surface-sunken p-6 md:p-8 dark:from-dark-raised dark:to-dark-surface">
-      <h1 class="font-bold text-2xl text-ink tracking-tight md:text-3xl dark:text-dark-ink">{title}</h1>
-      <p class="font-medium text-ink-muted text-sm dark:text-dark-ink-muted">{subtitle}</p>
-    </div>
-    <ListerSkeleton
-      slot="fallback"
-      banner="generation"
-      locale={locale}
-      bannerTitle={title}
-      bannerSubtitle={subtitle}
-    />
+    <ListerFilters slot="filters" locale={locale} types={typesInGeneration(all, generation.id)} />
+    <ListerSkeleton slot="fallback" locale={locale} />
   </PokemonLister>
 </Layout>

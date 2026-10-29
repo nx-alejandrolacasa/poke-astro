@@ -9,14 +9,12 @@ import type { PokemonSummary } from '@/utils/pokemon'
 type PokemonListerProps = {
   pokemon: PokemonSummary[]
   locale: Locale
-  banner?: ReactNode
   filters?: ReactNode
 }
 
 export function PokemonLister({
   pokemon,
   locale,
-  banner,
   filters,
 }: PokemonListerProps) {
   return (
@@ -26,7 +24,6 @@ export function PokemonLister({
         <RecentlyVisited locale={locale} />
       </div>
       {filters && <div>{filters}</div>}
-      {banner && <div>{banner}</div>}
       <VirtualPokemonGrid pokemon={pokemon} locale={locale} />
       <BackToTop />
     </div>

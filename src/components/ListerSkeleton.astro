@@ -8,18 +8,10 @@ import ListerFilters from '@/components/ListerFilters.astro'
 import type { Locale } from '@/utils/i18n'
 
 export interface Props {
-  banner?: 'type' | 'generation'
   locale: Locale
-  // Real banner content, rendered instead of shimmer bars when known.
-  // Callers that know the destination (the per-type/per-generation pages,
-  // or the nav overlay via URL) should pass these so only genuinely
-  // unknown data shimmers.
-  bannerTitle?: string
-  bannerSubtitle?: string
-  bannerColor?: string
 }
 
-const { banner, locale, bannerTitle, bannerSubtitle, bannerColor } = Astro.props
+const { locale } = Astro.props
 
 const cellCount = 18
 ---
@@ -35,39 +27,6 @@ const cellCount = 18
   <div class="mb-8">
     <ListerFilters locale={locale} />
   </div>
-
-  {banner === 'type' && (
-    <div
-      class:list={['mb-8 rounded-2xl border-2 border-black/[0.06] dark:border-white/[0.08] p-6 md:p-8', !bannerTitle && 'bg-surface-sunken dark:bg-dark-raised']}
-      style={bannerTitle && `background-color: ${bannerColor ?? '#a8a878'}18`}
-    >
-      {bannerTitle ? (
-        <h1 class="font-bold text-2xl text-ink tracking-tight md:text-3xl dark:text-dark-ink">{bannerTitle}</h1>
-      ) : (
-        <div class="skeleton-shimmer mb-2 h-7 w-32 rounded-md"></div>
-      )}
-      {bannerSubtitle ? (
-        <p class="text-ink-muted text-sm dark:text-dark-ink-muted">{bannerSubtitle}</p>
-      ) : (
-        <div class="skeleton-shimmer h-4 w-44 rounded"></div>
-      )}
-    </div>
-  )}
-
-  {banner === 'generation' && (
-    <div class="mb-8 rounded-2xl border-2 border-black/[0.06] dark:border-white/[0.08] bg-gradient-to-br from-primary-50 to-surface-sunken p-6 md:p-8 dark:from-dark-raised dark:to-dark-surface">
-      {bannerTitle ? (
-        <h1 class="font-bold text-2xl text-ink tracking-tight md:text-3xl dark:text-dark-ink">{bannerTitle}</h1>
-      ) : (
-        <div class="skeleton-shimmer mb-2 h-7 w-40 rounded-md"></div>
-      )}
-      {bannerSubtitle ? (
-        <p class="font-medium text-ink-muted text-sm dark:text-dark-ink-muted">{bannerSubtitle}</p>
-      ) : (
-        <div class="skeleton-shimmer h-4 w-56 rounded"></div>
-      )}
-    </div>
-  )}
 
   <ul class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-4 lg:grid-cols-5 xl:grid-cols-6">
     {Array.from({ length: cellCount }).map(() => (
