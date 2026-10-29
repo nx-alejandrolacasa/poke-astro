@@ -18,6 +18,7 @@ html {
    3.5rem pill height (h-14) + 1rem viewport margin + ~1rem breathing room
    so the last scroll position clears the nav cleanly. */
 html {
+  min-height: 100%;
   padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
 }
 
