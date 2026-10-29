@@ -16,7 +16,7 @@ export function PokemonLister({
   filters,
 }: PokemonListerProps) {
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       {filters}
       <VirtualPokemonGrid pokemon={pokemon} locale={locale} />
       <BackToTop />

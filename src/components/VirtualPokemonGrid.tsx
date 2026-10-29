@@ -22,8 +22,6 @@ function getColumnCount(width: number): number {
   return 2
 }
 
-// PokemonTile content below the aspect-square image: 8 mt + 24 name +
-// 6 gap + 24 type-badge + 16+16 padding + 2+2 border ≈ 98px.
 const TILE_CONTENT_HEIGHT_PX = 98
 
 export function VirtualPokemonGrid({
@@ -117,7 +115,8 @@ export function VirtualPokemonGrid({
           return (
             <div
               key={virtualRow.key}
-              data-row={virtualRow.index}
+              ref={rowVirtualizer.measureElement}
+              data-index={virtualRow.index}
               style={{
                 position: 'absolute',
                 top: 0,
