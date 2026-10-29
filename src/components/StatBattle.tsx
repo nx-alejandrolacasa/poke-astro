@@ -548,7 +548,7 @@ export function StatBattle({ locale }: StatBattleProps) {
         <div
           role="tablist"
           aria-label={t.battle.mode}
-          className="mx-auto flex w-fit rounded-full bg-surface-sunken p-1 dark:bg-dark-raised"
+          className="mx-auto grid w-full max-w-md grid-cols-3 rounded-full bg-surface-sunken p-1 dark:bg-dark-raised"
         >
           {(['classic', 'legendary', 'survival'] as const).map((m) => (
             <button
@@ -557,10 +557,12 @@ export function StatBattle({ locale }: StatBattleProps) {
               role="tab"
               aria-selected={mode === m}
               onClick={() => switchMode(m)}
-              className={`rounded-full px-5 py-2 text-sm font-semibold transition-all ${mode === m ? 'bg-white text-ink shadow-sm dark:bg-dark-surface dark:text-dark-ink' : 'text-ink-muted hover:text-ink dark:text-dark-ink-muted dark:hover:text-dark-ink'}`}
+              className={`flex flex-col items-center justify-center rounded-full px-2 py-1.5 text-xs leading-tight font-semibold transition-all sm:text-sm ${mode === m ? 'bg-white text-ink shadow-sm dark:bg-dark-surface dark:text-dark-ink' : 'text-ink-muted hover:text-ink dark:text-dark-ink-muted dark:hover:text-dark-ink'}`}
             >
-              {m === 'classic' ? '⚔️ ' : m === 'legendary' ? '★ ' : '🔥 '}
-              {t.battle[m]}
+              <span>
+                {m === 'classic' ? '⚔️' : m === 'legendary' ? '★' : '🔥'}
+              </span>
+              <span>{t.battle[m]}</span>
             </button>
           ))}
         </div>
