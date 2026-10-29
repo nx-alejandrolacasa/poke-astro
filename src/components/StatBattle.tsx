@@ -1087,7 +1087,7 @@ export function StatBattle({ locale }: StatBattleProps) {
       </div>
 
       {phase === 'playing' ? (
-        <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col-reverse items-center gap-3">
           <p
             className="text-center text-sm text-ink-muted dark:text-dark-ink-muted"
             aria-live="polite"
