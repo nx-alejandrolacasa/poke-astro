@@ -967,7 +967,7 @@ export function StatBattle({ locale }: StatBattleProps) {
                 🔓 {unlockMessage}
               </p>
             )}
-            <div className="flex flex-wrap justify-center gap-2 pt-2">
+            <div className="flex flex-col gap-2 pt-2">
               <button
                 type="button"
                 onClick={
@@ -977,7 +977,7 @@ export function StatBattle({ locale }: StatBattleProps) {
                       ? nextOpponent
                       : startSurvival
                 }
-                className={PRIMARY_BUTTON}
+                className={`${PRIMARY_BUTTON} w-full`}
               >
                 {mode !== 'survival'
                   ? t.battle.again
@@ -988,7 +988,7 @@ export function StatBattle({ locale }: StatBattleProps) {
               <button
                 type="button"
                 onClick={backToSetup}
-                className={SECONDARY_BUTTON}
+                className={`${SECONDARY_BUTTON} w-full`}
               >
                 {t.battle.backToSetup}
               </button>

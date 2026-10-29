@@ -184,6 +184,13 @@ export type Translations = {
     auto: string
     light: string
     dark: string
+    transfer: string
+    copyState: string
+    pasteState: string
+    copied: string
+    pasted: string
+    pasteFailed: string
+    pastePrompt: string
   }
   // Footer
   footer: {
@@ -592,6 +599,13 @@ export const translations: Record<Language, Translations> = {
       auto: 'Auto',
       light: 'Light',
       dark: 'Dark',
+      transfer: 'Move to another device',
+      copyState: 'Copy my data',
+      pasteState: 'Paste my data',
+      copied: 'Copied!',
+      pasted: 'Restored!',
+      pasteFailed: 'Nothing to restore',
+      pastePrompt: 'Paste the code you copied on the other device',
     },
     footer: {
       legal:
@@ -1004,6 +1018,13 @@ export const translations: Record<Language, Translations> = {
       auto: 'Auto',
       light: 'Claro',
       dark: 'Oscuro',
+      transfer: 'Mover a otro dispositivo',
+      copyState: 'Copiar mis datos',
+      pasteState: 'Pegar mis datos',
+      copied: '¡Copiado!',
+      pasted: '¡Restaurado!',
+      pasteFailed: 'Nada que restaurar',
+      pastePrompt: 'Pega el código que copiaste en el otro dispositivo',
     },
     footer: {
       legal:

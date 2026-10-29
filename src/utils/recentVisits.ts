@@ -76,3 +76,22 @@ export async function addRecentVisit(
     // swallow — recent-visits is a best-effort enhancement
   }
 }
+
+export async function replaceRecentVisits(
+  visits: RecentVisit[]
+): Promise<void> {
+  try {
+    const db = await openDb()
+    await new Promise<void>((resolve) => {
+      const tx = db.transaction(STORE_NAME, 'readwrite')
+      const store = tx.objectStore(STORE_NAME)
+      store.clear()
+      for (const v of visits.slice(0, MAX_VISITS)) store.put(v)
+      tx.oncomplete = () => resolve()
+      tx.onerror = () => resolve()
+      tx.onabort = () => resolve()
+    })
+  } catch {
+    // swallow — recent-visits is a best-effort enhancement
+  }
+}

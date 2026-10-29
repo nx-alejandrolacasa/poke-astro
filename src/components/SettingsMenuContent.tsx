@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { encodeAppState, restoreAppState } from '@/utils/appState'
 import type { Locale } from '@/utils/i18n'
 import { locales, localizeUrl } from '@/utils/i18n'
 import { translations } from '@/utils/translations'
@@ -34,6 +35,7 @@ export function SettingsMenuContent({
 }: SettingsMenuContentProps) {
   const t = translations[locale]
   const [currentTheme, setCurrentTheme] = useState<ThemeMode>('auto')
+  const [transferStatus, setTransferStatus] = useState<string | null>(null)
 
   useEffect(() => {
     if (window.theme) setCurrentTheme(window.theme.getTheme())
@@ -51,6 +53,45 @@ export function SettingsMenuContent({
     window.theme?.setTheme(mode)
     setCurrentTheme(mode)
   }
+
+  const flash = (message: string) => {
+    setTransferStatus(message)
+    setTimeout(() => setTransferStatus(null), 2000)
+  }
+
+  const copyState = async () => {
+    const code = encodeAppState()
+    try {
+      const blob = code.then((c) => new Blob([c], { type: 'text/plain' }))
+      await navigator.clipboard.write([
+        new ClipboardItem({ 'text/plain': blob }),
+      ])
+      flash(t.settings.copied)
+    } catch {
+      window.prompt(t.settings.copyState, await code)
+    }
+  }
+
+  const readPastedCode = async () => {
+    try {
+      const code = await navigator.clipboard.readText()
+      if (code.trim()) return code
+    } catch {}
+    return window.prompt(t.settings.pastePrompt) ?? ''
+  }
+
+  const pasteState = async () => {
+    try {
+      await restoreAppState(await readPastedCode())
+      flash(t.settings.pasted)
+      setTimeout(() => location.reload(), 600)
+    } catch {
+      flash(t.settings.pasteFailed)
+    }
+  }
+
+  const transferButtonClass =
+    'rounded-xl bg-black/5 px-3 py-2 text-xs font-semibold text-ink-muted transition-colors hover:bg-black/10 dark:bg-white/5 dark:text-dark-ink-muted dark:hover:bg-white/10'
 
   return (
     <>
@@ -133,6 +174,34 @@ export function SettingsMenuContent({
             {t.settings[mode]}
           </button>
         ))}
+      </div>
+
+      <p className="mt-4 mb-2 text-xs font-semibold tracking-wider text-ink-muted uppercase dark:text-dark-ink-muted">
+        {t.settings.transfer}
+      </p>
+      <div className="grid grid-cols-2 gap-2" aria-live="polite">
+        {transferStatus ? (
+          <p className="col-span-2 rounded-xl bg-primary/15 px-3 py-2 text-center text-xs font-semibold text-primary dark:bg-dark-primary/20 dark:text-dark-primary">
+            {transferStatus}
+          </p>
+        ) : (
+          <>
+            <button
+              type="button"
+              onClick={copyState}
+              className={transferButtonClass}
+            >
+              {t.settings.copyState}
+            </button>
+            <button
+              type="button"
+              onClick={pasteState}
+              className={transferButtonClass}
+            >
+              {t.settings.pasteState}
+            </button>
+          </>
+        )}
       </div>
     </>
   )
