@@ -1,5 +1,4 @@
 import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
-import { BackButton } from '@/components/BackButton'
 import { GenerationSelect } from '@/components/GenerationSelect'
 import { PokemonPicker } from '@/components/PokemonPicker'
 import { usePokemonIndex } from '@/components/usePokemonIndex'
@@ -140,29 +139,29 @@ function TargetCard({ target, locale, t, total, badge }: TargetCardProps) {
   const ahead = diff >= 0
   return (
     <div
-      className="rounded-3xl border-2 bg-white p-5 transition-colors dark:bg-dark-surface"
+      className="rounded-3xl border-2 bg-white p-3 transition-colors sm:p-5 dark:bg-dark-surface"
       style={{
         borderColor: accent,
         backgroundImage: `radial-gradient(circle at 15% 50%, ${accent}33, transparent 55%)`,
       }}
     >
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 sm:gap-4">
         <a href={`/${locale}/pokemon/${target.name}`} className="shrink-0">
           <img
             src={artwork(target, 96)}
             alt={target.names[locale]}
-            className="h-20 w-20 object-contain sm:h-24 sm:w-24"
+            className="h-14 w-14 object-contain sm:h-24 sm:w-24"
           />
         </a>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-lg font-bold text-ink dark:text-dark-ink">
+          <p className="truncate text-base font-bold text-ink sm:text-lg dark:text-dark-ink">
             {target.names[locale]}
           </p>
           <div className="mt-1 flex flex-wrap gap-1">
             {STAT_LABEL_KEYS.map((key, i) => (
               <span
                 key={key}
-                className="rounded-full bg-surface-sunken px-2 py-0.5 font-mono text-[11px] text-ink-muted dark:bg-dark-raised dark:text-dark-ink-muted"
+                className="rounded-full bg-surface-sunken px-1.5 font-mono text-[10px] text-ink-muted sm:px-2 sm:py-0.5 sm:text-[11px] dark:bg-dark-raised dark:text-dark-ink-muted"
               >
                 {t.stats[key]}{' '}
                 <b className="text-ink dark:text-dark-ink">{target.stats[i]}</b>
@@ -179,13 +178,13 @@ function TargetCard({ target, locale, t, total, badge }: TargetCardProps) {
           <p className="font-mono text-[11px] tracking-wide text-ink-muted uppercase dark:text-dark-ink-muted">
             {t.battle.target}
           </p>
-          <p className="text-3xl font-black text-ink tabular-nums dark:text-dark-ink">
+          <p className="text-2xl font-black text-ink tabular-nums sm:text-3xl dark:text-dark-ink">
             {targetTotal}
           </p>
         </div>
       </div>
       {total !== undefined && (
-        <div className="mt-4">
+        <div className="mt-2 sm:mt-4">
           <div className="flex items-baseline justify-between text-sm">
             <span className="text-ink-muted dark:text-dark-ink-muted">
               {t.battle.yours}
@@ -536,630 +535,617 @@ export function StatBattle({ locale }: StatBattleProps) {
 
   if (phase === 'setup') {
     return (
-      <>
-        <div className="mb-6 flex items-center gap-2 border-b border-black/[0.06] pb-3 dark:border-white/[0.08]">
-          <BackButton locale={locale} />
+      <div className="mx-auto max-w-3xl space-y-6">
+        <div className="text-center">
+          <h1 className="pokemon-title text-2xl md:text-4xl">
+            {t.battle.title}
+          </h1>
+          <p className="mt-2 text-sm text-ink-muted dark:text-dark-ink-muted">
+            {t.battle.subtitle}
+          </p>
         </div>
-        <div className="mx-auto max-w-3xl space-y-6">
-          <div className="text-center">
-            <h1 className="pokemon-title text-2xl md:text-4xl">
-              {t.battle.title}
-            </h1>
-            <p className="mt-2 text-sm text-ink-muted dark:text-dark-ink-muted">
-              {t.battle.subtitle}
-            </p>
-          </div>
 
-          <div
-            role="tablist"
-            aria-label={t.battle.mode}
-            className="mx-auto flex w-fit rounded-full bg-surface-sunken p-1 dark:bg-dark-raised"
-          >
-            {(['classic', 'legendary', 'survival'] as const).map((m) => (
+        <div
+          role="tablist"
+          aria-label={t.battle.mode}
+          className="mx-auto flex w-fit rounded-full bg-surface-sunken p-1 dark:bg-dark-raised"
+        >
+          {(['classic', 'legendary', 'survival'] as const).map((m) => (
+            <button
+              key={m}
+              type="button"
+              role="tab"
+              aria-selected={mode === m}
+              onClick={() => switchMode(m)}
+              className={`rounded-full px-5 py-2 text-sm font-semibold transition-all ${mode === m ? 'bg-white text-ink shadow-sm dark:bg-dark-surface dark:text-dark-ink' : 'text-ink-muted hover:text-ink dark:text-dark-ink-muted dark:hover:text-dark-ink'}`}
+            >
+              {m === 'classic' ? '⚔️ ' : m === 'legendary' ? '★ ' : '🔥 '}
+              {t.battle[m]}
+            </button>
+          ))}
+        </div>
+
+        {mode === 'survival' ? (
+          <>
+            <section className="space-y-3 rounded-3xl bg-white p-5 dark:bg-dark-surface">
+              <h2 className="font-bold text-ink dark:text-dark-ink">
+                <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary font-mono text-xs text-white dark:bg-dark-primary">
+                  1
+                </span>
+                {t.battle.reelGen}
+              </h2>
+              <p className="text-xs text-ink-muted dark:text-dark-ink-muted">
+                {t.battle.survivalHint}
+              </p>
+              <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+                {[
+                  { id: 0, label: t.quiz.allGens },
+                  ...GENERATIONS.map((gen) => ({
+                    id: gen.id,
+                    label: `${t.quiz.gen} ${gen.roman} · ${gen.region}`,
+                  })),
+                ].map((option) => {
+                  const active = generation === option.id
+                  const best = survivalBest[option.id] ?? 0
+                  return (
+                    <button
+                      key={option.id}
+                      type="button"
+                      aria-pressed={active}
+                      onClick={() => setGeneration(option.id)}
+                      disabled={loading}
+                      className={`flex items-center justify-between gap-3 rounded-xl border-2 px-3 py-2 text-left text-sm transition-all active:scale-[0.98] ${active ? 'border-primary bg-primary-50 text-ink dark:border-dark-primary dark:bg-primary/10 dark:text-dark-ink' : 'border-transparent bg-surface-sunken text-ink hover:border-black/[0.08] dark:bg-dark-raised dark:text-dark-ink dark:hover:border-white/[0.1]'}`}
+                    >
+                      <span className="font-medium">{option.label}</span>
+                      <span
+                        className={`shrink-0 font-mono text-xs ${best > 0 ? 'text-ink dark:text-dark-ink' : 'text-ink-faint dark:text-dark-ink-faint'}`}
+                        title={t.battle.bestStreak}
+                      >
+                        🏆 <b>{best}</b>
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+            </section>
+
+            <div className="flex justify-center">
               <button
-                key={m}
                 type="button"
-                role="tab"
-                aria-selected={mode === m}
-                onClick={() => switchMode(m)}
-                className={`rounded-full px-5 py-2 text-sm font-semibold transition-all ${mode === m ? 'bg-white text-ink shadow-sm dark:bg-dark-surface dark:text-dark-ink' : 'text-ink-muted hover:text-ink dark:text-dark-ink-muted dark:hover:text-dark-ink'}`}
+                onClick={startSurvival}
+                disabled={loading || defaults.length === 0}
+                className={`${PRIMARY_BUTTON} px-10 py-3 text-base`}
               >
-                {m === 'classic' ? '⚔️ ' : m === 'legendary' ? '★ ' : '🔥 '}
-                {t.battle[m]}
+                🔥 {t.battle.fight}
               </button>
-            ))}
-          </div>
-
-          {mode === 'survival' ? (
-            <>
+            </div>
+          </>
+        ) : mode === 'legendary' ? (
+          <>
+            {legendaries.length > 0 && (
               <section className="space-y-3 rounded-3xl bg-white p-5 dark:bg-dark-surface">
                 <h2 className="font-bold text-ink dark:text-dark-ink">
-                  <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary font-mono text-xs text-white dark:bg-dark-primary">
-                    1
+                  <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-400 font-mono text-xs text-amber-950">
+                    ★
                   </span>
-                  {t.battle.reelGen}
+                  {t.battle.legendary}
+                  {gauntletCleared && (
+                    <span className="ml-2 rounded-full bg-emerald-500 px-2 py-0.5 text-xs text-white">
+                      {t.battle.legendaryDone}
+                    </span>
+                  )}
                 </h2>
                 <p className="text-xs text-ink-muted dark:text-dark-ink-muted">
-                  {t.battle.survivalHint}
+                  {t.battle.legendaryHint}
                 </p>
-                <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
-                  {[
-                    { id: 0, label: t.quiz.allGens },
-                    ...GENERATIONS.map((gen) => ({
-                      id: gen.id,
-                      label: `${t.quiz.gen} ${gen.roman} · ${gen.region}`,
-                    })),
-                  ].map((option) => {
-                    const active = generation === option.id
-                    const best = survivalBest[option.id] ?? 0
+                <div className="flex [scrollbar-width:thin] gap-1.5 overflow-x-auto pb-1">
+                  {GENERATIONS.map((gen) => {
+                    const roster = legendaries.filter(
+                      (p) => p.generation === gen.id
+                    )
+                    const cleared = roster.filter(beaten).length
+                    const complete = cleared === roster.length
+                    const active = legendGen === gen.id
                     return (
                       <button
-                        key={option.id}
+                        key={gen.id}
                         type="button"
+                        onClick={() => setLegendGen(gen.id)}
                         aria-pressed={active}
-                        onClick={() => setGeneration(option.id)}
-                        disabled={loading}
-                        className={`flex items-center justify-between gap-3 rounded-xl border-2 px-3 py-2 text-left text-sm transition-all active:scale-[0.98] ${active ? 'border-primary bg-primary-50 text-ink dark:border-dark-primary dark:bg-primary/10 dark:text-dark-ink' : 'border-transparent bg-surface-sunken text-ink hover:border-black/[0.08] dark:bg-dark-raised dark:text-dark-ink dark:hover:border-white/[0.1]'}`}
+                        title={`${t.quiz.gen} ${gen.roman} · ${gen.region}`}
+                        className={`flex shrink-0 flex-col items-center rounded-xl px-3 py-1.5 transition-all ${active ? 'bg-primary text-white shadow-md dark:bg-dark-primary' : complete ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-200' : 'bg-surface-sunken text-ink hover:bg-black/[0.06] dark:bg-dark-raised dark:text-dark-ink dark:hover:bg-white/[0.08]'}`}
                       >
-                        <span className="font-medium">{option.label}</span>
+                        <span className="text-sm font-bold">{gen.roman}</span>
                         <span
-                          className={`shrink-0 font-mono text-xs ${best > 0 ? 'text-ink dark:text-dark-ink' : 'text-ink-faint dark:text-dark-ink-faint'}`}
-                          title={t.battle.bestStreak}
+                          className={`font-mono text-[10px] ${active ? 'text-white/80' : 'opacity-60'}`}
                         >
-                          🏆 <b>{best}</b>
+                          {cleared}/{roster.length}
                         </span>
                       </button>
                     )
                   })}
                 </div>
-              </section>
-
-              <div className="flex justify-center">
-                <button
-                  type="button"
-                  onClick={startSurvival}
-                  disabled={loading || defaults.length === 0}
-                  className={`${PRIMARY_BUTTON} px-10 py-3 text-base`}
-                >
-                  🔥 {t.battle.fight}
-                </button>
-              </div>
-            </>
-          ) : mode === 'legendary' ? (
-            <>
-              {legendaries.length > 0 && (
-                <section className="space-y-3 rounded-3xl bg-white p-5 dark:bg-dark-surface">
-                  <h2 className="font-bold text-ink dark:text-dark-ink">
-                    <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-400 font-mono text-xs text-amber-950">
-                      ★
-                    </span>
-                    {t.battle.legendary}
-                    {gauntletCleared && (
-                      <span className="ml-2 rounded-full bg-emerald-500 px-2 py-0.5 text-xs text-white">
-                        {t.battle.legendaryDone}
-                      </span>
-                    )}
-                  </h2>
-                  <p className="text-xs text-ink-muted dark:text-dark-ink-muted">
-                    {t.battle.legendaryHint}
-                  </p>
-                  <div className="flex [scrollbar-width:thin] gap-1.5 overflow-x-auto pb-1">
-                    {GENERATIONS.map((gen) => {
-                      const roster = legendaries.filter(
-                        (p) => p.generation === gen.id
-                      )
-                      const cleared = roster.filter(beaten).length
-                      const complete = cleared === roster.length
-                      const active = legendGen === gen.id
+                <div className="flex snap-x snap-mandatory [scrollbar-width:thin] gap-2 overflow-x-auto pb-2">
+                  {legendaries
+                    .filter((p) => p.generation === legendGen)
+                    .map((pokemon) => {
+                      const done = beaten(pokemon)
+                      const selected = target?.id === pokemon.id
                       return (
                         <button
-                          key={gen.id}
+                          key={pokemon.id}
                           type="button"
-                          onClick={() => setLegendGen(gen.id)}
-                          aria-pressed={active}
-                          title={`${t.quiz.gen} ${gen.roman} · ${gen.region}`}
-                          className={`flex shrink-0 flex-col items-center rounded-xl px-3 py-1.5 transition-all ${active ? 'bg-primary text-white shadow-md dark:bg-dark-primary' : complete ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-200' : 'bg-surface-sunken text-ink hover:bg-black/[0.06] dark:bg-dark-raised dark:text-dark-ink dark:hover:bg-white/[0.08]'}`}
+                          onClick={() => chooseLegendary(pokemon)}
+                          aria-pressed={selected}
+                          className={`relative flex w-28 shrink-0 snap-start flex-col items-center gap-1 rounded-2xl border-2 bg-white p-2 text-center transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-95 dark:bg-dark-surface ${selected ? 'border-primary' : done ? 'border-emerald-400' : 'border-black/[0.08] dark:border-white/[0.1]'}`}
                         >
-                          <span className="text-sm font-bold">{gen.roman}</span>
-                          <span
-                            className={`font-mono text-[10px] ${active ? 'text-white/80' : 'opacity-60'}`}
-                          >
-                            {cleared}/{roster.length}
+                          <img
+                            src={artwork(pokemon, 80)}
+                            alt=""
+                            className={`h-16 w-16 object-contain ${done ? '' : 'opacity-70 grayscale'}`}
+                            loading="lazy"
+                          />
+                          <span className="w-full truncate text-xs font-semibold text-ink dark:text-dark-ink">
+                            {pokemon.names[locale]}
                           </span>
+                          <span className="font-mono text-[10px] text-ink-muted dark:text-dark-ink-muted">
+                            {sumStats(pokemon)}
+                          </span>
+                          {done && (
+                            <span className="absolute top-1.5 right-1.5 rounded-full bg-emerald-500 px-1.5 text-[10px] font-bold text-white">
+                              ✓
+                            </span>
+                          )}
                         </button>
                       )
                     })}
-                  </div>
-                  <div className="flex snap-x snap-mandatory [scrollbar-width:thin] gap-2 overflow-x-auto pb-2">
-                    {legendaries
-                      .filter((p) => p.generation === legendGen)
-                      .map((pokemon) => {
-                        const done = beaten(pokemon)
-                        const selected = target?.id === pokemon.id
-                        return (
-                          <button
-                            key={pokemon.id}
-                            type="button"
-                            onClick={() => chooseLegendary(pokemon)}
-                            aria-pressed={selected}
-                            className={`relative flex w-28 shrink-0 snap-start flex-col items-center gap-1 rounded-2xl border-2 bg-white p-2 text-center transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-95 dark:bg-dark-surface ${selected ? 'border-primary' : done ? 'border-emerald-400' : 'border-black/[0.08] dark:border-white/[0.1]'}`}
-                          >
-                            <img
-                              src={artwork(pokemon, 80)}
-                              alt=""
-                              className={`h-16 w-16 object-contain ${done ? '' : 'opacity-70 grayscale'}`}
-                              loading="lazy"
-                            />
-                            <span className="w-full truncate text-xs font-semibold text-ink dark:text-dark-ink">
-                              {pokemon.names[locale]}
-                            </span>
-                            <span className="font-mono text-[10px] text-ink-muted dark:text-dark-ink-muted">
-                              {sumStats(pokemon)}
-                            </span>
-                            {done && (
-                              <span className="absolute top-1.5 right-1.5 rounded-full bg-emerald-500 px-1.5 text-[10px] font-bold text-white">
-                                ✓
-                              </span>
-                            )}
-                          </button>
-                        )
-                      })}
-                  </div>
-                </section>
-              )}
+                </div>
+              </section>
+            )}
 
-              {target && isLegendary(target) && (
+            {target && isLegendary(target) && (
+              <TargetCard target={target} locale={locale} t={t} />
+            )}
+
+            <div className="flex justify-center">
+              <button
+                type="button"
+                onClick={startBattle}
+                disabled={!target || !isLegendary(target)}
+                className={`${PRIMARY_BUTTON} px-10 py-3 text-base`}
+              >
+                ★ {t.battle.fight}
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <section className="space-y-3 rounded-3xl bg-white p-5 dark:bg-dark-surface">
+              <h2 className="font-bold text-ink dark:text-dark-ink">
+                <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary font-mono text-xs text-white dark:bg-dark-primary">
+                  1
+                </span>
+                {t.battle.stepPokemon}
+              </h2>
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <div className="flex-1">
+                  <PokemonPicker
+                    index={index}
+                    locale={locale}
+                    placeholder={t.battle.pick}
+                    autoFocus={!target}
+                    onPick={choose}
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => choose(randomOf(defaults))}
+                  disabled={loading || defaults.length === 0}
+                  className={SECONDARY_BUTTON}
+                >
+                  {t.battle.random}
+                </button>
+              </div>
+              {target ? (
                 <TargetCard target={target} locale={locale} t={t} />
-              )}
-
-              <div className="flex justify-center">
-                <button
-                  type="button"
-                  onClick={startBattle}
-                  disabled={!target || !isLegendary(target)}
-                  className={`${PRIMARY_BUTTON} px-10 py-3 text-base`}
-                >
-                  ★ {t.battle.fight}
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <section className="space-y-3 rounded-3xl bg-white p-5 dark:bg-dark-surface">
-                <h2 className="font-bold text-ink dark:text-dark-ink">
-                  <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary font-mono text-xs text-white dark:bg-dark-primary">
-                    1
-                  </span>
-                  {t.battle.stepPokemon}
-                </h2>
-                <div className="flex flex-col gap-2 sm:flex-row">
-                  <div className="flex-1">
-                    <PokemonPicker
-                      index={index}
-                      locale={locale}
-                      placeholder={t.battle.pick}
-                      autoFocus={!target}
-                      onPick={choose}
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => choose(randomOf(defaults))}
-                    disabled={loading || defaults.length === 0}
-                    className={SECONDARY_BUTTON}
-                  >
-                    {t.battle.random}
-                  </button>
-                </div>
-                {target ? (
-                  <TargetCard target={target} locale={locale} t={t} />
-                ) : (
-                  <p className="text-center text-sm text-ink-muted dark:text-dark-ink-muted">
-                    {loading ? t.battle.loading : t.battle.intro}
-                  </p>
-                )}
-              </section>
-
-              <section className="space-y-3 rounded-3xl bg-white p-5 dark:bg-dark-surface">
-                <h2 className="font-bold text-ink dark:text-dark-ink">
-                  <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary font-mono text-xs text-white dark:bg-dark-primary">
-                    2
-                  </span>
-                  {t.battle.reelGen}
-                </h2>
-                <GenerationSelect
-                  value={generation}
-                  onChange={(gen) =>
-                    setGeneration(clampGeneration(gen, won, allUnlocked))
-                  }
-                  locale={locale}
-                  label={t.battle.reelGen}
-                  unlockedUpTo={unlockedUpTo}
-                  allUnlocked={allUnlocked}
-                  disabled={!target}
-                />
-                {target && !allUnlocked && (
-                  <p className="text-xs text-ink-muted dark:text-dark-ink-muted">
-                    🔒 {t.battle.lockedHint}
-                  </p>
-                )}
-              </section>
-
-              <div className="flex justify-center">
-                <button
-                  type="button"
-                  onClick={startBattle}
-                  disabled={!target}
-                  className={`${PRIMARY_BUTTON} px-10 py-3 text-base`}
-                >
-                  ⚔️ {t.battle.fight}
-                </button>
-              </div>
-            </>
-          )}
-
-          {history.length > 0 && (
-            <section className="space-y-3 border-t border-black/[0.06] pt-6 dark:border-white/[0.08]">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <h2 className="font-bold text-ink dark:text-dark-ink">
-                  {t.battle.history}{' '}
-                  <span className="font-mono text-xs text-ink-muted dark:text-dark-ink-muted">
-                    {wins}/{history.length}
-                  </span>
-                </h2>
-                <div className="flex items-center gap-3 text-sm">
-                  <label className="flex cursor-pointer items-center gap-2 text-ink dark:text-dark-ink">
-                    <input
-                      type="checkbox"
-                      checked={onlyWins}
-                      onChange={(e) => setOnlyWins(e.target.checked)}
-                      className="h-4 w-4 accent-primary"
-                    />
-                    {t.battle.onlyWins}
-                  </label>
-                  <button
-                    type="button"
-                    onClick={clearHistory}
-                    className="text-ink-muted underline-offset-2 hover:underline dark:text-dark-ink-muted"
-                  >
-                    {t.battle.clearHistory}
-                  </button>
-                </div>
-              </div>
-              {shownHistory.length === 0 ? (
-                <p className="text-center text-sm text-ink-muted dark:text-dark-ink-muted">
-                  {t.battle.noWins}
-                </p>
               ) : (
-                <ul className="space-y-2">
-                  {shownHistory.map((record) => {
-                    const targetPokemon = byId.get(record.targetId)
-                    const { label, color } = outcome(record)
-                    return (
-                      <li
-                        key={record.at}
-                        className="flex items-center gap-3 rounded-2xl border-2 bg-white p-2 pr-3 dark:bg-dark-surface"
-                        style={{ borderColor: `${color}80` }}
-                      >
-                        <button
-                          type="button"
-                          onClick={() => targetPokemon && choose(targetPokemon)}
-                          disabled={!targetPokemon}
-                          title={t.battle.pick}
-                          className="shrink-0 rounded-xl bg-surface-sunken p-1 transition-transform hover:scale-110 dark:bg-dark-raised"
-                        >
-                          <img
-                            src={optimizedImageUrl(
-                              officialArtworkUrl(record.targetId),
-                              48
-                            )}
-                            alt=""
-                            className="h-12 w-12 object-contain"
-                            loading="lazy"
-                          />
-                        </button>
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate font-semibold text-ink dark:text-dark-ink">
-                            {targetPokemon?.names[locale] ??
-                              `#${record.targetId}`}
-                          </p>
-                          <p className="text-xs text-ink-muted dark:text-dark-ink-muted">
-                            {dateFormat.format(record.at)}
-                          </p>
-                        </div>
-                        <div className="hidden -space-x-2 sm:flex">
-                          {record.cards.map((id, i) => (
-                            <img
-                              key={STAT_LABEL_KEYS[i]}
-                              src={optimizedImageUrl(
-                                officialArtworkUrl(id),
-                                28
-                              )}
-                              alt={byId.get(id)?.names[locale] ?? ''}
-                              title={`${t.stats[STAT_LABEL_KEYS[i]]}: ${byId.get(id)?.stats[i] ?? '?'}`}
-                              className="h-7 w-7 rounded-full bg-white object-contain ring-2 ring-white dark:bg-dark-raised dark:ring-dark-surface"
-                              loading="lazy"
-                            />
-                          ))}
-                        </div>
-                        {record.mode && record.mode !== 'classic' && (
-                          <span
-                            role="img"
-                            aria-label={t.battle[record.mode]}
-                            title={t.battle[record.mode]}
-                          >
-                            {record.mode === 'survival' ? '🔥' : '★'}
-                          </span>
-                        )}
-                        <span className="font-mono text-sm text-ink tabular-nums dark:text-dark-ink">
-                          {record.total} vs {record.targetTotal}
-                        </span>
-                        <span
-                          className="rounded-full px-2 py-0.5 text-xs font-bold text-white"
-                          style={{ background: color }}
-                          title={record.redraw ? t.battle.redrawWin : undefined}
-                        >
-                          {label}
-                          {record.redraw && ' ↻'}
-                        </span>
-                      </li>
-                    )
-                  })}
-                </ul>
+                <p className="text-center text-sm text-ink-muted dark:text-dark-ink-muted">
+                  {loading ? t.battle.loading : t.battle.intro}
+                </p>
               )}
             </section>
-          )}
-        </div>
-      </>
+
+            <section className="space-y-3 rounded-3xl bg-white p-5 dark:bg-dark-surface">
+              <h2 className="font-bold text-ink dark:text-dark-ink">
+                <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary font-mono text-xs text-white dark:bg-dark-primary">
+                  2
+                </span>
+                {t.battle.reelGen}
+              </h2>
+              <GenerationSelect
+                value={generation}
+                onChange={(gen) =>
+                  setGeneration(clampGeneration(gen, won, allUnlocked))
+                }
+                locale={locale}
+                label={t.battle.reelGen}
+                unlockedUpTo={unlockedUpTo}
+                allUnlocked={allUnlocked}
+                disabled={!target}
+              />
+              {target && !allUnlocked && (
+                <p className="text-xs text-ink-muted dark:text-dark-ink-muted">
+                  🔒 {t.battle.lockedHint}
+                </p>
+              )}
+            </section>
+
+            <div className="flex justify-center">
+              <button
+                type="button"
+                onClick={startBattle}
+                disabled={!target}
+                className={`${PRIMARY_BUTTON} px-10 py-3 text-base`}
+              >
+                ⚔️ {t.battle.fight}
+              </button>
+            </div>
+          </>
+        )}
+
+        {history.length > 0 && (
+          <section className="space-y-3 border-t border-black/[0.06] pt-6 dark:border-white/[0.08]">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h2 className="font-bold text-ink dark:text-dark-ink">
+                {t.battle.history}{' '}
+                <span className="font-mono text-xs text-ink-muted dark:text-dark-ink-muted">
+                  {wins}/{history.length}
+                </span>
+              </h2>
+              <div className="flex items-center gap-3 text-sm">
+                <label className="flex cursor-pointer items-center gap-2 text-ink dark:text-dark-ink">
+                  <input
+                    type="checkbox"
+                    checked={onlyWins}
+                    onChange={(e) => setOnlyWins(e.target.checked)}
+                    className="h-4 w-4 accent-primary"
+                  />
+                  {t.battle.onlyWins}
+                </label>
+                <button
+                  type="button"
+                  onClick={clearHistory}
+                  className="text-ink-muted underline-offset-2 hover:underline dark:text-dark-ink-muted"
+                >
+                  {t.battle.clearHistory}
+                </button>
+              </div>
+            </div>
+            {shownHistory.length === 0 ? (
+              <p className="text-center text-sm text-ink-muted dark:text-dark-ink-muted">
+                {t.battle.noWins}
+              </p>
+            ) : (
+              <ul className="space-y-2">
+                {shownHistory.map((record) => {
+                  const targetPokemon = byId.get(record.targetId)
+                  const { label, color } = outcome(record)
+                  return (
+                    <li
+                      key={record.at}
+                      className="flex items-center gap-3 rounded-2xl border-2 bg-white p-2 pr-3 dark:bg-dark-surface"
+                      style={{ borderColor: `${color}80` }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => targetPokemon && choose(targetPokemon)}
+                        disabled={!targetPokemon}
+                        title={t.battle.pick}
+                        className="shrink-0 rounded-xl bg-surface-sunken p-1 transition-transform hover:scale-110 dark:bg-dark-raised"
+                      >
+                        <img
+                          src={optimizedImageUrl(
+                            officialArtworkUrl(record.targetId),
+                            48
+                          )}
+                          alt=""
+                          className="h-12 w-12 object-contain"
+                          loading="lazy"
+                        />
+                      </button>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-semibold text-ink dark:text-dark-ink">
+                          {targetPokemon?.names[locale] ??
+                            `#${record.targetId}`}
+                        </p>
+                        <p className="text-xs text-ink-muted dark:text-dark-ink-muted">
+                          {dateFormat.format(record.at)}
+                        </p>
+                      </div>
+                      <div className="hidden -space-x-2 sm:flex">
+                        {record.cards.map((id, i) => (
+                          <img
+                            key={STAT_LABEL_KEYS[i]}
+                            src={optimizedImageUrl(officialArtworkUrl(id), 28)}
+                            alt={byId.get(id)?.names[locale] ?? ''}
+                            title={`${t.stats[STAT_LABEL_KEYS[i]]}: ${byId.get(id)?.stats[i] ?? '?'}`}
+                            className="h-7 w-7 rounded-full bg-white object-contain ring-2 ring-white dark:bg-dark-raised dark:ring-dark-surface"
+                            loading="lazy"
+                          />
+                        ))}
+                      </div>
+                      {record.mode && record.mode !== 'classic' && (
+                        <span
+                          role="img"
+                          aria-label={t.battle[record.mode]}
+                          title={t.battle[record.mode]}
+                        >
+                          {record.mode === 'survival' ? '🔥' : '★'}
+                        </span>
+                      )}
+                      <span className="font-mono text-sm text-ink tabular-nums dark:text-dark-ink">
+                        {record.total} vs {record.targetTotal}
+                      </span>
+                      <span
+                        className="rounded-full px-2 py-0.5 text-xs font-bold text-white"
+                        style={{ background: color }}
+                        title={record.redraw ? t.battle.redrawWin : undefined}
+                      >
+                        {label}
+                        {record.redraw && ' ↻'}
+                      </span>
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
+          </section>
+        )}
+      </div>
     )
   }
 
   if (!target) return null
 
   return (
-    <>
-      <div className="mb-6 flex items-center gap-2 border-b border-black/[0.06] pb-3 dark:border-white/[0.08]">
-        <BackButton locale={locale} onBack={backToSetup} />
-      </div>
-      <div className="mx-auto max-w-3xl space-y-6">
-        {summary.mounted && (
+    <div className="mx-auto max-w-3xl space-y-4 sm:space-y-6">
+      {summary.mounted && (
+        <div
+          className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm ${summary.closing ? 'animate-zoom-overlay-out' : 'animate-zoom-overlay-in'}`}
+          role="dialog"
+          aria-modal="true"
+          aria-label={mode === 'classic' ? t.battle.summary : t.battle[mode]}
+        >
+          <button
+            type="button"
+            aria-label={t.modal.close}
+            onClick={() => setSummaryDismissed(true)}
+            className="absolute inset-0 h-full w-full cursor-default outline-none"
+          />
           <div
-            className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm ${summary.closing ? 'animate-zoom-overlay-out' : 'animate-zoom-overlay-in'}`}
-            role="dialog"
-            aria-modal="true"
-            aria-label={mode === 'classic' ? t.battle.summary : t.battle[mode]}
+            className={`relative w-full max-w-md space-y-3 rounded-3xl border-2 bg-white p-6 text-center shadow-2xl dark:bg-dark-surface ${summary.closing ? 'animate-zoom-image-out' : 'animate-zoom-image-in'}`}
+            style={{
+              borderColor: ahead ? WIN_COLOR : accent,
+              backgroundImage: `radial-gradient(circle at 50% 0%, ${ahead ? WIN_COLOR : accent}33, transparent 70%)`,
+            }}
           >
             <button
               type="button"
               aria-label={t.modal.close}
               onClick={() => setSummaryDismissed(true)}
-              className="absolute inset-0 h-full w-full cursor-default outline-none"
-            />
-            <div
-              className={`relative w-full max-w-md space-y-3 rounded-3xl border-2 bg-white p-6 text-center shadow-2xl dark:bg-dark-surface ${summary.closing ? 'animate-zoom-image-out' : 'animate-zoom-image-in'}`}
-              style={{
-                borderColor: ahead ? WIN_COLOR : accent,
-                backgroundImage: `radial-gradient(circle at 50% 0%, ${ahead ? WIN_COLOR : accent}33, transparent 70%)`,
-              }}
+              className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full text-ink-muted transition-colors hover:bg-black/[0.06] hover:text-ink dark:text-dark-ink-muted dark:hover:bg-white/[0.08] dark:hover:text-dark-ink"
             >
+              ✕
+            </button>
+            <p className="font-mono text-[11px] tracking-wide text-ink-muted uppercase dark:text-dark-ink-muted">
+              {mode === 'classic' ? t.battle.summary : t.battle[mode]}
+            </p>
+            <img
+              src={artwork(target, 112)}
+              alt={target.names[locale]}
+              className={`mx-auto h-24 w-24 object-contain ${ahead ? '' : 'grayscale'}`}
+            />
+            <p className="text-2xl font-black text-ink dark:text-dark-ink">
+              {mode === 'survival' && diff <= 0 ? t.battle.runOver : result}
+            </p>
+            <p className="font-mono text-sm text-ink-muted dark:text-dark-ink-muted">
+              {total} vs {targetTotal} · {target.names[locale]}
+            </p>
+            {diff > 0 && redrawUsed && (
+              <p className="text-sm text-amber-700 dark:text-amber-300">
+                ↻ {t.battle.redrawWin}
+              </p>
+            )}
+            {mode === 'survival' && (
+              <p className="font-mono text-sm text-ink dark:text-dark-ink">
+                🔥 {t.battle.streak} <b>{streak}</b> · 🏆 {t.battle.bestStreak}{' '}
+                <b>{survivalBest[generation] ?? 0}</b>
+              </p>
+            )}
+            {unlockMessage && (
+              <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+                🔓 {unlockMessage}
+              </p>
+            )}
+            <div className="flex flex-wrap justify-center gap-2 pt-2">
               <button
                 type="button"
-                aria-label={t.modal.close}
-                onClick={() => setSummaryDismissed(true)}
-                className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full text-ink-muted transition-colors hover:bg-black/[0.06] hover:text-ink dark:text-dark-ink-muted dark:hover:bg-white/[0.08] dark:hover:text-dark-ink"
-              >
-                ✕
-              </button>
-              <p className="font-mono text-[11px] tracking-wide text-ink-muted uppercase dark:text-dark-ink-muted">
-                {mode === 'classic' ? t.battle.summary : t.battle[mode]}
-              </p>
-              <img
-                src={artwork(target, 112)}
-                alt={target.names[locale]}
-                className={`mx-auto h-24 w-24 object-contain ${ahead ? '' : 'grayscale'}`}
-              />
-              <p className="text-2xl font-black text-ink dark:text-dark-ink">
-                {mode === 'survival' && diff <= 0 ? t.battle.runOver : result}
-              </p>
-              <p className="font-mono text-sm text-ink-muted dark:text-dark-ink-muted">
-                {total} vs {targetTotal} · {target.names[locale]}
-              </p>
-              {diff > 0 && redrawUsed && (
-                <p className="text-sm text-amber-700 dark:text-amber-300">
-                  ↻ {t.battle.redrawWin}
-                </p>
-              )}
-              {mode === 'survival' && (
-                <p className="font-mono text-sm text-ink dark:text-dark-ink">
-                  🔥 {t.battle.streak} <b>{streak}</b> · 🏆{' '}
-                  {t.battle.bestStreak} <b>{survivalBest[generation] ?? 0}</b>
-                </p>
-              )}
-              {unlockMessage && (
-                <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-                  🔓 {unlockMessage}
-                </p>
-              )}
-              <div className="flex flex-wrap justify-center gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={
-                    mode !== 'survival'
-                      ? startBattle
-                      : diff > 0
-                        ? nextOpponent
-                        : startSurvival
-                  }
-                  className={PRIMARY_BUTTON}
-                >
-                  {mode !== 'survival'
-                    ? t.battle.again
+                onClick={
+                  mode !== 'survival'
+                    ? startBattle
                     : diff > 0
-                      ? t.battle.nextOpponent
-                      : t.battle.newRun}
-                </button>
-                <button
-                  type="button"
-                  onClick={backToSetup}
-                  className={SECONDARY_BUTTON}
-                >
-                  {t.battle.backToSetup}
-                </button>
-              </div>
+                      ? nextOpponent
+                      : startSurvival
+                }
+                className={PRIMARY_BUTTON}
+              >
+                {mode !== 'survival'
+                  ? t.battle.again
+                  : diff > 0
+                    ? t.battle.nextOpponent
+                    : t.battle.newRun}
+              </button>
+              <button
+                type="button"
+                onClick={backToSetup}
+                className={SECONDARY_BUTTON}
+              >
+                {t.battle.backToSetup}
+              </button>
             </div>
           </div>
-        )}
-
-        <TargetCard
-          target={target}
-          locale={locale}
-          t={t}
-          total={total}
-          badge={
-            mode === 'survival' ? `🔥 ${t.battle.streak} ${streak}` : undefined
-          }
-        />
-
-        <div className="grid grid-cols-3 gap-2 sm:gap-3 md:grid-cols-6">
-          {reels.map((reel, i) => {
-            const reelAccent = reel.pokemon.accent ?? accent
-            const shown =
-              reel.rolling && strip.length > 0
-                ? strip[(tick + i * 5) % strip.length]
-                : reel.pokemon
-            const canKeep = phase === 'playing' && !rolling && !reel.kept
-            return (
-              <button
-                key={STAT_LABEL_KEYS[i]}
-                type="button"
-                onClick={() => keep(i)}
-                disabled={!canKeep}
-                aria-label={`${t.stats[STAT_LABEL_KEYS[i]]}: ${reel.rolling ? '…' : reel.pokemon.stats[i]} · ${reel.pokemon.names[locale]}`}
-                className={`relative overflow-hidden rounded-2xl border-2 bg-white p-2 text-center transition-all dark:bg-dark-surface ${
-                  reel.kept
-                    ? 'shadow-md'
-                    : 'border-black/[0.08] dark:border-white/[0.1]'
-                } ${reel.rolling ? 'reel-card-rolling' : ''} ${phase === 'finale' ? 'reel-card-finale' : ''} ${canKeep ? 'cursor-pointer hover:-translate-y-1 hover:border-primary/50 hover:shadow-md active:scale-95 dark:hover:border-dark-primary/50' : 'cursor-default'}`}
-                style={
-                  reel.kept
-                    ? ({
-                        borderColor: reelAccent,
-                        backgroundImage: `radial-gradient(circle at 50% 35%, ${reelAccent}40, transparent 65%)`,
-                        '--reel-accent': reelAccent,
-                        '--reel-index': i,
-                      } as CSSProperties)
-                    : undefined
-                }
-              >
-                <div
-                  key={reel.rolling ? 'rolling' : reel.pokemon.id}
-                  className={`flex flex-col items-center gap-1 ${reel.rolling ? '' : 'reel-card-land'}`}
-                >
-                  <span className="font-mono text-[10px] tracking-wide text-ink-muted uppercase dark:text-dark-ink-muted">
-                    {t.stats[STAT_LABEL_KEYS[i]]}
-                  </span>
-                  <div className="aspect-square w-full">
-                    <img
-                      src={artwork(shown, 112)}
-                      alt=""
-                      className={`h-full w-full object-contain ${reel.rolling ? 'reel-rolling' : 'reel-land'}`}
-                      draggable={false}
-                    />
-                  </div>
-                  <span
-                    className={`text-2xl font-black text-ink tabular-nums dark:text-dark-ink ${reel.rolling ? 'animate-pulse' : 'stat-pop'}`}
-                  >
-                    {reel.rolling ? '··' : reel.pokemon.stats[i]}
-                  </span>
-                  <span className="w-full truncate text-[11px] text-ink-muted dark:text-dark-ink-muted">
-                    {reel.rolling ? ' ' : reel.pokemon.names[locale]}
-                  </span>
-                </div>
-                {reel.kept ? (
-                  <span
-                    className="badge-stamp absolute top-1.5 right-1.5 rounded-full px-1.5 text-[10px] font-bold text-white"
-                    style={{ background: reelAccent }}
-                  >
-                    ✓
-                  </span>
-                ) : !reel.rolling && repeatedIds.has(reel.pokemon.id) ? (
-                  <span
-                    className="absolute top-1.5 left-1.5 rounded-full bg-amber-400 px-1.5 text-[10px] font-bold text-amber-950"
-                    title={t.battle.reroll}
-                  >
-                    ↻
-                  </span>
-                ) : (
-                  <span className="absolute top-1.5 left-2 font-mono text-[10px] text-ink-faint dark:text-dark-ink-faint">
-                    {i + 1}
-                  </span>
-                )}
-              </button>
-            )
-          })}
         </div>
+      )}
 
-        {phase === 'playing' ? (
-          <div className="flex flex-col items-center gap-3">
-            <p
-              className="text-center text-sm text-ink-muted dark:text-dark-ink-muted"
-              aria-live="polite"
-            >
-              {rolling ? t.battle.spinning : t.battle.hint}{' '}
-              <span className="font-mono">
-                {keptCount}/{REEL_COUNT}
-              </span>
-            </p>
+      <TargetCard
+        target={target}
+        locale={locale}
+        t={t}
+        total={total}
+        badge={
+          mode === 'survival' ? `🔥 ${t.battle.streak} ${streak}` : undefined
+        }
+      />
+
+      <div className="grid grid-cols-3 gap-2 sm:gap-3 md:grid-cols-6">
+        {reels.map((reel, i) => {
+          const reelAccent = reel.pokemon.accent ?? accent
+          const shown =
+            reel.rolling && strip.length > 0
+              ? strip[(tick + i * 5) % strip.length]
+              : reel.pokemon
+          const canKeep = phase === 'playing' && !rolling && !reel.kept
+          return (
             <button
+              key={STAT_LABEL_KEYS[i]}
               type="button"
-              onClick={redrawAll}
-              disabled={!canRedraw}
-              className={SECONDARY_BUTTON}
+              onClick={() => keep(i)}
+              disabled={!canKeep}
+              aria-label={`${t.stats[STAT_LABEL_KEYS[i]]}: ${reel.rolling ? '…' : reel.pokemon.stats[i]} · ${reel.pokemon.names[locale]}`}
+              className={`relative overflow-hidden rounded-2xl border-2 bg-white p-2 text-center transition-all dark:bg-dark-surface ${
+                reel.kept
+                  ? 'shadow-md'
+                  : 'border-black/[0.08] dark:border-white/[0.1]'
+              } ${reel.rolling ? 'reel-card-rolling' : ''} ${phase === 'finale' ? 'reel-card-finale' : ''} ${canKeep ? 'cursor-pointer hover:-translate-y-1 hover:border-primary/50 hover:shadow-md active:scale-95 dark:hover:border-dark-primary/50' : 'cursor-default'}`}
+              style={
+                reel.kept
+                  ? ({
+                      borderColor: reelAccent,
+                      backgroundImage: `radial-gradient(circle at 50% 35%, ${reelAccent}40, transparent 65%)`,
+                      '--reel-accent': reelAccent,
+                      '--reel-index': i,
+                    } as CSSProperties)
+                  : undefined
+              }
             >
-              ↻ {t.battle.redraw}{' '}
-              <span className="font-mono opacity-60">
-                {redrawUsed ? 0 : 1}/1
-                {mode === 'survival' &&
-                  ` · 🔥 ${Math.max(0, runRedrawsLeft)}/${SURVIVAL_REDRAWS}`}
-              </span>
+              <div
+                key={reel.rolling ? 'rolling' : reel.pokemon.id}
+                className={`flex flex-col items-center gap-1 ${reel.rolling ? '' : 'reel-card-land'}`}
+              >
+                <span className="font-mono text-[10px] tracking-wide text-ink-muted uppercase dark:text-dark-ink-muted">
+                  {t.stats[STAT_LABEL_KEYS[i]]}
+                </span>
+                <div className="aspect-square w-full">
+                  <img
+                    src={artwork(shown, 112)}
+                    alt=""
+                    className={`h-full w-full object-contain ${reel.rolling ? 'reel-rolling' : 'reel-land'}`}
+                    draggable={false}
+                  />
+                </div>
+                <span
+                  className={`text-2xl font-black text-ink tabular-nums dark:text-dark-ink ${reel.rolling ? 'animate-pulse' : 'stat-pop'}`}
+                >
+                  {reel.rolling ? '··' : reel.pokemon.stats[i]}
+                </span>
+                <span className="w-full truncate text-[11px] text-ink-muted dark:text-dark-ink-muted">
+                  {reel.rolling ? ' ' : reel.pokemon.names[locale]}
+                </span>
+              </div>
+              {reel.kept ? (
+                <span
+                  className="badge-stamp absolute top-1.5 right-1.5 rounded-full px-1.5 text-[10px] font-bold text-white"
+                  style={{ background: reelAccent }}
+                >
+                  ✓
+                </span>
+              ) : !reel.rolling && repeatedIds.has(reel.pokemon.id) ? (
+                <span
+                  className="absolute top-1.5 left-1.5 rounded-full bg-amber-400 px-1.5 text-[10px] font-bold text-amber-950"
+                  title={t.battle.reroll}
+                >
+                  ↻
+                </span>
+              ) : (
+                <span className="absolute top-1.5 left-2 font-mono text-[10px] text-ink-faint dark:text-dark-ink-faint">
+                  {i + 1}
+                </span>
+              )}
             </button>
-          </div>
-        ) : phase === 'finale' ? (
+          )
+        })}
+      </div>
+
+      {phase === 'playing' ? (
+        <div className="flex flex-col items-center gap-3">
           <p
-            className="text-center text-sm font-semibold text-ink dark:text-dark-ink"
+            className="text-center text-sm text-ink-muted dark:text-dark-ink-muted"
             aria-live="polite"
           >
-            {t.battle.finale}
+            {rolling ? t.battle.spinning : t.battle.hint}{' '}
+            <span className="font-mono">
+              {keptCount}/{REEL_COUNT}
+            </span>
           </p>
-        ) : (
-          <div className="flex flex-wrap justify-center gap-2">
-            <button
-              type="button"
-              onClick={
-                mode !== 'survival'
-                  ? startBattle
-                  : diff > 0
-                    ? nextOpponent
-                    : startSurvival
-              }
-              className={PRIMARY_BUTTON}
-            >
-              {mode !== 'survival'
-                ? t.battle.again
+          <button
+            type="button"
+            onClick={redrawAll}
+            disabled={!canRedraw}
+            className={SECONDARY_BUTTON}
+          >
+            ↻ {t.battle.redraw}{' '}
+            <span className="font-mono opacity-60">
+              {redrawUsed ? 0 : 1}/1
+              {mode === 'survival' &&
+                ` · 🔥 ${Math.max(0, runRedrawsLeft)}/${SURVIVAL_REDRAWS}`}
+            </span>
+          </button>
+        </div>
+      ) : phase === 'finale' ? (
+        <p
+          className="text-center text-sm font-semibold text-ink dark:text-dark-ink"
+          aria-live="polite"
+        >
+          {t.battle.finale}
+        </p>
+      ) : (
+        <div className="flex flex-wrap justify-center gap-2">
+          <button
+            type="button"
+            onClick={
+              mode !== 'survival'
+                ? startBattle
                 : diff > 0
-                  ? t.battle.nextOpponent
-                  : t.battle.newRun}
-            </button>
-            <button
-              type="button"
-              onClick={backToSetup}
-              className={SECONDARY_BUTTON}
-            >
-              {t.battle.backToSetup}
-            </button>
-          </div>
-        )}
-      </div>
-    </>
+                  ? nextOpponent
+                  : startSurvival
+            }
+            className={PRIMARY_BUTTON}
+          >
+            {mode !== 'survival'
+              ? t.battle.again
+              : diff > 0
+                ? t.battle.nextOpponent
+                : t.battle.newRun}
+          </button>
+          <button
+            type="button"
+            onClick={backToSetup}
+            className={SECONDARY_BUTTON}
+          >
+            {t.battle.backToSetup}
+          </button>
+        </div>
+      )}
+    </div>
   )
 }

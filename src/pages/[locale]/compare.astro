@@ -1,7 +1,6 @@
 ---
 export const prerender = true
 
-import { BackButton } from '@/components/BackButton'
 import { ComparePokemon } from '@/components/ComparePokemon'
 import PlaySkeleton from '@/components/PlaySkeleton.astro'
 import Layout from '@/layouts/Layout.astro'
@@ -17,9 +16,6 @@ const { locale, t } = getI18n(localeParam)
 
 <Layout title={t.compare.title} locale={locale} description={t.compare.subtitle}>
   <div class="space-y-6">
-    <div class="flex items-center gap-2 border-black/[0.06] border-b pb-3 dark:border-white/[0.08]">
-      <BackButton client:load locale={locale} />
-    </div>
     <div class="text-center">
       <h1 class="pokemon-title text-2xl md:text-4xl">{t.compare.title}</h1>
       <p class="mt-2 text-ink-muted text-sm dark:text-dark-ink-muted">{t.compare.subtitle}</p>
