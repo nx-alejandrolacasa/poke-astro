@@ -1,6 +1,6 @@
 import { useWindowVirtualizer } from '@tanstack/react-virtual'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { PokemonTile } from '@/components/PokemonTile'
+import { PokemonTile } from '@/components/lister/PokemonTile'
 import type { Locale } from '@/utils/i18n'
 import type { PokemonSummary } from '@/utils/pokemon'
 import { getScrollSnapshot, saveScrollSnapshot } from '@/utils/scrollMemory'

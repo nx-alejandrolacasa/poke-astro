@@ -15,6 +15,7 @@ npm run check:types  # astro sync && tsc --noEmit --runExternalCode
 
 - Import with `@/…` (`@/components/Header.astro`), never relative paths.
 - `.astro` components by default; React `.tsx` only when interactive. Use `import type` for types.
+- Components are grouped by feature under `src/components/`: `navigation`, `home`, `lister`, `detail`, `games`, plus `ui` for pieces shared across features. React hooks live in `src/hooks/`.
 - Tailwind utilities only. Biome sorts classes using `src/styles/global.css` for the theme.
 - Exact dependency versions, no `^` or `~`. Bump Astro and all three adapters together.
 
