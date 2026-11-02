@@ -306,7 +306,6 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
         </div>
       </div>
 
-      {/* Config sheet — language + theme, above the nav */}
       {configOpen && (
         <button
           type="button"
@@ -315,23 +314,6 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
           className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm"
         />
       )}
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-label={t.settings.title}
-        aria-hidden={!configOpen}
-        className={`fixed right-5 bottom-[calc(env(safe-area-inset-bottom)+5.25rem)] left-5 z-50 rounded-2xl border border-white/60 bg-white/90 p-4 shadow-xl shadow-black/[0.12] backdrop-blur-xl transition-all duration-200 sm:right-6 sm:left-auto sm:w-72 dark:border-white/[0.08] dark:bg-dark-surface/90 dark:shadow-black/40 ${
-          configOpen
-            ? 'translate-y-0 opacity-100'
-            : 'pointer-events-none translate-y-2 opacity-0'
-        }`}
-      >
-        <SettingsMenuContent
-          locale={locale}
-          currentPath={currentPath}
-          onClose={() => setConfigOpen(false)}
-        />
-      </div>
 
       {/* Tab bar — floating pill + standalone search circle, iOS 26 style,
           on every breakpoint. Stays mounted across SPA navigations via `transition:persist` on
@@ -339,55 +321,84 @@ export function BottomTabNav({ locale, currentPath }: BottomTabNavProps) {
           local UI state (search query, settings sheet) survives page
           swaps. */}
       <nav
-        className="fixed right-0 bottom-4 left-0 z-40 mx-auto flex max-w-md items-center gap-2 px-5 sm:px-6 [@media(display-mode:standalone)]:bottom-[max(env(safe-area-inset-bottom),1rem)]"
+        className="fixed right-0 bottom-4 left-0 z-40 mx-auto flex max-w-md items-end gap-2 px-5 sm:px-6 [@media(display-mode:standalone)]:bottom-[max(env(safe-area-inset-bottom),1rem)]"
         aria-label="Main navigation"
       >
-        <div className="flex h-14 flex-1 items-center justify-between gap-1 rounded-full border border-white/60 bg-white/70 px-2.5 shadow-lg shadow-black/[0.08] backdrop-blur-xl dark:border-white/[0.08] dark:bg-dark-surface/70 dark:shadow-black/30">
-          {tabs.map((tab) => {
-            const isActive = tab.match(currentPath)
-            const tint = TAB_TINTS[tab.tint]
-            return (
-              <a
-                key={tab.href}
-                href={tab.href}
-                className={`flex min-w-0 items-center gap-1.5 rounded-full px-4 py-2 transition-all ${tint.base} ${
-                  isActive ? tint.active : 'active:scale-95'
-                }`}
-                aria-current={isActive ? 'page' : undefined}
-                aria-label={tab.label}
-                title={tab.label}
-              >
-                <span className="flex-shrink-0">{tab.icon}</span>
-                <span className="hidden truncate text-xs font-semibold md:inline">
-                  {tab.label}
-                </span>
-              </a>
-            )
-          })}
-
-          <button
-            type="button"
-            onClick={() => setConfigOpen((prev) => !prev)}
-            className={`flex items-center gap-1.5 rounded-full px-4 py-2 transition-all ${TAB_TINTS.gray.base} ${
-              configOpen ? TAB_TINTS.gray.active : 'active:scale-95'
-            }`}
+        <div
+          className={`flex-1 rounded-[1.75rem] border border-white/60 shadow-lg shadow-black/[0.08] backdrop-blur-xl transition-colors duration-200 dark:border-white/[0.08] dark:shadow-black/30 ${
+            configOpen
+              ? 'bg-white/90 dark:bg-dark-surface/90'
+              : 'bg-white/70 dark:bg-dark-surface/70'
+          }`}
+        >
+          <div
+            role="dialog"
             aria-label={t.settings.title}
-            aria-expanded={configOpen}
+            aria-hidden={!configOpen}
+            inert={!configOpen}
+            className={`grid transition-[grid-template-rows,opacity] duration-200 ${
+              configOpen
+                ? 'grid-rows-[1fr] opacity-100'
+                : 'grid-rows-[0fr] opacity-0'
+            }`}
           >
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.8}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
+            <div className="overflow-hidden">
+              <div className="px-4 pt-4 pb-2">
+                <SettingsMenuContent
+                  locale={locale}
+                  currentPath={currentPath}
+                  onClose={() => setConfigOpen(false)}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="flex h-14 items-center justify-between gap-1 px-2.5">
+            {tabs.map((tab) => {
+              const isActive = tab.match(currentPath)
+              const tint = TAB_TINTS[tab.tint]
+              return (
+                <a
+                  key={tab.href}
+                  href={tab.href}
+                  className={`flex min-w-0 items-center gap-1.5 rounded-full px-4 py-2 transition-all ${tint.base} ${
+                    isActive ? tint.active : 'active:scale-95'
+                  }`}
+                  aria-current={isActive ? 'page' : undefined}
+                  aria-label={tab.label}
+                  title={tab.label}
+                >
+                  <span className="flex-shrink-0">{tab.icon}</span>
+                  <span className="hidden truncate text-xs font-semibold md:inline">
+                    {tab.label}
+                  </span>
+                </a>
+              )
+            })}
+
+            <button
+              type="button"
+              onClick={() => setConfigOpen((prev) => !prev)}
+              className={`flex items-center gap-1.5 rounded-full px-4 py-2 transition-all ${TAB_TINTS.gray.base} ${
+                configOpen ? TAB_TINTS.gray.active : 'active:scale-95'
+              }`}
+              aria-label={t.settings.title}
+              aria-expanded={configOpen}
             >
-              <circle cx="12" cy="12" r="3" />
-              <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
-            </svg>
-          </button>
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.8}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <button
