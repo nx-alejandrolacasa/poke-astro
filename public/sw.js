@@ -1,5 +1,5 @@
 const STATIC_CACHE = 'pokedex-static-v5'
-const API_CACHE = 'pokedex-api-v2'
+const API_CACHE = 'pokedex-api-v3'
 
 const STATIC_ASSETS = [
   '/favicon.ico',
