@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { usePresence } from '@/components/usePresence'
+import { usePresence } from '@/hooks/usePresence'
 import type { Locale } from '@/utils/i18n'
 import { translations } from '@/utils/translations'
 

@@ -2,9 +2,9 @@
 import { ClientRouter } from 'astro:transitions'
 import Analytics from '@vercel/analytics/astro'
 import '@/styles/global.css'
-import { BottomTabNav } from '@/components/BottomTabNav'
-import DetailSkeleton from '@/components/DetailSkeleton.astro'
-import ListerSkeleton from '@/components/ListerSkeleton.astro'
+import DetailSkeleton from '@/components/detail/DetailSkeleton.astro'
+import ListerSkeleton from '@/components/lister/ListerSkeleton.astro'
+import { BottomTabNav } from '@/components/navigation/BottomTabNav'
 import type { Locale } from '@/utils/i18n'
 
 export interface Props {

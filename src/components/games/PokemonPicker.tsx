@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { usePresence } from '@/components/usePresence'
+import { usePresence } from '@/hooks/usePresence'
 import type { Locale } from '@/utils/i18n'
 import type { PokemonRecord } from '@/utils/pokemon'
 import { officialArtworkUrl, optimizedImageUrl } from '@/utils/pokemon'

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import { BackToTop } from '@/components/BackToTop'
-import { VirtualPokemonGrid } from '@/components/VirtualPokemonGrid'
+import { BackToTop } from '@/components/lister/BackToTop'
+import { VirtualPokemonGrid } from '@/components/lister/VirtualPokemonGrid'
 import type { Locale } from '@/utils/i18n'
 import type { PokemonSummary } from '@/utils/pokemon'
 

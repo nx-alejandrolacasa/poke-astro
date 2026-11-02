@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { GenerationSelect } from '@/components/GenerationSelect'
-import { usePokemonIndex } from '@/components/usePokemonIndex'
+import { GenerationSelect } from '@/components/games/GenerationSelect'
+import { usePokemonIndex } from '@/hooks/usePokemonIndex'
 import type { Locale } from '@/utils/i18n'
 import type { PokemonRecord } from '@/utils/pokemon'
 import { officialArtworkUrl, optimizedImageUrl } from '@/utils/pokemon'

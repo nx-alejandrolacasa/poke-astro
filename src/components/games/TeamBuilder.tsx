@@ -1,7 +1,7 @@
 import { type CSSProperties, useEffect, useState } from 'react'
-import { PokemonPicker } from '@/components/PokemonPicker'
-import { TypeBadge } from '@/components/TypeBadge'
-import { usePokemonIndex } from '@/components/usePokemonIndex'
+import { PokemonPicker } from '@/components/games/PokemonPicker'
+import { TypeBadge } from '@/components/ui/TypeBadge'
+import { usePokemonIndex } from '@/hooks/usePokemonIndex'
 import type { Locale } from '@/utils/i18n'
 import type { PokemonRecord } from '@/utils/pokemon'
 import {

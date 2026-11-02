@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 import { useState } from 'react'
-import { ImageZoom } from '@/components/ImageZoom'
+import { ImageZoom } from '@/components/detail/ImageZoom'
 import type { Locale } from '@/utils/i18n'
 
 type PokemonHeroProps = {

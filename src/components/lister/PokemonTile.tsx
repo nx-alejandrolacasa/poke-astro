@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import { TypeBadge } from '@/components/TypeBadge'
+import { TypeBadge } from '@/components/ui/TypeBadge'
 import type { Locale } from '@/utils/i18n'
 import type { PokemonSummary } from '@/utils/pokemon'
 import {

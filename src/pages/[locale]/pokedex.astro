@@ -1,9 +1,9 @@
 ---
 export const prerender = true
 
-import ListerFilters from '@/components/ListerFilters.astro'
-import ListerSkeleton from '@/components/ListerSkeleton.astro'
-import { PokemonLister } from '@/components/PokemonLister'
+import ListerFilters from '@/components/lister/ListerFilters.astro'
+import ListerSkeleton from '@/components/lister/ListerSkeleton.astro'
+import { PokemonLister } from '@/components/lister/PokemonLister'
 import Layout from '@/layouts/Layout.astro'
 import { getI18n, getLocalePaths } from '@/utils/i18n'
 import { getAllPokemon, toSummary } from '@/utils/pokemon'
