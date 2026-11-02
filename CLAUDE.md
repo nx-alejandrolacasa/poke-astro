@@ -16,6 +16,7 @@ npm run check:types  # astro sync && tsc --noEmit --runExternalCode
 - Import with `@/…` (`@/components/Header.astro`), never relative paths.
 - `.astro` components by default; React `.tsx` only when interactive. Use `import type` for types.
 - Tailwind utilities only. Biome sorts classes using `src/styles/global.css` for the theme.
+- Visual decisions follow `docs/design-system.md`: every panel is a `cell` (24px radius, 2px frame, `cell-own` for a Pokémon or game colour), Dela Gothic only for cell titles, mono only for numbers, paired pills split the row 50/50. Update the doc before changing a rule.
 - Exact dependency versions, no `^` or `~`. Bump Astro and all three adapters together.
 
 ## Architecture

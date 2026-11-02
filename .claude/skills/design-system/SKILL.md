@@ -1,81 +1,16 @@
 ---
-name: "frontend-poke-astro"
-description: "poke-astro style guide for AI coding agents."
-metadata:
-  author: typeui.sh
+name: design-system
+description: poke-astro visual rules. Read before writing or changing any markup or Tailwind classes in this repo.
 ---
 
-<!-- TYPEUI_SH_MANAGED_START -->
-# poke-astro Design System Skill (Universal)
+The design system lives in `docs/design-system.md`. Read it before touching markup; it is the source of truth and this file only points at it.
 
-## Mission
-You are an expert design-system guideline author for poke-astro.
-Create practical, implementation-ready guidance that can be directly used by engineers and designers.
+The five rules in one breath:
 
-## Brand
-Pokemon fan page using a pokemon api to offer an intuitive and refreshing page for kids above 7-8 years to browser pokemon details, types, regions, etc.
+1. Everything is a cell on one grid. Use the `cell` class (24px radius, 2px frame, `p-4`). Add `cell-own` and an inline `--type-color` when the cell is about one Pokémon or one game; otherwise the frame stays neutral.
+2. Frame colour means ownership. No other frame colours, no shadows on cells, no nested cells (use a well: `rounded-lg bg-surface-sunken dark:bg-dark-raised`).
+3. Dela Gothic One only for cell titles: `font-display text-[13px] text-ink dark:text-dark-ink`. Tile titles are Dela 18. Never uppercase, never letter-spacing, headings never coloured.
+4. JetBrains Mono only for numbers.
+5. Ghost Purple (`primary`) marks interactive or selected things only. One primary pill per screen; two pills sharing a row use `grid grid-cols-2 gap-2`, primary on the right.
 
-## Style Foundations
-- Visual style: modern, clean, bold, playful
-- Typography scale: 12/14/16/20/24/32 | Fonts: primary=Inter, display=Inter, mono=JetBrains Mono | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
-- Color palette: primary, secondary, neutral, surface/subtle layers, dark mode parity | Tokens: primary=#6366F1, secondary=#E3350D, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#111827
-- Spacing scale: 4/8/12/16/24/32
-
-## Accessibility
-WCAG 2.2 AA, keyboard-first interactions, visible focus states
-
-## Writing Tone
-helpful, clear, friendly
-
-## Rules: Do
-- prefer semantic tokens over raw values
-- preserve visual hierarchy
-- keep interaction states explicit
-
-## Rules: Don't
-- avoid low contrast text
-- avoid inconsistent spacing rhythm
-- avoid ambiguous labels
-
-## Expected Behavior
-- Follow the foundations first, then component consistency.
-- When uncertain, prioritize accessibility and clarity over novelty.
-- Provide concrete defaults and explain trade-offs when alternatives are possible.
-- Keep guidance opinionated, concise, and implementation-focused.
-
-## Guideline Authoring Workflow
-1. Restate the design intent in one sentence before proposing rules.
-2. Define tokens and foundational constraints before component-level guidance.
-3. Specify component anatomy, states, variants, and interaction behavior.
-4. Include accessibility acceptance criteria and content-writing expectations.
-5. Add anti-patterns and migration notes for existing inconsistent UI.
-6. End with a QA checklist that can be executed in code review.
-
-## Required Output Structure
-When generating design-system guidance, use this structure:
-- Context and goals
-- Design tokens and foundations
-- Component-level rules (anatomy, variants, states, responsive behavior)
-- Accessibility requirements and testable acceptance criteria
-- Content and tone standards with examples
-- Anti-patterns and prohibited implementations
-- QA checklist
-
-## Component Rule Expectations
-- Define required states: default, hover, focus-visible, active, disabled, loading, error (as relevant).
-- Describe interaction behavior for keyboard, pointer, and touch.
-- State spacing, typography, and color-token usage explicitly.
-- Include responsive behavior and edge cases (long labels, empty states, overflow).
-
-## Quality Gates
-- No rule should depend on ambiguous adjectives alone; anchor each rule to a token, threshold, or example.
-- Every accessibility statement must be testable in implementation.
-- Prefer system consistency over one-off local optimizations.
-- Flag conflicts between aesthetics and accessibility, then prioritize accessibility.
-
-## Example Constraint Language
-- Use "must" for non-negotiable rules and "should" for recommendations.
-- Pair every do-rule with at least one concrete don't-example.
-- If introducing a new pattern, include migration guidance for existing components.
-
-<!-- TYPEUI_SH_MANAGED_END -->
+Sentence case everywhere. Buttons say what happens, back links say where they go, empty slots say what to do. Type badges never wrap: `size="icon"` on narrow tiles.
