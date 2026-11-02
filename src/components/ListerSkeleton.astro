@@ -23,10 +23,7 @@ const cellCount = 18
   <ul class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-4 lg:grid-cols-5 xl:grid-cols-6">
     {Array.from({ length: cellCount }).map(() => (
       <li class="list-none">
-        <div
-          class="overflow-hidden rounded-2xl bg-white p-4 text-center dark:bg-dark-surface"
-          style="border: 2px solid transparent"
-        >
+        <div class="cell overflow-hidden text-center">
           <div class="relative aspect-square w-full">
             <div class="skeleton-shimmer h-full w-full rounded-xl"></div>
           </div>

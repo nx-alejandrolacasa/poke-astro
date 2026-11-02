@@ -16,7 +16,7 @@ export function RecentlyVisited({ locale }: { locale: Locale }) {
 
   return (
     <div className="px-2 py-3">
-      <p className="mb-2 font-sans text-[11px] font-bold tracking-wider text-ink-muted uppercase dark:text-dark-ink-muted">
+      <p className="mb-2 text-xs font-medium text-ink-muted dark:text-dark-ink-muted">
         {t.pokemon.recent}
       </p>
       <div className="flex flex-wrap gap-2">
@@ -25,7 +25,7 @@ export function RecentlyVisited({ locale }: { locale: Locale }) {
             key={v.name}
             href={`/${locale}/pokemon/${v.name}`}
             data-astro-prefetch="tap"
-            className="inline-flex items-center gap-1.5 rounded-full border-2 bg-white px-3 py-1.5 text-xs leading-5 font-semibold text-ink shadow-sm shadow-black/[0.04] transition hover:-translate-y-px active:scale-95 dark:bg-dark-surface dark:text-dark-ink"
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-full border-2 bg-white px-3 py-1.5 text-xs leading-5 font-semibold text-ink transition hover:-translate-y-px active:scale-95 dark:bg-dark-surface dark:text-dark-ink"
             style={{
               borderColor: v.typeColor,
               backgroundImage: `linear-gradient(${v.typeColor}2e, ${v.typeColor}2e)`,

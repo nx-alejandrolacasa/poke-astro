@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { type CSSProperties, useEffect, useState } from 'react'
 import { PokemonPicker } from '@/components/PokemonPicker'
 import { StatRadar } from '@/components/StatRadar'
 import { TypeBadge } from '@/components/TypeBadge'
@@ -82,11 +82,13 @@ export function ComparePokemon({ locale }: ComparePokemonProps) {
       />
       {pokemon ? (
         <div
-          className="rounded-2xl bg-white p-4 text-center dark:bg-dark-surface"
-          style={{
-            border: `2px solid ${accentOf(pokemon)}`,
-            backgroundImage: `radial-gradient(circle at 50% 35%, ${accentOf(pokemon)}33, transparent 65%)`,
-          }}
+          className="cell cell-own text-center"
+          style={
+            {
+              '--type-color': accentOf(pokemon),
+              backgroundImage: `radial-gradient(circle at 50% 35%, ${accentOf(pokemon)}33, transparent 65%)`,
+            } as CSSProperties
+          }
         >
           <img
             src={optimizedImageUrl(officialArtworkUrl(pokemon.id), 160)}
@@ -112,7 +114,7 @@ export function ComparePokemon({ locale }: ComparePokemonProps) {
           </div>
         </div>
       ) : (
-        <div className="flex aspect-square max-h-56 items-center justify-center rounded-2xl border-2 border-dashed border-ink-faint/30 text-sm text-ink-faint dark:border-dark-ink-faint/30 dark:text-dark-ink-faint">
+        <div className="flex aspect-square max-h-56 items-center justify-center rounded-3xl border-2 border-dashed border-frame text-sm text-ink-faint dark:border-dark-frame dark:text-dark-ink-faint">
           {t.compare.pick}
         </div>
       )}
@@ -134,7 +136,7 @@ export function ComparePokemon({ locale }: ComparePokemonProps) {
               setA(b)
               setB(a)
             }}
-            className="rounded-full bg-surface-sunken px-4 py-1.5 text-xs font-medium text-ink transition-colors hover:bg-primary/10 dark:bg-dark-raised dark:text-dark-ink"
+            className="min-h-11 rounded-full bg-surface-sunken px-5 text-sm font-semibold text-ink transition-colors hover:bg-primary/10 active:scale-95 dark:bg-dark-raised dark:text-dark-ink"
           >
             ⇄ {t.compare.swap}
           </button>
@@ -153,7 +155,7 @@ function Comparison({ a, b, locale }: ComparisonProps) {
   const statLabels = STAT_LABEL_KEYS.map((key) => t.stats[key])
   return (
     <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
-      <div className="rounded-2xl bg-white p-4 dark:bg-dark-surface">
+      <div className="cell">
         <StatRadar
           labels={statLabels}
           series={[a, b].map((p) => ({
@@ -175,7 +177,7 @@ function Comparison({ a, b, locale }: ComparisonProps) {
         </div>
       </div>
 
-      <div className="space-y-3 rounded-2xl bg-white p-4 dark:bg-dark-surface">
+      <div className="cell space-y-3">
         {STAT_NAMES.map((_, i) => {
           const [va, vb] = [a.stats[i], b.stats[i]]
           const max = Math.max(va, vb, 1)
@@ -223,7 +225,7 @@ function Comparison({ a, b, locale }: ComparisonProps) {
             {a.stats.reduce((s, v) => s + v, 0)}
           </span>
           <span />
-          <span className="w-16 text-center text-ink uppercase dark:text-dark-ink">
+          <span className="w-16 text-center text-ink dark:text-dark-ink">
             {t.compare.total}
           </span>
           <span />
@@ -233,8 +235,8 @@ function Comparison({ a, b, locale }: ComparisonProps) {
         </div>
       </div>
 
-      <div className="rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
-        <h2 className="mb-3 font-sans text-xs font-bold tracking-wider text-primary uppercase dark:text-dark-primary">
+      <div className="cell md:col-span-2">
+        <h2 className="mb-3 font-display text-[13px] text-ink dark:text-dark-ink">
           {t.compare.matchup}
         </h2>
         <div className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">

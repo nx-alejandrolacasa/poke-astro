@@ -157,6 +157,15 @@ export const STAT_NAMES = [
   'speed',
 ] as const
 
+export const MAX_BASE_STAT: Record<string, number> = {
+  hp: 255,
+  attack: 190,
+  defense: 230,
+  'special-attack': 194,
+  'special-defense': 230,
+  speed: 200,
+}
+
 const accentColors: Record<string, string> = accentColorsJson
 
 const GRAPHQL_URL = 'https://beta.pokeapi.co/graphql/v1beta'

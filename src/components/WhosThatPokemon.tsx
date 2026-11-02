@@ -109,38 +109,43 @@ export function WhosThatPokemon({ locale }: WhosThatPokemonProps) {
   const accent = round?.answer.accent ?? '#705898'
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <div className="flex flex-wrap items-center justify-center gap-2">
+    <div className="mx-auto max-w-2xl space-y-3 md:space-y-4">
+      <div className="flex justify-end">
         <GenerationSelect
           value={generation}
           onChange={setGeneration}
           locale={locale}
           label={t.quiz.gen}
         />
-        <div className="flex gap-3 font-mono text-sm text-ink-muted dark:text-dark-ink-muted">
-          <span>
-            {t.quiz.score}{' '}
-            <b className="text-ink dark:text-dark-ink">{score}</b>
-          </span>
-          <span>
-            {t.quiz.streak}{' '}
-            <b className="text-ink dark:text-dark-ink">{streak}</b>
-          </span>
-          <span>
-            {t.quiz.best} <b className="text-ink dark:text-dark-ink">{best}</b>
-          </span>
-        </div>
       </div>
 
       <div
-        className="relative overflow-hidden rounded-3xl bg-white p-6 transition-colors duration-500 dark:bg-dark-surface"
+        className="cell relative space-y-4 overflow-hidden p-6"
         style={{
-          border: `2px solid ${revealed ? accent : 'transparent'}`,
           backgroundImage: revealed
-            ? `radial-gradient(circle at 50% 40%, ${accent}40, transparent 65%)`
+            ? `radial-gradient(circle at 50% 35%, ${accent}33, transparent 65%)`
             : undefined,
         }}
       >
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <h1 className="font-display text-[13px] text-ink dark:text-dark-ink">
+            {t.quiz.title}
+          </h1>
+          <p className="flex gap-3 text-xs text-ink-muted dark:text-dark-ink-muted">
+            {[
+              [t.quiz.score, score],
+              [t.quiz.streak, streak],
+              [t.quiz.best, best],
+            ].map(([label, value]) => (
+              <span key={label}>
+                {label}{' '}
+                <b className="font-mono text-ink tabular-nums dark:text-dark-ink">
+                  {value}
+                </b>
+              </span>
+            ))}
+          </p>
+        </div>
         {loading || !round ? (
           <div className="mx-auto aspect-square w-full max-w-[280px]">
             <div className="skeleton-shimmer h-full w-full rounded-2xl" />
@@ -155,7 +160,7 @@ export function WhosThatPokemon({ locale }: WhosThatPokemonProps) {
           />
         )}
         <p
-          className="mt-4 min-h-7 text-center text-lg font-bold text-ink dark:text-dark-ink"
+          className="min-h-7 text-center text-lg font-bold text-ink dark:text-dark-ink"
           aria-live="polite"
         >
           {!revealed
@@ -164,42 +169,42 @@ export function WhosThatPokemon({ locale }: WhosThatPokemonProps) {
               ? `${t.quiz.correct} ${round?.answer.names[locale]}`
               : `${t.quiz.wrong} ${round?.answer.names[locale]}`}
         </p>
-      </div>
 
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-        {(round?.options ?? []).map((option, i) => {
-          const isAnswer = option.id === round?.answer.id
-          const tone = !revealed
-            ? 'border-black/[0.08] bg-white shadow-sm shadow-black/[0.04] hover:border-primary/40 hover:bg-primary-50 dark:border-white/[0.1] dark:bg-dark-surface dark:hover:border-dark-primary/40 dark:hover:bg-primary/10'
-            : isAnswer
-              ? 'border-emerald-400 bg-emerald-100 text-emerald-900 dark:border-emerald-500/60 dark:bg-emerald-500/20 dark:text-emerald-200'
-              : option.id === guess?.id
-                ? 'border-rose-400 bg-rose-100 text-rose-900 dark:border-rose-500/60 dark:bg-rose-500/20 dark:text-rose-200'
-                : 'border-black/[0.08] bg-white opacity-50 dark:border-white/[0.1] dark:bg-dark-surface'
-          return (
-            <button
-              key={option.id}
-              type="button"
-              onClick={() => answer(option)}
-              disabled={revealed}
-              className={`flex items-center gap-3 rounded-2xl border-2 px-4 py-3 text-left font-semibold text-ink transition-all active:scale-[0.98] disabled:cursor-default dark:text-dark-ink ${tone}`}
-            >
-              <span className="font-mono text-xs opacity-40">{i + 1}</span>
-              {option.names[locale]}
-            </button>
-          )
-        })}
-      </div>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {(round?.options ?? []).map((option, i) => {
+            const isAnswer = option.id === round?.answer.id
+            const tone = !revealed
+              ? 'border-transparent hover:border-primary/40 dark:hover:border-dark-primary/40'
+              : isAnswer
+                ? 'border-success bg-success/10'
+                : option.id === guess?.id
+                  ? 'border-danger bg-danger/10'
+                  : 'border-transparent opacity-50'
+            return (
+              <button
+                key={option.id}
+                type="button"
+                onClick={() => answer(option)}
+                disabled={revealed}
+                className={`flex min-h-11 items-center gap-3 rounded-lg border-2 bg-surface-sunken px-4 py-3 text-left font-semibold text-ink transition-all active:scale-[0.98] disabled:cursor-default dark:bg-dark-raised dark:text-dark-ink ${tone}`}
+              >
+                <span className="font-mono text-xs opacity-40">{i + 1}</span>
+                {option.names[locale]}
+              </button>
+            )
+          })}
+        </div>
 
-      <div className="flex justify-center">
-        <button
-          type="button"
-          onClick={revealed ? next : giveUp}
-          disabled={!round}
-          className="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-primary-600 active:scale-95 disabled:opacity-50 dark:bg-dark-primary"
-        >
-          {revealed ? t.quiz.next : t.quiz.reveal}
-        </button>
+        <div className="flex justify-center">
+          <button
+            type="button"
+            onClick={revealed ? next : giveUp}
+            disabled={!round}
+            className="min-h-11 rounded-full bg-primary px-5 text-sm font-semibold text-white transition-all hover:bg-primary-600 active:scale-95 disabled:opacity-50 dark:bg-dark-primary"
+          >
+            {revealed ? t.quiz.next : t.quiz.reveal}
+          </button>
+        </div>
       </div>
     </div>
   )

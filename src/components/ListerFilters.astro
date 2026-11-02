@@ -35,7 +35,7 @@ const filters = [
       (gen) => !generations || generations.includes(gen.id)
     ).map((gen) => ({
       value: listerPath(String(gen.id), currentType),
-      label: `Gen. ${gen.roman} · ${gen.region}`,
+      label: `${gen.region} (Gen ${gen.roman})`,
       selected: String(gen.id) === currentGeneration,
     })),
   },
@@ -64,10 +64,10 @@ const CHEVRON =
       name={filter.name}
       aria-label={filter.label}
       class:list={[
-        'min-w-0 appearance-none rounded-full border-2 bg-no-repeat py-2.5 pr-8 pl-3.5 font-semibold text-[13px] sm:pr-10 sm:pl-5 sm:text-sm shadow-black/[0.04] shadow-sm transition-all hover:-translate-y-px focus:border-primary/40 focus:outline-none active:scale-95',
+        'min-h-11 min-w-0 appearance-none rounded-full border-2 bg-no-repeat py-2.5 pr-8 pl-3.5 font-semibold text-[13px] sm:pr-10 sm:pl-5 sm:text-sm transition-all hover:-translate-y-px focus:border-primary/40 focus:outline-none active:scale-95',
         filter.active
           ? 'border-primary/40 bg-primary/10 text-primary dark:border-dark-primary/40 dark:bg-dark-primary/15 dark:text-dark-primary'
-          : 'border-black/[0.08] bg-white text-ink dark:border-white/[0.1] dark:bg-dark-surface dark:text-dark-ink',
+          : 'border-frame bg-white text-ink dark:border-dark-frame dark:bg-dark-surface dark:text-dark-ink',
       ]}
       style={`background-image: ${CHEVRON}; background-position: right 0.9rem center; background-size: 1.1rem`}
     >

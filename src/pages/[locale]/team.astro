@@ -15,13 +15,8 @@ const { locale, t } = getI18n(localeParam)
 ---
 
 <Layout title={t.team.title} locale={locale} description={t.team.subtitle}>
-  <div class="space-y-6">
-    <div class="text-center">
-      <h1 class="pokemon-title text-2xl md:text-4xl">{t.team.title}</h1>
-      <p class="mt-2 text-ink-muted text-sm dark:text-dark-ink-muted">{t.team.subtitle}</p>
-    </div>
-    <TeamBuilder client:only="react" locale={locale}>
-      <PlaySkeleton slot="fallback" />
-    </TeamBuilder>
-  </div>
+  <h1 class="sr-only">{t.team.title}</h1>
+  <TeamBuilder client:only="react" locale={locale}>
+    <PlaySkeleton slot="fallback" />
+  </TeamBuilder>
 </Layout>

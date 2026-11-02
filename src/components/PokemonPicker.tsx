@@ -66,7 +66,7 @@ export function PokemonPicker({
         disabled={index.length === 0}
         // biome-ignore lint/a11y/noAutofocus: the picker is the page's only input and the user just asked to add a Pokémon
         autoFocus={autoFocus}
-        className="w-full rounded-full border border-black/[0.06] bg-surface-sunken px-4 py-2.5 text-sm text-ink placeholder-ink-faint focus:border-primary/30 focus:ring-2 focus:ring-primary/10 focus:outline-none disabled:opacity-50 dark:border-white/[0.06] dark:bg-dark-raised dark:text-dark-ink dark:placeholder-dark-ink-faint"
+        className="min-h-11 w-full rounded-full border border-black/[0.06] bg-surface-sunken px-4 py-2.5 text-sm text-ink placeholder-ink-faint focus:border-primary/30 focus:ring-2 focus:ring-primary/10 focus:outline-none disabled:opacity-50 dark:border-white/[0.06] dark:bg-dark-raised dark:text-dark-ink dark:placeholder-dark-ink-faint"
         role="combobox"
         aria-autocomplete="list"
         aria-expanded={results.length > 0}

@@ -32,7 +32,7 @@ export function GenerationSelect({
       aria-label={label}
       title={label}
       disabled={disabled}
-      className="appearance-none rounded-full border border-black/[0.06] bg-surface-sunken bg-no-repeat py-2 pr-9 pl-4 text-sm text-ink focus:border-primary/30 focus:ring-2 focus:ring-primary/10 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/[0.06] dark:bg-dark-raised dark:text-dark-ink"
+      className="min-h-11 appearance-none rounded-full border border-black/[0.06] bg-surface-sunken bg-no-repeat py-2 pr-9 pl-4 text-sm text-ink focus:border-primary/30 focus:ring-2 focus:ring-primary/10 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/[0.06] dark:bg-dark-raised dark:text-dark-ink"
       style={{
         backgroundImage: CHEVRON,
         backgroundPosition: 'right 0.9rem center',
@@ -46,7 +46,7 @@ export function GenerationSelect({
       {GENERATIONS.map((gen) => (
         <option key={gen.id} value={gen.id} disabled={gen.id > unlockedUpTo}>
           {gen.id > unlockedUpTo ? '🔒 ' : ''}
-          {t.quiz.gen} {gen.roman} · {gen.region}
+          {gen.region} (Gen {gen.roman})
         </option>
       ))}
     </select>

@@ -4,8 +4,8 @@
   "description": "Una Pokédex moderna con información de todos los Pokémon",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ef4444",
-  "theme_color": "#ef4444",
+  "background_color": "#fefefe",
+  "theme_color": "#fefefe",
   "orientation": "any",
   "icons": [
     {

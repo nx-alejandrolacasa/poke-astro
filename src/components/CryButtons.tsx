@@ -27,7 +27,7 @@ export function CryButtons({ cries, heading, playLabel }: CryButtonsProps) {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="font-sans text-xs font-bold tracking-wider text-primary uppercase dark:text-dark-primary">
+      <span className="text-xs font-medium text-ink-muted dark:text-dark-ink-muted">
         {heading}
       </span>
       {cries.map((cry) => (

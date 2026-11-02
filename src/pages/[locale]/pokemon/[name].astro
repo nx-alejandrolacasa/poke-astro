@@ -18,6 +18,7 @@ import {
   getPokemonName,
   getTranslatedName,
   getTypeColor,
+  MAX_BASE_STAT,
   officialArtworkUrl,
   optimizedImageUrl,
   STAT_NAMES,
@@ -126,16 +127,6 @@ const STAT_KEYS: Record<string, keyof Translations['stats']> = {
   'special-defense': 'specialDefense',
   speed: 'speed',
 }
-// Highest base stat ever recorded per category, so bar fill reflects how
-// strong the Pokémon is for that stat.
-const MAX_STAT: Record<string, number> = {
-  hp: 255,
-  attack: 190,
-  defense: 230,
-  'special-attack': 194,
-  'special-defense': 230,
-  speed: 200,
-}
 const stats = STAT_NAMES.map((statName) => ({
   name: statName,
   label: t.stats[STAT_KEYS[statName]],
@@ -216,9 +207,10 @@ const defenseSections = [
     entries: defense.immunities.map((i) => `${typeLabel(i)} (0x)`),
   },
 ]
-const headingClass =
-  'mb-3 font-bold font-sans text-primary text-xs uppercase tracking-wider dark:text-dark-primary'
-const cellClass = 'bento-cell rounded-2xl bg-white p-4 dark:bg-dark-surface'
+const headingClass = 'mb-3 font-display text-[13px] text-ink dark:text-dark-ink'
+const cellClass = 'cell cell-own'
+const pillClass =
+  'inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full bg-surface-sunken px-5 font-semibold text-ink text-sm transition-colors hover:bg-primary/10 active:scale-95 dark:bg-dark-raised dark:text-dark-ink dark:hover:bg-dark-primary/10'
 const rowClass = 'flex items-center justify-between gap-2'
 const labelClass = 'text-ink-muted text-xs dark:text-dark-ink-muted'
 const valueClass = 'font-mono text-ink text-xs dark:text-dark-ink'
@@ -255,8 +247,8 @@ const valueClass = 'font-mono text-ink text-xs dark:text-dark-ink'
 
       <div class="grid grid-cols-1 gap-3 md:grid-cols-4 md:gap-4">
         <div
-          class="bento-cell relative flex flex-col items-center justify-center gap-3 rounded-2xl bg-white p-6 md:col-span-2 md:row-span-2 dark:bg-dark-surface"
-          style={`background-image: radial-gradient(circle at 50% 40%, ${accent}33, transparent 65%)`}
+          class="cell cell-own relative flex flex-col items-center justify-center gap-3 p-6 md:col-span-2 md:row-span-2"
+          style={`background-image: radial-gradient(circle at 50% 35%, ${accent}33, transparent 65%)`}
         >
           <PokemonHero
             client:load
@@ -273,7 +265,7 @@ const valueClass = 'font-mono text-ink text-xs dark:text-dark-ink'
           )}
         </div>
 
-        <div class="bento-cell flex flex-col justify-center rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
+        <div class="cell cell-own flex flex-col justify-center md:col-span-2">
           <div class="flex flex-wrap items-center gap-2">
             <span class="font-black font-mono text-ink-muted text-lg dark:text-dark-ink-muted">
               #{pokemon.id.toString().padStart(3, '0')}
@@ -291,20 +283,14 @@ const valueClass = 'font-mono text-ink text-xs dark:text-dark-ink'
               <span class="inline-flex items-center rounded-full bg-violet-100 px-3 py-1 font-semibold text-violet-700 text-xs dark:bg-violet-500/10 dark:text-violet-400">{t.pokemon.mythical}</span>
             )}
           </div>
-          <h1 class="font-black text-3xl text-ink tracking-tight md:text-4xl dark:text-dark-ink">{pokemonName}</h1>
+          <h1 class="font-display text-3xl text-ink md:text-4xl dark:text-dark-ink">{pokemonName}</h1>
           {genus && <p class="mt-0.5 text-ink-muted text-sm italic dark:text-dark-ink-muted">{genus}</p>}
-          <div class="mt-3 flex flex-wrap gap-2">
-            <a
-              href={`/${locale}/compare?a=${pokemon.name}`}
-              class="inline-flex items-center gap-1.5 rounded-full bg-surface-sunken px-3 py-1.5 font-medium text-ink text-xs transition-colors hover:bg-primary/10 dark:bg-dark-raised dark:text-dark-ink dark:hover:bg-dark-primary/10"
-            >
-              ⚖ {t.pokemon.compare}
+          <div class="mt-3 grid grid-cols-2 gap-2">
+            <a href={`/${locale}/compare?a=${pokemon.name}`} class={pillClass}>
+              {t.pokemon.compare}
             </a>
-            <a
-              href={`/${locale}/team?add=${pokemon.name}`}
-              class="inline-flex items-center gap-1.5 rounded-full bg-surface-sunken px-3 py-1.5 font-medium text-ink text-xs transition-colors hover:bg-primary/10 dark:bg-dark-raised dark:text-dark-ink dark:hover:bg-dark-primary/10"
-            >
-              + {t.team.add}
+            <a href={`/${locale}/team?add=${pokemon.name}`} class={pillClass}>
+              {t.team.add}
             </a>
           </div>
         </div>
@@ -325,7 +311,7 @@ const valueClass = 'font-mono text-ink text-xs dark:text-dark-ink'
         </div>
 
         {descriptions.length > 0 && (
-          <div class="bento-cell rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
+          <div class="cell cell-own md:col-span-2">
             <Carousel
               client:idle
               items={descriptions}
@@ -336,7 +322,7 @@ const valueClass = 'font-mono text-ink text-xs dark:text-dark-ink'
           </div>
         )}
 
-        <div class="bento-cell rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
+        <div class="cell cell-own md:col-span-2">
           <p class={headingClass}>{t.pokemon.abilities}</p>
           <div class="flex flex-wrap gap-2">
             {abilities.map(({ name: abilityName, label, isHidden }) => (
@@ -367,13 +353,13 @@ const valueClass = 'font-mono text-ink text-xs dark:text-dark-ink'
                 <div class="relative h-2 w-full overflow-hidden rounded-full bg-surface-sunken dark:bg-dark-raised">
                   <div
                     class:list={['absolute top-0 left-0 h-2 rounded-full stat-bar', statTone(stat.value)]}
-                    style={`width: ${Math.min(100, (stat.value / (MAX_STAT[stat.name] ?? 255)) * 100)}%; animation-delay: ${index * 80}ms`}
+                    style={`width: ${Math.min(100, (stat.value / (MAX_BASE_STAT[stat.name] ?? 255)) * 100)}%; animation-delay: ${index * 80}ms`}
                   />
                 </div>
               </div>
             ))}
             <div class="mt-3 grid grid-cols-[2fr_36px_3fr] gap-2 border-surface-sunken border-t pt-3 dark:border-dark-raised">
-              <div class="text-right font-bold text-ink text-xs uppercase dark:text-dark-ink">{t.pokemon.total}</div>
+              <div class="text-right font-bold text-ink text-xs dark:text-dark-ink">{t.pokemon.total}</div>
               <div class="text-right font-bold font-mono text-ink text-xs dark:text-dark-ink">{statTotal}</div>
             </div>
           </div>
@@ -384,7 +370,7 @@ const valueClass = 'font-mono text-ink text-xs dark:text-dark-ink'
           <div class="space-y-3">
             {defenseSections.map(({ title, headingTone, chipTone, entries }) => (
               <div>
-                <h3 class:list={['mb-1.5 font-semibold text-xs uppercase tracking-wider', headingTone]}>
+                <h3 class:list={['mb-1.5 font-semibold text-xs', headingTone]}>
                   {title} ({entries.length})
                 </h3>
                 {entries.length > 0 ? (
@@ -402,7 +388,7 @@ const valueClass = 'font-mono text-ink text-xs dark:text-dark-ink'
         </div>
 
         {evolutionChain && evolutionChain.chain.evolves_to.length > 0 && (
-          <div class="bento-cell flex flex-col rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
+          <div class="cell cell-own flex flex-col md:col-span-2">
             <h2 class={headingClass}>{t.pokemon.evolutionChain}</h2>
             <div class="flex flex-1 items-center justify-center">
               <EvolutionTree chain={evolutionChain.chain} currentSpecies={pokemon.species.name} locale={locale} />
@@ -411,7 +397,7 @@ const valueClass = 'font-mono text-ink text-xs dark:text-dark-ink'
         )}
 
         {otherForms.length > 0 && (
-          <div class="bento-cell rounded-2xl bg-white p-4 md:col-span-2 lg:col-span-4 dark:bg-dark-surface">
+          <div class="cell cell-own md:col-span-2 lg:col-span-4">
             <h2 class={headingClass}>{t.pokemon.forms}</h2>
             <div class="flex flex-wrap gap-2">
               {otherForms.map((form) => {
@@ -420,7 +406,7 @@ const valueClass = 'font-mono text-ink text-xs dark:text-dark-ink'
                   <a
                     href={`/${locale}/pokemon/${form.name}`}
                     data-astro-prefetch="tap"
-                    class="inline-flex items-center gap-2 rounded-full border-2 bg-white py-1 pr-3.5 pl-1 font-medium text-ink text-sm transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-95 dark:text-ink"
+                    class="inline-flex items-center gap-2 rounded-full border-2 bg-white py-1 pr-3.5 pl-1 font-medium text-ink text-sm transition-all hover:-translate-y-0.5 active:scale-95 dark:text-ink"
                     style={`border-color: ${formAccent}; background-image: linear-gradient(${formAccent}2e, ${formAccent}2e)`}
                   >
                     <img
@@ -523,7 +509,7 @@ const valueClass = 'font-mono text-ink text-xs dark:text-dark-ink'
           </div>
 
           {pokemon.held_items.length > 0 && (
-            <div class="bento-cell rounded-2xl bg-white p-4 md:col-span-2 dark:bg-dark-surface">
+            <div class="cell cell-own md:col-span-2">
               <p class={headingClass}>{t.pokemon.heldItems}</p>
               <div class="space-y-2">
                 {pokemon.held_items.map(({ item, version_details }) => {

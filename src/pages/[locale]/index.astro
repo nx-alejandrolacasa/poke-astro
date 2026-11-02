@@ -22,9 +22,11 @@ const { locale: localeParam } = Astro.params
 const { locale, t } = getI18n(localeParam)
 
 const tileClass =
-  'group min-h-0 rounded-3xl bg-white p-4 transition-all hover:-translate-y-1 active:scale-[0.98] dark:bg-dark-surface'
+  'cell cell-own group min-h-0 transition-all hover:-translate-y-0.5 active:scale-[0.98]'
 const tileStyle = (color: string) =>
-  `border: 2px solid ${color}; background-image: radial-gradient(circle at 50% 35%, ${color}40, transparent 65%)`
+  `--type-color: ${color}; background-image: radial-gradient(circle at 50% 35%, ${color}33, transparent 65%)`
+const tileTitleClass =
+  'font-display text-ink text-lg md:text-2xl dark:text-dark-ink'
 
 const wideGames = [
   {
@@ -52,10 +54,11 @@ const wideGames = [
           <img src="/pokemon-logo.svg" alt="Pokemon" class="h-8 w-auto md:h-10 lg:h-12" />
           <h1 class="pokemon-title text-3xl md:text-3xl xl:text-5xl">{t.home.title}</h1>
         </div>
-        <div class="flex flex-wrap justify-center gap-2">
+        <div class="grid w-full max-w-sm grid-cols-2 gap-2">
+          <RandomPokemonButton client:idle locale={locale} />
           <a
             href={`/${locale}/pokedex`}
-            class="inline-flex items-center gap-2 rounded-full bg-secondary px-5 py-2.5 font-bold text-sm text-white transition-all hover:-translate-y-0.5 hover:bg-secondary-600 active:scale-95"
+            class="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-primary px-5 font-semibold text-sm text-white transition-all hover:-translate-y-0.5 hover:bg-primary-600 active:scale-95"
           >
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <circle cx="12" cy="12" r="10" />
@@ -65,7 +68,6 @@ const wideGames = [
             </svg>
             {t.header.pokedex}
           </a>
-          <RandomPokemonButton client:idle locale={locale} />
         </div>
       </div>
 
@@ -75,7 +77,7 @@ const wideGames = [
           alt=""
           class="min-h-0 w-auto flex-1 object-contain transition-transform group-hover:scale-110"
         />
-        <h2 class="font-bold text-ink text-lg md:text-2xl dark:text-dark-ink">{t.battle.title}</h2>
+        <h2 class={tileTitleClass}>{t.battle.title}</h2>
         <p class="hidden text-ink-muted text-sm md:block dark:text-dark-ink-muted">{t.battle.subtitle}</p>
       </a>
 
@@ -94,13 +96,13 @@ const wideGames = [
             loading="lazy"
           />
           <div class="min-w-0 space-y-1">
-            <h2 class="font-bold text-ink text-lg md:text-xl dark:text-dark-ink">{game.title}</h2>
+            <h2 class={tileTitleClass}>{game.title}</h2>
             <p class="hidden text-ink-muted text-sm md:block dark:text-dark-ink-muted">{game.subtitle}</p>
           </div>
         </a>
       ))}
 
-      <div class="col-span-2 row-span-2 flex items-center justify-center rounded-3xl border-2 border-primary/20 bg-primary-50 p-4 text-center md:col-span-4 md:row-span-1 lg:col-span-2 dark:border-primary/10 dark:bg-dark-raised">
+      <div class="cell col-span-2 row-span-2 flex items-center md:col-span-4 md:row-span-1 lg:col-span-2">
         <Carousel
           client:idle
           className="w-full"
@@ -118,7 +120,7 @@ const wideGames = [
         return (
           <a
             href={`/${locale}/generation/${gen.id}`}
-            class="flex w-24 shrink-0 flex-col items-center gap-1 rounded-2xl p-2 text-center transition-all duration-200 hover:-translate-y-0.5 active:scale-95 md:w-auto md:p-3"
+            class="flex w-24 shrink-0 flex-col items-center gap-1 rounded-3xl p-2 text-center transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] md:w-auto md:p-3"
             style={`background-color: ${color}15; border: 2px solid ${color}`}
           >
             <img

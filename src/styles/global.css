@@ -44,6 +44,8 @@ html {
   --color-dark-surface: #293143;
   --color-dark-raised: #353e52;
   --color-dark-border: #454e64;
+  --color-frame: rgb(0 0 0 / 0.08);
+  --color-dark-frame: rgb(255 255 255 / 0.1);
 
   /* ── Primary accent — Ghost Purple ── */
   --color-primary: #705898;
@@ -208,10 +210,6 @@ html {
     }
   }
 
-  h1, h2, h3 {
-    font-family: var(--font-display);
-  }
-
   /* Sprites load slowly; keep alt text for assistive tech but don't flash
      it in the tile while the image is still downloading. */
   img {
@@ -232,9 +230,24 @@ html {
     color: var(--color-dark-ink);
   }
 
-  /* Bento cell with inherited type color border */
-  .bento-cell {
-    border: 2px solid var(--type-color, #e5e7eb);
+  /* Every panel is a cell: 24px radius, 2px frame. `cell-own` colours the
+     frame from the owner's `--type-color`, pulled towards the ink so near-white
+     accents still clear the cell background. */
+  .cell {
+    border-radius: var(--radius-3xl);
+    border: 2px solid var(--color-frame);
+    background-color: var(--color-surface);
+    padding: calc(var(--spacing) * 4);
+  }
+  .dark .cell {
+    border-color: var(--color-dark-frame);
+    background-color: var(--color-dark-surface);
+  }
+  .cell-own {
+    border-color: color-mix(in srgb, var(--type-color) 85%, var(--color-ink));
+  }
+  .dark .cell-own {
+    border-color: color-mix(in srgb, var(--type-color) 85%, white);
   }
 
   /* Stat bars grow in on first paint, staggered per row via inline delay. */

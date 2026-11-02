@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { type CSSProperties, useEffect, useState } from 'react'
 import { PokemonPicker } from '@/components/PokemonPicker'
 import { TypeBadge } from '@/components/TypeBadge'
 import { usePokemonIndex } from '@/components/usePokemonIndex'
@@ -77,11 +77,14 @@ export function TeamBuilder({ locale }: TeamBuilderProps) {
             member ? (
               <div
                 key={member.id}
-                className="relative rounded-2xl bg-white p-2 text-center dark:bg-dark-surface"
-                style={{
-                  border: `2px solid ${member.accent ?? typeColors[member.types[0]]}`,
-                  backgroundImage: `radial-gradient(circle at 50% 35%, ${member.accent ?? typeColors[member.types[0]]}33, transparent 65%)`,
-                }}
+                className="cell cell-own relative p-2 text-center"
+                style={
+                  {
+                    '--type-color':
+                      member.accent ?? typeColors[member.types[0]],
+                    backgroundImage: `radial-gradient(circle at 50% 35%, ${member.accent ?? typeColors[member.types[0]]}33, transparent 65%)`,
+                  } as CSSProperties
+                }
               >
                 <button
                   type="button"
@@ -101,13 +104,13 @@ export function TeamBuilder({ locale }: TeamBuilderProps) {
                     {member.names[locale]}
                   </span>
                 </a>
-                <div className="mt-1 flex flex-wrap justify-center gap-0.5">
+                <div className="mt-1 flex justify-center gap-1">
                   {member.types.map((type) => (
                     <TypeBadge
                       key={type}
                       type={type}
                       label={typeLabel(type)}
-                      size="sm"
+                      size="icon"
                     />
                   ))}
                 </div>
@@ -115,9 +118,9 @@ export function TeamBuilder({ locale }: TeamBuilderProps) {
             ) : (
               <div
                 key={`empty-${i.toString()}`}
-                className="flex min-h-32 items-center justify-center rounded-2xl border-2 border-dashed border-ink-faint/30 text-center text-xs text-ink-faint dark:border-dark-ink-faint/30 dark:text-dark-ink-faint"
+                className="flex min-h-32 items-center justify-center rounded-3xl border-2 border-dashed border-frame p-2 text-center text-xs text-ink-faint dark:border-dark-frame dark:text-dark-ink-faint"
               >
-                {t.team.empty}
+                {t.team.addMember}
               </div>
             )
         )}
@@ -144,7 +147,7 @@ export function TeamBuilder({ locale }: TeamBuilderProps) {
           <button
             type="button"
             onClick={() => setIds([])}
-            className="rounded-full bg-surface-sunken px-4 py-2 text-xs font-medium text-ink transition-colors hover:bg-danger/10 hover:text-danger dark:bg-dark-raised dark:text-dark-ink"
+            className="min-h-11 rounded-full bg-surface-sunken px-5 text-sm font-semibold text-ink transition-colors hover:bg-primary/10 active:scale-95 dark:bg-dark-raised dark:text-dark-ink"
           >
             {t.team.clear}
           </button>
@@ -152,8 +155,8 @@ export function TeamBuilder({ locale }: TeamBuilderProps) {
       </div>
 
       {team.length > 0 && (
-        <div className="rounded-2xl bg-white p-4 dark:bg-dark-surface">
-          <h2 className="font-sans text-xs font-bold tracking-wider text-primary uppercase dark:text-dark-primary">
+        <div className="cell">
+          <h2 className="font-display text-[13px] text-ink dark:text-dark-ink">
             {t.team.coverage}
           </h2>
           <p className="mt-1 mb-3 text-xs text-ink-muted dark:text-dark-ink-muted">

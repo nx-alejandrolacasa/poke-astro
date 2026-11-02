@@ -1,8 +1,8 @@
 ---
-// Static twin of BackButton.tsx for skeletons: same look, but functional
-// before any hydration via a plain inline handler. Skips the can-go-back
-// detection — whenever a skeleton is showing, the user just navigated, so
-// there is always a page to go back to.
+// Static twin of BackButton.tsx for skeletons: same look, functional before
+// hydration. A skeleton only shows mid-navigation, so there is always a page
+// to go back to; the label names the most likely one.
+import { BACK_LINK_CLASS } from '@/components/BackButton'
 import type { Locale } from '@/utils/i18n'
 import { translations } from '@/utils/translations'
 
@@ -14,14 +14,9 @@ const { locale } = Astro.props
 const t = translations[locale]
 ---
 
-<button
-  type="button"
-  onclick="history.back()"
-  aria-label={t.pages.back}
-  class="-ml-1 inline-flex shrink-0 cursor-pointer items-center gap-1 py-1 pr-2 font-semibold text-red-500 text-sm transition-all hover:text-red-600 active:scale-95 dark:text-red-300 dark:hover:text-red-200"
->
+<button type="button" onclick="history.back()" class={BACK_LINK_CLASS}>
   <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
   </svg>
-  <span>{t.pages.back}</span>
+  <span>{t.header.pokedex}</span>
 </button>

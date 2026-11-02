@@ -15,13 +15,8 @@ const { locale, t } = getI18n(localeParam)
 ---
 
 <Layout title={t.compare.title} locale={locale} description={t.compare.subtitle}>
-  <div class="space-y-6">
-    <div class="text-center">
-      <h1 class="pokemon-title text-2xl md:text-4xl">{t.compare.title}</h1>
-      <p class="mt-2 text-ink-muted text-sm dark:text-dark-ink-muted">{t.compare.subtitle}</p>
-    </div>
-    <ComparePokemon client:only="react" locale={locale}>
-      <PlaySkeleton slot="fallback" />
-    </ComparePokemon>
-  </div>
+  <h1 class="sr-only">{t.compare.title}</h1>
+  <ComparePokemon client:only="react" locale={locale}>
+    <PlaySkeleton slot="fallback" />
+  </ComparePokemon>
 </Layout>

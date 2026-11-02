@@ -28,7 +28,7 @@ export function RandomPokemonButton({ locale }: RandomPokemonButtonProps) {
       type="button"
       onClick={surprise}
       disabled={busy}
-      className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-primary-600 active:scale-95 disabled:opacity-60"
+      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-surface-sunken px-5 text-sm font-semibold text-ink transition-all hover:-translate-y-0.5 hover:bg-primary/10 active:scale-95 disabled:opacity-60 dark:bg-dark-raised dark:text-dark-ink dark:hover:bg-dark-primary/10"
     >
       <svg
         className={`h-4 w-4 ${busy ? 'animate-spin' : ''}`}

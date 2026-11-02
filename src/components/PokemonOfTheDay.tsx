@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { type CSSProperties, useEffect, useState } from 'react'
 import { TypeBadge } from '@/components/TypeBadge'
 import type { Locale } from '@/utils/i18n'
 import type { PokemonRecord } from '@/utils/pokemon'
@@ -65,13 +65,15 @@ export function PokemonOfTheDay({ locale }: PokemonOfTheDayProps) {
     <a
       href={`/${locale}/pokemon/${pokemon.name}`}
       data-astro-prefetch="tap"
-      className="group flex h-full min-h-0 flex-col items-center justify-center gap-1 rounded-3xl bg-white p-3 text-center transition-all hover:-translate-y-1 active:scale-[0.98] md:p-4 dark:bg-dark-surface"
-      style={{
-        border: `2px solid ${accent}`,
-        backgroundImage: `radial-gradient(circle at 50% 35%, ${accent}40, transparent 65%)`,
-      }}
+      className="cell cell-own group flex h-full min-h-0 flex-col items-center justify-center gap-1 p-3 text-center transition-all hover:-translate-y-0.5 active:scale-[0.98] md:p-4"
+      style={
+        {
+          '--type-color': accent,
+          backgroundImage: `radial-gradient(circle at 50% 35%, ${accent}33, transparent 65%)`,
+        } as CSSProperties
+      }
     >
-      <span className="text-[11px] font-bold tracking-wider text-ink-muted uppercase dark:text-dark-ink-muted">
+      <span className="font-display text-[13px] text-ink dark:text-dark-ink">
         {t.home.pokemonOfTheDay}
       </span>
       <img
@@ -86,7 +88,7 @@ export function PokemonOfTheDay({ locale }: PokemonOfTheDayProps) {
         </span>
         {pokemon.names[locale]}
       </span>
-      <div className="flex flex-wrap justify-center gap-1">
+      <div className="flex justify-center gap-1">
         {pokemon.types.map((type) => (
           <TypeBadge
             key={type}

@@ -92,7 +92,7 @@ export function SettingsMenuContent({
   }
 
   const transferButtonClass =
-    'rounded-xl bg-black/5 px-3 py-2 text-xs font-semibold text-ink-muted transition-colors hover:bg-black/10 dark:bg-white/5 dark:text-dark-ink-muted dark:hover:bg-white/10'
+    'min-h-11 rounded-xl bg-black/5 px-3 py-2 text-xs font-semibold text-ink-muted transition-colors hover:bg-black/10 dark:bg-white/5 dark:text-dark-ink-muted dark:hover:bg-white/10'
 
   return (
     <>
@@ -123,7 +123,7 @@ export function SettingsMenuContent({
         </button>
       </div>
 
-      <p className="mb-2 text-xs font-semibold tracking-wider text-ink-muted uppercase dark:text-dark-ink-muted">
+      <p className="mb-2 text-xs font-semibold text-ink-muted dark:text-dark-ink-muted">
         {t.settings.language}
       </p>
       <div className="mb-4 grid grid-cols-2 gap-2">
@@ -131,7 +131,7 @@ export function SettingsMenuContent({
           <a
             key={loc}
             href={localizeUrl(currentPath, loc)}
-            className={`flex items-center justify-center rounded-xl px-3 py-2 text-sm font-semibold transition-colors ${
+            className={`flex min-h-11 items-center justify-center rounded-xl px-3 py-2 text-sm font-semibold transition-colors ${
               locale === loc
                 ? 'bg-primary/15 text-primary dark:bg-dark-primary/20 dark:text-dark-primary'
                 : 'bg-black/5 text-ink-muted hover:bg-black/10 dark:bg-white/5 dark:text-dark-ink-muted dark:hover:bg-white/10'
@@ -142,7 +142,7 @@ export function SettingsMenuContent({
         ))}
       </div>
 
-      <p className="mb-2 text-xs font-semibold tracking-wider text-ink-muted uppercase dark:text-dark-ink-muted">
+      <p className="mb-2 text-xs font-semibold text-ink-muted dark:text-dark-ink-muted">
         {t.settings.theme}
       </p>
       <div className="grid grid-cols-3 gap-2">
@@ -177,7 +177,7 @@ export function SettingsMenuContent({
         ))}
       </div>
 
-      <p className="mt-4 mb-2 text-xs font-semibold tracking-wider text-ink-muted uppercase dark:text-dark-ink-muted">
+      <p className="mt-4 mb-2 text-xs font-semibold text-ink-muted dark:text-dark-ink-muted">
         {t.settings.transfer}
       </p>
       <div className="grid grid-cols-2 gap-2" aria-live="polite">
