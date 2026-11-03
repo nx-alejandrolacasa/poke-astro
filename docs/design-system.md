@@ -119,7 +119,7 @@ The radial glow `radial-gradient(circle at 50% 35%, <colour>33, transparent 65%)
 | --- | --- | --- |
 | Primary | act fill, white text | The one main action on a screen: Guess, Battle, Compare. |
 | Quiet | well fill, ink text, `hover:bg-primary/12` | Secondary actions: Add to team, Reset, Random. |
-| Outline | cell fill, neutral frame | Only when quiet would vanish on a well. |
+| Outline | cell fill, 2px act frame, act text | When quiet would vanish: on a well, or straight on the page background (the home hero, where it pairs with the primary pill as its hollow twin). |
 
 Red, green or blue filled buttons do not exist. The red Pokédex pill on the home hero becomes primary: red reads as an error, and in this app it belongs to the Pokédex tab only.
 

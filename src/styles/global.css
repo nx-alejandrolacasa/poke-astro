@@ -158,10 +158,10 @@ html {
        red/blue) sit on opposite diagonals rather than adjacent sides. */
     background-color: #fefefe;
     --aurora:
-      radial-gradient(1300px circle at 0% 0%,     rgba(227,  53,  13, 0.10), transparent 70%),  /* TL — Red    */
-      radial-gradient(1300px circle at 100% 0%,   rgba(234, 179,   8, 0.16), transparent 70%),  /* TR — Yellow */
-      radial-gradient(1300px circle at 0% 90%,    rgba( 22, 163,  74, 0.13), transparent 70%),  /* BL — Green  */
-      radial-gradient(1300px circle at 100% 90%,  rgba( 29,  78, 216, 0.24), transparent 70%);  /* BR — Blue   */
+      radial-gradient(1300px circle at 0% 0%,     rgba(227,  53,  13, 0.14), transparent 70%),  /* TL — Red    */
+      radial-gradient(1300px circle at 100% 0%,   rgba(234, 179,   8, 0.22), transparent 70%),  /* TR — Yellow */
+      radial-gradient(1300px circle at 0% 90%,    rgba( 22, 163,  74, 0.18), transparent 70%),  /* BL — Green  */
+      radial-gradient(1300px circle at 100% 90%,  rgba( 29,  78, 216, 0.32), transparent 70%);  /* BR — Blue   */
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -180,10 +180,10 @@ html {
        against the neutral slate base. */
     background-color: var(--color-dark-bg);
     --aurora:
-      radial-gradient(1300px circle at 0% 0%,     rgba(248, 113, 113, 0.18), transparent 70%),  /* TL — Red    */
-      radial-gradient(1300px circle at 100% 0%,   rgba(253, 224,  71, 0.20), transparent 70%),  /* TR — Yellow */
-      radial-gradient(1300px circle at 0% 90%,    rgba(110, 231, 183, 0.20), transparent 70%),  /* BL — Green  */
-      radial-gradient(1300px circle at 100% 90%,  rgba( 56, 189, 248, 0.30), transparent 70%);  /* BR — Blue   */
+      radial-gradient(1300px circle at 0% 0%,     rgba(248, 113, 113, 0.24), transparent 70%),  /* TL — Red    */
+      radial-gradient(1300px circle at 100% 0%,   rgba(253, 224,  71, 0.27), transparent 70%),  /* TR — Yellow */
+      radial-gradient(1300px circle at 0% 90%,    rgba(110, 231, 183, 0.27), transparent 70%),  /* BL — Green  */
+      radial-gradient(1300px circle at 100% 90%,  rgba( 56, 189, 248, 0.38), transparent 70%);  /* BR — Blue   */
   }
 
   /* Tone the aurora down on mobile — smaller viewports make each blob cover
@@ -195,18 +195,18 @@ html {
 
     body {
       --aurora:
-        radial-gradient(800px circle at 0% 0%,    rgba(227,  53,  13, 0.06), transparent 65%),  /* TL — Red    */
-        radial-gradient(800px circle at 100% 0%,  rgba(234, 179,   8, 0.09), transparent 65%),  /* TR — Yellow */
-        radial-gradient(800px circle at 0% 90%,   rgba( 22, 163,  74, 0.07), transparent 65%),  /* BL — Green  */
-        radial-gradient(800px circle at 100% 90%, rgba( 29,  78, 216, 0.13), transparent 65%);  /* BR — Blue   */
+        radial-gradient(800px circle at 0% 0%,    rgba(227,  53,  13, 0.09), transparent 65%),  /* TL — Red    */
+        radial-gradient(800px circle at 100% 0%,  rgba(234, 179,   8, 0.13), transparent 65%),  /* TR — Yellow */
+        radial-gradient(800px circle at 0% 90%,   rgba( 22, 163,  74, 0.10), transparent 65%),  /* BL — Green  */
+        radial-gradient(800px circle at 100% 90%, rgba( 29,  78, 216, 0.18), transparent 65%);  /* BR — Blue   */
     }
 
     .dark body {
       --aurora:
-        radial-gradient(800px circle at 0% 0%,    rgba(248, 113, 113, 0.10), transparent 65%),  /* TL — Red    */
-        radial-gradient(800px circle at 100% 0%,  rgba(253, 224,  71, 0.12), transparent 65%),  /* TR — Yellow */
-        radial-gradient(800px circle at 0% 90%,   rgba(110, 231, 183, 0.12), transparent 65%),  /* BL — Green  */
-        radial-gradient(800px circle at 100% 90%, rgba( 56, 189, 248, 0.18), transparent 65%);  /* BR — Blue   */
+        radial-gradient(800px circle at 0% 0%,    rgba(248, 113, 113, 0.14), transparent 65%),  /* TL — Red    */
+        radial-gradient(800px circle at 100% 0%,  rgba(253, 224,  71, 0.17), transparent 65%),  /* TR — Yellow */
+        radial-gradient(800px circle at 0% 90%,   rgba(110, 231, 183, 0.17), transparent 65%),  /* BL — Green  */
+        radial-gradient(800px circle at 100% 90%, rgba( 56, 189, 248, 0.24), transparent 65%);  /* BR — Blue   */
     }
   }
 
