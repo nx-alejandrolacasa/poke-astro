@@ -45,7 +45,8 @@ Text on a type-coloured badge uses `contrast-color()` with `contrastInk()` as th
 | Role | Face | Size / weight | Utility | Where |
 | --- | --- | --- | --- | --- |
 | Cell title | Dela Gothic One | 13px, sentence case, ink | `font-display text-[13px] text-ink` | First line of any cell that needs a name. |
-| Hero title | Dela Gothic One | 30px phone, 36px iPad+ | `font-display text-3xl md:text-4xl` | The Pokémon's name on the detail page, the app name on the home hero. |
+| Hero title | Dela Gothic One | 30px phone, 36px iPad+ | `font-display text-3xl md:text-4xl` | The Pokémon's name on the detail page. |
+| Slogan | Caveat Brush | white fill, slogan-blue outline, set on an upward arc (SVG `textPath`), sized to fill the arc in either locale | `pokemon-title` on the SVG text | Only the home hero tagline, echoing the anime "Gotta catch 'em all!" lettering. The one place a heading is not ink. |
 | Tile title | Dela Gothic One | 18px | `font-display text-lg` | Game tiles on home and Play. |
 | Name | Inter 600 | 16px | `font-semibold text-base` | Pokémon names inside tiles, compare cards, team slots. Content, not a title. |
 | Body | Inter 400 | 14px / 1.6 | `text-sm leading-relaxed` | Descriptions, fun facts, subtitles. Under 70 characters per line. |
@@ -53,7 +54,7 @@ Text on a type-coloured badge uses `contrast-color()` with `contrastInk()` as th
 | Reading | JetBrains Mono 700 | 12px rows, 24px feature | `font-mono font-bold text-xs` / `text-2xl` | Numbers only. Tabular figures. |
 | Chip | Inter 500 | 12px | `text-xs font-medium` | Chips, badges, pills. |
 
-No uppercase text anywhere. No letter-spacing. Headings never get a colour other than ink; the frame already carries the colour. If Dela Gothic at 13px turns out too loud in use, the fallback is Inter 600 in ink, still sentence case; nothing else about the cell changes.
+No uppercase text anywhere. No letter-spacing. Headings never get a colour other than ink (the slogan is the single exception); the frame already carries the colour. If Dela Gothic at 13px turns out too loud in use, the fallback is Inter 600 in ink, still sentence case; nothing else about the cell changes.
 
 ### Space and radius
 

@@ -1,6 +1,7 @@
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/jetbrains-mono";
 @import "@fontsource/dela-gothic-one/latin.css";
+@import "@fontsource/caveat-brush/latin.css";
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -35,6 +36,7 @@ html {
   --font-sans: "Inter Variable", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
   --font-display: "Dela Gothic One", sans-serif;
+  --font-slogan: "Caveat Brush", "Dela Gothic One", sans-serif;
 
   /* ── Surfaces ── */
   --color-surface: #ffffff;
@@ -223,11 +225,16 @@ html {
 @layer components {
   /* Display title */
   .pokemon-title {
-    font-family: var(--font-display);
-    color: var(--color-ink);
+    font-family: var(--font-slogan);
+    fill: white;
+    stroke: #2f5fb3;
+    stroke-width: 10;
+    stroke-linejoin: round;
+    paint-order: stroke fill;
+    filter: drop-shadow(0 3px 0 rgb(0 0 0 / 0.18));
   }
   .dark .pokemon-title {
-    color: var(--color-dark-ink);
+    stroke: #5b86d6;
   }
 
   /* Every panel is a cell: 24px radius, 2px frame. `cell-own` colours the

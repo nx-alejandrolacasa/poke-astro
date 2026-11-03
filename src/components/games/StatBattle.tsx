@@ -128,6 +128,8 @@ const PRIMARY_BUTTON =
   'min-h-11 rounded-full bg-primary px-5 text-sm font-semibold text-white transition-all hover:bg-primary-600 active:scale-95 disabled:opacity-50 dark:bg-dark-primary'
 const SECONDARY_BUTTON =
   'min-h-11 shrink-0 rounded-full bg-surface-sunken px-5 text-sm font-semibold whitespace-nowrap text-ink transition-all hover:bg-primary/10 active:scale-95 disabled:cursor-default disabled:opacity-40 dark:bg-dark-raised dark:text-dark-ink dark:hover:bg-dark-primary/10'
+const OUTLINE_BUTTON =
+  'inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full border-2 border-primary bg-surface px-4 text-sm font-semibold text-primary transition-all hover:bg-primary/10 active:scale-95 disabled:cursor-default disabled:opacity-40 dark:border-dark-primary dark:bg-dark-surface dark:text-dark-primary dark:hover:bg-dark-primary/10'
 const CELL_TITLE = 'font-display text-[13px] text-ink dark:text-dark-ink'
 
 type TargetCardProps = {
@@ -538,6 +540,11 @@ export function StatBattle({ locale }: StatBattleProps) {
     setRedrawUsed(true)
     if (mode === 'survival') setRunRedraws((n) => n + 1)
     spin(reels)
+  }
+  const runAway = () => {
+    if (phase !== 'playing' || rolling) return
+    setReels(reels.map((reel) => ({ ...reel, kept: true })))
+    finishBattle()
   }
 
   useEffect(() => {
@@ -1163,22 +1170,47 @@ export function StatBattle({ locale }: StatBattleProps) {
           >
             {rolling ? t.battle.spinning : t.battle.hint}{' '}
             <span className="font-mono">
-              {keptCount}/{REEL_COUNT}
+              {REEL_COUNT - keptCount}/{REEL_COUNT}
             </span>
           </p>
-          <button
-            type="button"
-            onClick={redrawAll}
-            disabled={!canRedraw}
-            className={SECONDARY_BUTTON}
-          >
-            ↻ {t.battle.redraw}{' '}
-            <span className="font-mono opacity-60">
-              {redrawUsed ? 0 : 1}/1
-              {mode === 'survival' &&
-                ` · 🔥 ${Math.max(0, runRedrawsLeft)}/${SURVIVAL_REDRAWS}`}
-            </span>
-          </button>
+          <div className="grid w-full max-w-md grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={runAway}
+              disabled={rolling}
+              className={OUTLINE_BUTTON}
+            >
+              <svg
+                className="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="13" cy="4" r="1" />
+                <path d="M4 17l5 1l.75 -1.5" />
+                <path d="M15 21l0 -4l-4 -3l1 -6" />
+                <path d="M7 12l0 -3l5 -1l3 3l3 1" />
+              </svg>
+              {t.battle.run}
+            </button>
+            <button
+              type="button"
+              onClick={redrawAll}
+              disabled={!canRedraw}
+              className={`${PRIMARY_BUTTON} inline-flex items-center justify-center gap-1.5`}
+            >
+              ↻ {t.battle.redraw}
+              <span className="font-mono opacity-60">
+                {mode === 'survival'
+                  ? `🔥 ${Math.max(0, runRedrawsLeft)}/${SURVIVAL_REDRAWS}`
+                  : `${redrawUsed ? 0 : 1}/1`}
+              </span>
+            </button>
+          </div>
         </div>
       ) : phase === 'finale' ? (
         <p
@@ -1192,7 +1224,7 @@ export function StatBattle({ locale }: StatBattleProps) {
           <button
             type="button"
             onClick={backToSetup}
-            className={SECONDARY_BUTTON}
+            className={OUTLINE_BUTTON}
           >
             {t.battle.backToSetup}
           </button>
