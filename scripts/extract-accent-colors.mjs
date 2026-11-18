@@ -14,15 +14,15 @@ const existing = (() => {
 })()
 
 async function fetchIds() {
-  const res = await fetch('https://beta.pokeapi.co/graphql/v1beta', {
+  const res = await fetch('https://graphql.pokeapi.co/v1beta2', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
-      query: '{ pokemon_v2_pokemon(order_by: {id: asc}) { id } }',
+      query: '{ pokemon(order_by: {id: asc}) { id } }',
     }),
   })
   const { data } = await res.json()
-  return data.pokemon_v2_pokemon.map((p) => p.id)
+  return data.pokemon.map((p) => p.id)
 }
 
 function toHex(r, g, b) {
