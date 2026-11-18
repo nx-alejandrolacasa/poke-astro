@@ -168,17 +168,17 @@ export const MAX_BASE_STAT: Record<string, number> = {
 
 const accentColors: Record<string, string> = accentColorsJson
 
-const GRAPHQL_URL = 'https://beta.pokeapi.co/graphql/v1beta'
+const GRAPHQL_URL = 'https://graphql.pokeapi.co/v1beta2'
 const LANGUAGE_IDS: Record<Locale, number> = { es: 7, en: 9 }
 
 const ALL_POKEMON_QUERY = `{
-  pokemon_v2_pokemon(order_by: {id: asc}) {
+  pokemon(order_by: {id: asc}) {
     id name height weight is_default
-    pokemon_v2_pokemontypes(order_by: {slot: asc}) { pokemon_v2_type { name } }
-    pokemon_v2_pokemonstats(order_by: {stat_id: asc}) { base_stat }
-    pokemon_v2_pokemonspecy {
+    pokemontypes(order_by: {slot: asc}) { type { name } }
+    pokemonstats(order_by: {stat_id: asc}) { base_stat }
+    pokemonspecy {
       generation_id is_legendary is_mythical
-      pokemon_v2_pokemonspeciesnames(where: {language_id: {_in: [7, 9]}}) { name language_id }
+      pokemonspeciesnames(where: {language_id: {_in: [7, 9]}}) { name language_id }
     }
   }
 }`
@@ -189,13 +189,13 @@ type GraphqlPokemon = {
   height: number
   weight: number
   is_default: boolean
-  pokemon_v2_pokemontypes: { pokemon_v2_type: { name: string } }[]
-  pokemon_v2_pokemonstats: { base_stat: number }[]
-  pokemon_v2_pokemonspecy: {
+  pokemontypes: { type: { name: string } }[]
+  pokemonstats: { base_stat: number }[]
+  pokemonspecy: {
     generation_id: number
     is_legendary: boolean
     is_mythical: boolean
-    pokemon_v2_pokemonspeciesnames: { name: string; language_id: number }[]
+    pokemonspeciesnames: { name: string; language_id: number }[]
   } | null
 }
 
@@ -223,13 +223,13 @@ async function fetchAllPokemonRecords(): Promise<PokemonRecord[]> {
   if (!res.ok) throw new Error(`PokéAPI GraphQL failed: ${res.status}`)
   const { data, errors } = await res.json()
   if (errors?.length) throw new Error(errors[0].message)
-  return (data.pokemon_v2_pokemon as GraphqlPokemon[]).map(toRecord)
+  return (data.pokemon as GraphqlPokemon[]).map(toRecord)
 }
 
 function toRecord(p: GraphqlPokemon): PokemonRecord {
   const fallback = getPokemonName(p.name)
   const speciesNames = p.is_default
-    ? (p.pokemon_v2_pokemonspecy?.pokemon_v2_pokemonspeciesnames ?? [])
+    ? (p.pokemonspecy?.pokemonspeciesnames ?? [])
     : []
   const nameFor = (locale: Locale) =>
     speciesNames.find((n) => n.language_id === LANGUAGE_IDS[locale])?.name ??
@@ -238,13 +238,13 @@ function toRecord(p: GraphqlPokemon): PokemonRecord {
     id: p.id,
     name: p.name,
     names: { en: nameFor('en'), es: nameFor('es') },
-    types: p.pokemon_v2_pokemontypes.map((t) => t.pokemon_v2_type.name),
+    types: p.pokemontypes.map((t) => t.type.name),
     accent: accentColors[p.id] ?? null,
-    generation: p.pokemon_v2_pokemonspecy?.generation_id ?? 0,
+    generation: p.pokemonspecy?.generation_id ?? 0,
     isDefault: p.is_default,
-    isLegendary: p.pokemon_v2_pokemonspecy?.is_legendary ?? false,
-    isMythical: p.pokemon_v2_pokemonspecy?.is_mythical ?? false,
-    stats: p.pokemon_v2_pokemonstats.map((s) => s.base_stat),
+    isLegendary: p.pokemonspecy?.is_legendary ?? false,
+    isMythical: p.pokemonspecy?.is_mythical ?? false,
+    stats: p.pokemonstats.map((s) => s.base_stat),
     height: p.height,
     weight: p.weight,
   }
